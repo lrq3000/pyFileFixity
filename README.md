@@ -10,16 +10,20 @@ This script is originally meant to be used for data archival, by allowing an eas
 Example usage
 ----------------------
 - To generate the database (only needed once):
-```python python rfigc.py -i "folderimages" -d "dbhash.csv" -g ```
+
+```python rfigc.py -i "folderimages" -d "dbhash.csv" -g ```
 
 - To check:
-```python python rfigc.py -i "folderimages" -d "dbhash.csv" -l log.txt -s ```
+
+```python rfigc.py -i "folderimages" -d "dbhash.csv" -l log.txt -s ```
 
 - To update your database by appending new files:
-```python python rfigc.py -i "folderimages" -d "dbhash.csv" -u -a ```
+
+```python rfigc.py -i "folderimages" -d "dbhash.csv" -u -a ```
 
 - To update your database by appending new files AND removing inexistent files:
-```python python rfigc.py -i "folderimages" -d "dbhash.csv" -u -a -r ```
+
+```python rfigc.py -i "folderimages" -d "dbhash.csv" -u -a -r ```
 
 Note that by default, the script is by default in check mode, to avoid wrong manipulations. It will also alert you if you generate over an already existing database file.
 
