@@ -29,7 +29,7 @@
 #               License: Lesser GPL v3+ (LGPLv3 or Above)
 #              Creation date: 2015-02-27
 #          Last modification: 2015-03-01
-#                     version: 0.7
+#                     version: 0.8
 #=================================
 #
 # TODO:
@@ -115,7 +115,7 @@ def check_structure(filepath):
         return None
 
 def generate_hashes(filepath, blocksize=65536):
-    '''Generate several hashes (md5 and sha1) in a single sweep of the file. Supports big files by streaming blocks by blocks to the hasher automatically. Blocksize can be any multiple of 128.'''
+    '''Generate several hashes (md5 and sha1) in a single sweep of the file. Using two hashes lowers the probability of collision and false negative (file modified but the hash is the same). Supports big files by streaming blocks by blocks to the hasher automatically. Blocksize can be any multiple of 128.'''
     # Init hashers
     hasher_md5 = hashlib.md5()
     hasher_sha1 = hashlib.sha1()
@@ -155,20 +155,27 @@ def main(argv=None):
     defaultwait = 5 # default wait time (in minutes) to wait when there's no slotsfile for today before checking again for a new slotsfile existence
     margindelay = 120 # seconds to wait after the planned end time of a booking to switch to the next (this allows players to take the time to end the match) - this margindelay is not applied when there's no booking, the next booking will begin right on time
 
-    desc = '''Recursive/Relative Files Integrity Generator and Checker ---
-    Description: Recursively generate or check the integrity of files, by hash, modification date or data structure integrity (only for images). This script is originally meant to be used for data archival, by allowing an easy way to check for silent file corruption. Thus, this script uses relative paths so that you can easily compute and check the same redundant data copied on different mediums (hard drives, optical discs, etc.). This script is not meant for system files corruption notification, but is more meant to be used from times-to-times to check up on your data archives integrity.
+    desc = '''Recursive/Relative Files Integrity Generator and Checker
+Description: Recursively generate or check the integrity of files by MD5 and SHA1 hashes, size, modification date or by data structure integrity (only for images).
+
+This script is originally meant to be used for data archival, by allowing an easy way to check for silent file corruption. Thus, this script uses relative paths so that you can easily compute and check the same redundant data copied on different mediums (hard drives, optical discs, etc.). This script is not meant for system files corruption notification, but is more meant to be used from times-to-times to check up on your data archives integrity.
     '''
     ep = '''Example usage:
-    - To generate the database (only needed once): python rfigc.py -i "folderimages" -d "dbhash.csv" -g
-    - To check: rfigc.py -i "folderimages" -d "dbhash.csv" -l log.txt -s
-    - To update your database by appending new files: python rfigc.py -i "folderimages" -d "dbhash.csv" -u -a 
-    - To update your database by appending new files AND removing inexistent files: python rfigc.py -i "folderimages" -d "dbhash.csv" -u -a -r
-    Note that by default, the script is by default in check mode, to avoid wrong manipulations. It will also alert you if you generate over an already existing database file.
-    '''
+- To generate the database (only needed once):
+python rfigc.py -i "folderimages" -d "dbhash.csv" -g
+- To check:
+python rfigc.py -i "folderimages" -d "dbhash.csv" -l log.txt -s
+- To update your database by appending new files:
+python rfigc.py -i "folderimages" -d "dbhash.csv" -u -a 
+- To update your database by appending new files AND removing inexistent files:
+python rfigc.py -i "folderimages" -d "dbhash.csv" -u -a -r
+
+Note that by default, the script is by default in check mode, to avoid wrong manipulations. It will also alert you if you generate over an already existing database file.
+'''
 
     #== Commandline arguments
     #-- Constructing the parser
-    main_parser = argparse.ArgumentParser(add_help=True, description=desc, epilog=ep)
+    main_parser = argparse.ArgumentParser(add_help=True, description=desc, epilog=ep, formatter_class=argparse.RawTextHelpFormatter)
     # Required arguments
     main_parser.add_argument('-i', '--input', metavar='/path/to/root/folder', type=is_dir, nargs=1, required=True,
                         help='Path to the root folder from where the scanning will occur.')
