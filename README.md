@@ -10,22 +10,23 @@ This script is originally meant to be used for data archival, by allowing an eas
 Example usage
 ----------------------
 - To generate the database (only needed once):
-python rfigc.py -i "folderimages" -d "dbhash.csv" -g
+```python python rfigc.py -i "folderimages" -d "dbhash.csv" -g ```
 
 - To check:
-python rfigc.py -i "folderimages" -d "dbhash.csv" -l log.txt -s
+```python python rfigc.py -i "folderimages" -d "dbhash.csv" -l log.txt -s ```
 
 - To update your database by appending new files:
-python rfigc.py -i "folderimages" -d "dbhash.csv" -u -a 
+```python python rfigc.py -i "folderimages" -d "dbhash.csv" -u -a ```
 
 - To update your database by appending new files AND removing inexistent files:
-python rfigc.py -i "folderimages" -d "dbhash.csv" -u -a -r
+```python python rfigc.py -i "folderimages" -d "dbhash.csv" -u -a -r ```
 
 Note that by default, the script is by default in check mode, to avoid wrong manipulations. It will also alert you if you generate over an already existing database file.
 
 Arguments
 ----------------
 
+```
   -h, --help            show a help message and exit
   -i /path/to/root/folder, --input /path/to/root/folder
                         Path to the root folder from where the scanning will occ
@@ -54,3 +55,4 @@ xists (if --generate).
 ove).
   -a, --append          Append new files (if --update).
   -r, --remove          Remove missing files (if --update).
+```
