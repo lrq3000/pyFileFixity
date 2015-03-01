@@ -7,6 +7,8 @@ Recursively generate or check the integrity of files by MD5 and SHA1 hashes, siz
 
 This script is originally meant to be used for data archival, by allowing an easy way to check for silent file corruption. Thus, this script uses relative paths so that you can easily compute and check the same redundant data copied on different mediums (hard drives, optical discs, etc.). This script is not meant for system files corruption notification, but is more meant to be used from times-to-times to check up on your data archives integrity.
 
+This script was made for Python 2.7.6, but it should be easily adaptable to run on Python 3.x.
+
 Example usage
 ----------------------
 - To generate the database (only needed once):

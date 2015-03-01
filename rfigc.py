@@ -25,11 +25,12 @@
 #
 #=================================
 #  Recursive/Relative Files Integrity Generator and Checker
-#               by Stephen Larroque
-#               License: Lesser GPL v3+ (LGPLv3 or Above)
+#                by Stephen Larroque
+#                       License: MIT
+#                 Runs on Python 2.7.6
 #              Creation date: 2015-02-27
 #          Last modification: 2015-03-01
-#                     version: 0.8
+#                     version: 0.8.1
 #=================================
 #
 # TODO:
