@@ -149,13 +149,7 @@ def main(argv=None):
 
     #==== COMMANDLINE PARSER ====
 
-    #== General vars
-    delimiter = '|' # for slots files
-    timedelimiter = ':'
-    assign = '='
-    defaultwait = 5 # default wait time (in minutes) to wait when there's no slotsfile for today before checking again for a new slotsfile existence
-    margindelay = 120 # seconds to wait after the planned end time of a booking to switch to the next (this allows players to take the time to end the match) - this margindelay is not applied when there's no booking, the next booking will begin right on time
-
+    #== Commandline description
     desc = '''Recursive/Relative Files Integrity Generator and Checker
 Description: Recursively generate or check the integrity of files by MD5 and SHA1 hashes, size, modification date or by data structure integrity (only for images).
 
