@@ -24,6 +24,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 #
+#------------------------------
+#
+# This script is similar to what has been done in a paper, albeit in a dumbed down version (since they could automatically check for corruption measures based on file format): Heydegger, Volker. "Analysing the impact of file formats on data integrity." Archiving Conference. Vol. 2008. No. 1. Society for Imaging Science and Technology, 2008.
+# And another interesting paper by the same author: Heydegger, Volker. "Just one bit in a million: On the effects of data corruption in files." Research and Advanced Technology for Digital Libraries. Springer Berlin Heidelberg, 2009. 315-326.
+# Errors are not evenly spread but rather block level (thus concentrated). Addis, Matthew, et al. "Reliable Audiovisual Archiving Using Unreliable Storage Technology and Services." (2009).
+#
 
 # Import necessary libraries
 import argparse
@@ -46,7 +52,7 @@ def main(argv=None):
     desc = '''Random file characters tamperer in Python
 Description: Randomly tampers characters in a file in order to test for integrity after.
     '''
-    ep = ''' '''
+    ep = '''NOTE: this script tampers at the character (byte) level, not the bits! Thus the measures you will get here may be different from those you will find in papers (you must divide your probability by 8).'''
 
     #== Commandline arguments
     #-- Constructing the parser
@@ -58,6 +64,8 @@ Description: Randomly tampers characters in a file in order to test for integrit
                         help='Tampering mode: erasure or noise?')
     main_parser.add_argument('-p', '--probability', type=float, nargs=1, required=True,
                         help='Probability of tampering (float between 0.0 and 1.0)')
+    main_parser.add_argument('-b', '--block_probability', type=float, nargs=1, required=False,
+                        help='Probability of block tampering (between 0.0 and 1.0, do not set it if you want to spread errors evenly, but researchs have shown that errors are rather at block level and not evenly distributed)')
 
     #== Parsing the arguments
     args = main_parser.parse_args(argv) # Storing all arguments to args
@@ -66,36 +74,45 @@ Description: Randomly tampers characters in a file in order to test for integrit
     filepath = fullpath(args.input[0])
     mode = args.mode[0]
     proba = float(args.probability[0])
+    block_proba = None
+    if args.block_probability:
+        block_proba = float(args.block_probability[0])
     blocksize = 65536
 
     print('Tampering the file %s, please wait...' % os.path.basename(filepath))
-    if os.path.isfile(filepath):
+    if not os.path.isfile(filepath):
+        print("File does not exist: %s" % filepath)
+    else:
         count = 0
-        count2 = 0
-        with open(filepath, "r+b") as fh:
-            buf = fh.read(blocksize)
+        with open(filepath, "r+b") as fh: # 'r+' allows to read AND overwrite characters. Else any other option won't allow both ('a+' read and append, 'w+' erases the file first then allow to read and write), and 'b' is just for binary because we can open any filetype.
+            if proba >= 1: proba = 1.0/os.fstat(fh.fileno()).st_size * proba # normalizing probability if it's an integer (ie: the number of characters to flip on average)
+            buf = fh.read(blocksize) # We process blocks by blocks because it's a lot faster (IO is still the slowest operation in any computing system)
             while len(buf) > 0:
-                pos2tamper = []
-                for i in xrange(len(buf)):
-                    if (random.random() < proba):
-                        pos2tamper.append(i)
-                if pos2tamper:
-                    count = count + len(pos2tamper)
-                    #print("Before: %s" % buf)
-                    buf = bytearray(buf)
-                    for pos in pos2tamper:
-                        if mode == 'e' or mode == 'erasure':
-                            buf[pos] = 0
-                        elif mode == 'n' or mode == 'noise':
-                            buf[pos] = random.randint(0,255)
-                    #print("After: %s" % buf)
-                    prevpos = fh.tell()
-                    fh.seek(fh.tell()-len(buf))
-                    fh.write(buf)
-                    fh.seek(prevpos) # need to store and place back the seek cursor because after the write, if it's the end of the file, the next read may be buggy (getting characters that are not part of the file)
+                if not block_proba or (random.random() < block_proba): # If block tampering is enabled, process only if this block is selected by probability
+                    pos2tamper = []
+                    # Create the list of bits to tamper
+                    for i in xrange(len(buf)):
+                        if (random.random() < proba): # Only if below the bit-flip proba
+                            pos2tamper.append(i)
+                    # If there's any character to tamper in the list, we tamper the string
+                    if pos2tamper:
+                        count = count + len(pos2tamper)
+                        #print("Before: %s" % buf)
+                        buf = bytearray(buf) # Strings in Python are immutable, thus we need to convert to a bytearray
+                        for pos in pos2tamper:
+                            if mode == 'e' or mode == 'erasure': # Erase the character (set a null byte)
+                                buf[pos] = 0
+                            elif mode == 'n' or mode == 'noise': # Noising the character (set a random ASCII character)
+                                buf[pos] = random.randint(0,255)
+                        #print("After: %s" % buf)
+                        # Overwriting the string into the file
+                        prevpos = fh.tell() # need to store and place back the seek cursor because after the write, if it's the end of the file, the next read may be buggy (getting characters that are not part of the file)
+                        fh.seek(fh.tell()-len(buf)) # Move the cursor at the beginning of the string we just read
+                        fh.write(buf) # Overwrite it
+                        fh.seek(prevpos) # Restore the previous position after the string
                 # Load the next characters from file
                 buf = fh.read(blocksize)
-    print("Tampering done: %i characters tampered." % count)
+        print("Tampering done: %i characters tampered." % count)
 
 
 # Calling main function if the script is directly called (not imported as a library in another program)
