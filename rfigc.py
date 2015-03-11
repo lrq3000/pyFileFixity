@@ -41,6 +41,8 @@
 # - moviepy try to open video file that is tampered?
 # - add replace md5 and sha1 by farmhash and murmurhash? (non-cryptographic hashes, but it would require importing third-party libraries! no pure python anymore!)
 #
+# NOTE: this software is similar in purpose to the (more advanced) MD5deep / HashDeep for hash set auditing: http://md5deep.sourceforge.net/
+#
 
 # Import necessary libraries
 import argparse
