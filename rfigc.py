@@ -210,7 +210,8 @@ Note that by default, the script is by default in check mode, to avoid wrong man
 
     #-- Set variables from arguments
     folderpath = fullpath(args.input[0])
-    database = os.path.basename(fullpath(args.database[0])) # Take only the filename.
+    #database = os.path.basename(fullpath(args.database[0])) # Take only the filename.
+    database = fullpath(args.database[0])
     generate = args.generate
     structure_check = args.structure_check
     force = args.force
