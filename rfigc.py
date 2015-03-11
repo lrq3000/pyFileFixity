@@ -37,6 +37,9 @@
 # - Copy corrupted/error files to another location (while preserving folders tree) so that user can try to repair them.
 # - Add interface to a repair software/library? (at least for images and maybe videos and archives zip/tar.gz)
 # - Check similar files: make list of hashes and compare each new file to the hashes database to see if a file that is not in our db ressembles a file in our db, maybe indicating that the file was moved (problem: the check currently is based on database: we walk through database entries, so we cannot detect new files. We would need to do another branch for this special check, or at least do it after the normal check.)
+# - multidisks option: allow to continue checking files on removable drives so that you can spread your archives on several disks and check them all with only one database file.
+# - moviepy try to open video file that is tampered?
+# - add replace md5 and sha1 by farmhash and murmurhash? (non-cryptographic hashes, but it would require importing third-party libraries! no pure python anymore!)
 #
 
 # Import necessary libraries
@@ -180,6 +183,8 @@ Note that by default, the script is by default in check mode, to avoid wrong man
     # Optional general arguments
     main_parser.add_argument('-l', '--log', metavar='/some/folder/filename.log', type=str, nargs=1, required=False,
                         help='Path to the log file. (Output will be piped to both the stdout and the log file)')
+    main_parser.add_argument('--skip_hash', action='store_true', required=False, default=False,
+                        help='Skip hash computation/checking (checks only the other metadata, this is a lot quicker).')
 
     # Checking mode arguments
     main_parser.add_argument('-s', '--structure_check', action='store_true', required=False, default=False,
@@ -217,6 +222,7 @@ Note that by default, the script is by default in check mode, to avoid wrong man
     force = args.force
     disable_modification_date_checking = args.disable_modification_date_checking
     skip_missing = args.skip_missing
+    skip_hash = args.skip_hash
     update = args.update
     append = args.append
     remove = args.remove
@@ -342,7 +348,10 @@ Note that by default, the script is by default in check mode, to avoid wrong man
                         addcount = addcount + 1
 
                     # Compute the hashes (leave it outside the with command because generate_hashes() open the file by itself, so that both hashes can be computed in a single sweep of the file at the same time)
-                    md5hash, sha1hash = generate_hashes(filepath)
+                    if not skip_hash:
+                        md5hash, sha1hash = generate_hashes(filepath)
+                    else:
+                        md5hash = sha1hash = 0
                     # Compute other metadata
                     with open(filepath) as thisfile:
                         # Check file structure if option is enabled
@@ -395,7 +404,10 @@ Note that by default, the script is by default in check mode, to avoid wrong man
             else:
                 try: # Try to be resilient to various file access errors
                     # Generate hash
-                    md5hash, sha1hash = generate_hashes(filepath)
+                    if not skip_hash:
+                        md5hash, sha1hash = generate_hashes(filepath)
+                    else:
+                        md5hash = sha1hash = 0
                     # Check structure integrity if enabled
                     if structure_check:
                         struct_result = check_structure(filepath)
@@ -410,10 +422,10 @@ Note that by default, the script is by default in check mode, to avoid wrong man
                         lastmodif_readable = datetime.datetime.fromtimestamp(lastmodif).strftime("%Y-%m-%d %H:%M:%S")
 
                         # CHECK THE DIFFERENCES
-                        if md5hash != row['md5']:
-                            errors.append('md5 hash failed')
-                        if sha1hash != row['sha1']:
-                            errors.append('sha1 hash failed')
+                        if not skip_hash and md5hash != row['md5'] and sha1hash != row['sha1']:
+                            errors.append('both md5 and sha1 hash failed')
+                        elif not skip_hash and ((md5hash == row['md5'] and sha1hash != row['sha1']) or (md5hash != row['md5'] and sha1hash == row['sha1'])):
+                            errors.append('one of the hash failed but not the other (which may indicate that the database file is corrupted)')
                         if ext != row['ext']:
                             errors.append('extension has changed')
                         if size != int(row['size']):
