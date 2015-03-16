@@ -43,6 +43,7 @@
 #
 # To get higher resilience against corruption: make the codeword bigger (decrease k and increase n = higher resilience ratio), and use smaller packets (n should be smaller). Source: Kumar, Sanjeev, and Ragini Gupta. "Bit error rate analysis of Reed-Solomon code for efficient communication system." International Journal of Computer Applications 30.12 (2011): 11-15.
 # Note: in the paper, they told that their results indicate to use bigger blocks, but if you look at the Figure 4, this shows the opposite: the best performing parameters is: RS(246, 164) with code rate 0.66667 = resilience ratio 0.25
+# Note2: however, logically, it's more sensible to use bigger blocks to be more resilient. Indeed, since data stream is hashed and ecc'ed per block, this means that if an error burst corrupt a block twice the size of max_block_size (or just the size of max_block_size but exactly overlapping on one block, no shift), then the block will be unrecoverable. In other words, if we have bigger blocks, we raise the required size for an error burst to permanently corrupt our data (thus we diminish the risk). Thus, it would make sense to use error correcting codes with very big blocks. However, this would probably incur a huge performance drop, at least for Reed-Solomon which is basically grounded on matrix operations (thus the complexity would be about O(max_block_size^2), a quadratic complexity).
 #
 #  If 2s + r < 2t (s errors, r erasures) t
 #
@@ -349,7 +350,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
 
     # Optional general arguments
     main_parser.add_argument('--max_block_size', type=int, default=255, required=False,
-                        help='Reed-Solomon max block size (maximum = 255). Set it lower to get more resilience.')
+                        help='Reed-Solomon max block size (maximum = 255). It is advised to keep it at the maximum for more resilience (see comments at the top of the script for more info).')
     main_parser.add_argument('-s', '--size', type=int, default=1024, required=False,
                         help='Headers block size to protect with ecc.')
     main_parser.add_argument('-r', '--resilience_rate', type=float, default=0.3, required=False,

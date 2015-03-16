@@ -97,7 +97,7 @@ This script was made to be used in combination with other more common file redun
 
 An interesting benefit of this approach is that it has a low storage (and computational) overhead that scales linearly to the number of files, whatever their size is: for example, if we have a set of 40k files for a total size of 60 GB, with a resiliency_rate of 30% and header_size of 1KB (we limit to the first 1K bytes/characters = our file header), then, without counting the hash per block and other meta-data, the final ECC file will be about 2*resiliency_rate * number_of_files * header_size = 24.5 MB. This size can be lower if there are many files smaller than 1KB. This is a pretty low storage overhead to backup the headers of such a big number of files.
 
-The script is pure-python as its dependencies: it is thus completely cross-platform and open source. However, this imply that it is quite slow, but PyPy v2.5.0 was successfully tested against the script without any modification, and a speed increase of 5x could be observed. This is still slow but at least it's useable for real datasets.
+The script is pure-python as are its dependencies: it is thus completely cross-platform and open source. However, this imply that it is quite slow, but PyPy v2.5.0 was successfully tested against the script without any modification, and a speed increase of 5x could be observed. This is still slow but at least it's useable for real datasets.
 
 Todo
 -------
