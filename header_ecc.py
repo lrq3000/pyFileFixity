@@ -230,9 +230,12 @@ def entry_assemble(entry_fields, ecc_params, header_size, filepath):
         entry_asm.append({"message": mes, "hash": hash, "ecc": ecc})
     return entry_asm
 
-def entries_disambiguate(entries, ptee=None):
+def entries_disambiguate(entries, field_delim="\xFF", ptee=None): # field_delim is only useful if there are errors
     '''Takes a list of ecc entries in string format (not yet assembled) representing the same data (replicated over several entries), and disambiguate by majority vote: for position in string, if the character is not the same accross all entries, we keep the major one. If none, it will be replaced by a null byte (because we can't know if any of the entries are correct about this character).'''
     # The idea of replication combined with ECC was a bit inspired by this paper: Friedman, Roy, Yoav Kantor, and Amir Kantor. "Combining Erasure-Code and Replication Redundancy Schemes for Increased Storage and Repair Efficiency in P2P Storage Systems.", 2013, Technion, Computer Science Department, Technical Report CS-2013-03
+
+    if not entries[0]: return None # if entries is empty (we have reached end of file), just return None
+
     final_entry = []
     errors = []
     if len(entries) == 1:
@@ -242,36 +245,39 @@ def entries_disambiguate(entries, ptee=None):
         for i in xrange(len(entries[0])):
             hist = {} # kind of histogram, we just memorize how many times a character is presented at the position i in each string
             # Extract the character at position i of each string and compute the histogram at the same time (number of time this character appear among all strings at this position i)
-            for e in xrange(len(entries)):
-                hist[e[i]] = hist.get(e[i], 0) + 1
+            for e in entries:
+                key = str(ord(e[i])) # convert to the ascii value to avoid any funky problem with encoding in dict keys
+                hist[key] = hist.get(key, 0) + 1
             # If there's only one character (it's the same accross all strings at position i), then it's an exact match, we just save the character and we can skip to the next iteration
             if len(hist) == 1:
-                final_entry = final_entry + hist.iterkeys().next()
+                final_entry.append(chr(int(hist.iterkeys().next())))
                 continue
             # Else, the character is different among different entries, we will pick the major one (mode)
             elif len(hist) > 1:
-                # Sort the dict
-                skeys = sorted(final_entry)
+                # Sort the dict by value (and reverse because we want the most frequent first)
+                skeys = sorted(hist, key=hist.get, reverse=True)
                 # If each entries present a different character (thus the major has only an occurrence of 1), then it's too ambiguous and we just set a null byte to signal that
                 if hist[skeys[0]] == 1:
                     final_entry.append("\x00")
                     errors.append(i) # Print an error indicating the characters that failed
                 # Else if there is a tie (at least two characters appear with the same frequency), then we just pick one of them
                 elif hist[skeys[0]] == hist[skeys[1]]:
-                    final_entry.append(skeys[0]) # TODO: find a way to account for both characters. Maybe return two different strings that will both have to be tested? (eg: maybe one has a tampered hash, both will be tested and if one correction pass the hash then it's ok we found the correct one)
+                    final_entry.append(chr(int(skeys[0]))) # TODO: find a way to account for both characters. Maybe return two different strings that will both have to be tested? (eg: maybe one has a tampered hash, both will be tested and if one correction pass the hash then it's ok we found the correct one)
                 # Else we have a clear major character that appear in more entries than any other character, then we keep this one
                 else:
-                    final_entry.append(skeys[0]) # alternative one-liner: max(hist.iteritems(), key=operator.itemgetter(1))[0]
+                    final_entry.append(chr(int(skeys[0]))) # alternative one-liner: max(hist.iteritems(), key=operator.itemgetter(1))[0]
                 continue
         # Concatenate to a string (this is faster than using a string from the start and concatenating at each iteration because Python strings are immutable so Python has to copy over the whole string, it's in O(n^2)
         final_entry = ''.join(final_entry)
         # Errors signaling
         if errors:
-            entry_p = entry_fields(final_entry, ecc_params, header_size) # get the filename
+            #entry_p = entry_fields(final_entry, field_delim) # get the filename
             if ptee:
-                ptee.write("Unrecoverable corruptions in ecc entry for file %s on characters: %s" % (entry_p["relfilepath"], ', '.join(errors))) # Signal to user that this file has unrecoverable corruptions (he may try to fix the bits manually or with his own script)
+                ptee.write("Unrecoverable corruptions in a ecc entry on characters: %s. Ecc entry:\n%s" % (errors, final_entry)) # Signal to user that this file has unrecoverable corruptions (he may try to fix the bits manually or with his own script)
             else:
-                print("Unrecoverable corruptions in ecc entry for file %s on characters: %s" % (entry_p["relfilepath"], ', '.join(errors)))
+                print("Unrecoverable corruptions in a ecc entry on characters: %s. Ecc entry:\n%s" % (errors, final_entry))
+            # After printing the error, return None so that we won't try to decode a corrupted ecc entry
+            #final_entry = None
     return final_entry
 
 def compute_ecc_params(max_block_size, rate, hasher):
@@ -401,9 +407,9 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
 
     # -- Checking arguments
     if not stats_only and not generate and not os.path.isfile(database):
-        raise NameError('Specified database file does not exist!')
+        raise NameError('Specified database ecc file %s does not exist!' % database)
     elif generate and os.path.isfile(database) and not force:
-        raise NameError('Specified database file already exists! Use --force if you want to overwrite.')
+        raise NameError('Specified database ecc file %s already exists! Use --force if you want to overwrite.' % database)
 
     if resilience_rate <= 0:
         raise ValueError('Resilience rate cannot be negative and it must be a float number.');
@@ -454,7 +460,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
         else: # else for size smaller than the defined header size, it will just be the size of the file
             header_size_add = size
         # Size of the ecc entry for this file will be: marker-bytes (\xFF bytes) + length-filepath-string + length-size-string + size of the ecc per block for all blocks in file header + size of the hash per block for all blocks in file header.
-        sizeheaders = sizeheaders + 6 + len(relfilepath) + len(str(size)) + (int(math.ceil(float(header_size_add) / ecc_params["message_size"])) * (ecc_params["ecc_size"]+ecc_params["hash_size"])) # Compute the total number of bytes we will add with ecc + hash (accounting for the padding of the remaining characters at the end of the sequence in case it doesn't fit with the message_size, by using ceil() )
+        sizeheaders = sizeheaders + replication_rate * (6 + len(relfilepath) + len(str(size)) + (int(math.ceil(float(header_size_add) / ecc_params["message_size"])) * (ecc_params["ecc_size"]+ecc_params["hash_size"])) ) # Compute the total number of bytes we will add with ecc + hash (accounting for the padding of the remaining characters at the end of the sequence in case it doesn't fit with the message_size, by using ceil() )
     ptee.write("Precomputing done.")
     # TODO: add the size of the ecc format header? (arguments string + PYHEADERECC identifier)
     total_pred_percentage = sizeheaders * 100 / sizetotal
@@ -487,10 +493,10 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                 #print("Processing file %s\n" % relfilepath) # DEBUGLINE
                 with open(os.path.join(folderpath,filepath), 'rb') as file:
                     filesize = os.fstat(file.fileno()).st_size
-                    db.write((entrymarker+"%s"+field_delim+"%s"+field_delim) % (relfilepath, filesize))
-                    buf = file.read(header_size)
-                    ecc_entry = ''.join(compute_ecc_hash(ecc_manager, hasher, buf, max_block_size, resilience_rate, ecc_params["message_size"], True)) * replication_rate
-                    db.write(ecc_entry)
+                    ecc_entry = (entrymarker+"%s"+field_delim+"%s"+field_delim) % (relfilepath, filesize) # first save the file's metadata (filename, filesize, ...)
+                    buf = file.read(header_size) # read the file's header
+                    ecc_entry = ecc_entry + ''.join(compute_ecc_hash(ecc_manager, hasher, buf, max_block_size, resilience_rate, ecc_params["message_size"], True)) # then compute the ecc/hash entry for this file's header (this will be a chain of multiple ecc/hash fields per block of data, because Reed-Solomon is limited to a maximum of 255 bytes, including the original_message+ecc!)
+                    for i in xrange(replication_rate): db.write(ecc_entry) # commit to the ecc file, and replicate the number of times required
                 files_done += 1
         ptee.write("All done! Total number of files processed: %i." % files_done)
         return True
@@ -516,20 +522,24 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
             files_corrupted = 0
             files_repaired_partially = 0
             files_repaired_completely = 0
+            files_skipped = 0
 
             # Main loop: process each ecc entry
             entry = 1 # to start the while loop
             while tqdm.tqdm(entry, leave=True): # TODO: update progress bar based on ecc file size
+
                 # -- Read the next ecc entry (extract the raw string from the ecc file)
                 if replication_rate == 1:
                     entry = read_next_entry(db, entrymarker)
-                # -- Replication management: if replication rate was used, then fetch all entries for the same file at once, and then disambiguate by majority vote
+
+                # -- Disambiguation/Replication management: if replication rate was used, then fetch all entries for the same file at once, and then disambiguate by majority vote
                 else:
                     entries = []
                     for i in xrange(replication_rate):
                         entries.append(read_next_entry(db, entrymarker))
-                    entry = entries_disambiguate(entries, ptee)
-                if not entry: break # No entry? Then we finished, stop condition
+                    entry = entries_disambiguate(entries, field_delim, ptee)
+                # No entry? Then we finished because this is the end of file (stop condition)
+                if not entry: break
 
                 # -- Extract the fields from the ecc entry
                 entry_p = entry_fields(entry, field_delim)
@@ -538,8 +548,20 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                 relfilepath = entry_p["relfilepath"] # Relative file path
                 filepath = os.path.join(folderpath, relfilepath) # Get full absolute filepath from given input folder (because the files may be specified in any folder, in the ecc file the paths are relative, so that the files can be moved around or burnt on optical discs)
                 if errors_filelist and relfilepath not in errors_filelist: continue # if a list of files with errors was supplied (for example by rfigc.py), then we will check only those files and skip the others
-                files_count += 1
+
                 #print("Processing file %s\n" % relfilepath) # DEBUGLINE
+
+                # -- Check filepath
+                # Check that the filepath isn't corrupted (detectable mainly with replication_rate >= 3, but if a silent error erase a character (not only flip a bit), then it will also be detected this way
+                if relfilepath.find("\x00") >= 0:
+                    ptee.write("Error: ecc entry corrupted on filepath field, please try to manually repair the filepath (filepath: %s - missing/corrupted character at %i)." % (relfilepath, relfilepath.find("\x00")))
+                    files_skipped += 1
+                    continue
+                # Check that file still exists before checking it
+                if not os.path.isfile(filepath):
+                    ptee.write("Error: file %s could not be found: either file was moved or the ecc entry was corrupted. If replication_rate is enabled, maybe the majority vote was wrong. You can try to fix manually the entry." % relfilepath)
+                    files_skipped += 1
+                    continue
 
                 # -- Checking file size: if the size has changed, the blocks may not match anymore!
                 filesize = os.stat(filepath).st_size
@@ -548,8 +570,10 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                         ptee.write("Warning: file %s has a different size: %s (before: %s). Will still try to correct it (but the blocks may not match!)." % (relfilepath, filesize, entry_p["filesize"]))
                     else:
                         ptee.write("Error: file %s has a different size: %s (before: %s). Skipping the file correction because blocks may not match." % (relfilepath, filesize, entry_p["filesize"]))
+                        files_skipped += 1
                         continue
 
+                files_count += 1
                 # -- Check blocks and repair if necessary
                 entry_asm = entry_assemble(entry_p, ecc_params, header_size, filepath) # Extract and assemble each message block from the original file with its corresponding ecc and hash
                 corrupted = False # flag to signal that the file was corrupted and we need to reconstruct it afterwards
@@ -597,7 +621,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                     filestats = os.stat(filepath)
                     os.utime(outfilepath, (filestats.st_atime, filestats.st_mtime))
         # All ecc entries processed for checking and potentally repairing, we're done correcting!
-        ptee.write("All done! Stats:\n- Total files processed: %i\n- Total files corrupted: %i\n- Total files repaired completely: %i\n- Total files repaired partially: %i\n- Total files corrupted but not repaired at all: %i" % (files_count, files_corrupted, files_repaired_completely, files_repaired_partially, files_corrupted - (files_repaired_partially + files_repaired_completely)) )
+        ptee.write("All done! Stats:\n- Total files processed: %i\n- Total files corrupted: %i\n- Total files repaired completely: %i\n- Total files repaired partially: %i\n- Total files corrupted but not repaired at all: %i\n- Total files skipped: %i" % (files_count, files_corrupted, files_repaired_completely, files_repaired_partially, files_corrupted - (files_repaired_partially + files_repaired_completely), files_skipped) )
 
 # Calling main function if the script is directly called (not imported as a library in another program)
 if __name__ == "__main__":
