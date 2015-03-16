@@ -49,8 +49,8 @@ def main(argv=None):
     #==== COMMANDLINE PARSER ====
 
     #== Commandline description
-    desc = '''Easy Profiler for pyFileFixity
-Description: Provide an easy way to launch CPU/Memory profile with GUI support.
+    desc = '''Easy Profiler for Python scripts
+Description: Provide an easy way to launch CPU/Memory profile (with GUI support) of python scripts. You can supply arguments of the target script by appending them at the end of the arguments for this script, without any special formatting (unrecognized arguments will be passed along to the target script).
     '''
     ep = ''' '''
 
