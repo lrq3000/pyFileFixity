@@ -534,11 +534,11 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                 entry_p = entry_fields(entry, field_delim)
 
                 # -- Get file infos
-                filepath = os.path.join(dirpath,entry_p["relfilepath"]) # Get full absolute filepath from given input folder (because the files may be specified in any folder, in the ecc file the paths are relative, so that the files can be moved around or burnt on optical discs)
                 relfilepath = entry_p["relfilepath"] # Relative file path
+                filepath = os.path.join(folderpath, relfilepath) # Get full absolute filepath from given input folder (because the files may be specified in any folder, in the ecc file the paths are relative, so that the files can be moved around or burnt on optical discs)
                 if errors_filelist and relfilepath not in errors_filelist: continue # if a list of files with errors was supplied (for example by rfigc.py), then we will check only those files and skip the others
                 files_count += 1
-                #print("Processing file %s\n" % relfilepath) # DEBUGLINE
+                print("Processing file %s\n" % relfilepath) # DEBUGLINE
 
                 # -- Checking file size: if the size has changed, the blocks may not match anymore!
                 filesize = os.stat(filepath).st_size
@@ -578,7 +578,9 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                     else:
                         files_repaired_completely += 1
                     # Reconstructing the file
-                    outfilepath = os.path.join(outputpath, relfilepath)
+                    outfilepath = os.path.join(outputpath, relfilepath) # get the full path to the output file
+                    outfiledir = os.path.dirname(outfilepath)
+                    if not os.path.isdir(outfiledir): os.makedirs(outfiledir) # if the target directory does not exist, create it (and create recursively all parent directories too)
                     with open(outfilepath, 'wb') as out:
                         # Reconstruct the header using repaired blocks (and the other non corrupted blocks)
                         out.write(''.join([e["message_repaired"] if "message_repaired" in e else e["message"] for e in entry_asm]))
