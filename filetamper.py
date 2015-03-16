@@ -32,8 +32,9 @@
 #
 
 # Import necessary libraries
-import argparse
+import lib.argparse as argparse
 import os, sys, random
+import shlex # for string parsing as argv argument to main(), unnecessary otherwise
 
 # Relative path to absolute
 def fullpath(relpath):
@@ -43,8 +44,10 @@ def fullpath(relpath):
 
 
 def main(argv=None):
-    if argv is None:
+    if argv is None: # if argv is empty, fetch from the commandline
         argv = sys.argv[1:]
+    elif isinstance(argv, basestring): # else if argv is supplied but it's a simple string, we need to parse it to a list of arguments before handing to argparse or any other argument parser
+        argv = shlex.split(argv) # Parse string just like argv using shlex
 
     #==== COMMANDLINE PARSER ====
 
@@ -64,8 +67,11 @@ Description: Randomly tampers characters in a file in order to test for integrit
                         help='Tampering mode: erasure or noise?')
     main_parser.add_argument('-p', '--probability', type=float, nargs=1, required=True,
                         help='Probability of tampering (float between 0.0 and 1.0)')
+    # Optional arguments
     main_parser.add_argument('-b', '--block_probability', type=float, nargs=1, required=False,
                         help='Probability of block tampering (between 0.0 and 1.0, do not set it if you want to spread errors evenly, but researchs have shown that errors are rather at block level and not evenly distributed)')
+    main_parser.add_argument('--header', type=int, required=False,
+                        help='Only tamper the header of the file')
 
     #== Parsing the arguments
     args = main_parser.parse_args(argv) # Storing all arguments to args
@@ -74,10 +80,15 @@ Description: Randomly tampers characters in a file in order to test for integrit
     filepath = fullpath(args.input[0])
     mode = args.mode[0]
     proba = float(args.probability[0])
+
     block_proba = None
     if args.block_probability:
         block_proba = float(args.block_probability[0])
+
     blocksize = 65536
+    header = args.header
+    if header and header > 0:
+        blocksize = header
 
     print('Tampering the file %s, please wait...' % os.path.basename(filepath))
     if not os.path.isfile(filepath):
@@ -110,8 +121,13 @@ Description: Randomly tampers characters in a file in order to test for integrit
                         fh.seek(fh.tell()-len(buf)) # Move the cursor at the beginning of the string we just read
                         fh.write(buf) # Overwrite it
                         fh.seek(prevpos) # Restore the previous position after the string
-                # Load the next characters from file
-                buf = fh.read(blocksize)
+                # If we only tamper the header, we stop here by setting the buffer to an empty string
+                if header and header > 0:
+                    buf = ''
+                # Else we continue to the next data block
+                else:
+                    # Load the next characters from file
+                    buf = fh.read(blocksize)
         print("Tampering done: %i characters tampered." % count)
 
 
