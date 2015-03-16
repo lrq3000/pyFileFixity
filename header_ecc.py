@@ -52,6 +52,7 @@
 # or https://bitbucket.org/kmgreen2/pyeclib with jerasure
 # or http://www.bth.se/fou/cuppsats.nsf/all/bcb2fd16e55a96c2c1257c5e00666323/$file/BTH2013KARLSSON.pdf
 # or https://www.usenix.org/legacy/events/fast09/tech/full_papers/plank/plank_html/
+# Note: Pypy v2.5.0 speeds the script without any modification!
 # - Also backup folders meta-data? (to reconstruct the tree in case a folder is truncated by bit rot)
 # - add a Reed-solomon on hashes, so that we are sure that if error correction is not tampered but the hash is, we can still repair the block? (because the repair is in fact ok, it's just that the hash is corrupted and won't match, but we should prevent this scenario. An ecc on the hash may fix the issue). Currently, replication_rate >= 3 will prevent a bit this scenario using majority vote.
 # - replace tqdm with https://github.com/WoLpH/python-progressbar for a finer progress bar and ETA? (currently ETA is computed on the number of files processed, but it should really be on the total number of characters processed over the total size) - BUT requirement is that it doesn't require an external library only available on Linux (such as ncurses)
@@ -60,7 +61,7 @@
 # - errors_file option
 #
 
-__version__ = "0.4"
+__version__ = "0.5"
 
 # Import necessary libraries
 import lib.argparse as argparse
@@ -325,7 +326,10 @@ Headers are the most sensible part of any file: this is where the format definit
 The concept is to use this script in addition to more common parity files like PAR2 so that you get an additional protection at low cost (because headers are just in the first KB of the file, thus it won't cost much in storage and processing time to add more redundancy to such a small stream of data).
 Note: Folders meta-data is NOT accounted, only the files! Use DVDisaster or a similar tool to also cover folders meta-data.
     '''
-    ep = '''Note that Reed-Solomon can correct up to 2*resilience_rate erasures (null bytes), resilience_rate errors (bit-flips, thus a character that changes but not necessarily a null byte) and amount to an additional storage of 2*resilience_rate storage compared to the original files size.'''
+    ep = '''
+Note1: this is a pure-python implementation (except for MD5 hash but a pure-python alternative is provided in lib/md5py.py), thus it may be VERY slow to generate an ecc file. To speed-up things considerably, you can use PyPy v2.5.0 or above, there will be a speed-up of at least 5x from our experiments. Feel free to profile using easy_profiler.py and try to optimize the reed-solomon library.
+
+Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null bytes), resilience_rate errors (bit-flips, thus a character that changes but not necessarily a null byte) and amount to an additional storage of 2*resilience_rate storage compared to the original files size.'''
 
     #== Commandline arguments
     #-- Constructing the parser
