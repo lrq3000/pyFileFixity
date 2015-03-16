@@ -478,7 +478,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
 
             # Processing ecc on files
             files_done = 0
-            for (dirpath, filename) in tqdm.tqdm(recwalk(folderpath)):
+            for (dirpath, filename) in tqdm.tqdm(recwalk(folderpath), total=filescount, leave=True):
                 # Get full absolute filepath
                 filepath = os.path.join(dirpath,filename)
                 # Get database relative path (from scanning root folder)
@@ -518,7 +518,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
 
             # Main loop: process each ecc entry
             entry = 1 # to start the while loop
-            while tqdm.tqdm(entry): # TODO: update progress bar based on ecc file size
+            while tqdm.tqdm(entry, leave=True): # TODO: update progress bar based on ecc file size
                 # -- Read the next ecc entry (extract the raw string from the ecc file)
                 if replication_rate == 1:
                     entry = read_next_entry(db, entrymarker)
