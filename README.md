@@ -1,16 +1,44 @@
-Recursive/Relative Files Integrity Generator and Checker in Python (aka RFIGC)
-=======================================================
+pyFileFixity
+=========
 
-Description
-----------------
+This project aims to provide a set of open source, cross-platform, easy to use and easy to maintain (readable code) to manage data for long term storage. The project is done in pure-Python to meet those criteria.
+
+The problem of long term storage
+-----------------------------------------------
+Long term storage is a very difficult topic: it's like fighting with death (in this case, the death of data). Indeed, because of entropy, data will eventually fade away because of various silent errors such as bit rot. pyFileFixity aims to provide tools to detect any data corruption, but also fight data corruption by providing repairing tools (mainly via error correction codes, which is a way to produce redundant codes from your data so that you can later repair your data using these additional pieces of information).
+
+The best tool ever invented to recover from data corruption are the error correction codes (forward error correction), which produce n blocks for a file cut in k blocks (with k < n), and then they can rebuild the whole file with any k blocks among the total n blocks available. This can be seen as a way to average the corruption error: on average, a bit will still have the same chance to be corrupted, but since you have more bits to represent the same data, you lower the overall chance to lose this bit.
+
+The problem is that most theoretical and pratical works on error correcting codes has been done exclusively on channel transmission (such as 4G, internet, etc.), but not on data storage, which is very different for one reason: whereas in a channel we are in a spatial scheme (both the sender and the receiver are different entities in space but working at the same timescale), in data storage this is a temporal scheme: the sender was you storing the data on your medium at time t, and the receiver is again you but now retrieving the data at time t+x. Thus, the sender does not exist anymore, thus you cannot ask again some data if it's too much corrupted: in data storage, if a data is corrupted, it's lost for good, whereas in channel theory, a data can be submitted again if necessary.
+
+Some attempts were made to translate channel theory and error correcting codes theory to data storage, the first being Reed-Solomon which spawned the RAID schema. Then CIRC (Cross-interleaved Reed–Solomon coding) was devised for use on optical discs to recover from scratches, which was necessary for the technology to be usable for consumers. Since then, new less-optimal but a lot faster algorithms such as LDPC, turbo-codes and fountain codes such as RaptorQ were invented (or rediscovered), but they are still marginally researched for data storage.
+
+This project aims to first implement an easy framework to use different kinds of error correction codes to protect and repair files.
+
+Applications included
+-------------------------------
+
+The project currently include the following pure-python applications:
+
+- rfigc.py, a hash auditing tool, similar to md5deep/hashdeep, to compute a database of your files along with their metadata, so that later you can check if they were changed/corrupted.
+
+- header_ecc.py, an error correction code using Reed-Solomon generator/corrector for files headers. The idea is to supplement other more common redundancy tools such as PAR2 (which is quite reliable), by adding more resiliency only on the critical parts of the files: their headers. Using this script, you can significantly higher the chance of recovering headers, which will allow you to at least open the files.
+
+- filetamper.py is a quickly made file corrupter, it will erase or change characters in the specified file. This is useful for testing your various protecting strategies and file formats (eg: is PAR2 really resilient against corruption? Are zip archives still partially extractable after corruption or are rar archives better? etc.). Do not underestimate the usefulness of this tool, as you should always check the resiliency of your file formats and of your file protection strategies before relying on them.
+
+- easy_profiler.py is just a quick and simple profiling tool to get you started quickly on what should be optimized to get more speed, if you want to contribute to the project feel free to propose a pull request! (Cython and other optimizations are welcome as long as they are cross-platform and that an alternative pure-python implementation is also available).
+
+- structural_adaptive_ecc.py, a variable error correction rate encoder (kind of a generalization of header_ecc.py). See the TODO for more info. This isn't yet ready for production (generation is OK but no repair).
+
+Recursive/Relative Files Integrity Generator and Checker in Python (aka RFIGC)
+-------------------------------------------------------------------------------------------------------------------
 Recursively generate or check the integrity of files by MD5 and SHA1 hashes, size, modification date or by data structure integrity (only for images).
 
 This script is originally meant to be used for data archival, by allowing an easy way to check for silent file corruption. Thus, this script uses relative paths so that you can easily compute and check the same redundant data copied on different mediums (hard drives, optical discs, etc.). This script is not meant for system files corruption notification, but is more meant to be used from times-to-times to check up on your data archives integrity.
 
 This script was made for Python 2.7.6, but it should be easily adaptable to run on Python 3.x.
 
-Example usage
-----------------------
+### Example usage
 - To generate the database (only needed once):
 
 ```python rfigc.py -i "folderimages" -d "dbhash.csv" -g ```
@@ -29,8 +57,7 @@ Example usage
 
 Note that by default, the script is by default in check mode, to avoid wrong manipulations. It will also alert you if you generate over an already existing database file.
 
-Arguments
-----------------
+### Arguments
 
 ```
   -h, --help            show a help message and exit
