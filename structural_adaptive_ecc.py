@@ -52,13 +52,15 @@
 #
 
 # Import necessary libraries
-import argparse
+import lib.argparse as argparse
 import os, datetime, time, sys
 import hashlib, zlib
 import lib.tqdm as tqdm
 import itertools
 import math
-import pprint # Unnecessary, used only for debugging purposes
+import shlex # for string parsing as argv argument to main(), unnecessary otherwise
+from lib.tee import Tee # Redirect print output to the terminal as well as in a log file
+#import pprint # Unnecessary, used only for debugging purposes
 
 import lib.brownanrs.rs as brownanrs
 rsmode = 1
@@ -73,24 +75,6 @@ rsmode = 1
 #***********************************
 #                   FUNCTIONS
 #***********************************
-
-# Redirect print output to the terminal as well as in a log file
-class Tee(object):
-    def __init__(self, name=None, mode=None):
-        self.file = None
-        self.__del__.im_func.stdout = sys.stdout
-        self.stdout = self.__del__.im_func.stdout # The weakref proxy is to prevent Python, or yourself from deleting the self.files variable somehow (if it is deleted, then it will not affect the original file list). If it is not the case that this is being deleted even though there are more references to the variable, then you can remove the proxy encapsulation. http://stackoverflow.com/questions/865115/how-do-i-correctly-clean-up-a-python-object
-        if name is not None and mode is not None:
-            self.file = open(name, mode)
-            sys.stdout = self
-    def __del__(self):
-        if hasattr(self.__del__.im_func, 'stdout'): sys.stdout = self.__del__.im_func.stdout
-        if self.file: self.file.close()
-    def write(self, data):
-        self.stdout.write(data+"\n")
-        if self.file is not None:
-            self.file.write(data+"\n")
-            self.file.flush()
 
 # Check that an argument is a real directory
 def is_dir(dirname):
@@ -143,8 +127,10 @@ def sizeof_fmt(num, suffix='B'):
 #***********************************
 
 def main(argv=None):
-    if argv is None:
+    if argv is None: # if argv is empty, fetch from the commandline
         argv = sys.argv[1:]
+    elif isinstance(argv, basestring): # else if argv is supplied but it's a simple string, we need to parse it to a list of arguments before handing to argparse or any other argument parser
+        argv = shlex.split(argv) # Parse string just like argv using shlex
 
     #==== COMMANDLINE PARSER ====
 
