@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #
 # Structural Adaptive Error Correction Code
+# !!!!!!!!!!!!!!!!!!!!!!!!! DO NOT USE THIS SCRIPT FOR PRODUCTION, IT DOESN'T WORK (encoding yes, not decoding) !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # Copyright (C) 2015 Larroque Stephen
 #
 # Licensed under the MIT License (MIT)
