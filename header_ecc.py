@@ -590,6 +590,9 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                             while buf:
                                 out.write(buf)
                                 buf = originalfile.read(blocksize)
+                    # Copying the last access time and last modification time from the original file TODO: a more reliable way would be to use the db computed by rfigc.py, because if a software maliciously tampered the data, then the modification date may also have changed (but not if it's a silent error, in that case we're ok).
+                    filestats = os.stat(filepath)
+                    os.utime(outfilepath, (filestats.st_atime, filestats.st_mtime))
         # All ecc entries processed for checking and potentally repairing, we're done correcting!
         ptee.write("All done! Stats:\n- Total files processed: %i\n- Total files corrupted: %i\n- Total files repaired completely: %i\n- Total files repaired partially: %i\n- Total files corrupted but not repaired at all: %i" % (files_count, files_corrupted, files_repaired_completely, files_repaired_partially, files_corrupted - (files_repaired_partially + files_repaired_completely)) )
 
