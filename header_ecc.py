@@ -538,7 +538,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                 filepath = os.path.join(folderpath, relfilepath) # Get full absolute filepath from given input folder (because the files may be specified in any folder, in the ecc file the paths are relative, so that the files can be moved around or burnt on optical discs)
                 if errors_filelist and relfilepath not in errors_filelist: continue # if a list of files with errors was supplied (for example by rfigc.py), then we will check only those files and skip the others
                 files_count += 1
-                print("Processing file %s\n" % relfilepath) # DEBUGLINE
+                #print("Processing file %s\n" % relfilepath) # DEBUGLINE
 
                 # -- Checking file size: if the size has changed, the blocks may not match anymore!
                 filesize = os.stat(filepath).st_size
