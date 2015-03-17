@@ -66,10 +66,12 @@ Description: Randomly tampers characters in a file in order to test for integrit
     main_parser.add_argument('-m', '--mode', metavar='e, erasure, n, noise', type=str, nargs=1, required=True,
                         help='Tampering mode: erasure or noise?')
     main_parser.add_argument('-p', '--probability', type=float, nargs=1, required=True,
-                        help='Probability of tampering (float between 0.0 and 1.0)')
+                        help='Probability of corruption (float between 0.0 and 1.0)')
     # Optional arguments
-    main_parser.add_argument('-b', '--block_probability', type=float, nargs=1, required=False,
+    main_parser.add_argument('--block_probability', type=float, nargs=1, required=False,
                         help='Probability of block tampering (between 0.0 and 1.0, do not set it if you want to spread errors evenly, but researchs have shown that errors are rather at block level and not evenly distributed)')
+    main_parser.add_argument('-b', '--burst_length', metavar="startint|endint", type=str, required=False,
+                        help='If specified, this will define the number of consecutive characters that will be corrupted when the corruption probability (--probability) is triggered. Specify a range startint|endint, the burst length will be uniformly sampled over this range.')
     main_parser.add_argument('--header', type=int, required=False,
                         help='Only tamper the header of the file')
 
@@ -80,6 +82,8 @@ Description: Randomly tampers characters in a file in order to test for integrit
     filepath = fullpath(args.input[0])
     mode = args.mode[0]
     proba = float(args.probability[0])
+    burst_length = args.burst_length
+    if burst_length: burst_length = [int(r) for r in burst_length.split('|')] # split range and convert to int
 
     block_proba = None
     if args.block_probability:
@@ -101,10 +105,15 @@ Description: Randomly tampers characters in a file in order to test for integrit
             while len(buf) > 0:
                 if not block_proba or (random.random() < block_proba): # If block tampering is enabled, process only if this block is selected by probability
                     pos2tamper = []
-                    # Create the list of bits to tamper
+                    burst_remain = 0 # if burst is enabled and corruption probability is triggered, then we will here store the remaining number of characters to corrupt (the length is uniformly sampled over the range specified in arguments)
+                    # Create the list of bits to tamper (it's a lot more efficient to precompute the list of characters to corrupt, and then modify in the file the characters all at once)
                     for i in xrange(len(buf)):
-                        if (random.random() < proba): # Only if below the bit-flip proba
-                            pos2tamper.append(i)
+                        if burst_remain > 0 or (random.random() < proba): # Corruption probability: corrupt only if below the bit-flip proba
+                            pos2tamper.append(i) # keep this character's position in the to-be-corrupted list
+                            if burst_remain > 0: # if we're already in a burst, we minus one and continue onto the next character
+                                burst_remain -= 1
+                            elif burst_length: # else we're not in a burst, we create one (triggered by corruption probability: as soon as one character triggers the corruption probability, then we do a burst)
+                                burst_remain = random.randint(burst_length[0], burst_length[1]) - 1 # if burst is enabled, then we randomly (uniformly) pick a random length for the burst between the range specified, and since we already tampered one character, we minus 1
                     # If there's any character to tamper in the list, we tamper the string
                     if pos2tamper:
                         count = count + len(pos2tamper)
