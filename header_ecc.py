@@ -492,7 +492,8 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
             # Write ECC file header identifier (unique string + version)
             db.write("**PYHEADERECCv%s**\n" % (''.join([x * 3 for x in __version__]))) # each character in the version will be repeated 3 times, so that in case of tampering, a majority vote can try to disambiguate
             # Write the parameters (they are NOT reloaded automatically, you have to specify them at commandline! It's the user role to memorize those parameters (using any means: own brain memory, keep a copy on paper, on email, etc.), so that the parameters are NEVER tampered. The parameters MUST be ultra reliable so that errors in the ECC file can be more efficiently recovered.
-            db.write("** Parameters: "+" ".join(sys.argv[1:]) + "\n")
+            for i in xrange(3): db.write("** Parameters: "+" ".join(sys.argv[1:]) + "\n") # copy them 3 times just to be redundant in case of ecc file corruption
+            # NOTE: there's NO HEADER for the ecc file! Ecc entries are all independent of each others, you just need to supply the decoding arguments at commandline, and the ecc entries can be decoded. This is done on purpose to be remove the risk of critical spots in ecc file (there is still a critical spot in the filepath and on hashes, see intra-ecc in todo).
 
             # Processing ecc on files
             files_done = 0
