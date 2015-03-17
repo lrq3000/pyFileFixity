@@ -29,7 +29,7 @@
 #                       License: MIT
 #                 Runs on Python 2.7.6
 #              Creation date: 2015-03-12
-#          Last modification: 2015-03-16
+#          Last modification: 2015-03-17
 #=================================
 #
 # From : http://simple.wikipedia.org/wiki/Reed-Solomon_error_correction
@@ -59,10 +59,10 @@
 # - replace tqdm with https://github.com/WoLpH/python-progressbar for a finer progress bar and ETA? (currently ETA is computed on the number of files processed, but it should really be on the total number of characters processed over the total size) - BUT requirement is that it doesn't require an external library only available on Linux (such as ncurses)
 # or this: https://github.com/lericson/fish
 # - --gui option using https://github.com/chriskiehl/Gooey
-# - errors_file option
+# - intra-ecc on: filepath, and on hash of every blocks? (this should use a lot less storage space than replication for the same efficiency, but the problem is how to delimit fields since we won't know the size of the ecc. For the ecc of hashes, yes we can know because hash is fixed length and so will be the ecc of the hash, but for the ecc of the filepath it will be proportional to the filepath. And an ecc can contain any character such as \x00, thus it will make our fields detection buggy).
 #
 
-__version__ = "0.5"
+__version__ = "1.0"
 
 # Import necessary libraries
 import lib.argparse as argparse
@@ -377,6 +377,10 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                         help='Generate the ecc file?')
     main_parser.add_argument('-f', '--force', action='store_true', required=False, default=False,
                         help='Force overwriting the ecc file even if it already exists (if --generate).')
+    main_parser.add_argument('--skip_size_below', type=int, default=None, required=False,
+                        help='Skip files below the specified size (in bytes).')
+    main_parser.add_argument('--always_include_ext', metavar='txt|jpg|png', type=str, default=None, required=False,
+                        help='Always include files with the specified extensions, useful in combination with --skip_size_below to keep files of certain types even if they are below the size. Format: extensions separated by |.')
 
     #== Parsing the arguments
     args = main_parser.parse_args(argv) # Storing all arguments to args
@@ -397,6 +401,9 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
     resilience_rate = args.resilience_rate
     replication_rate = args.replication_rate
     ignore_size = args.ignore_size
+    skip_size_below = args.skip_size_below
+    always_include_ext = args.always_include_ext
+    if always_include_ext: always_include_ext = tuple(['.'+ext for ext in always_include_ext.split('|')]) # prepare a tuple of extensions (prepending with a dot) so that str.endswith() works (it doesn't with a list, only a tuple)
 
     if correct:
         if not args.output:
@@ -449,10 +456,14 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
     sizeheaders = 0
     ptee.write("Precomputing list of files and predicted statistics...")
     for (dirpath, filename) in tqdm.tqdm(recwalk(folderpath)):
-        filescount = filescount + 1
+        filescount = filescount + 1 # counting the total number of files we will process (so that we can show a progress bar with ETA)
+        # Get the filepath
         filepath = os.path.join(dirpath,filename)
         relfilepath = os.path.relpath(filepath, folderpath) # File relative path from the root (so that we can easily check the files later even if the absolute path is different)
+        # Get the current file's size
         size = os.stat(filepath).st_size
+        # Check if we must skip this file because size is too small, and then if we still keep it because it's extension is always to be included
+        if skip_size_below and size < skip_size_below and (not always_include_ext or not relfilepath.lower().endswith(always_include_ext)): continue
         # Compute total size of all files
         sizetotal = sizetotal + size
         # Compute predicted size of their headers
@@ -485,21 +496,28 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
 
             # Processing ecc on files
             files_done = 0
+            files_skipped = 0
             for (dirpath, filename) in tqdm.tqdm(recwalk(folderpath), total=filescount, leave=True):
                 # Get full absolute filepath
                 filepath = os.path.join(dirpath,filename)
                 # Get database relative path (from scanning root folder)
                 relfilepath = os.path.relpath(filepath, folderpath) # File relative path from the root (so that we can easily check the files later even if the absolute path is different)
+                # Get file size
+                filesize = os.stat(filepath).st_size
+                # If skip size is enabled and size is below the skip size, we skip UNLESS the file extension is in the always include list
+                if skip_size_below and filesize < skip_size_below and (not always_include_ext or not relfilepath.lower().endswith(always_include_ext)):
+                    files_skipped += 1
+                    continue
 
+                # Opening the input file's to read its header and compute the ecc/hash blocks
                 #print("Processing file %s\n" % relfilepath) # DEBUGLINE
                 with open(os.path.join(folderpath,filepath), 'rb') as file:
-                    filesize = os.fstat(file.fileno()).st_size
                     ecc_entry = (entrymarker+"%s"+field_delim+"%s"+field_delim) % (relfilepath, filesize) # first save the file's metadata (filename, filesize, ...)
                     buf = file.read(header_size) # read the file's header
                     ecc_entry = ecc_entry + ''.join(compute_ecc_hash(ecc_manager, hasher, buf, max_block_size, resilience_rate, ecc_params["message_size"], True)) # then compute the ecc/hash entry for this file's header (this will be a chain of multiple ecc/hash fields per block of data, because Reed-Solomon is limited to a maximum of 255 bytes, including the original_message+ecc!)
                     for i in xrange(replication_rate): db.write(ecc_entry) # commit to the ecc file, and replicate the number of times required
                 files_done += 1
-        ptee.write("All done! Total number of files processed: %i." % files_done)
+        ptee.write("All done! Total number of files processed: %i, skipped: %i" % (files_done, files_skipped))
         return True
 
     # == Error Correction (and checking by hash) mode
