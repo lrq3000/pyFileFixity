@@ -64,9 +64,14 @@
 
 __version__ = "1.0"
 
+# Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
+import sys, os
+thispathname = os.path.dirname(sys.argv[0])
+sys.path.append(os.path.join(thispathname, 'lib'))
+
 # Import necessary libraries
 import lib.argparse as argparse
-import os, datetime, time, sys
+import datetime, time
 import hashlib, zlib
 import lib.tqdm as tqdm
 import itertools
@@ -318,6 +323,31 @@ def compute_ecc_hash(ecc_manager, hasher, buf, max_block_size, rate, message_siz
 #                       MAIN
 #***********************************
 
+try:
+    import lib.gooey as gooey
+except:
+    class gooey(object):
+        def Gooey(func):
+            return func
+    if len(sys.argv) > 1 and sys.argv[1] == '--gui': raise ImportError('--gui specified but lib/gooey could not be found, cannot load the GUI (however you can still use in commandline).')
+
+def conditional_decorator(flag, dec):
+    def decorate(fn):
+        if flag:
+            return dec(fn)
+        else:
+            return fn
+    return decorate
+
+def check_gui_arg():
+    if len(sys.argv) > 1 and sys.argv[1] == '--gui':
+        #del sys.argv[1]
+        sys.argv[1] = '--gui_launched' # CRITICAL: need to remove/replace the --gui argument, else it will stay in memory and when Gooey will call the script again, it will be stuck in an infinite loop calling back and forth between this script and Gooey. Thus, we need to remove this argument, but we also need to be aware that Gooey was called so that we can call gooey.GooeyParser() instead of argparse.ArgumentParser() (for better fields management like checkboxes for boolean arguments). To solve both issues, we replace the argument --gui by another internal argument --gui_launched.
+        return True
+    else:
+        return False
+
+@conditional_decorator(check_gui_arg(), gooey.Gooey)
 def main(argv=None):
     if argv is None: # if argv is empty, fetch from the commandline
         argv = sys.argv[1:]
@@ -340,7 +370,10 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
 
     #== Commandline arguments
     #-- Constructing the parser
-    main_parser = argparse.ArgumentParser(add_help=True, description=desc, epilog=ep, formatter_class=argparse.RawTextHelpFormatter)
+    if len(sys.argv) > 1 and sys.argv[1] == '--gui_launched':
+        main_parser = gooey.GooeyParser(add_help=True, description=desc, epilog=ep, formatter_class=argparse.RawTextHelpFormatter)
+    else:
+        main_parser = argparse.ArgumentParser(add_help=True, description=desc, epilog=ep, formatter_class=argparse.RawTextHelpFormatter)
     # Required arguments
     main_parser.add_argument('-i', '--input', metavar='/path/to/root/folder', type=is_dir, nargs=1, required=True,
                         help='Path to the root folder from where the scanning will occur.')
@@ -519,7 +552,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                     for i in xrange(replication_rate): db.write(ecc_entry) # commit to the ecc file, and replicate the number of times required
                 files_done += 1
         ptee.write("All done! Total number of files processed: %i, skipped: %i" % (files_done, files_skipped))
-        return True
+        return 0
 
     # == Error Correction (and checking by hash) mode
     # For each file, check their headers by block by checking each block against a hash, and if the hash does not match, try to correct with Reed-Solomon and then check the hash again to see if we correctly repaired the block (else the ecc entry might have been corrupted, whether it's the hash or the ecc field, in both cases it's highly unlikely that a wrong repair will match the hash after this wrong repair)
@@ -642,6 +675,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                     os.utime(outfilepath, (filestats.st_atime, filestats.st_mtime))
         # All ecc entries processed for checking and potentally repairing, we're done correcting!
         ptee.write("All done! Stats:\n- Total files processed: %i\n- Total files corrupted: %i\n- Total files repaired completely: %i\n- Total files repaired partially: %i\n- Total files corrupted but not repaired at all: %i\n- Total files skipped: %i" % (files_count, files_corrupted, files_repaired_completely, files_repaired_partially, files_corrupted - (files_repaired_partially + files_repaired_completely), files_skipped) )
+        return 0
 
 # Calling main function if the script is directly called (not imported as a library in another program)
 if __name__ == "__main__":
