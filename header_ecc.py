@@ -319,16 +319,20 @@ def compute_ecc_hash(ecc_manager, hasher, buf, max_block_size, rate, message_siz
     return result
 
 
+
 #***********************************
-#                       MAIN
+#        GUI AUX FUNCTIONS
 #***********************************
 
+# Try to import Gooey for GUI display, but manage exception so that we replace the Gooey decorator by a dummy function that will just return the main function as-is, thus keeping the compatibility with command-line usage
 try:
     import lib.gooey as gooey
 except:
+    # Define a dummy replacement function for Gooey to stay compatible with command-line usage
     class gooey(object):
         def Gooey(func):
             return func
+    # If --gui was specified, then there's a problem
     if len(sys.argv) > 1 and sys.argv[1] == '--gui': raise ImportError('--gui specified but lib/gooey could not be found, cannot load the GUI (however you can still use in commandline).')
 
 def conditional_decorator(flag, dec):
@@ -340,6 +344,7 @@ def conditional_decorator(flag, dec):
     return decorate
 
 def check_gui_arg():
+    '''Check that the --gui argument was passed, and if true, we remove the --gui option and replace by --gui_launched so that Gooey does not loop infinitely'''
     if len(sys.argv) > 1 and sys.argv[1] == '--gui':
         #del sys.argv[1]
         sys.argv[1] = '--gui_launched' # CRITICAL: need to remove/replace the --gui argument, else it will stay in memory and when Gooey will call the script again, it will be stuck in an infinite loop calling back and forth between this script and Gooey. Thus, we need to remove this argument, but we also need to be aware that Gooey was called so that we can call gooey.GooeyParser() instead of argparse.ArgumentParser() (for better fields management like checkboxes for boolean arguments). To solve both issues, we replace the argument --gui by another internal argument --gui_launched.
@@ -347,7 +352,21 @@ def check_gui_arg():
     else:
         return False
 
-@conditional_decorator(check_gui_arg(), gooey.Gooey)
+def AutoGooey(fn):
+    '''Automatically show a Gooey GUI if --gui is passed as the first argument, else it will just run the function as normal'''
+    if check_gui_arg():
+        return gooey.Gooey(fn)
+    else:
+        return fn
+
+
+
+#***********************************
+#                       MAIN
+#***********************************
+
+#@conditional_decorator(check_gui_arg(), gooey.Gooey) # alternative to AutoGooey which also correctly works
+@AutoGooey
 def main(argv=None):
     if argv is None: # if argv is empty, fetch from the commandline
         argv = sys.argv[1:]
@@ -372,36 +391,46 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
     #-- Constructing the parser
     if len(sys.argv) > 1 and sys.argv[1] == '--gui_launched':
         main_parser = gooey.GooeyParser(add_help=True, description=desc, epilog=ep, formatter_class=argparse.RawTextHelpFormatter)
+        # Define Gooey widget types explicitly (because type auto-detection doesn't work quite well)
+        widget_dir = {"widget": "DirChooser"}
+        widget_filesave = {"widget": "FileSaver"}
+        widget_file = {"widget": "FileChooser"}
+        widget_text = {"widget": "TextField"}
     else:
         main_parser = argparse.ArgumentParser(add_help=True, description=desc, epilog=ep, formatter_class=argparse.RawTextHelpFormatter)
+        # Define dummy dict to keep compatibile with command-line usage
+        widget_dir = {}
+        widget_filesave = {}
+        widget_file = {}
+        widget_text = {}
     # Required arguments
     main_parser.add_argument('-i', '--input', metavar='/path/to/root/folder', type=is_dir, nargs=1, required=True,
-                        help='Path to the root folder from where the scanning will occur.')
+                        help='Path to the root folder from where the scanning will occur.', **widget_dir)
     main_parser.add_argument('-d', '--database', metavar='/some/folder/ecc.txt', type=str, nargs=1, required=True, #type=argparse.FileType('rt')
-                        help='Path to the file containing the ECC informations.')
+                        help='Path to the file containing the ECC informations.', **widget_filesave)
                         
 
     # Optional general arguments
     main_parser.add_argument('--max_block_size', type=int, default=255, required=False,
-                        help='Reed-Solomon max block size (maximum = 255). It is advised to keep it at the maximum for more resilience (see comments at the top of the script for more info).')
+                        help='Reed-Solomon max block size (maximum = 255). It is advised to keep it at the maximum for more resilience (see comments at the top of the script for more info).', **widget_text)
     main_parser.add_argument('-s', '--size', type=int, default=1024, required=False,
-                        help='Headers block size to protect with ecc.')
+                        help='Headers block size to protect with ecc.', **widget_text)
     main_parser.add_argument('-r', '--resilience_rate', type=float, default=0.3, required=False,
-                        help='Resilience rate for files headers (eg: 0.3 = 30% of errors can be recovered but size of codeword will be 60% of the data block, thus the ecc file will be about 60% the size of your data).')
+                        help='Resilience rate for files headers (eg: 0.3 = 30% of errors can be recovered but size of codeword will be 60% of the data block, thus the ecc file will be about 60% the size of your data).', **widget_text)
     main_parser.add_argument('--replication_rate', type=int, default=1, required=False,
-                        help='Replication rate, if you want to duplicate each ecc entry. This is better than just duplicating your ecc file: with a replication_rate >= 3, in case of a tampering of the ecc file, a majority vote can try to disambiguate and restore correct ecc entries (if 2 entries agree on a character, then it\'s probably correct).')
+                        help='Replication rate, if you want to duplicate each ecc entry. This is better than just duplicating your ecc file: with a replication_rate >= 3, in case of a tampering of the ecc file, a majority vote can try to disambiguate and restore correct ecc entries (if 2 entries agree on a character, then it\'s probably correct).', **widget_text)
     main_parser.add_argument('-l', '--log', metavar='/some/folder/filename.log', type=str, nargs=1, required=False,
-                        help='Path to the log file. (Output will be piped to both the stdout and the log file)')
+                        help='Path to the log file. (Output will be piped to both the stdout and the log file)', **widget_filesave)
     main_parser.add_argument('--stats_only', action='store_true', required=False, default=False,
                         help='Only show the predicted total size of the ECC file given the parameters.')
 
     # Correction mode arguments
     main_parser.add_argument('-c', '--correct', action='store_true', required=False, default=False,
-                        help='Correct the files')
+                        help='Check/Correct the files?')
     main_parser.add_argument('-o', '--output', metavar='/path/to/output/folder', type=is_dir, nargs=1, required=False,
-                        help='Path of the folder where the corrected files will be copied (only corrupted files will be copied there).')
+                        help='Path of the folder where the corrected files will be copied (only corrupted files will be copied there).', **widget_dir)
     main_parser.add_argument('-e', '--errors_file', metavar='/some/folder/errorsfile.csv', type=str, nargs=1, required=False, #type=argparse.FileType('rt')
-                        help='Path to the error file generated by RFIGC.py (this specify in csv format the list of files to check, and only those files will be checked and repaired). Do not specify this argument if you want to check and repair all files.')
+                        help='Path to the error file generated by RFIGC.py (this specify in csv format the list of files to check, and only those files will be checked and repaired). Do not specify this argument if you want to check and repair all files.', **widget_file)
     main_parser.add_argument('--ignore_size', action='store_true', required=False, default=False,
                         help='On correction, if the file size differs from when the ecc file was generated, ignore and try to correct anyway (this may work with file where data was appended without changing the rest. For compressed formats like zip, this will probably fail).')
 
@@ -411,9 +440,9 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
     main_parser.add_argument('-f', '--force', action='store_true', required=False, default=False,
                         help='Force overwriting the ecc file even if it already exists (if --generate).')
     main_parser.add_argument('--skip_size_below', type=int, default=None, required=False,
-                        help='Skip files below the specified size (in bytes).')
+                        help='Skip files below the specified size (in bytes).', **widget_text)
     main_parser.add_argument('--always_include_ext', metavar='txt|jpg|png', type=str, default=None, required=False,
-                        help='Always include files with the specified extensions, useful in combination with --skip_size_below to keep files of certain types even if they are below the size. Format: extensions separated by |.')
+                        help='Always include files with the specified extensions, useful in combination with --skip_size_below to keep files of certain types even if they are below the size. Format: extensions separated by |.', **widget_text)
 
     #== Parsing the arguments
     args = main_parser.parse_args(argv) # Storing all arguments to args
