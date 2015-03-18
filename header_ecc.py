@@ -596,7 +596,6 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                 errors_filelist.append(row['filepath'])
 
         # Read the ecc file
-        fileinfos = ''
         with open(database, 'rb') as db:
             # Counters
             files_count = 0
