@@ -29,7 +29,7 @@
 #                       License: MIT
 #                 Runs on Python 2.7.6
 #              Creation date: 2015-03-12
-#          Last modification: 2015-03-17
+#          Last modification: 2015-03-18
 #=================================
 #
 # From : http://simple.wikipedia.org/wiki/Reed-Solomon_error_correction
@@ -389,14 +389,14 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
 
     #== Commandline arguments
     #-- Constructing the parser
-    if len(sys.argv) > 1 and sys.argv[1] == '--gui_launched':
+    if len(sys.argv) > 1 and sys.argv[1] == '--gui_launched': # Use GooeyParser if we want the GUI because it will provide better widgets
         main_parser = gooey.GooeyParser(add_help=True, description=desc, epilog=ep, formatter_class=argparse.RawTextHelpFormatter)
         # Define Gooey widget types explicitly (because type auto-detection doesn't work quite well)
         widget_dir = {"widget": "DirChooser"}
         widget_filesave = {"widget": "FileSaver"}
         widget_file = {"widget": "FileChooser"}
         widget_text = {"widget": "TextField"}
-    else:
+    else: # Else in command-line usage, use the standard argparse
         main_parser = argparse.ArgumentParser(add_help=True, description=desc, epilog=ep, formatter_class=argparse.RawTextHelpFormatter)
         # Define dummy dict to keep compatibile with command-line usage
         widget_dir = {}

@@ -29,8 +29,7 @@
 #                       License: MIT
 #                 Runs on Python 2.7.6
 #              Creation date: 2015-02-27
-#          Last modification: 2015-03-11
-#                     version: 0.8.5
+#          Last modification: 2015-03-18
 #=================================
 #
 # TODO:
@@ -43,6 +42,13 @@
 #
 # NOTE: this software is similar in purpose to the (more advanced) MD5deep / HashDeep for hash set auditing: http://md5deep.sourceforge.net/
 #
+
+__version__ = 1.0
+
+# Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
+import sys, os
+thispathname = os.path.dirname(sys.argv[0])
+sys.path.append(os.path.join(thispathname, 'lib'))
 
 # Import necessary libraries
 import lib.argparse as argparse
@@ -129,9 +135,51 @@ def recwalk(folderpath):
 
 
 #***********************************
+#        GUI AUX FUNCTIONS
+#***********************************
+
+# Try to import Gooey for GUI display, but manage exception so that we replace the Gooey decorator by a dummy function that will just return the main function as-is, thus keeping the compatibility with command-line usage
+try:
+    import lib.gooey as gooey
+except:
+    # Define a dummy replacement function for Gooey to stay compatible with command-line usage
+    class gooey(object):
+        def Gooey(func):
+            return func
+    # If --gui was specified, then there's a problem
+    if len(sys.argv) > 1 and sys.argv[1] == '--gui': raise ImportError('--gui specified but lib/gooey could not be found, cannot load the GUI (however you can still use in commandline).')
+
+def conditional_decorator(flag, dec):
+    def decorate(fn):
+        if flag:
+            return dec(fn)
+        else:
+            return fn
+    return decorate
+
+def check_gui_arg():
+    '''Check that the --gui argument was passed, and if true, we remove the --gui option and replace by --gui_launched so that Gooey does not loop infinitely'''
+    if len(sys.argv) > 1 and sys.argv[1] == '--gui':
+        #del sys.argv[1]
+        sys.argv[1] = '--gui_launched' # CRITICAL: need to remove/replace the --gui argument, else it will stay in memory and when Gooey will call the script again, it will be stuck in an infinite loop calling back and forth between this script and Gooey. Thus, we need to remove this argument, but we also need to be aware that Gooey was called so that we can call gooey.GooeyParser() instead of argparse.ArgumentParser() (for better fields management like checkboxes for boolean arguments). To solve both issues, we replace the argument --gui by another internal argument --gui_launched.
+        return True
+    else:
+        return False
+
+def AutoGooey(fn):
+    '''Automatically show a Gooey GUI if --gui is passed as the first argument, else it will just run the function as normal'''
+    if check_gui_arg():
+        return gooey.Gooey(fn)
+    else:
+        return fn
+
+
+
+#***********************************
 #                       MAIN
 #***********************************
 
+@AutoGooey
 def main(argv=None):
     if argv is None: # if argv is empty, fetch from the commandline
         argv = sys.argv[1:]
@@ -161,16 +209,29 @@ Note that by default, the script is by default in check mode, to avoid wrong man
 
     #== Commandline arguments
     #-- Constructing the parser
-    main_parser = argparse.ArgumentParser(add_help=True, description=desc, epilog=ep, formatter_class=argparse.RawTextHelpFormatter)
+    if len(sys.argv) > 1 and sys.argv[1] == '--gui_launched': # Use GooeyParser if we want the GUI because it will provide better widgets
+        main_parser = gooey.GooeyParser(add_help=True, description=desc, epilog=ep, formatter_class=argparse.RawTextHelpFormatter)
+        # Define Gooey widget types explicitly (because type auto-detection doesn't work quite well)
+        widget_dir = {"widget": "DirChooser"}
+        widget_filesave = {"widget": "FileSaver"}
+        widget_file = {"widget": "FileChooser"}
+        widget_text = {"widget": "TextField"}
+    else: # Else in command-line usage, use the standard argparse
+        main_parser = argparse.ArgumentParser(add_help=True, description=desc, epilog=ep, formatter_class=argparse.RawTextHelpFormatter)
+        # Define dummy dict to keep compatibile with command-line usage
+        widget_dir = {}
+        widget_filesave = {}
+        widget_file = {}
+        widget_text = {}
     # Required arguments
     main_parser.add_argument('-i', '--input', metavar='/path/to/root/folder', type=is_dir, nargs=1, required=True,
-                        help='Path to the root folder from where the scanning will occur.')
+                        help='Path to the root folder from where the scanning will occur.', **widget_dir)
     main_parser.add_argument('-d', '--database', metavar='/some/folder/databasefile.csv', type=str, nargs=1, required=True, #type=argparse.FileType('rt')
-                        help='Path to the csv file containing the hash informations.')
+                        help='Path to the csv file containing the hash informations.', **widget_filesave)
 
     # Optional general arguments
     main_parser.add_argument('-l', '--log', metavar='/some/folder/filename.log', type=str, nargs=1, required=False,
-                        help='Path to the log file. (Output will be piped to both the stdout and the log file)')
+                        help='Path to the log file. (Output will be piped to both the stdout and the log file)', **widget_filesave)
     main_parser.add_argument('--skip_hash', action='store_true', required=False, default=False,
                         help='Skip hash computation/checking (checks only the other metadata, this is a lot quicker).')
 
@@ -178,7 +239,7 @@ Note that by default, the script is by default in check mode, to avoid wrong man
     main_parser.add_argument('-s', '--structure_check', action='store_true', required=False, default=False,
                         help='Check images structures for corruption?')
     main_parser.add_argument('-e', '--errors_file', metavar='/some/folder/errorsfile.csv', type=str, nargs=1, required=False, #type=argparse.FileType('rt')
-                        help='Path to the error file, where errors at checking will be stored in CSV for further processing by other softwares (such as file repair softwares).')
+                        help='Path to the error file, where errors at checking will be stored in CSV for further processing by other softwares (such as file repair softwares).', **widget_filesave)
     main_parser.add_argument('-m', '--disable_modification_date_checking', action='store_true', required=False, default=False,
                         help='Disable modification date checking.')
     main_parser.add_argument('--skip_missing', action='store_true', required=False, default=False,

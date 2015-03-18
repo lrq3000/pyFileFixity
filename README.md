@@ -30,6 +30,8 @@ The project currently include the following pure-python applications:
 
 - structural_adaptive_ecc.py, a variable error correction rate encoder (kind of a generalization of header_ecc.py). See the TODO for more info. This isn't yet ready for production (generation is OK but no repair).
 
+Note that all tools are primarily made for command-line usage (type script.py --help to get extended info about the accepted arguments), but you can also use rfigc.py and header_ecc.py with a GUI by using the --gui argument (must be the first and only one argument supplied). The GUI is provided as-is and minimal work will be done to maintain it (the focus will stay on functionality rather than ergonomy).
+
 Recursive/Relative Files Integrity Generator and Checker in Python (aka RFIGC)
 -------------------------------------------------------------------------------------------------------------------
 Recursively generate or check the integrity of files by MD5 and SHA1 hashes, size, modification date or by data structure integrity (only for images).
