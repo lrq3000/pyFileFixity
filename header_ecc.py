@@ -76,7 +76,7 @@ import hashlib, zlib
 import lib.tqdm as tqdm
 import itertools
 import math
-import operator # to get the max out of a dict
+#import operator # to get the max out of a dict
 import csv # to process the errors_file from rfigc.py
 import shlex # for string parsing as argv argument to main(), unnecessary otherwise
 from lib.tee import Tee # Redirect print output to the terminal as well as in a log file
@@ -414,7 +414,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
     main_parser.add_argument('--max_block_size', type=int, default=255, required=False,
                         help='Reed-Solomon max block size (maximum = 255). It is advised to keep it at the maximum for more resilience (see comments at the top of the script for more info).', **widget_text)
     main_parser.add_argument('-s', '--size', type=int, default=1024, required=False,
-                        help='Headers block size to protect with ecc.', **widget_text)
+                        help='Headers block size to protect with ecc (eg: 1024 meants that the first 1k of each file will be protected).', **widget_text)
     main_parser.add_argument('-r', '--resilience_rate', type=float, default=0.3, required=False,
                         help='Resilience rate for files headers (eg: 0.3 = 30% of errors can be recovered but size of codeword will be 60% of the data block, thus the ecc file will be about 60% the size of your data).', **widget_text)
     main_parser.add_argument('--replication_rate', type=int, default=1, required=False,
@@ -511,21 +511,20 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
 
     # == Precomputation of ecc file size
     # Precomputing is important so that the user can know what size to expect before starting (and how much time it will take...).
-    fileslist = []
-    filessizes = []
     filescount = 0
     sizetotal = 0
     sizeheaders = 0
     ptee.write("Precomputing list of files and predicted statistics...")
     for (dirpath, filename) in tqdm.tqdm(recwalk(folderpath)):
         filescount = filescount + 1 # counting the total number of files we will process (so that we can show a progress bar with ETA)
-        # Get the filepath
+        # Get full absolute filepath
         filepath = os.path.join(dirpath,filename)
         relfilepath = os.path.relpath(filepath, folderpath) # File relative path from the root (so that we can easily check the files later even if the absolute path is different)
         # Get the current file's size
         size = os.stat(filepath).st_size
         # Check if we must skip this file because size is too small, and then if we still keep it because it's extension is always to be included
         if skip_size_below and size < skip_size_below and (not always_include_ext or not relfilepath.lower().endswith(always_include_ext)): continue
+
         # Compute total size of all files
         sizetotal = sizetotal + size
         # Compute predicted size of their headers
@@ -534,7 +533,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
         else: # else for size smaller than the defined header size, it will just be the size of the file
             header_size_add = size
         # Size of the ecc entry for this file will be: marker-bytes (\xFF bytes) + length-filepath-string + length-size-string + size of the ecc per block for all blocks in file header + size of the hash per block for all blocks in file header.
-        sizeheaders = sizeheaders + replication_rate * (6 + len(relfilepath) + len(str(size)) + (int(math.ceil(float(header_size_add) / ecc_params["message_size"])) * (ecc_params["ecc_size"]+ecc_params["hash_size"])) ) # Compute the total number of bytes we will add with ecc + hash (accounting for the padding of the remaining characters at the end of the sequence in case it doesn't fit with the message_size, by using ceil() )
+        sizeheaders = sizeheaders + replication_rate * (len(entrymarker) + len(field_delim)*2 + len(relfilepath) + len(str(size)) + (int(math.ceil(float(header_size_add) / ecc_params["message_size"])) * (ecc_params["ecc_size"]+ecc_params["hash_size"])) ) # Compute the total number of bytes we will add with ecc + hash (accounting for the padding of the remaining characters at the end of the sequence in case it doesn't fit with the message_size, by using ceil() )
     ptee.write("Precomputing done.")
     # TODO: add the size of the ecc format header? (arguments string + PYHEADERECC identifier)
     total_pred_percentage = sizeheaders * 100 / sizetotal

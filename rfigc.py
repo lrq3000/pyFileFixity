@@ -43,7 +43,7 @@
 # NOTE: this software is similar in purpose to the (more advanced) MD5deep / HashDeep for hash set auditing: http://md5deep.sourceforge.net/
 #
 
-__version__ = 1.0
+__version__ = "1.0"
 
 # Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
 import sys, os
