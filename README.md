@@ -28,7 +28,7 @@ The project currently include the following pure-python applications:
 
 - easy_profiler.py is just a quick and simple profiling tool to get you started quickly on what should be optimized to get more speed, if you want to contribute to the project feel free to propose a pull request! (Cython and other optimizations are welcome as long as they are cross-platform and that an alternative pure-python implementation is also available).
 
-- structural_adaptive_ecc.py, a variable error correction rate encoder (kind of a generalization of header_ecc.py). See the TODO for more info. This isn't yet ready for production (generation is OK but no repair).
+- structural_adaptive_ecc.py, a variable error correction rate encoder (kind of a generalization of header_ecc.py).
 
 Note that all tools are primarily made for command-line usage (type script.py --help to get extended info about the accepted arguments), but you can also use rfigc.py and header_ecc.py with a GUI by using the --gui argument (must be the first and only one argument supplied). The GUI is provided as-is and minimal work will be done to maintain it (the focus will stay on functionality rather than ergonomy).
 
@@ -101,14 +101,23 @@ An interesting benefit of this approach is that it has a low storage (and comput
 
 The script is pure-python as are its dependencies: it is thus completely cross-platform and open source. However, this imply that it is quite slow, but PyPy v2.5.0 was successfully tested against the script without any modification, and a speed increase of 5x could be observed. This is still slow but at least it's useable for real datasets.
 
+Structural Adaptive Error Correction Encoder
+----------------------------------------------------------------
+
+This script implements a variable error correction rate encoder: each file is ecc encoded using a variable resiliency rate -- using a high constant resiliency rate for the header part (resiliency rate stage 1, high), then a variable resiliency rate is applied to the rest of the file's content, with a higher rate near the beginning of the file (resiliency rate stage 2, medium) which progressively decreases until the end of file (resiliency rate stage 3, the lowest).
+
+The idea is that the critical parts of files usually are placed at the top, and data becomes less and less critical along the file. What is meant by critical is both the critical spots (eg: if you tamper only one character of a file's header you have good chances of losing your entire file) and critically encoded information (eg: archive formats usually encode compressed symbols as they go along the file, which means that the first occurrence is encoded, and then the archive simply writes a reference to the symbol. Thus, the first occurrence is encoded at the top, and subsequent encoding of this same data pattern will just be one symbol, and thus it matters less as long as the original symbol is correctly encoded and its information preserved, we can always try to restore the reference symbols later).
+
+This variable error correction rate would allow to protect more the critical parts of a file (the header and the beginning of a file, for example in compressed file formats such as zip this is where the most importantly strings are encoded) for the same amount of storage as a standard constant error correction rate.
+
+Furthermore, the currently designed format of the ecc file would allow two things that are not available in all current file ecc generators such as PAR2: 1- this would allow to partially repair a file, even if not all the blocks can be corrected (in PAR2, a file is repaired only if all blocks can be repaired, which is a shame because there are still other blocks that could be repaired and thus produce a less corrupted file) ; 2- the ecc file format is quite simple and readable, easy to process by any script, which would allow other softwares to also work on it (and it was also done in this way to be more resilient against error corruptions, so that even if an entry is corrupted, other entries are independent and can maybe be used, thus the ecc is very error tolerant).
+
+The script structural-adaptive-ecc.py implements this idea, which can be seen as an extension of header-ecc.py (and in fact the idea was the other way around: structural-adaptive-ecc.py was conceived first but was too complicated, then header-ecc.py was implemented as a working lessened implementation only for headers, and then structural-adaptive-ecc.py was finished using header-ecc.py code progress). It works, it was a bit tested but not extensively, so make sure you test the script by yourself to see if it's robust enough for your needs (any feedback about this would be greatly appreciated!).
+
 Todo
 -------
-
-- A variable error correction rate encoder:
-each file would be encoded in ecc using a variable resiliency rate, using a high constant resiliency rate for the header part (resiliency rate stage 1, high), then a variable resiliency rate would be applied to the rest of the file's content, with a higher rate near the beginning of the file (resiliency rate stage 2, medium) which would lower progressively until the end of file (resiliency rate stage 3, the lowest). This can be seen as an extension of header-ecc.py. An unfinished attempt was done in structural-adaptive-ecc.py, feel free to have a look (the generation works correctly, there remains only to decode and error correct: the error correct would be similar to what is done in header-ecc.py, the part that is yet to be defined is how to read a stream of variable-sized ecc blocks in an ecc entry).
-This variable error correction rate would allow to protect more the critical parts of a file (the header and the beginning of a file, for example in compressed file formats such as zip this is where the most importantly strings are encoded) for the same amount of storage as a standard constant error correction rate.
-Furthermore, the currently designed format of the ecc file would allow two things that are not available in all current file ecc generators such as PAR2: 1- this would allow to partially repair a file, even if not all the blocks can be corrected (in PAR2, a file is repaired only if all blocks can be repaired, which is a shame because there are still other blocks that could be repaired and thus produce a less corrupted file) ; 2- the ecc file format is quite simple and readable, easy to process by any script, which would allow other softwares to also work on it (and it was also done in this way to be more resilient against error corruptions, so that even if an entry is corrupted, other entries are independent and can maybe be used, thus the ecc is very error tolerant).
 
 - Integrate with https://github.com/Dans-labs/bit-recover ? (need to convert the perl script into python...).
 
 - Speed optimize the Reed-Solomon library? (using Numpy or Cython? But I want to keep a pure python implementation available just in case, or make a Cython implementation that is also compatible with normal python). Use pprofile to check where to optimize first.
+Note: PyPy works great, it really speeds things up a lot! However I think that speed can be enhanced, mainly by changing RS.__init__() to use pre-computed matrices (currently it recomputes everytime we change the k and n parameters, and since we use a variable encoding rate in structural-adaptive-ecc.py, this is recomputed everytime), and also by optimizing the RS.__mult__ and RS.__add__ to use numpy's optimized instructions.
