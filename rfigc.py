@@ -85,9 +85,10 @@ def fullpath(relpath):
     return os.path.abspath(os.path.expanduser(relpath))
 
 # Prepare the image filter once and for all in a global variable
-PIL.Image.init() # Init PIL to access its supported formats
-img_filter = ['.'+x.lower() for x in PIL.Image.OPEN.keys()] # Load the supported formats
-img_filter = img_filter + ['.jpg', '.jpe'] # Add some extensions variations
+if structure_check_import:
+    PIL.Image.init() # Init PIL to access its supported formats
+    img_filter = ['.'+x.lower() for x in PIL.Image.OPEN.keys()] # Load the supported formats
+    img_filter = img_filter + ['.jpg', '.jpe'] # Add some extensions variations
 def check_structure(filepath):
     """Returns False if the file is okay, None if file format is unsupported by PIL/PILLOW, or returns an error string if the file is corrupt."""
     #http://stackoverflow.com/questions/1401527/how-do-i-programmatically-check-whether-an-image-png-jpeg-or-gif-is-corrupted/1401565#1401565
