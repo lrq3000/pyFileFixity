@@ -206,6 +206,7 @@ python rfigc.py -i "folderimages" -d "dbhash.csv" -u -a
 python rfigc.py -i "folderimages" -d "dbhash.csv" -u -a -r
 
 Note that by default, the script is by default in check mode, to avoid wrong manipulations. It will also alert you if you generate over an already existing database file.
+Note2: you can use PyPy to speed the generation, but you should avoid using PyPy when in checking mode (from our tests, it will slow things down a lot).
 '''
 
     #== Commandline arguments
@@ -480,7 +481,7 @@ Note that by default, the script is by default in check mode, to avoid wrong man
                             errors.append('extension has changed')
                         if size != int(row['size']):
                             errors.append("size has changed (before: %s - now: %s)" % (row['size'], size))
-                        if not disable_modification_date_checking and lastmodif != float(row['last_modification_timestamp']):
+                        if not disable_modification_date_checking and (lastmodif != float(row['last_modification_timestamp']) and round(lastmodif,0) != round(float(row['last_modification_timestamp']),0)): # for usage with PyPy: last modification time is differently managed (rounded), thus we need to round here manually to compare against PyPy.
                             errors.append("modification date has changed (before: %s - now: %s)" % (row['last_modification_date'], lastmodif_readable))
                 except IOError as e: # Catch IOError as a file error
                     errors.append('file can\'t be read, IOError (inaccessible, maybe bad sector?)')
