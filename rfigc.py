@@ -204,6 +204,8 @@ python rfigc.py -i "folderimages" -d "dbhash.csv" -l log.txt -s
 python rfigc.py -i "folderimages" -d "dbhash.csv" -u -a 
 - To update your database by appending new files AND removing inexistent files:
 python rfigc.py -i "folderimages" -d "dbhash.csv" -u -a -r
+- To use with a gui:
+python rfigc.py --gui
 
 Note that by default, the script is by default in check mode, to avoid wrong manipulations. It will also alert you if you generate over an already existing database file.
 Note2: you can use PyPy to speed the generation, but you should avoid using PyPy when in checking mode (from our tests, it will slow things down a lot).
