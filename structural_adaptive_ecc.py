@@ -29,7 +29,7 @@
 #                       License: MIT
 #                 Runs on Python 2.7.6
 #              Creation date: 2015-03-10
-#          Last modification: 2015-03-18
+#          Last modification: 2015-03-20
 #=================================
 #
 # From : http://simple.wikipedia.org/wiki/Reed-Solomon_error_correction
@@ -60,9 +60,10 @@
 # or this: https://github.com/lericson/fish
 # - --gui option using https://github.com/chriskiehl/Gooey
 # - intra-ecc on: filepath, and on hash of every blocks? (this should use a lot less storage space than replication for the same efficiency, but the problem is how to delimit fields since we won't know the size of the ecc. For the ecc of hashes, yes we can know because hash is fixed length and so will be the ecc of the hash, but for the ecc of the filepath it will be proportional to the filepath. And an ecc can contain any character such as \x00, thus it will make our fields detection buggy).
+# the intra-ecc on filepath is the hardest because we won't know the size (not fixed-length), but we can use a field_delim. For intra-ecc on hash this is easy if the hash is fixed-length like MD5: we can precisely compute the length of the ECC, thus it will just be another field to extract in entry_fields.
 #
 
-__version__ = "0.6"
+__version__ = "0.7"
 
 # Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
 import sys, os
@@ -221,7 +222,8 @@ def entry_fields(file, entry_pos, field_delim="\xFF"):
     blocksize = 65535
     file.seek(entry_pos[0])
     entry = file.read(blocksize)
-    # TODO: do in a while loop in case the filename is really big (bigger than blocksize)
+    entry = entry.lstrip(field_delim) # if there was some slight adjustment error (example: the last ecc block of the last file was the field_delim, then we will start with a field_delim, and thus we need to remove the trailing field_delim which is useless and will make the field detection buggy). This is not really a big problem for the previous file's ecc block: the missing ecc characters (which were mistaken for a field_delim), will just be missing (so we will lose a bit of resiliency for the last block of the previous file, but that's not a huge issue, the correction can still rely on the other characters).
+    # TODO: do in a while loop in case the filename is really big (bigger than blocksize) - or in case we add intra-ecc for filename
 
     # Extract each field
     first = entry.find(field_delim)
@@ -470,8 +472,8 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
     args = main_parser.parse_args(argv) # Storing all arguments to args
 
     #-- Set hard-coded variables
-    entrymarker = "\xFF\xFF\xFF\xFF" # marker that will signal the beginning of an ecc entry
-    field_delim = "\xFF" # delimiter between fields (filepath, filesize, hash+ecc blocks) inside an ecc entry
+    entrymarker = "\xFE\xFF\xFE\xFF" # marker that will signal the beginning of an ecc entry - use an alternating pattern of several characters, this avoids confusion (eg: if you use "AAA" as a pattern, if the ecc block of the previous file ends with "EGA" for example, then the full string for example will be "EGAAAAC:\yourfolder\filea.jpg" and then the entry reader will detect the first "AAA" occurrence as the entry start - this should not make the next entry bug because there is an automatic trim - but the previous ecc block will miss one character that could be used to repair the block because it will be "EG" instead of "EGA"!)
+    field_delim = "\xFE\xFF" # delimiter between fields (filepath, filesize, hash+ecc blocks) inside an ecc entry
 
     #-- Set variables from arguments
     folderpath = fullpath(args.input[0])

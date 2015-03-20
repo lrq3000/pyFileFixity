@@ -29,7 +29,7 @@
 #                       License: MIT
 #                 Runs on Python 2.7.6
 #              Creation date: 2015-03-12
-#          Last modification: 2015-03-18
+#          Last modification: 2015-03-20
 #=================================
 #
 # From : http://simple.wikipedia.org/wiki/Reed-Solomon_error_correction
@@ -60,9 +60,10 @@
 # or this: https://github.com/lericson/fish
 # - --gui option using https://github.com/chriskiehl/Gooey
 # - intra-ecc on: filepath, and on hash of every blocks? (this should use a lot less storage space than replication for the same efficiency, but the problem is how to delimit fields since we won't know the size of the ecc. For the ecc of hashes, yes we can know because hash is fixed length and so will be the ecc of the hash, but for the ecc of the filepath it will be proportional to the filepath. And an ecc can contain any character such as \x00, thus it will make our fields detection buggy).
+# the intra-ecc on filepath is the hardest because we won't know the size (not fixed-length), but we can use a field_delim. For intra-ecc on hash this is easy if the hash is fixed-length like MD5: we can precisely compute the length of the ECC, thus it will just be another field to extract in entry_fields.
 #
 
-__version__ = "1.0"
+__version__ = "1.0.2"
 
 # Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
 import sys, os
@@ -211,12 +212,15 @@ def read_next_entry(file, entrymarker="\xFF\xFF\xFF\xFF"):
 
 def entry_fields(entry, field_delim="\xFF"):
     '''From a raw ecc entry (a string), extract the filename, filesize, and the rest being blocks of hash and ecc per blocks of the original file's header'''
+    entry = entry.lstrip(field_delim) # if there was some slight adjustment error (example: the last ecc block of the last file was the field_delim, then we will start with a field_delim, and thus we need to remove the trailing field_delim which is useless and will make the field detection buggy). This is not really a big problem for the previous file's ecc block: the missing ecc characters (which were mistaken for a field_delim), will just be missing (so we will lose a bit of resiliency for the last block of the previous file, but that's not a huge issue, the correction can still rely on the other characters).
     first = entry.find(field_delim)
     second = entry.find(field_delim, first+len(field_delim))
     relfilepath = entry[:first]
     filesize = entry[first+len(field_delim):second]
     ecc_field = entry[second+len(field_delim):]
     # entries = [ {"message":, "ecc":, "hash":}, etc.]
+    #print(entry)
+    #print(len(entry))
     return {"relfilepath": relfilepath, "filesize": int(filesize), "ecc_field": ecc_field}
 
 def entry_assemble(entry_fields, ecc_params, header_size, filepath):
@@ -382,7 +386,8 @@ Headers are the most sensible part of any file: this is where the format definit
 The concept is to use this script in addition to more common parity files like PAR2 so that you get an additional protection at low cost (because headers are just in the first KB of the file, thus it won't cost much in storage and processing time to add more redundancy to such a small stream of data).
 Note: Folders meta-data is NOT accounted, only the files! Use DVDisaster or a similar tool to also cover folders meta-data.
     '''
-    ep = '''
+    ep = '''Use --gui as the first argument to use with a GUI (via Gooey).
+
 Note1: this is a pure-python implementation (except for MD5 hash but a pure-python alternative is provided in lib/md5py.py), thus it may be VERY slow to generate an ecc file. To speed-up things considerably, you can use PyPy v2.5.0 or above, there will be a speed-up of at least 5x from our experiments. Feel free to profile using easy_profiler.py and try to optimize the reed-solomon library.
 
 Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null bytes), resilience_rate errors (bit-flips, thus a character that changes but not necessarily a null byte) and amount to an additional storage of 2*resilience_rate storage compared to the original files size.'''
@@ -423,6 +428,8 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                         help='Path to the log file. (Output will be piped to both the stdout and the log file)', **widget_filesave)
     main_parser.add_argument('--stats_only', action='store_true', required=False, default=False,
                         help='Only show the predicted total size of the ECC file given the parameters.')
+    main_parser.add_argument('-v', '--verbose', action='store_true', required=False, default=False,
+                        help='Verbose mode (show more output).')
 
     # Correction mode arguments
     main_parser.add_argument('-c', '--correct', action='store_true', required=False, default=False,
@@ -448,8 +455,8 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
     args = main_parser.parse_args(argv) # Storing all arguments to args
 
     #-- Set hard-coded variables
-    entrymarker = "\xFF\xFF\xFF\xFF" # marker that will signal the beginning of an ecc entry
-    field_delim = "\xFF" # delimiter between fields (filepath, filesize, hash+ecc blocks) inside an ecc entry
+    entrymarker = "\xFE\xFF\xFE\xFF" # marker that will signal the beginning of an ecc entry - use an alternating pattern of several characters, this avoids confusion (eg: if you use "AAA" as a pattern, if the ecc block of the previous file ends with "EGA" for example, then the full string for example will be "EGAAAAC:\yourfolder\filea.jpg" and then the entry reader will detect the first "AAA" occurrence as the entry start - this should not make the next entry bug because there is an automatic trim - but the previous ecc block will miss one character that could be used to repair the block because it will be "EG" instead of "EGA"!)
+    field_delim = "\xFE\xFF" # delimiter between fields (filepath, filesize, hash+ecc blocks) inside an ecc entry
 
     #-- Set variables from arguments
     folderpath = fullpath(args.input[0])
@@ -466,6 +473,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
     skip_size_below = args.skip_size_below
     always_include_ext = args.always_include_ext
     if always_include_ext: always_include_ext = tuple(['.'+ext for ext in always_include_ext.split('|')]) # prepare a tuple of extensions (prepending with a dot) so that str.endswith() works (it doesn't with a list, only a tuple)
+    verbose = args.verbose
 
     if correct:
         if not args.output:
@@ -572,7 +580,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                     continue
 
                 # Opening the input file's to read its header and compute the ecc/hash blocks
-                #print("Processing file %s\n" % relfilepath) # DEBUGLINE
+                if verbose: print("Processing file %s\n" % relfilepath)
                 with open(os.path.join(folderpath,filepath), 'rb') as file:
                     ecc_entry = (entrymarker+"%s"+field_delim+"%s"+field_delim) % (relfilepath, filesize) # first save the file's metadata (filename, filesize, ...)
                     buf = file.read(header_size) # read the file's header
@@ -629,7 +637,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                 filepath = os.path.join(folderpath, relfilepath) # Get full absolute filepath from given input folder (because the files may be specified in any folder, in the ecc file the paths are relative, so that the files can be moved around or burnt on optical discs)
                 if errors_filelist and relfilepath not in errors_filelist: continue # if a list of files with errors was supplied (for example by rfigc.py), then we will check only those files and skip the others
 
-                #print("Processing file %s\n" % relfilepath) # DEBUGLINE
+                if verbose: print("Processing file %s\n" % relfilepath)
 
                 # -- Check filepath
                 # Check that the filepath isn't corrupted (detectable mainly with replication_rate >= 3, but if a silent error erase a character (not only flip a bit), then it will also be detected this way
