@@ -121,3 +121,5 @@ Todo
 
 - Speed optimize the Reed-Solomon library? (using Numpy or Cython? But I want to keep a pure python implementation available just in case, or make a Cython implementation that is also compatible with normal python). Use pprofile to check where to optimize first.
 Note: PyPy works great, it really speeds things up a lot! However I think that speed can be enhanced, mainly by changing RS.__init__() to use pre-computed matrices (currently it recomputes everytime we change the k and n parameters, and since we use a variable encoding rate in structural-adaptive-ecc.py, this is recomputed everytime), and also by optimizing the RS.__mult__ and RS.__add__ to use numpy's optimized instructions.
+
+- header_ecc.py and structural_adaptive_ecc.py enhance tolerance against faulty hash/ecc blocks and faulty ecc entries (eg: when an entrymarker has wrongly spawned somewhere because of a corruption, when fields aren't well delimited etc.). Could just use multiple try-catch blocks and try to skip errors (if it's only one hash/ecc block fields, we can skip to next block. If it's the whole entry, we skip to next entry).
