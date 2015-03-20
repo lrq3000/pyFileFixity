@@ -447,6 +447,8 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                         help='Path to the log file. (Output will be piped to both the stdout and the log file)', **widget_filesave)
     main_parser.add_argument('--stats_only', action='store_true', required=False, default=False,
                         help='Only show the predicted total size of the ECC file given the parameters.')
+    main_parser.add_argument('-v', '--verbose', action='store_true', required=False, default=False,
+                        help='Verbose mode (show more output).')
 
     # Correction mode arguments
     main_parser.add_argument('-c', '--correct', action='store_true', required=False, default=False,
@@ -492,6 +494,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
     skip_size_below = args.skip_size_below
     always_include_ext = args.always_include_ext
     if always_include_ext: always_include_ext = tuple(['.'+ext for ext in always_include_ext.split('|')]) # prepare a tuple of extensions (prepending with a dot) so that str.endswith() works (it doesn't with a list, only a tuple)
+    verbose = args.verbose
 
     if correct:
         if not args.output:
@@ -607,7 +610,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                     continue
 
                 # Opening the input file's to read its header and compute the ecc/hash blocks
-                #print("Processing file %s\n" % relfilepath) # DEBUGLINE
+                if verbose: print("Processing file %s\n" % relfilepath)
                 for i in xrange(replication_rate): # TODO: that's a shame because we recompute several times the whole ecc entry. Try to put the ecc entry in a temporary file at first, and then streamline copy to the ecc file.
                     with open(os.path.join(folderpath,filepath), 'rb') as file:
                         db.write((entrymarker+"%s"+field_delim+"%s"+field_delim) % (relfilepath, filesize)) # first save the file's metadata (filename, filesize, ...)
@@ -666,7 +669,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                 filepath = os.path.join(folderpath, relfilepath) # Get full absolute filepath from given input folder (because the files may be specified in any folder, in the ecc file the paths are relative, so that the files can be moved around or burnt on optical discs)
                 if errors_filelist and relfilepath not in errors_filelist: continue # if a list of files with errors was supplied (for example by rfigc.py), then we will check only those files and skip the others
 
-                #print("Processing file %s\n" % relfilepath) # DEBUGLINE
+                if verbose: print("Processing file %s\n" % relfilepath)
 
                 # -- Check filepath
                 # Check that the filepath isn't corrupted (detectable mainly with replication_rate >= 3, but if a silent error erase a character (not only flip a bit), then it will also be detected this way
