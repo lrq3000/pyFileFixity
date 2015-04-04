@@ -55,20 +55,20 @@ class RSCoder(object):
         # Generate the generator polynomial for RS codes
         # g(x) = (x-α^1)(x-α^2)...(x-α^(n-k))
         # α is 3, a generator for GF(2^8)
-        g = Polynomial((GF256int(1),))
+        g = Polynomial([GF256int(1)])
         for alpha in xrange(0, 2): self.g[alpha] = copy.deepcopy(g)
         for alpha in xrange(1,n+1):
-            p = Polynomial((GF256int(1), GF256int(3)**alpha))
+            p = Polynomial([GF256int(1), GF256int(3)**alpha])
             g = g * p
-            self.g[n-alpha] = copy.deepcopy(g)
+            self.g[n-alpha] = g # copy.deepcopy(g)
 
         # h(x) = (x-α^(n-k+1))...(x-α^n)
-        h = Polynomial((GF256int(1),))
+        h = Polynomial([GF256int(1)])
         for alpha in xrange(n-1, n+1): self.h[alpha] = copy.deepcopy(h)
         for alpha in xrange(n, 0, -1):
-            p = Polynomial((GF256int(1), GF256int(3)**alpha))
+            p = Polynomial([GF256int(1), GF256int(3)**alpha])
             h = h * p
-            self.h[n-alpha+1] = copy.deepcopy(h)
+            self.h[n-alpha+1] = h
 
         # g*h is used in verification, and is always x^n-1
         # TODO: This is hardcoded for (255,223)
@@ -95,10 +95,10 @@ class RSCoder(object):
                 len(message)))
 
         # Encode message as a polynomial:
-        m = Polynomial(GF256int(ord(x)) for x in message)
+        m = Polynomial([GF256int(ord(x)) for x in message])
 
         # Shift polynomial up by n-k by multiplying by x^(n-k)
-        mprime = m * Polynomial((GF256int(1),) + (GF256int(0),)*(n-k))
+        mprime = m * Polynomial([GF256int(1)] + [GF256int(0)]*(n-k))
 
         # mprime = q*g + b for some q
         # so let's find b:
@@ -113,7 +113,7 @@ class RSCoder(object):
             return c
 
         # Turn the polynomial c back into a byte string
-        return "".join(chr(x) for x in c.coefficients).rjust(n, "\0")
+        return "".join(chr(x) for x in c).rjust(n, "\0")
 
     def verify(self, code, k=None):
         """Verifies the code is valid by testing that the code as a polynomial
@@ -125,7 +125,7 @@ class RSCoder(object):
         h = self.h[k]
         g = self.g[k]
 
-        c = Polynomial(GF256int(ord(x)) for x in code)
+        c = Polynomial([GF256int(ord(x)) for x in code])
 
         # This works too, but takes longer. Both checks are just as valid.
         #return (c*h)%gtimesh == Polynomial(x0=0)
@@ -156,7 +156,7 @@ class RSCoder(object):
                 return r[:-(n-k)].lstrip("\0")
 
         # Turn r into a polynomial
-        r = Polynomial(GF256int(ord(x)) for x in r)
+        r = Polynomial([GF256int(ord(x)) for x in r])
 
         # Compute the syndromes:
         sz = self._syndromes(r, k=k)
@@ -183,13 +183,13 @@ class RSCoder(object):
                 Elist.append(Y[j.index(i)])
             else:
                 Elist.append(GF256int(0))
-        E = Polynomial(reversed(Elist))
+        E = Polynomial( Elist[::-1] )
 
         # And we get our real codeword!
         c = r - E
 
         # Form it back into a string and return all but the last n-k bytes
-        ret = "".join(chr(x) for x in c.coefficients[:-(n-k)])
+        ret = "".join(chr(x) for x in c[:-(n-k)])
         #                                            :-(
 
         if nostrip:
@@ -215,7 +215,7 @@ class RSCoder(object):
 
         # Now build a polynomial out of all our s[l] values
         # s(z) = sum(s_i * z^i, i=1..inf)
-        sz = Polynomial( reversed( s ) )
+        sz = Polynomial( s[::-1] )
 
         return sz
 
@@ -250,10 +250,10 @@ class RSCoder(object):
         if not k: k = self.k
 
         # Initialize:
-        sigma =  [ Polynomial((GF256int(1),)) ]
-        omega =  [ Polynomial((GF256int(1),)) ]
-        tao =    [ Polynomial((GF256int(1),)) ]
-        gamma =  [ Polynomial((GF256int(0),)) ]
+        sigma =  [ Polynomial([GF256int(1)]) ]
+        omega =  [ Polynomial([GF256int(1)]) ]
+        tao =    [ Polynomial([GF256int(1)]) ]
+        gamma =  [ Polynomial([GF256int(0)]) ]
         D =      [ 0 ]
         B =      [ 0 ]
 

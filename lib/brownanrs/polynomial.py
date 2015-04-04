@@ -39,15 +39,16 @@ class Polynomial(object):
             raise TypeError("Specify coefficients list /or/ keyword terms, not"
                     " both")
         if coefficients:
-            # Polynomial((1, 2, 3, ...))
-            c = list(coefficients)
+            # Polynomial( [1, 2, 3, ...] )
+            c = coefficients
+            if isinstance(coefficients, tuple): c = list(coefficients)
             # Expunge any leading 0 coefficients
             while c and c[0] == 0:
                 c.pop(0)
             if not c:
                 c.append(0)
 
-            self.coefficients = tuple(c)
+            self.coefficients = c
         elif sparse:
             # Polynomial(x32=...)
             powers = sparse.keys()
@@ -61,10 +62,10 @@ class Polynomial(object):
                 power = int(power[1:])
                 coefficients[highest - power] = coeff
 
-            self.coefficients = tuple(coefficients)
+            self.coefficients = coefficients
         else:
             # Polynomial()
-            self.coefficients = (0,)
+            self.coefficients = [0]
 
     def __len__(self):
         """Returns the number of terms in the polynomial"""
@@ -75,38 +76,42 @@ class Polynomial(object):
 
     def __add__(self, other):
         diff = len(self) - len(other)
-        if diff > 0:
-            t1 = self.coefficients
-            t2 = (0,) * diff + other.coefficients
-        else:
-            t1 = (0,) * (-diff) + self.coefficients
-            t2 = other.coefficients
+        # if diff > 0:
+            # t1 = self.coefficients
+            # t2 = (0,) * diff + other.coefficients
+        # else:
+            # t1 = (0,) * (-diff) + self.coefficients
+            # t2 = other.coefficients
+        t1 = [0] * (-diff) + self.coefficients
+        t2 = [0] * diff + other.coefficients
 
-        return self.__class__(x+y for x,y in zip(t1, t2))
+        return self.__class__([x+y for x,y in zip(t1, t2)])
 
     def __neg__(self):
-        return self.__class__(-x for x in self.coefficients)
+        return self.__class__([-x for x in self.coefficients])
     def __sub__(self, other):
         return self + -other
             
     def __mul__(self, other):
         terms = [0] * (len(self) + len(other))
 
-        for i1, c1 in enumerate(reversed(self.coefficients)):
+        l1 = len(self)-1
+        l2 = len(other)-1
+        for i1, c1 in enumerate(self.coefficients):
             if c1 == 0:
                 # Optimization
                 continue
-            for i2, c2 in enumerate(reversed(other.coefficients)):
-                terms[i1+i2] += c1*c2
+            for i2, c2 in enumerate(other.coefficients):
+                terms[-((l1-i1)+(l2-i2))-1] += c1*c2 # TODO: optimize
 
-        return self.__class__(reversed(terms))
+        return self.__class__(terms)
 
     def __floordiv__(self, other):
         return divmod(self, other)[0]
     def __mod__(self, other):
         return divmod(self, other)[1]
 
-    def __divmod__(dividend, divisor):
+    def __divmod__(dividend, divisor): # TODO: optimize this by removing the recursivity
         """Implements polynomial long-division recursively. I know this is
         horribly inefficient, no need to rub it in. I know it can even throw
         recursion depth errors on some versions of Python.
@@ -130,16 +135,16 @@ class Polynomial(object):
         if quotient_power < 0:
             # Doesn't divide at all, return 0 for the quotient and the entire
             # dividend as the remainder
-            return class_((0,)), dividend
+            return class_([0]), dividend
 
         # Compute how many times the highest order term in the divisor goes
         # into the dividend
         quotient_coefficient = dividend_coefficient / divisor_coefficient
         quotient = class_( (quotient_coefficient,) + (0,) * quotient_power )
 
-        remander = dividend - quotient * divisor
+        remander = dividend - quotient * divisor # TODO: optimize
 
-        if remander.coefficients == (0,):
+        if remander.coefficients == [0]:
             # Goes in evenly with no remainder, we're done
             return quotient, remander
 
@@ -185,9 +190,8 @@ class Polynomial(object):
         # in the polynomial is added up. Initialized to x^0 = 1
         p = 1
 
-        for term in reversed(self.coefficients):
+        for term in self.coefficients[::-1]:
             c = c + term * p
-
             p = p * x
 
         return c
@@ -198,3 +202,11 @@ class Polynomial(object):
             return 0
         else:
             return self.coefficients[-(degree+1)]
+
+    def __iter__(self):
+        return iter(self.coefficients)
+        #for item in self.coefficients:
+            #yield item
+
+    def  __getitem__(self, slice):
+        return self.coefficients[slice]

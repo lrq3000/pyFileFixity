@@ -50,19 +50,19 @@ class GF256int(int):
             137, 180, 124, 184, 38, 119, 153, 227, 165, 103, 74, 237, 222, 197,
             49, 254, 24, 13, 99, 140, 128, 192, 247, 112, 7)
 
-    def __new__(cls, value):
-        # Check cache
-        # Caching sacrifices a bit of speed for less memory usage. This way,
-        # there are only a max of 256 instances of this class at any time.
-        try:
-            return GF256int.cache[value]
-        except KeyError:
-            if value > 255 or value < 0:
-                raise ValueError("Field elements of GF(2^8) are between 0 and 255. Cannot be %s" % value)
+    # def __new__(cls, value): # Note: works but commented out because on computers, we'd rather use less CPU than use less memory.
+        # # Check cache
+        # # Caching sacrifices a bit of speed for less memory usage. This way,
+        # # there are only a max of 256 instances of this class at any time.
+        # try:
+            # return GF256int.cache[value]
+        # except KeyError:
+            # if value > 255 or value < 0:
+                # raise ValueError("Field elements of GF(2^8) are between 0 and 255. Cannot be %s" % value)
 
-            newval = int.__new__(cls, value)
-            GF256int.cache[int(value)] = newval
-            return newval
+            # newval = int.__new__(cls, value)
+            # GF256int.cache[int(value)] = newval
+            # return newval
 
     def __add__(a, b):
         "Addition in GF(2^8) is the xor of the two"
