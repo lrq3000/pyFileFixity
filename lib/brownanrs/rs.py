@@ -4,6 +4,7 @@
 
 from ff import GF256int
 from polynomial import Polynomial
+import copy
 
 """This module implements Reed-Solomon Encoding.
 It supports arbitrary configurations for n and k, the codeword length and
@@ -48,28 +49,33 @@ class RSCoder(object):
         self.n = n
         self.k = k
 
+        self.g = {}
+        self.h = {}
+
         # Generate the generator polynomial for RS codes
         # g(x) = (x-α^1)(x-α^2)...(x-α^(n-k))
         # α is 3, a generator for GF(2^8)
         g = Polynomial((GF256int(1),))
-        for alpha in xrange(1,n-k+1):
+        for alpha in xrange(0, 2): self.g[alpha] = copy.deepcopy(g)
+        for alpha in xrange(1,n+1):
             p = Polynomial((GF256int(1), GF256int(3)**alpha))
             g = g * p
-        self.g = g
+            self.g[n-alpha] = copy.deepcopy(g)
 
         # h(x) = (x-α^(n-k+1))...(x-α^n)
         h = Polynomial((GF256int(1),))
-        for alpha in xrange(n-k+1,n+1):
+        for alpha in xrange(n-1, n+1): self.h[alpha] = copy.deepcopy(h)
+        for alpha in xrange(n, 0, -1):
             p = Polynomial((GF256int(1), GF256int(3)**alpha))
             h = h * p
-        self.h = h
+            self.h[n-alpha+1] = copy.deepcopy(h)
 
         # g*h is used in verification, and is always x^n-1
         # TODO: This is hardcoded for (255,223)
         # But it doesn't matter since my verify method doesn't use it
-        self.gtimesh = Polynomial(x255=GF256int(1), x0=GF256int(1))
+        #self.gtimesh = Polynomial(x255=GF256int(1), x0=GF256int(1))
 
-    def encode(self, message, poly=False):
+    def encode(self, message, poly=False, k=None):
         """Encode a given string with reed-solomon encoding. Returns a byte
         string with the k message bytes and n-k parity bytes at the end.
         
@@ -82,7 +88,7 @@ class RSCoder(object):
         the polynomial translated back to a string (useful for debugging)
         """
         n = self.n
-        k = self.k
+        if not k: k = self.k
 
         if len(message)>k:
             raise ValueError("Message length is max %d. Message was %d" % (k,
@@ -96,7 +102,7 @@ class RSCoder(object):
 
         # mprime = q*g + b for some q
         # so let's find b:
-        b = mprime % self.g
+        b = mprime % self.g[k]
 
         # Subtract out b, so now c = q*g
         c = mprime - b
@@ -109,15 +115,15 @@ class RSCoder(object):
         # Turn the polynomial c back into a byte string
         return "".join(chr(x) for x in c.coefficients).rjust(n, "\0")
 
-    def verify(self, code):
+    def verify(self, code, k=None):
         """Verifies the code is valid by testing that the code as a polynomial
         code divides g
         returns True/False
         """
         n = self.n
-        k = self.k
-        h = self.h
-        g = self.g
+        if not k: k = self.k
+        h = self.h[k]
+        g = self.g[k]
 
         c = Polynomial(GF256int(ord(x)) for x in code)
 
@@ -128,7 +134,7 @@ class RSCoder(object):
         # suffices for validating a codeword.
         return c % g == Polynomial(x0=0)
 
-    def decode(self, r, nostrip=False):
+    def decode(self, r, nostrip=False, k=None):
         """Given a received string or byte array r, attempts to decode it. If
         it's a valid codeword, or if there are no more than (n-k)/2 errors, the
         message is returned.
@@ -140,7 +146,7 @@ class RSCoder(object):
         useful to make sure no data is lost when decoding binary data.
         """
         n = self.n
-        k = self.k
+        if not k: k = self.k
 
         if self.verify(r):
             # The last n-k bytes are parity
@@ -153,11 +159,11 @@ class RSCoder(object):
         r = Polynomial(GF256int(ord(x)) for x in r)
 
         # Compute the syndromes:
-        sz = self._syndromes(r)
+        sz = self._syndromes(r, k=k)
 
         # Find the error locator polynomial and error evaluator polynomial
         # using the Berlekamp-Massey algorithm
-        sigma, omega = self._berlekamp_massey(sz)
+        sigma, omega = self._berlekamp_massey(sz, k=k)
 
         # Now use Chien's procedure to find the error locations
         # j is an array of integers representing the positions of the errors, 0
@@ -168,7 +174,7 @@ class RSCoder(object):
         # And finally, find the error magnitudes with Forney's Formula
         # Y is an array of GF(2^8) values corresponding to the error magnitude
         # at the position given by the j array
-        Y = self._forney(omega, X)
+        Y = self._forney(omega, X, k=k)
 
         # Put the error and locations together to form the error polynomial
         Elist = []
@@ -194,12 +200,12 @@ class RSCoder(object):
             return ret
 
 
-    def _syndromes(self, r):
+    def _syndromes(self, r, k=None):
         """Given the received codeword r in the form of a Polynomial object,
         computes the syndromes and returns the syndrome polynomial
         """
         n = self.n
-        k = self.k
+        if not k: k = self.k
 
         # s[l] is the received codeword evaluated at α^l for 1 <= l <= s
         # α in this implementation is 3
@@ -213,7 +219,7 @@ class RSCoder(object):
 
         return sz
 
-    def _berlekamp_massey(self, s):
+    def _berlekamp_massey(self, s, k=None):
         """Computes and returns the error locator polynomial (sigma) and the
         error evaluator polynomial (omega)
         The parameter s is the syndrome polynomial (syndromes encoded in a
@@ -241,7 +247,7 @@ class RSCoder(object):
         Error evaluator polynomial omega(z) not written here
         """
         n = self.n
-        k = self.k
+        if not k: k = self.k
 
         # Initialize:
         sigma =  [ Polynomial((GF256int(1),)) ]
@@ -339,10 +345,11 @@ class RSCoder(object):
 
         return X, j
 
-    def _forney(self, omega, X):
+    def _forney(self, omega, X, k=None):
         """Computes the error magnitudes"""
         # XXX Is floor division okay here? Should this be ceiling?
-        s = (self.n - self.k) // 2
+        if not k: k = self.k
+        s = (self.n - k) // 2
 
         Y = []
 

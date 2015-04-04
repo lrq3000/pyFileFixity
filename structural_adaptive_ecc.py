@@ -150,33 +150,38 @@ class ECC(object):
         self.n = n
         self.k = k
 
-    def encode(self, message):
-        message, _ = self.pad(message)
+    def encode(self, message, k=None, debug=False):
+        if not k: k = self.k
+        message, _ = self.pad(message, k=k)
+        if debug: print message
         if rsmode == 1:
-            mesecc = self.ecc_manager.encode(message)
+            mesecc = self.ecc_manager.encode(message, k=k)
             ecc = mesecc[len(message):]
             return ecc
 
-    def decode(self, message, ecc):
-        message, pad = self.pad(message)
+    def decode(self, message, ecc, k=None):
+        if not k: k = self.k
+        message, pad = self.pad(message, k=k)
         if rsmode == 1:
-            res = self.ecc_manager.decode(message + ecc, nostrip=True) # Avoid automatic stripping because we are working with binary streams, thus we should manually strip padding only when we know we padded
+            res = self.ecc_manager.decode(message + ecc, nostrip=True, k=k) # Avoid automatic stripping because we are working with binary streams, thus we should manually strip padding only when we know we padded
             if pad: # Strip the null bytes if we padded the message before decoding
                 res = res[len(pad):len(res)]
             return res
     
-    def pad(self, message):
+    def pad(self, message, k=None):
         '''Automatically pad with null bytes a message if too small, or leave unchanged if not necessary. This allows to keep track of padding and strip the null bytes after decoding reliably with binary data.'''
+        if not k: k = self.k
         pad = None
-        if len(message) < self.k:
-            pad = "\x00" * (self.k-len(message))
+        if len(message) < k:
+            pad = "\x00" * (k-len(message))
             message = pad + message
         return [message, pad]
 
-    def check(self, message, ecc):
+    def check(self, message, ecc, k=None):
+        if not k: k = self.k
         message = self.pad(message)
         if rsmode == 1:
-            return self.ecc_manager.verify(message, ecc)
+            return self.ecc_manager.verify(message, ecc, k=k)
 
 def find_next_entry(file, entrymarker="\xFF\xFF\xFF\xFF"):
     '''Find the next ecc entry in the ecc file, and return the start and end positions. This will find any string length between two entrymarkers. The reading is very tolerant, so it will always return any valid entry (but also scrambled entries if any, but the decoding will ensure everything's ok).'''
@@ -318,7 +323,7 @@ def compute_ecc_params(max_block_size, rate, hasher):
     hash_size = len(hasher) # 32 when we use MD5
     return {"message_size": message_size, "ecc_size": ecc_size, "hash_size": hash_size}
 
-def stream_compute_ecc_hash(hasher, file, max_block_size, header_size, resilience_rates, as_string=False):
+def stream_compute_ecc_hash(ecc_manager, hasher, file, max_block_size, header_size, resilience_rates, as_string=False):
     '''Generate a stream of hash/ecc blocks, of variable encoding rate and size, given a file.'''
     curpos = file.tell()
     size = os.fstat(file.fileno()).st_size
@@ -328,11 +333,11 @@ def stream_compute_ecc_hash(hasher, file, max_block_size, header_size, resilienc
         else:
             rate = feature_scaling(curpos, header_size, size, resilience_rates[1], resilience_rates[2]) # find the rate for the current stream of data (interpolate between stage 2 and stage 3 rates depending on the cursor position in the file)
         ecc_params = compute_ecc_params(max_block_size, rate, hasher)
-        ecc_manager = ECC(max_block_size, ecc_params["message_size"])
+        #ecc_manager = ECC(max_block_size, ecc_params["message_size"])
 
         mes = file.read(ecc_params["message_size"])
         hash = hasher.hash(mes)
-        ecc = ecc_manager.encode(mes)
+        ecc = ecc_manager.encode(mes, k=ecc_params["message_size"])
         #print("mes %i (%i) - ecc %i (%i) - hash %i (%i)" % (len(mes), message_size, len(ecc), ecc_params["ecc_size"], len(hash), ecc_params["hash_size"])) # DEBUGLINE
 
         # Return the result (either in string for easy writing into a file, or in a list for easy post-processing)
@@ -538,7 +543,8 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
     hasher = Hasher("md5")
     ecc_params_header = compute_ecc_params(max_block_size, resilience_rate_s1, hasher) # TODO: not static anymore since it's a variable encoding rate, so we have to recompute it on-the-fly for each block relatively to total file size.
     ecc_manager_header = ECC(max_block_size, ecc_params_header["message_size"])
-    ecc_params_variable_average = compute_ecc_params(max_block_size, resilience_rate_s2 + resilience_rate_s3, hasher) # compute the average variable rate
+    ecc_params_variable_average = compute_ecc_params(max_block_size, resilience_rate_s2 + resilience_rate_s3, hasher) # compute the average variable rate to compute statistics
+    ecc_manager_variable = ECC(max_block_size, 1)
 
     # == Precomputation of ecc file size
     # Precomputing is important so that the user can know what size to expect before starting (and how much time it will take...).
@@ -615,7 +621,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                     with open(os.path.join(folderpath,filepath), 'rb') as file:
                         db.write((entrymarker+"%s"+field_delim+"%s"+field_delim) % (relfilepath, filesize)) # first save the file's metadata (filename, filesize, ...)
                         # -- Hash/Ecc encoding (everything is managed inside stream_compute_ecc_hash)
-                        for ecc_entry in stream_compute_ecc_hash(hasher, file, max_block_size, header_size, resilience_rates, as_string=True): # then compute the ecc/hash entry for this file's header (each value will be a block, a string of hash+ecc per block of data, because Reed-Solomon is limited to a maximum of 255 bytes, including the original_message+ecc! And in addition we want to use a variable rate for RS that is decreasing along the file)
+                        for ecc_entry in stream_compute_ecc_hash(ecc_manager_variable, hasher, file, max_block_size, header_size, resilience_rates, as_string=True): # then compute the ecc/hash entry for this file's header (each value will be a block, a string of hash+ecc per block of data, because Reed-Solomon is limited to a maximum of 255 bytes, including the original_message+ecc! And in addition we want to use a variable rate for RS that is decreasing along the file)
                             db.write(ecc_entry)
                 files_done += 1
         ptee.write("All done! Total number of files processed: %i, skipped: %i" % (files_done, files_skipped))
@@ -723,8 +729,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                                 else:
                                     # Try to repair the block using ECC
                                     ptee.write("File %s: corruption in block %i. Trying to fix it." % (relfilepath, i))
-                                    ecc_manager = ECC(max_block_size, e["ecc_params"]["message_size"])
-                                    repaired_block = ecc_manager.decode(e["message"], e["ecc"])
+                                    repaired_block = ecc_manager_variable.decode(e["message"], e["ecc"], k=e["ecc_params"]["message_size"])
                                     # Check if the repair was successful.
                                     if repaired_block and hasher.hash(repaired_block) == e["hash"]: # If the hash now match the repaired message block, we commit the new block
                                         outfile.write(repaired_block) # save the repaired block
