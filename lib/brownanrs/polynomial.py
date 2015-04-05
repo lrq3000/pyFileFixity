@@ -2,6 +2,7 @@
 # See LICENSE.txt for license terms
 
 from StringIO import StringIO
+from itertools import izip
 
 class Polynomial(object):
     """Completely general polynomial class.
@@ -93,7 +94,7 @@ class Polynomial(object):
         t1 = [0] * (-diff) + self.coefficients
         t2 = [0] * diff + other.coefficients
 
-        return self.__class__([x+y for x,y in zip(t1, t2)])
+        return self.__class__([x+y for x,y in izip(t1, t2)])
 
     def __neg__(self):
         return self.__class__([-x for x in self.coefficients])
