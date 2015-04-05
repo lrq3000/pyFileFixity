@@ -5,6 +5,7 @@
 from ff import GF256int
 from polynomial import Polynomial
 import copy
+import array
 
 """This module implements Reed-Solomon Encoding.
 It supports arbitrary configurations for n and k, the codeword length and
@@ -95,7 +96,7 @@ class RSCoder(object):
                 len(message)))
 
         # Encode message as a polynomial:
-        m = Polynomial([GF256int(ord(x)) for x in message])
+        m = Polynomial([GF256int(x) for x in array.array('b', message).tolist()]) # equivalent to: Polynomial([GF256int(ord(x)) for x in message])
 
         # Shift polynomial up by n-k by multiplying by x^(n-k)
         mprime = m * Polynomial([GF256int(1)] + [GF256int(0)]*(n-k))
@@ -113,7 +114,7 @@ class RSCoder(object):
             return c
 
         # Turn the polynomial c back into a byte string
-        return "".join(chr(x) for x in c).rjust(n, "\0")
+        return array.array('B', c).tostring().rjust(n, "\0") # faster than but equivalent to: "".join(chr(x) for x in c).rjust(n, "\0") # see: https://www.python.org/doc/essays/list2str/
 
     def verify(self, code, k=None):
         """Verifies the code is valid by testing that the code as a polynomial
@@ -125,7 +126,7 @@ class RSCoder(object):
         h = self.h[k]
         g = self.g[k]
 
-        c = Polynomial([GF256int(ord(x)) for x in code])
+        c = Polynomial([GF256int(x) for x in array.array('b', code).tolist()]) # equivalent to: Polynomial([GF256int(ord(x)) for x in code])
 
         # This works too, but takes longer. Both checks are just as valid.
         #return (c*h)%gtimesh == Polynomial(x0=0)
@@ -156,7 +157,7 @@ class RSCoder(object):
                 return r[:-(n-k)].lstrip("\0")
 
         # Turn r into a polynomial
-        r = Polynomial([GF256int(ord(x)) for x in r])
+        r = Polynomial([GF256int(x) for x in array.array('b', r).tolist()]) # equivalent to: Polynomial([GF256int(ord(x)) for x in r])
 
         # Compute the syndromes:
         sz = self._syndromes(r, k=k)
@@ -189,7 +190,7 @@ class RSCoder(object):
         c = r - E
 
         # Form it back into a string and return all but the last n-k bytes
-        ret = "".join(chr(x) for x in c[:-(n-k)])
+        ret = array.array('B', c[:-(n-k)]).tostring() # faster than: "".join(chr(x) for x in c[:-(n-k)])
         #                                            :-(
 
         if nostrip:
