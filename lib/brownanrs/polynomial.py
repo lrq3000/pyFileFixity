@@ -70,9 +70,17 @@ class Polynomial(object):
     def __len__(self):
         """Returns the number of terms in the polynomial"""
         return len(self.coefficients)
-    def degree(self):
+
+    def degree(self, poly=None):
         """Returns the degree of the polynomial"""
-        return len(self.coefficients) - 1
+        if not poly:
+            return len(self.coefficients) - 1
+        elif poly and hasattr("coefficients", poly):
+            return len(poly.coefficients) - 1
+        else:
+            while poly and poly[-1] == 0:
+                poly.pop()   # normalize
+            return len(poly)-1
 
     def __add__(self, other):
         diff = len(self) - len(other)
@@ -111,47 +119,67 @@ class Polynomial(object):
     def __mod__(self, other):
         return divmod(self, other)[1]
 
-    def __divmod__(dividend, divisor): # TODO: optimize this by removing the recursivity
-        """Implements polynomial long-division recursively. I know this is
-        horribly inefficient, no need to rub it in. I know it can even throw
-        recursion depth errors on some versions of Python.
+    def __divmod__(dividend, divisor):
+        '''Implementation of the Polynomial Long Division, without recursion. Polynomial Long Division is very similar to a simple division of integers, see purplemath.com. Implementation inspired by the pseudo-code from Rosettacode.org'''
+        '''Pseudocode:
+        degree(P):
+          return the index of the last non-zero element of P;
+                 if all elements are 0, return -inf
 
-        However, not being a math person myself, I implemented this from my
-        memory of how polynomial long division works. It's straightforward and
-        doesn't do anything fancy. There's no magic here.
-        """
+        polynomial_long_division(N, D) returns (q, r):
+          // N, D, q, r are vectors
+          if degree(D) < 0 then error
+          if degree(N) >= degree(D) then
+            q = 0
+            while degree(N) >= degree(D)
+              d = D shifted right by (degree(N) - degree(D))
+              q[degree(N) - degree(D)] = N(degree(N)) / d(degree(d))
+              // by construction, degree(d) = degree(N) of course
+              d = d * q[degree(N) - degree(D)]
+              N = N - d
+            endwhile
+            r = N
+          else
+            q = 0
+            r = N
+          endif
+          return (q, r)
+          '''
         class_ = dividend.__class__
 
         # See how many times the highest order term
         # of the divisor can go into the highest order term of the dividend
 
         dividend_power = dividend.degree()
-        dividend_coefficient = dividend.coefficients[0]
+        dividend_coefficient = dividend[0]
 
         divisor_power = divisor.degree()
-        divisor_coefficient = divisor.coefficients[0]
+        divisor_coefficient = divisor[0]
 
-        quotient_power = dividend_power - divisor_power
-        if quotient_power < 0:
+        if divisor_power < 0:
+            raise ZeroDivisionError
+        elif dividend_power < divisor_power:
             # Doesn't divide at all, return 0 for the quotient and the entire
             # dividend as the remainder
-            return class_([0]), dividend
-
-        # Compute how many times the highest order term in the divisor goes
-        # into the dividend
-        quotient_coefficient = dividend_coefficient / divisor_coefficient
-        quotient = class_( (quotient_coefficient,) + (0,) * quotient_power )
-
-        remander = dividend - quotient * divisor # TODO: optimize
-
-        if remander.coefficients == [0]:
-            # Goes in evenly with no remainder, we're done
-            return quotient, remander
-
-        # There was a remainder, see how many times the remainder goes into the
-        # divisor
-        morequotient, remander = divmod(remander, divisor)
-        return quotient + morequotient, remander
+            quotient = class_([0])
+            remainder = dividend
+        else: # dividend_power >= divisor_power
+            quotient = class_([0] * dividend_power) # init the quotient array
+            # init the remainder to the dividend, and we will divide it sucessively by the quotient major coefficient
+            remainder = dividend
+            remainder_power = dividend_power
+            remainder_coefficient = dividend_coefficient
+            while remainder_power >= divisor_power: # Until there's no remainder left (or the remainder cannot be divided anymore by the divisor)
+            #for i in xrange(2):
+                quotient_power = remainder_power - divisor_power
+                quotient_coefficient = remainder_coefficient / divisor_coefficient
+                q = class_( [quotient_coefficient] + [0] * quotient_power ) # construct an array with only the quotient major coefficient (we divide the remainder only with the major coeff)
+                quotient = quotient + q # add the coeff to the full quotient
+                remainder = remainder - q * divisor # divide the remainder with the major coeff quotient multiplied by the divisor, this gives us the new remainder
+                remainder_power = remainder.degree() # compute the new remainder degree
+                remainder_coefficient = remainder[0] # Compute the new remainder coefficient
+                #print "quotient: %s remainder: %s" % (quotient, remainder)
+        return quotient, remainder
 
     def __eq__(self, other):
         return self.coefficients == other.coefficients
