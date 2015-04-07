@@ -2,8 +2,12 @@
 # Copyright (c) 2010 Andrew Brown <brownan@cs.duke.edu, brownan@gmail.com>
 # See LICENSE.txt for license terms
 
-from ff import GF256int
-from polynomial import Polynomial
+try:
+    from cff import GF256int
+    from cpolynomial import Polynomial
+except ImportError:
+    from ff import GF256int
+    from polynomial import Polynomial
 import copy
 import array
 

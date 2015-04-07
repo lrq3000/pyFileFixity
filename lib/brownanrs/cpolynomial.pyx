@@ -2,10 +2,16 @@
 # Copyright (c) 2015 Stephen Larroque <LRQ3000@gmail.com>
 # See LICENSE.txt for license terms
 
+import cython
+cimport cython
+
 from cStringIO import StringIO
 from itertools import izip
 
-class Polynomial(object):
+@cython.freelist(64) # fast instanciation via freelist pool
+@cython.nonecheck(False) # Turn off nonecheck locally for the function
+@cython.boundscheck(False) # turn off boundscheck for this function
+cdef class Polynomial:
     """Completely general polynomial class.
 
     Polynomial objects are immutable.
@@ -16,7 +22,11 @@ class Polynomial(object):
     multiplicative identity are 0 and 1 respectively. If you're doing math over
     some strange field or using non-numbers as coefficients, this class will
     need to be modified."""
-    def __init__(self, coefficients=[], **sparse):
+
+    cdef public list coefficients
+    cdef public int degree
+
+    def __cinit__(self, list coefficients=None, **sparse):
         """
         There are three ways to initialize a Polynomial object.
         1) With a list, tuple, or other iterable, creates a polynomial using
@@ -68,45 +78,49 @@ class Polynomial(object):
         else:
             # Polynomial()
             self.coefficients = [0]
+        self.degree = len(self.coefficients)
 
     def __len__(self):
         """Returns the number of terms in the polynomial"""
-        return len(self.coefficients)
+        return self.degree
 
-    def degree(self, poly=None):
-        """Returns the degree of the polynomial"""
-        if not poly:
-            return len(self.coefficients) - 1
-        elif poly and hasattr("coefficients", poly):
-            return len(poly.coefficients) - 1
-        else:
-            while poly and poly[-1] == 0:
-                poly.pop()   # normalize
-            return len(poly)-1
+#    cdef degree(self, Polynomial poly=None):
+#        """Returns the degree of the polynomial"""
+#        if not poly:
+#            return len(self.coefficients) - 1
+#        elif poly and hasattr("coefficients", poly):
+#            return len(poly.coefficients) - 1
+#        else:
+#            while poly and poly[-1] == 0:
+#                poly.pop()   # normalize
+#            return len(poly)-1
 
-    def __add__(self, other):
-        diff = len(self) - len(other)
+    def __add__(self, Polynomial other):
+        cdef int diff = self.degree - other.degree
         # if diff > 0:
             # t1 = self.coefficients
             # t2 = (0,) * diff + other.coefficients
         # else:
             # t1 = (0,) * (-diff) + self.coefficients
             # t2 = other.coefficients
-        t1 = [0] * (-diff) + self.coefficients
-        t2 = [0] * diff + other.coefficients
+        cdef list t1 = [0] * (-diff) + self.coefficients
+        cdef list t2 = [0] * diff + other.coefficients
 
         return self.__class__([x+y for x,y in izip(t1, t2)])
 
     def __neg__(self):
-        return self.__class__([-x for x in self.coefficients])
-    def __sub__(self, other):
+        cdef list c = []
+        for x in self.coefficients:
+            c.append(-x)
+        return self.__class__(c)
+    def __sub__(self, Polynomial other):
         return self + -other
 
-    def __mul__(self, other):
-        terms = [0] * (len(self) + len(other))
+    def __mul__(self, Polynomial other):
+        cdef list terms = [0] * (self.degree + other.degree)
 
-        l1 = len(self)-1
-        l2 = len(other)-1
+        cdef int l1 = self.degree-1
+        cdef int l2 = other.degree-1
         for i1, c1 in enumerate(self.coefficients):
             if c1 == 0:
                 # Optimization
@@ -118,12 +132,12 @@ class Polynomial(object):
                     terms[-((l1-i1)+(l2-i2))-1] += c1*c2
         return self.__class__(terms)
 
-    def __floordiv__(self, other):
+    def __floordiv__(self, Polynomial other):
         return divmod(self, other)[0]
-    def __mod__(self, other):
+    def __mod__(self, Polynomial other):
         return divmod(self, other)[1]
 
-    def __divmod__(dividend, divisor):
+    def __divmod__(Polynomial dividend, Polynomial divisor):
         '''Implementation of the Polynomial Long Division, without recursion. Polynomial Long Division is very similar to a simple division of integers, see purplemath.com. Implementation inspired by the pseudo-code from Rosettacode.org'''
         '''Pseudocode:
         degree(P):
@@ -154,11 +168,19 @@ class Polynomial(object):
         # See how many times the highest order term
         # of the divisor can go into the highest order term of the dividend
 
-        dividend_power = dividend.degree()
-        dividend_coefficient = dividend[0]
+        cdef int dividend_power = dividend.degree
+        cdef int dividend_coefficient = dividend[0]
 
-        divisor_power = divisor.degree()
-        divisor_coefficient = divisor[0]
+        cdef int divisor_power = divisor.degree
+        cdef int divisor_coefficient = divisor[0]
+        
+        cdef int remainder_power
+        cdef int remainder_coefficient
+        cdef int quotient_power
+        cdef int quontient_coefficient
+        cdef Polynomial remainder
+        cdef Polynomial quotient
+        cdef Polynomial q
 
         if divisor_power < 0:
             raise ZeroDivisionError
@@ -179,15 +201,22 @@ class Polynomial(object):
                 q = class_( [quotient_coefficient] + [0] * quotient_power ) # construct an array with only the quotient major coefficient (we divide the remainder only with the major coeff)
                 quotient = quotient + q # add the coeff to the full quotient
                 remainder = remainder - q * divisor # divide the remainder with the major coeff quotient multiplied by the divisor, this gives us the new remainder
-                remainder_power = remainder.degree() # compute the new remainder degree
+                remainder_power = remainder.degree # compute the new remainder degree
                 remainder_coefficient = remainder[0] # Compute the new remainder coefficient
                 #print "quotient: %s remainder: %s" % (quotient, remainder)
         return quotient, remainder
 
-    def __eq__(self, other):
-        return self.coefficients == other.coefficients
-    def __ne__(self, other):
-        return self.coefficients != other.coefficients
+    def __richcmp__(self, other, int op):
+        # 0: <
+        # 2: ==
+        # 4: >
+        # 1: <=
+        # 3: !=
+        # 5: >=
+        if op == 2:
+            return self.coefficients == other.coefficients
+        elif op == 3:
+            return self.coefficients != other.coefficients
     def __hash__(self):
         return hash(self.coefficients)
 
@@ -196,7 +225,7 @@ class Polynomial(object):
         return "%s(%r)" % (n, self.coefficients)
     def __str__(self):
         buf = StringIO()
-        l = len(self) - 1
+        cdef int l = self.degree - 1
         for i, c in enumerate(self.coefficients):
             if not c and i > 0:
                 continue
@@ -212,14 +241,14 @@ class Polynomial(object):
             buf.write(" + ")
         return buf.getvalue()[:-3]
 
-    def evaluate(self, x):
+    cdef evaluate(self, int x):
         "Evaluate this polynomial at value x, returning the result."
         # Holds the sum over each term in the polynomial
-        c = 0
+        cdef int c = 0
 
         # Holds the current power of x. This is multiplied by x after each term
         # in the polynomial is added up. Initialized to x^0 = 1
-        p = 1
+        cdef int p = 1
 
         for term in self.coefficients[::-1]:
             c = c + term * p
@@ -227,9 +256,9 @@ class Polynomial(object):
 
         return c
 
-    def get_coefficient(self, degree):
+    cdef get_coefficient(self, int degree):
         """Returns the coefficient of the specified term"""
-        if degree > self.degree():
+        if degree > self.degree:
             return 0
         else:
             return self.coefficients[-(degree+1)]
