@@ -68,15 +68,16 @@ class Polynomial(object):
         else:
             # Polynomial()
             self.coefficients = [0]
+        self.degree = len(self.coefficients)
 
     def __len__(self):
         """Returns the number of terms in the polynomial"""
-        return len(self.coefficients)
+        return self.degree
 
     def degree(self, poly=None):
         """Returns the degree of the polynomial"""
         if not poly:
-            return len(self.coefficients) - 1
+            return self.degree - 1
         elif poly and hasattr("coefficients", poly):
             return len(poly.coefficients) - 1
         else:
@@ -85,7 +86,7 @@ class Polynomial(object):
             return len(poly)-1
 
     def __add__(self, other):
-        diff = len(self) - len(other)
+        diff = self.degree - other.degree
         # if diff > 0:
             # t1 = self.coefficients
             # t2 = (0,) * diff + other.coefficients
@@ -103,10 +104,10 @@ class Polynomial(object):
         return self + -other
 
     def __mul__(self, other):
-        terms = [0] * (len(self) + len(other))
+        terms = [0] * (self.degree + other.degree)
 
-        l1 = len(self)-1
-        l2 = len(other)-1
+        l1 = self.degree-1
+        l2 = other.degree-1
         for i1, c1 in enumerate(self.coefficients):
             if c1 == 0:
                 # Optimization
@@ -154,10 +155,10 @@ class Polynomial(object):
         # See how many times the highest order term
         # of the divisor can go into the highest order term of the dividend
 
-        dividend_power = dividend.degree()
+        dividend_power = dividend.degree
         dividend_coefficient = dividend[0]
 
-        divisor_power = divisor.degree()
+        divisor_power = divisor.degree
         divisor_coefficient = divisor[0]
 
         if divisor_power < 0:
@@ -179,7 +180,7 @@ class Polynomial(object):
                 q = class_( [quotient_coefficient] + [0] * quotient_power ) # construct an array with only the quotient major coefficient (we divide the remainder only with the major coeff)
                 quotient = quotient + q # add the coeff to the full quotient
                 remainder = remainder - q * divisor # divide the remainder with the major coeff quotient multiplied by the divisor, this gives us the new remainder
-                remainder_power = remainder.degree() # compute the new remainder degree
+                remainder_power = remainder.degree # compute the new remainder degree
                 remainder_coefficient = remainder[0] # Compute the new remainder coefficient
                 #print "quotient: %s remainder: %s" % (quotient, remainder)
         return quotient, remainder
@@ -229,7 +230,7 @@ class Polynomial(object):
 
     def get_coefficient(self, degree):
         """Returns the coefficient of the specified term"""
-        if degree > self.degree():
+        if degree > self.degree:
             return 0
         else:
             return self.coefficients[-(degree+1)]
