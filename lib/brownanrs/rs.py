@@ -2,13 +2,18 @@
 # Copyright (c) 2010 Andrew Brown <brownan@cs.duke.edu, brownan@gmail.com>
 # See LICENSE.txt for license terms
 
-try:
+# try: # Numpy implementation import. NOTE: it's working correctly but it's actually slower than the pure-python implementation! (although the code is vectorized and __mul__ is faster, but it seems it's not enough to speed things up and the numpy call overhead is too much for any gain here).
+    # from npolynomial import nPolynomial as Polynomial
+    # from nff import nGF256int as GF256int
+#except ImportError:
+try: # Cython implementation import. This should be a bit faster than using PyPy with the pure-python implementation.
     from cff import GF256int
     from cpolynomial import Polynomial
-except ImportError:
+except ImportError: # Else, we import the pure-python implementation (the reference, this should always work albeit more slowly).
     from ff import GF256int
     from polynomial import Polynomial
-import copy
+
+#import copy
 import array
 
 """This module implements Reed-Solomon Encoding.
@@ -61,7 +66,7 @@ class RSCoder(object):
         # g(x) = (x-α^1)(x-α^2)...(x-α^(n-k))
         # α is 3, a generator for GF(2^8)
         g = Polynomial([GF256int(1)])
-        for alpha in xrange(0, 2): self.g[alpha] = copy.deepcopy(g)
+        for alpha in xrange(0, 2): self.g[alpha] = g
         for alpha in xrange(1,n+1):
             p = Polynomial([GF256int(1), GF256int(3)**alpha])
             g = g * p
@@ -69,7 +74,7 @@ class RSCoder(object):
 
         # h(x) = (x-α^(n-k+1))...(x-α^n)
         h = Polynomial([GF256int(1)])
-        for alpha in xrange(n-1, n+1): self.h[alpha] = copy.deepcopy(h)
+        for alpha in xrange(n-1, n+1): self.h[alpha] = h
         for alpha in xrange(n, 0, -1):
             p = Polynomial([GF256int(1), GF256int(3)**alpha])
             h = h * p
