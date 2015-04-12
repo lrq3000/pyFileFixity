@@ -21,7 +21,7 @@ def format_interval(t):
 
 
 def format_meter(n, total, elapsed, unit=None, unit_format=False):
-''' Return a string-based progress bar given some parameters '''
+    ''' Return a string-based progress bar given some parameters '''
     # n - number of finished iterations
     # total - total number of iterations, or None
     # elapsed - number of seconds passed since start
@@ -120,7 +120,7 @@ class tqdm:
         self.n = 0
 
     def __iter__(self):
-    ''' For backward-compatibility to use: for x in tqdm(iterable) '''
+        ''' For backward-compatibility to use: for x in tqdm(iterable) '''
         for obj in self.iterable:
             yield obj
             # Now the object was created and processed, so we can print the meter.
@@ -135,7 +135,7 @@ class tqdm:
         self.close()
 
     def close(self):
-    ''' Call this method to force print the last progress bar update based on the latest n value '''
+        ''' Call this method to force print the last progress bar update based on the latest n value '''
         if not self.leave:
             self.sp.print_status('')
             self.file.write('\r')
@@ -146,7 +146,7 @@ class tqdm:
             self.file.write('\n')
 
     def update(self, n=1):
-    ''' To manually update the progress bar, useful for streams such as reading files (set init(total=filesize) and then in the reading loop, use update(len(current_buffer)) ) '''
+        ''' To manually update the progress bar, useful for streams such as reading files (set init(total=filesize) and then in the reading loop, use update(len(current_buffer)) ) '''
         if n < 1:
             n = 1
         self.n += n
