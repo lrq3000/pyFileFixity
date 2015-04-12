@@ -455,8 +455,8 @@ struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial {
 
 
 struct __pyx_vtabstruct_3lib_9brownanrs_11cpolynomial_Polynomial {
-  PyObject *(*evaluate)(struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *, int);
-  PyObject *(*get_coefficient)(struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *, int);
+  int (*evaluate)(struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *, int, int __pyx_skip_dispatch);
+  int (*get_coefficient)(struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *, int, int __pyx_skip_dispatch);
 };
 static struct __pyx_vtabstruct_3lib_9brownanrs_11cpolynomial_Polynomial *__pyx_vtabptr_3lib_9brownanrs_11cpolynomial_Polynomial;
 
@@ -680,6 +680,10 @@ static CYTHON_INLINE int __Pyx_div_int(int, int); /* proto */
 
 #define UNARY_NEG_WOULD_OVERFLOW(x)            (((x) < 0) & ((unsigned long)(x) == 0-(unsigned long)(x)))
 
+static void __Pyx_WriteUnraisable(const char *name, int clineno,
+                                  int lineno, const char *filename,
+                                  int full_traceback);
+
 #include <string.h>
 
 static int __Pyx_SetVtable(PyObject *dict, void *vtable);
@@ -717,8 +721,8 @@ static int __Pyx_check_binary_version(void);
 
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
-static PyObject *__pyx_f_3lib_9brownanrs_11cpolynomial_10Polynomial_evaluate(struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_x); /* proto*/
-static PyObject *__pyx_f_3lib_9brownanrs_11cpolynomial_10Polynomial_get_coefficient(struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_degree); /* proto*/
+static int __pyx_f_3lib_9brownanrs_11cpolynomial_10Polynomial_evaluate(struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_x, int __pyx_skip_dispatch); /* proto*/
+static int __pyx_f_3lib_9brownanrs_11cpolynomial_10Polynomial_get_coefficient(struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_degree, int __pyx_skip_dispatch); /* proto*/
 
 /* Module declarations from 'cython' */
 
@@ -744,8 +748,10 @@ static PyObject *__pyx_pf_3lib_9brownanrs_11cpolynomial_10Polynomial_18__richcmp
 static Py_hash_t __pyx_pf_3lib_9brownanrs_11cpolynomial_10Polynomial_20__hash__(struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_3lib_9brownanrs_11cpolynomial_10Polynomial_22__repr__(struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_3lib_9brownanrs_11cpolynomial_10Polynomial_24__str__(struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_3lib_9brownanrs_11cpolynomial_10Polynomial_26__iter__(struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_3lib_9brownanrs_11cpolynomial_10Polynomial_28__getitem__(struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *__pyx_v_self, PyObject *__pyx_v_slice); /* proto */
+static PyObject *__pyx_pf_3lib_9brownanrs_11cpolynomial_10Polynomial_26evaluate(struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_x); /* proto */
+static PyObject *__pyx_pf_3lib_9brownanrs_11cpolynomial_10Polynomial_28get_coefficient(struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_degree); /* proto */
+static PyObject *__pyx_pf_3lib_9brownanrs_11cpolynomial_10Polynomial_30__iter__(struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_3lib_9brownanrs_11cpolynomial_10Polynomial_32__getitem__(struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *__pyx_v_self, PyObject *__pyx_v_slice); /* proto */
 static PyObject *__pyx_pf_3lib_9brownanrs_11cpolynomial_10Polynomial_12coefficients___get__(struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *__pyx_v_self); /* proto */
 static int __pyx_pf_3lib_9brownanrs_11cpolynomial_10Polynomial_12coefficients_2__set__(struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
 static int __pyx_pf_3lib_9brownanrs_11cpolynomial_10Polynomial_12coefficients_4__del__(struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *__pyx_v_self); /* proto */
@@ -771,6 +777,7 @@ static char __pyx_k_degree[] = "degree";
 static char __pyx_k_import[] = "__import__";
 static char __pyx_k_reverse[] = "reverse";
 static char __pyx_k_StringIO[] = "StringIO";
+static char __pyx_k_evaluate[] = "evaluate";
 static char __pyx_k_getvalue[] = "getvalue";
 static char __pyx_k_TypeError[] = "TypeError";
 static char __pyx_k_cStringIO[] = "cStringIO";
@@ -779,6 +786,7 @@ static char __pyx_k_iteritems[] = "iteritems";
 static char __pyx_k_itertools[] = "itertools";
 static char __pyx_k_pyx_vtable[] = "__pyx_vtable__";
 static char __pyx_k_coefficients[] = "coefficients";
+static char __pyx_k_get_coefficient[] = "get_coefficient";
 static char __pyx_k_ZeroDivisionError[] = "ZeroDivisionError";
 static char __pyx_k_Specify_coefficients_list_or_key[] = "Specify coefficients list /or/ keyword terms, not both";
 static PyObject *__pyx_kp_s_Specify_coefficients_list_or_key;
@@ -792,6 +800,8 @@ static PyObject *__pyx_n_s_class;
 static PyObject *__pyx_n_s_coefficients;
 static PyObject *__pyx_n_s_degree;
 static PyObject *__pyx_n_s_enumerate;
+static PyObject *__pyx_n_s_evaluate;
+static PyObject *__pyx_n_s_get_coefficient;
 static PyObject *__pyx_n_s_getvalue;
 static PyObject *__pyx_n_s_import;
 static PyObject *__pyx_n_s_iteritems;
@@ -3541,7 +3551,7 @@ static PyObject *__pyx_pf_3lib_9brownanrs_11cpolynomial_10Polynomial_24__str__(s
  *             buf.write(" + ")
  *         return buf.getvalue()[:-3]             # <<<<<<<<<<<<<<
  * 
- *     cdef evaluate(self, int x):
+ *     cpdef int evaluate(self, int x):
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_buf, __pyx_n_s_getvalue); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 242; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -3603,27 +3613,74 @@ static PyObject *__pyx_pf_3lib_9brownanrs_11cpolynomial_10Polynomial_24__str__(s
 /* "lib\brownanrs\cpolynomial.pyx":244
  *         return buf.getvalue()[:-3]
  * 
- *     cdef evaluate(self, int x):             # <<<<<<<<<<<<<<
+ *     cpdef int evaluate(self, int x):             # <<<<<<<<<<<<<<
  *         "Evaluate this polynomial at value x, returning the result."
  *         # Holds the sum over each term in the polynomial
  */
 
-static PyObject *__pyx_f_3lib_9brownanrs_11cpolynomial_10Polynomial_evaluate(struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_x) {
+static PyObject *__pyx_pw_3lib_9brownanrs_11cpolynomial_10Polynomial_27evaluate(PyObject *__pyx_v_self, PyObject *__pyx_arg_x); /*proto*/
+static int __pyx_f_3lib_9brownanrs_11cpolynomial_10Polynomial_evaluate(struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_x, int __pyx_skip_dispatch) {
   int __pyx_v_c;
   int __pyx_v_p;
   PyObject *__pyx_v_term = NULL;
-  PyObject *__pyx_r = NULL;
+  int __pyx_r;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
-  Py_ssize_t __pyx_t_3;
+  PyObject *__pyx_t_3 = NULL;
   PyObject *__pyx_t_4 = NULL;
   PyObject *__pyx_t_5 = NULL;
-  int __pyx_t_6;
+  PyObject *__pyx_t_6 = NULL;
+  int __pyx_t_7;
+  Py_ssize_t __pyx_t_8;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("evaluate", 0);
+  /* Check if called by wrapper */
+  if (unlikely(__pyx_skip_dispatch)) ;
+  /* Check if overridden in Python */
+  else if (unlikely(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dictoffset != 0)) {
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_evaluate); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 244; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_1);
+    if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_3lib_9brownanrs_11cpolynomial_10Polynomial_27evaluate)) {
+      __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_x); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 244; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_3);
+      __Pyx_INCREF(__pyx_t_1);
+      __pyx_t_4 = __pyx_t_1; __pyx_t_5 = NULL;
+      if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_4))) {
+        __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_4);
+        if (likely(__pyx_t_5)) {
+          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
+          __Pyx_INCREF(__pyx_t_5);
+          __Pyx_INCREF(function);
+          __Pyx_DECREF_SET(__pyx_t_4, function);
+        }
+      }
+      if (!__pyx_t_5) {
+        __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_3); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 244; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+        __Pyx_GOTREF(__pyx_t_2);
+      } else {
+        __pyx_t_6 = PyTuple_New(1+1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 244; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_6);
+        PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_5); __Pyx_GIVEREF(__pyx_t_5); __pyx_t_5 = NULL;
+        PyTuple_SET_ITEM(__pyx_t_6, 0+1, __pyx_t_3);
+        __Pyx_GIVEREF(__pyx_t_3);
+        __pyx_t_3 = 0;
+        __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_6, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 244; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_2);
+        __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+      }
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 244; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      __pyx_r = __pyx_t_7;
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      goto __pyx_L0;
+    }
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  }
 
   /* "lib\brownanrs\cpolynomial.pyx":247
  *         "Evaluate this polynomial at value x, returning the result."
@@ -3652,14 +3709,14 @@ static PyObject *__pyx_f_3lib_9brownanrs_11cpolynomial_10Polynomial_evaluate(str
  */
   __pyx_t_1 = PyObject_GetItem(__pyx_v_self->coefficients, __pyx_slice__8); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 253; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __pyx_t_1; __Pyx_INCREF(__pyx_t_2); __pyx_t_3 = 0;
+  __pyx_t_2 = __pyx_t_1; __Pyx_INCREF(__pyx_t_2); __pyx_t_8 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
-    if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_2)) break;
+    if (__pyx_t_8 >= PyList_GET_SIZE(__pyx_t_2)) break;
     #if CYTHON_COMPILING_IN_CPYTHON
-    __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 253; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_8); __Pyx_INCREF(__pyx_t_1); __pyx_t_8++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 253; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     #else
-    __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 253; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 253; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     #endif
     __Pyx_XDECREF_SET(__pyx_v_term, __pyx_t_1);
     __pyx_t_1 = 0;
@@ -3675,16 +3732,16 @@ static PyObject *__pyx_f_3lib_9brownanrs_11cpolynomial_10Polynomial_evaluate(str
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_p); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 254; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = PyNumber_Multiply(__pyx_v_term, __pyx_t_4); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 254; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_6 = PyNumber_Multiply(__pyx_v_term, __pyx_t_4); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 254; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = PyNumber_Add(__pyx_t_1, __pyx_t_5); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 254; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyNumber_Add(__pyx_t_1, __pyx_t_6); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 254; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_t_4); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 254; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_t_4); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 254; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_v_c = __pyx_t_6;
+    __pyx_v_c = __pyx_t_7;
 
     /* "lib\brownanrs\cpolynomial.pyx":255
  *         for term in self.coefficients[::-1]:
@@ -3710,19 +3767,15 @@ static PyObject *__pyx_f_3lib_9brownanrs_11cpolynomial_10Polynomial_evaluate(str
  * 
  *         return c             # <<<<<<<<<<<<<<
  * 
- *     cdef get_coefficient(self, int degree):
+ *     cpdef int get_coefficient(self, int degree):
  */
-  __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_c); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 257; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_r = __pyx_t_2;
-  __pyx_t_2 = 0;
+  __pyx_r = __pyx_v_c;
   goto __pyx_L0;
 
   /* "lib\brownanrs\cpolynomial.pyx":244
  *         return buf.getvalue()[:-3]
  * 
- *     cdef evaluate(self, int x):             # <<<<<<<<<<<<<<
+ *     cpdef int evaluate(self, int x):             # <<<<<<<<<<<<<<
  *         "Evaluate this polynomial at value x, returning the result."
  *         # Holds the sum over each term in the polynomial
  */
@@ -3731,12 +3784,66 @@ static PyObject *__pyx_f_3lib_9brownanrs_11cpolynomial_10Polynomial_evaluate(str
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_AddTraceback("lib.brownanrs.cpolynomial.Polynomial.evaluate", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_WriteUnraisable("lib.brownanrs.cpolynomial.Polynomial.evaluate", __pyx_clineno, __pyx_lineno, __pyx_filename, 0);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_term);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* Python wrapper */
+static PyObject *__pyx_pw_3lib_9brownanrs_11cpolynomial_10Polynomial_27evaluate(PyObject *__pyx_v_self, PyObject *__pyx_arg_x); /*proto*/
+static char __pyx_doc_3lib_9brownanrs_11cpolynomial_10Polynomial_26evaluate[] = "Evaluate this polynomial at value x, returning the result.";
+static PyObject *__pyx_pw_3lib_9brownanrs_11cpolynomial_10Polynomial_27evaluate(PyObject *__pyx_v_self, PyObject *__pyx_arg_x) {
+  int __pyx_v_x;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("evaluate (wrapper)", 0);
+  assert(__pyx_arg_x); {
+    __pyx_v_x = __Pyx_PyInt_As_int(__pyx_arg_x); if (unlikely((__pyx_v_x == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 244; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("lib.brownanrs.cpolynomial.Polynomial.evaluate", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_3lib_9brownanrs_11cpolynomial_10Polynomial_26evaluate(((struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *)__pyx_v_self), ((int)__pyx_v_x));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_3lib_9brownanrs_11cpolynomial_10Polynomial_26evaluate(struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_x) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("evaluate", 0);
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_f_3lib_9brownanrs_11cpolynomial_10Polynomial_evaluate(__pyx_v_self, __pyx_v_x, 1)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 244; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("lib.brownanrs.cpolynomial.Polynomial.evaluate", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
@@ -3745,31 +3852,82 @@ static PyObject *__pyx_f_3lib_9brownanrs_11cpolynomial_10Polynomial_evaluate(str
 /* "lib\brownanrs\cpolynomial.pyx":259
  *         return c
  * 
- *     cdef get_coefficient(self, int degree):             # <<<<<<<<<<<<<<
+ *     cpdef int get_coefficient(self, int degree):             # <<<<<<<<<<<<<<
  *         """Returns the coefficient of the specified term"""
  *         if degree > self.degree:
  */
 
-static PyObject *__pyx_f_3lib_9brownanrs_11cpolynomial_10Polynomial_get_coefficient(struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_degree) {
-  PyObject *__pyx_r = NULL;
+static PyObject *__pyx_pw_3lib_9brownanrs_11cpolynomial_10Polynomial_29get_coefficient(PyObject *__pyx_v_self, PyObject *__pyx_arg_degree); /*proto*/
+static int __pyx_f_3lib_9brownanrs_11cpolynomial_10Polynomial_get_coefficient(struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_degree, int __pyx_skip_dispatch) {
+  int __pyx_r;
   __Pyx_RefNannyDeclarations
-  int __pyx_t_1;
-  long __pyx_t_2;
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
   PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  PyObject *__pyx_t_5 = NULL;
+  PyObject *__pyx_t_6 = NULL;
+  int __pyx_t_7;
+  int __pyx_t_8;
+  long __pyx_t_9;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("get_coefficient", 0);
+  /* Check if called by wrapper */
+  if (unlikely(__pyx_skip_dispatch)) ;
+  /* Check if overridden in Python */
+  else if (unlikely(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dictoffset != 0)) {
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_get_coefficient); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 259; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_1);
+    if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_3lib_9brownanrs_11cpolynomial_10Polynomial_29get_coefficient)) {
+      __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_degree); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 259; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_3);
+      __Pyx_INCREF(__pyx_t_1);
+      __pyx_t_4 = __pyx_t_1; __pyx_t_5 = NULL;
+      if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_4))) {
+        __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_4);
+        if (likely(__pyx_t_5)) {
+          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
+          __Pyx_INCREF(__pyx_t_5);
+          __Pyx_INCREF(function);
+          __Pyx_DECREF_SET(__pyx_t_4, function);
+        }
+      }
+      if (!__pyx_t_5) {
+        __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_3); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 259; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+        __Pyx_GOTREF(__pyx_t_2);
+      } else {
+        __pyx_t_6 = PyTuple_New(1+1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 259; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_6);
+        PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_5); __Pyx_GIVEREF(__pyx_t_5); __pyx_t_5 = NULL;
+        PyTuple_SET_ITEM(__pyx_t_6, 0+1, __pyx_t_3);
+        __Pyx_GIVEREF(__pyx_t_3);
+        __pyx_t_3 = 0;
+        __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_6, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 259; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_2);
+        __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+      }
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 259; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      __pyx_r = __pyx_t_7;
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      goto __pyx_L0;
+    }
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  }
 
   /* "lib\brownanrs\cpolynomial.pyx":261
- *     cdef get_coefficient(self, int degree):
+ *     cpdef int get_coefficient(self, int degree):
  *         """Returns the coefficient of the specified term"""
  *         if degree > self.degree:             # <<<<<<<<<<<<<<
  *             return 0
  *         else:
  */
-  __pyx_t_1 = ((__pyx_v_degree > __pyx_v_self->degree) != 0);
-  if (__pyx_t_1) {
+  __pyx_t_8 = ((__pyx_v_degree > __pyx_v_self->degree) != 0);
+  if (__pyx_t_8) {
 
     /* "lib\brownanrs\cpolynomial.pyx":262
  *         """Returns the coefficient of the specified term"""
@@ -3778,9 +3936,7 @@ static PyObject *__pyx_f_3lib_9brownanrs_11cpolynomial_10Polynomial_get_coeffici
  *         else:
  *             return self.coefficients[-(degree+1)]
  */
-    __Pyx_XDECREF(__pyx_r);
-    __Pyx_INCREF(__pyx_int_0);
-    __pyx_r = __pyx_int_0;
+    __pyx_r = 0;
     goto __pyx_L0;
   }
   /*else*/ {
@@ -3792,32 +3948,89 @@ static PyObject *__pyx_f_3lib_9brownanrs_11cpolynomial_10Polynomial_get_coeffici
  * 
  *     def __iter__(self):
  */
-    __Pyx_XDECREF(__pyx_r);
     if (unlikely(__pyx_v_self->coefficients == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
       {__pyx_filename = __pyx_f[0]; __pyx_lineno = 264; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
-    __pyx_t_2 = (-(__pyx_v_degree + 1));
-    __pyx_t_3 = __Pyx_GetItemInt_List(__pyx_v_self->coefficients, __pyx_t_2, long, 1, __Pyx_PyInt_From_long, 1, 1, 0); if (unlikely(__pyx_t_3 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 264; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
-    __Pyx_GOTREF(__pyx_t_3);
-    __pyx_r = __pyx_t_3;
-    __pyx_t_3 = 0;
+    __pyx_t_9 = (-(__pyx_v_degree + 1));
+    __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_self->coefficients, __pyx_t_9, long, 1, __Pyx_PyInt_From_long, 1, 1, 0); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 264; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 264; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    __pyx_r = __pyx_t_7;
     goto __pyx_L0;
   }
 
   /* "lib\brownanrs\cpolynomial.pyx":259
  *         return c
  * 
- *     cdef get_coefficient(self, int degree):             # <<<<<<<<<<<<<<
+ *     cpdef int get_coefficient(self, int degree):             # <<<<<<<<<<<<<<
  *         """Returns the coefficient of the specified term"""
  *         if degree > self.degree:
  */
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("lib.brownanrs.cpolynomial.Polynomial.get_coefficient", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_WriteUnraisable("lib.brownanrs.cpolynomial.Polynomial.get_coefficient", __pyx_clineno, __pyx_lineno, __pyx_filename, 0);
   __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* Python wrapper */
+static PyObject *__pyx_pw_3lib_9brownanrs_11cpolynomial_10Polynomial_29get_coefficient(PyObject *__pyx_v_self, PyObject *__pyx_arg_degree); /*proto*/
+static char __pyx_doc_3lib_9brownanrs_11cpolynomial_10Polynomial_28get_coefficient[] = "Returns the coefficient of the specified term";
+static PyObject *__pyx_pw_3lib_9brownanrs_11cpolynomial_10Polynomial_29get_coefficient(PyObject *__pyx_v_self, PyObject *__pyx_arg_degree) {
+  int __pyx_v_degree;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("get_coefficient (wrapper)", 0);
+  assert(__pyx_arg_degree); {
+    __pyx_v_degree = __Pyx_PyInt_As_int(__pyx_arg_degree); if (unlikely((__pyx_v_degree == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 259; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("lib.brownanrs.cpolynomial.Polynomial.get_coefficient", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_3lib_9brownanrs_11cpolynomial_10Polynomial_28get_coefficient(((struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *)__pyx_v_self), ((int)__pyx_v_degree));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_3lib_9brownanrs_11cpolynomial_10Polynomial_28get_coefficient(struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_degree) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("get_coefficient", 0);
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_f_3lib_9brownanrs_11cpolynomial_10Polynomial_get_coefficient(__pyx_v_self, __pyx_v_degree, 1)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 259; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("lib.brownanrs.cpolynomial.Polynomial.get_coefficient", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
@@ -3833,19 +4046,19 @@ static PyObject *__pyx_f_3lib_9brownanrs_11cpolynomial_10Polynomial_get_coeffici
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3lib_9brownanrs_11cpolynomial_10Polynomial_27__iter__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_3lib_9brownanrs_11cpolynomial_10Polynomial_27__iter__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_3lib_9brownanrs_11cpolynomial_10Polynomial_31__iter__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_3lib_9brownanrs_11cpolynomial_10Polynomial_31__iter__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__iter__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3lib_9brownanrs_11cpolynomial_10Polynomial_26__iter__(((struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *)__pyx_v_self));
+  __pyx_r = __pyx_pf_3lib_9brownanrs_11cpolynomial_10Polynomial_30__iter__(((struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3lib_9brownanrs_11cpolynomial_10Polynomial_26__iter__(struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *__pyx_v_self) {
+static PyObject *__pyx_pf_3lib_9brownanrs_11cpolynomial_10Polynomial_30__iter__(struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3900,19 +4113,19 @@ static PyObject *__pyx_pf_3lib_9brownanrs_11cpolynomial_10Polynomial_26__iter__(
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3lib_9brownanrs_11cpolynomial_10Polynomial_29__getitem__(PyObject *__pyx_v_self, PyObject *__pyx_v_slice); /*proto*/
-static PyObject *__pyx_pw_3lib_9brownanrs_11cpolynomial_10Polynomial_29__getitem__(PyObject *__pyx_v_self, PyObject *__pyx_v_slice) {
+static PyObject *__pyx_pw_3lib_9brownanrs_11cpolynomial_10Polynomial_33__getitem__(PyObject *__pyx_v_self, PyObject *__pyx_v_slice); /*proto*/
+static PyObject *__pyx_pw_3lib_9brownanrs_11cpolynomial_10Polynomial_33__getitem__(PyObject *__pyx_v_self, PyObject *__pyx_v_slice) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__getitem__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3lib_9brownanrs_11cpolynomial_10Polynomial_28__getitem__(((struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *)__pyx_v_self), ((PyObject *)__pyx_v_slice));
+  __pyx_r = __pyx_pf_3lib_9brownanrs_11cpolynomial_10Polynomial_32__getitem__(((struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *)__pyx_v_self), ((PyObject *)__pyx_v_slice));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3lib_9brownanrs_11cpolynomial_10Polynomial_28__getitem__(struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *__pyx_v_self, PyObject *__pyx_v_slice) {
+static PyObject *__pyx_pf_3lib_9brownanrs_11cpolynomial_10Polynomial_32__getitem__(struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *__pyx_v_self, PyObject *__pyx_v_slice) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -4243,6 +4456,8 @@ static int __pyx_setprop_3lib_9brownanrs_11cpolynomial_10Polynomial_degree(PyObj
 }
 
 static PyMethodDef __pyx_methods_3lib_9brownanrs_11cpolynomial_Polynomial[] = {
+  {"evaluate", (PyCFunction)__pyx_pw_3lib_9brownanrs_11cpolynomial_10Polynomial_27evaluate, METH_O, __pyx_doc_3lib_9brownanrs_11cpolynomial_10Polynomial_26evaluate},
+  {"get_coefficient", (PyCFunction)__pyx_pw_3lib_9brownanrs_11cpolynomial_10Polynomial_29get_coefficient, METH_O, __pyx_doc_3lib_9brownanrs_11cpolynomial_10Polynomial_28get_coefficient},
   {0, 0, 0, 0}
 };
 
@@ -4329,7 +4544,7 @@ static PySequenceMethods __pyx_tp_as_sequence_Polynomial = {
 
 static PyMappingMethods __pyx_tp_as_mapping_Polynomial = {
   __pyx_pw_3lib_9brownanrs_11cpolynomial_10Polynomial_3__len__, /*mp_length*/
-  __pyx_pw_3lib_9brownanrs_11cpolynomial_10Polynomial_29__getitem__, /*mp_subscript*/
+  __pyx_pw_3lib_9brownanrs_11cpolynomial_10Polynomial_33__getitem__, /*mp_subscript*/
   0, /*mp_ass_subscript*/
 };
 
@@ -4363,7 +4578,7 @@ static PyTypeObject __pyx_type_3lib_9brownanrs_11cpolynomial_Polynomial = {
   __pyx_tp_clear_3lib_9brownanrs_11cpolynomial_Polynomial, /*tp_clear*/
   __pyx_pw_3lib_9brownanrs_11cpolynomial_10Polynomial_19__richcmp__, /*tp_richcompare*/
   0, /*tp_weaklistoffset*/
-  __pyx_pw_3lib_9brownanrs_11cpolynomial_10Polynomial_27__iter__, /*tp_iter*/
+  __pyx_pw_3lib_9brownanrs_11cpolynomial_10Polynomial_31__iter__, /*tp_iter*/
   0, /*tp_iternext*/
   __pyx_methods_3lib_9brownanrs_11cpolynomial_Polynomial, /*tp_methods*/
   0, /*tp_members*/
@@ -4424,6 +4639,8 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_coefficients, __pyx_k_coefficients, sizeof(__pyx_k_coefficients), 0, 0, 1, 1},
   {&__pyx_n_s_degree, __pyx_k_degree, sizeof(__pyx_k_degree), 0, 0, 1, 1},
   {&__pyx_n_s_enumerate, __pyx_k_enumerate, sizeof(__pyx_k_enumerate), 0, 0, 1, 1},
+  {&__pyx_n_s_evaluate, __pyx_k_evaluate, sizeof(__pyx_k_evaluate), 0, 0, 1, 1},
+  {&__pyx_n_s_get_coefficient, __pyx_k_get_coefficient, sizeof(__pyx_k_get_coefficient), 0, 0, 1, 1},
   {&__pyx_n_s_getvalue, __pyx_k_getvalue, sizeof(__pyx_k_getvalue), 0, 0, 1, 1},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
   {&__pyx_n_s_iteritems, __pyx_k_iteritems, sizeof(__pyx_k_iteritems), 0, 0, 1, 1},
@@ -4506,7 +4723,7 @@ static int __Pyx_InitCachedConstants(void) {
  *             buf.write(" + ")
  *         return buf.getvalue()[:-3]             # <<<<<<<<<<<<<<
  * 
- *     cdef evaluate(self, int x):
+ *     cpdef int evaluate(self, int x):
  */
   __pyx_slice__7 = PySlice_New(Py_None, __pyx_int_neg_3, Py_None); if (unlikely(!__pyx_slice__7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 242; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_slice__7);
@@ -4622,8 +4839,8 @@ PyMODINIT_FUNC PyInit_cpolynomial(void)
   /*--- Function export code ---*/
   /*--- Type init code ---*/
   __pyx_vtabptr_3lib_9brownanrs_11cpolynomial_Polynomial = &__pyx_vtable_3lib_9brownanrs_11cpolynomial_Polynomial;
-  __pyx_vtable_3lib_9brownanrs_11cpolynomial_Polynomial.evaluate = (PyObject *(*)(struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *, int))__pyx_f_3lib_9brownanrs_11cpolynomial_10Polynomial_evaluate;
-  __pyx_vtable_3lib_9brownanrs_11cpolynomial_Polynomial.get_coefficient = (PyObject *(*)(struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *, int))__pyx_f_3lib_9brownanrs_11cpolynomial_10Polynomial_get_coefficient;
+  __pyx_vtable_3lib_9brownanrs_11cpolynomial_Polynomial.evaluate = (int (*)(struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *, int, int __pyx_skip_dispatch))__pyx_f_3lib_9brownanrs_11cpolynomial_10Polynomial_evaluate;
+  __pyx_vtable_3lib_9brownanrs_11cpolynomial_Polynomial.get_coefficient = (int (*)(struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *, int, int __pyx_skip_dispatch))__pyx_f_3lib_9brownanrs_11cpolynomial_10Polynomial_get_coefficient;
   if (PyType_Ready(&__pyx_type_3lib_9brownanrs_11cpolynomial_Polynomial) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 14; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_type_3lib_9brownanrs_11cpolynomial_Polynomial.tp_print = 0;
   #if CYTHON_COMPILING_IN_CPYTHON
@@ -5700,6 +5917,33 @@ static CYTHON_INLINE int __Pyx_div_int(int a, int b) {
     int r = a - q*b;
     q -= ((r != 0) & ((r ^ b) < 0));
     return q;
+}
+
+static void __Pyx_WriteUnraisable(const char *name, CYTHON_UNUSED int clineno,
+                                  CYTHON_UNUSED int lineno, CYTHON_UNUSED const char *filename,
+                                  int full_traceback) {
+    PyObject *old_exc, *old_val, *old_tb;
+    PyObject *ctx;
+    __Pyx_ErrFetch(&old_exc, &old_val, &old_tb);
+    if (full_traceback) {
+        Py_XINCREF(old_exc);
+        Py_XINCREF(old_val);
+        Py_XINCREF(old_tb);
+        __Pyx_ErrRestore(old_exc, old_val, old_tb);
+        PyErr_PrintEx(1);
+    }
+    #if PY_MAJOR_VERSION < 3
+    ctx = PyString_FromString(name);
+    #else
+    ctx = PyUnicode_FromString(name);
+    #endif
+    __Pyx_ErrRestore(old_exc, old_val, old_tb);
+    if (!ctx) {
+        PyErr_WriteUnraisable(Py_None);
+    } else {
+        PyErr_WriteUnraisable(ctx);
+        Py_DECREF(ctx);
+    }
 }
 
 static int __Pyx_SetVtable(PyObject *dict, void *vtable) {

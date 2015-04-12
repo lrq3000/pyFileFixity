@@ -16,7 +16,7 @@ class Polynomial(object):
     multiplicative identity are 0 and 1 respectively. If you're doing math over
     some strange field or using non-numbers as coefficients, this class will
     need to be modified."""
-    def __init__(self, coefficients=[], **sparse):
+    def __init__(self, coefficients=None, **sparse):
         """
         There are three ways to initialize a Polynomial object.
         1) With a list, tuple, or other iterable, creates a polynomial using

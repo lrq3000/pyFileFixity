@@ -241,7 +241,7 @@ cdef class Polynomial:
             buf.write(" + ")
         return buf.getvalue()[:-3]
 
-    cdef evaluate(self, int x):
+    cpdef int evaluate(self, int x):
         "Evaluate this polynomial at value x, returning the result."
         # Holds the sum over each term in the polynomial
         cdef int c = 0
@@ -256,7 +256,7 @@ cdef class Polynomial:
 
         return c
 
-    cdef get_coefficient(self, int degree):
+    cpdef int get_coefficient(self, int degree):
         """Returns the coefficient of the specified term"""
         if degree > self.degree:
             return 0
