@@ -344,7 +344,7 @@ def stream_compute_ecc_hash(ecc_manager, hasher, file, max_block_size, header_si
         if as_string:
             yield "%s%s" % (str(hash),str(ecc))
         else:
-            yield [hash, ecc]
+            yield [hash, ecc, ecc_params]
         curpos = file.tell()
 
 
@@ -603,7 +603,8 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
             # Processing ecc on files
             files_done = 0
             files_skipped = 0
-            for (dirpath, filename) in tqdm.tqdm(recwalk(folderpath), total=filescount, leave=True):
+            bardisp = tqdm.tqdm(total=sizetotal, leave=True, unit='B', unit_format=True)
+            for (dirpath, filename) in recwalk(folderpath):
                 # Get full absolute filepath
                 filepath = os.path.join(dirpath,filename)
                 # Get database relative path (from scanning root folder)
@@ -621,9 +622,12 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                     with open(os.path.join(folderpath,filepath), 'rb') as file:
                         db.write((entrymarker+"%s"+field_delim+"%s"+field_delim) % (relfilepath, filesize)) # first save the file's metadata (filename, filesize, ...)
                         # -- Hash/Ecc encoding (everything is managed inside stream_compute_ecc_hash)
-                        for ecc_entry in stream_compute_ecc_hash(ecc_manager_variable, hasher, file, max_block_size, header_size, resilience_rates, as_string=True): # then compute the ecc/hash entry for this file's header (each value will be a block, a string of hash+ecc per block of data, because Reed-Solomon is limited to a maximum of 255 bytes, including the original_message+ecc! And in addition we want to use a variable rate for RS that is decreasing along the file)
-                            db.write(ecc_entry)
+                        for ecc_entry in stream_compute_ecc_hash(ecc_manager_variable, hasher, file, max_block_size, header_size, resilience_rates, as_string=False): # then compute the ecc/hash entry for this file's header (each value will be a block, a string of hash+ecc per block of data, because Reed-Solomon is limited to a maximum of 255 bytes, including the original_message+ecc! And in addition we want to use a variable rate for RS that is decreasing along the file)
+                            db.write( "%s%s" % (str(ecc_entry[0]),str(ecc_entry[1])) )
+                            bardisp.update(ecc_entry[2]['message_size'])
                 files_done += 1
+        if bardisp.total > bardisp.n: bardisp.n = bardisp.total # small workaround because n may be higher than total (because of files ending before 'message_size', thus the message is padded and in the end, we have outputted and processed a bit more characters than are really in the files, thus why total can be below n). Doing this allows to keep the trace of the progression bar.
+        bardisp.close()
         ptee.write("All done! Total number of files processed: %i, skipped: %i" % (files_done, files_skipped))
         return 0
 

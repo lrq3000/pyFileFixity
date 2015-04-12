@@ -604,6 +604,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                 errors_filelist.append(row['filepath'])
 
         # Read the ecc file
+        dbsize = os.stat(database).st_size # must get db file size before opening it in order not to move the cursor
         with open(database, 'rb') as db:
             # Counters
             files_count = 0
@@ -614,11 +615,13 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
 
             # Main loop: process each ecc entry
             entry = 1 # to start the while loop
-            while tqdm.tqdm(entry, leave=True): # TODO: update progress bar based on ecc file size
+            bardisp = tqdm.tqdm(total=dbsize, leave=True, desc='DBREAD', unit='B', unit_format=True) # display progress bar based on reading the database file (since we don't know how many files we will process beforehand nor how many total entries we have)
+            while entry:
 
                 # -- Read the next ecc entry (extract the raw string from the ecc file)
                 if replication_rate == 1:
                     entry = read_next_entry(db, entrymarker)
+                    if entry: bardisp.update(len(entry)) # update progress bar
 
                 # -- Disambiguation/Replication management: if replication rate was used, then fetch all entries for the same file at once, and then disambiguate by majority vote
                 else:
@@ -626,6 +629,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                     for i in xrange(replication_rate):
                         entries.append(read_next_entry(db, entrymarker))
                     entry = entries_disambiguate(entries, field_delim, ptee)
+                    if entry: bardisp.update(len(entry)*replication_rate) # update progress bar
                 # No entry? Then we finished because this is the end of file (stop condition)
                 if not entry: break
 
@@ -709,6 +713,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                     filestats = os.stat(filepath)
                     os.utime(outfilepath, (filestats.st_atime, filestats.st_mtime))
         # All ecc entries processed for checking and potentally repairing, we're done correcting!
+        bardisp.close() # at the end, the bar may not be 100% because of the headers that are skipped by read_next_entry() and are not accounted in bardisp.
         ptee.write("All done! Stats:\n- Total files processed: %i\n- Total files corrupted: %i\n- Total files repaired completely: %i\n- Total files repaired partially: %i\n- Total files corrupted but not repaired at all: %i\n- Total files skipped: %i" % (files_count, files_corrupted, files_repaired_completely, files_repaired_partially, files_corrupted - (files_repaired_partially + files_repaired_completely), files_skipped) )
         return 0
 
