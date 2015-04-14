@@ -7,9 +7,9 @@ from itertools import izip
 
 class Polynomial(object):
     """Completely general polynomial class.
-
+    
     Polynomial objects are immutable.
-
+    
     Implementation note: while this class is mostly agnostic to the type of
     coefficients used (as long as they support the usual mathematical
     operations), the Polynomial class still assumes the additive identity and
@@ -43,7 +43,7 @@ class Polynomial(object):
         if coefficients is not None:
             # Polynomial( [1, 2, 3, ...] )
             #c = coefficients
-            #if isinstance(coefficients, tuple): c = list(coefficients)
+            #if isinstance(coefficients, tuple): coefficients = list(coefficients)
             # Expunge any leading 0 coefficients
             while len(coefficients) > 0 and coefficients[0] == 0:
                 coefficients.pop(0)
@@ -68,16 +68,17 @@ class Polynomial(object):
         else:
             # Polynomial()
             self.coefficients = [0]
-        self.degree = len(self.coefficients)
+        self.degree = len(self.coefficients)-1
 
     def __len__(self):
         """Returns the number of terms in the polynomial"""
-        return self.degree
+        return self.degree+1
 
-    def degree(self, poly=None):
+    def get_degree(self, poly=None):
         """Returns the degree of the polynomial"""
         if not poly:
-            return self.degree - 1
+            return self.degree
+            #return len(self.coefficients) - 1
         elif poly and hasattr("coefficients", poly):
             return len(poly.coefficients) - 1
         else:
@@ -86,28 +87,21 @@ class Polynomial(object):
             return len(poly)-1
 
     def __add__(self, other):
-        diff = self.degree - other.degree
-        # if diff > 0:
-            # t1 = self.coefficients
-            # t2 = (0,) * diff + other.coefficients
-        # else:
-            # t1 = (0,) * (-diff) + self.coefficients
-            # t2 = other.coefficients
+        diff = len(self) - len(other)
         t1 = [0] * (-diff) + self.coefficients
         t2 = [0] * diff + other.coefficients
-
         return self.__class__([x+y for x,y in izip(t1, t2)])
 
     def __neg__(self):
         return self.__class__([-x for x in self.coefficients])
     def __sub__(self, other):
         return self + -other
-
+            
     def __mul__(self, other):
-        terms = [0] * (self.degree + other.degree)
+        terms = [0] * (len(self) + len(other))
 
-        l1 = self.degree-1
-        l2 = other.degree-1
+        l1 = self.degree
+        l2 = other.degree
         for i1, c1 in enumerate(self.coefficients):
             if c1 == 0:
                 # Optimization
@@ -174,7 +168,10 @@ class Polynomial(object):
             remainder = dividend
             remainder_power = dividend_power
             remainder_coefficient = dividend_coefficient
-            while remainder_power >= divisor_power: # Until there's no remainder left (or the remainder cannot be divided anymore by the divisor)
+            quotient_power = 1 # just to start the loop. Must not be set to remainder_power - divisor_power because it may skip the loop altogether (and we want to at least do one iteration to set the quotient)
+
+            # Compute how many times the highest order term in the divisor goes into the dividend
+            while quotient_power != 0: # Until there's no remainder left (or the remainder cannot be divided anymore by the divisor)
                 quotient_power = remainder_power - divisor_power
                 quotient_coefficient = remainder_coefficient / divisor_coefficient
                 q = class_( [quotient_coefficient] + [0] * quotient_power ) # construct an array with only the quotient major coefficient (we divide the remainder only with the major coeff)
@@ -182,8 +179,49 @@ class Polynomial(object):
                 remainder = remainder - q * divisor # divide the remainder with the major coeff quotient multiplied by the divisor, this gives us the new remainder
                 remainder_power = remainder.degree # compute the new remainder degree
                 remainder_coefficient = remainder[0] # Compute the new remainder coefficient
-                #print "quotient: %s remainder: %s" % (quotient, remainder)
         return quotient, remainder
+
+    def __olddivmod__(dividend, divisor):
+        """Implements polynomial long-division recursively. I know this is
+        horribly inefficient, no need to rub it in. I know it can even throw
+        recursion depth errors on some versions of Python.
+
+        However, not being a math person myself, I implemented this from my
+        memory of how polynomial long division works. It's straightforward and
+        doesn't do anything fancy. There's no magic here.
+        """
+        class_ = dividend.__class__
+
+        # See how many times the highest order term
+        # of the divisor can go into the highest order term of the dividend
+
+        dividend_power = dividend.degree
+        dividend_coefficient = dividend.coefficients[0]
+
+        divisor_power = divisor.degree
+        divisor_coefficient = divisor.coefficients[0]
+
+        quotient_power = dividend_power - divisor_power
+        if quotient_power < 0:
+            # Doesn't divide at all, return 0 for the quotient and the entire
+            # dividend as the remainder
+            return class_([0]), dividend
+
+        # Compute how many times the highest order term in the divisor goes
+        # into the dividend
+        quotient_coefficient = dividend_coefficient / divisor_coefficient
+        quotient = class_( [quotient_coefficient] + [0] * quotient_power )
+
+        remainder = dividend - quotient * divisor
+
+        if remainder.coefficients == [0]:
+            # Goes in evenly with no remainder, we're done
+            return quotient, remainder
+
+        # There was a remainder, see how many times the remainder goes into the
+        # divisor
+        morequotient, remainder = divmod(remainder, divisor)
+        return quotient + morequotient, remainder
 
     def __eq__(self, other):
         return self.coefficients == other.coefficients
@@ -224,6 +262,7 @@ class Polynomial(object):
 
         for term in self.coefficients[::-1]:
             c = c + term * p
+
             p = p * x
 
         return c
@@ -234,7 +273,7 @@ class Polynomial(object):
             return 0
         else:
             return self.coefficients[-(degree+1)]
-
+    
     def __iter__(self):
         return iter(self.coefficients)
         #for item in self.coefficients:
