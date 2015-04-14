@@ -68,11 +68,13 @@ class Polynomial(object):
         else:
             # Polynomial()
             self.coefficients = [0]
+        # In any case, compute the degree of the polynomial (=the maximum degree)
         self.degree = len(self.coefficients)-1
 
     def __len__(self):
         """Returns the number of terms in the polynomial"""
         return self.degree+1
+        # return len(self.coefficients)
 
     def get_degree(self, poly=None):
         """Returns the degree of the polynomial"""
@@ -181,47 +183,47 @@ class Polynomial(object):
                 remainder_coefficient = remainder[0] # Compute the new remainder coefficient
         return quotient, remainder
 
-    def __olddivmod__(dividend, divisor):
-        """Implements polynomial long-division recursively. I know this is
-        horribly inefficient, no need to rub it in. I know it can even throw
-        recursion depth errors on some versions of Python.
+    # def __olddivmod__(dividend, divisor):
+        # """Implements polynomial long-division recursively. I know this is
+        # horribly inefficient, no need to rub it in. I know it can even throw
+        # recursion depth errors on some versions of Python.
 
-        However, not being a math person myself, I implemented this from my
-        memory of how polynomial long division works. It's straightforward and
-        doesn't do anything fancy. There's no magic here.
-        """
-        class_ = dividend.__class__
+        # However, not being a math person myself, I implemented this from my
+        # memory of how polynomial long division works. It's straightforward and
+        # doesn't do anything fancy. There's no magic here.
+        # """
+        # class_ = dividend.__class__
 
-        # See how many times the highest order term
-        # of the divisor can go into the highest order term of the dividend
+        # # See how many times the highest order term
+        # # of the divisor can go into the highest order term of the dividend
 
-        dividend_power = dividend.degree
-        dividend_coefficient = dividend.coefficients[0]
+        # dividend_power = dividend.degree
+        # dividend_coefficient = dividend.coefficients[0]
 
-        divisor_power = divisor.degree
-        divisor_coefficient = divisor.coefficients[0]
+        # divisor_power = divisor.degree
+        # divisor_coefficient = divisor.coefficients[0]
 
-        quotient_power = dividend_power - divisor_power
-        if quotient_power < 0:
-            # Doesn't divide at all, return 0 for the quotient and the entire
-            # dividend as the remainder
-            return class_([0]), dividend
+        # quotient_power = dividend_power - divisor_power
+        # if quotient_power < 0:
+            # # Doesn't divide at all, return 0 for the quotient and the entire
+            # # dividend as the remainder
+            # return class_([0]), dividend
 
-        # Compute how many times the highest order term in the divisor goes
-        # into the dividend
-        quotient_coefficient = dividend_coefficient / divisor_coefficient
-        quotient = class_( [quotient_coefficient] + [0] * quotient_power )
+        # # Compute how many times the highest order term in the divisor goes
+        # # into the dividend
+        # quotient_coefficient = dividend_coefficient / divisor_coefficient
+        # quotient = class_( [quotient_coefficient] + [0] * quotient_power )
 
-        remainder = dividend - quotient * divisor
+        # remainder = dividend - quotient * divisor
 
-        if remainder.coefficients == [0]:
-            # Goes in evenly with no remainder, we're done
-            return quotient, remainder
+        # if remainder.coefficients == [0]:
+            # # Goes in evenly with no remainder, we're done
+            # return quotient, remainder
 
-        # There was a remainder, see how many times the remainder goes into the
-        # divisor
-        morequotient, remainder = divmod(remainder, divisor)
-        return quotient + morequotient, remainder
+        # # There was a remainder, see how many times the remainder goes into the
+        # # divisor
+        # morequotient, remainder = divmod(remainder, divisor)
+        # return quotient + morequotient, remainder
 
     def __eq__(self, other):
         return self.coefficients == other.coefficients
@@ -252,7 +254,7 @@ class Polynomial(object):
         return buf.getvalue()[:-3]
 
     def evaluate(self, x):
-        "Evaluate this polynomial at value x, returning the result."
+        '''Evaluate this polynomial at value x, returning the result.'''
         # Holds the sum over each term in the polynomial
         c = 0
 
@@ -262,13 +264,12 @@ class Polynomial(object):
 
         for term in self.coefficients[::-1]:
             c = c + term * p
-
             p = p * x
 
         return c
 
     def get_coefficient(self, degree):
-        """Returns the coefficient of the specified term"""
+        '''Returns the coefficient of the specified term'''
         if degree > self.degree:
             return 0
         else:
