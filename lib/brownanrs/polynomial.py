@@ -42,7 +42,6 @@ class Polynomial(object):
                     " both")
         if coefficients is not None:
             # Polynomial( [1, 2, 3, ...] )
-            #c = coefficients
             #if isinstance(coefficients, tuple): coefficients = list(coefficients)
             # Expunge any leading 0 coefficients
             while len(coefficients) > 0 and coefficients[0] == 0:

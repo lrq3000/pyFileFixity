@@ -81,9 +81,10 @@ cdef class GF256int(cython.int):
     def __add__(cython.int a, cython.int b):
         "Addition in GF(2^8) is the xor of the two"
         return GF256int.__new__(GF256int, a ^ b)
-    __sub__ = __add__
-    __radd__ = __add__
-    __rsub__ = __add__
+    def __sub__(a, b): return a + b
+    def __radd__(a, b): return a + b
+    def __rsub__(a, b): return a + 1
+
     def __neg__(self):
         return self
 
@@ -98,13 +99,13 @@ cdef class GF256int(cython.int):
     __rmul__ = __mul__
 
     def __pow__(self, cython.int power, mod):
-        if isinstance(power, GF256int):
-            raise TypeError("Raising a Field element to another Field element is not defined. power must be a regular integer")
+        #if isinstance(power, GF256int): # no need anymore because cython.int power types correctly power so that it's always a regular integer.
+            #raise TypeError("Raising a Field element to another Field element is not defined. power must be a regular integer")
         cdef int x = GF256int_logtable[self]
         cdef int z = (x * power) % 255
         return GF256int.__new__(GF256int, GF256int_exptable[z])
 
-    cdef inverse(self):
+    cpdef inverse(self):
         cdef int e = GF256int_logtable[self]
         return GF256int.__new__(GF256int, GF256int_exptable[255 - e])
 

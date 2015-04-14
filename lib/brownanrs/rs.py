@@ -6,12 +6,12 @@
     # from npolynomial import nPolynomial as Polynomial
     # from nff import nGF256int as GF256int
 #except ImportError:
-# try: # Cython implementation import. This should be a bit faster than using PyPy with the pure-python implementation.
-    # from cff import GF256int
-    # from cpolynomial import Polynomial
-# except ImportError: # Else, we import the pure-python implementation (the reference, this should always work albeit more slowly).
-from ff import GF256int
-from polynomial import Polynomial
+try: # Cython implementation import. This should be a bit faster than using PyPy with the pure-python implementation.
+    from cff import GF256int
+    from cpolynomial import Polynomial
+except ImportError: # Else, we import the pure-python implementation (the reference, this should always work albeit more slowly).
+    from ff import GF256int
+    from polynomial import Polynomial
 
 #import copy
 #import array # avoid because PyPy has troubles! https://bitbucket.org/pypy/pypy/issue/1989/arrayarray-creation-5x-slower-than-cpython

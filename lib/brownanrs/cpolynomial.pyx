@@ -47,15 +47,14 @@ cdef class Polynomial:
         >>> print Polynomial(x5=5, x9=4, x0=2) 
         4x^9 + 5x^5 + 2
         """
-        if coefficients and sparse:
+        if coefficients is not None and sparse:
             raise TypeError("Specify coefficients list /or/ keyword terms, not"
                     " both")
-        if coefficients:
+        if coefficients is not None:
             # Polynomial( [1, 2, 3, ...] )
-            #c = coefficients
-            #if isinstance(coefficients, tuple): c = list(coefficients)
+            #if isinstance(coefficients, tuple): coefficients = list(coefficients)
             # Expunge any leading 0 coefficients
-            while coefficients and coefficients[0] == 0:
+            while len(coefficients) > 0 and coefficients[0] == 0:
                 coefficients.pop(0)
             if not coefficients:
                 coefficients.append(0)
@@ -78,16 +77,19 @@ cdef class Polynomial:
         else:
             # Polynomial()
             self.coefficients = [0]
-        self.degree = len(self.coefficients)
+        # In any case, compute the degree of the polynomial (=the maximum degree)
+        self.degree = len(self.coefficients)-1
 
     def __len__(self):
         """Returns the number of terms in the polynomial"""
-        return self.degree
+        return self.degree+1
+        # return len(self.coefficients)
 
-#    cdef degree(self, Polynomial poly=None):
+#    cpdef get_degree(self, Polynomial poly=None):
 #        """Returns the degree of the polynomial"""
 #        if not poly:
-#            return len(self.coefficients) - 1
+#            return self.degree
+#            #return len(self.coefficients) - 1
 #        elif poly and hasattr("coefficients", poly):
 #            return len(poly.coefficients) - 1
 #        else:
@@ -96,16 +98,9 @@ cdef class Polynomial:
 #            return len(poly)-1
 
     def __add__(self, Polynomial other):
-        cdef int diff = self.degree - other.degree
-        # if diff > 0:
-            # t1 = self.coefficients
-            # t2 = (0,) * diff + other.coefficients
-        # else:
-            # t1 = (0,) * (-diff) + self.coefficients
-            # t2 = other.coefficients
+        cdef int diff = len(self) - len(other)
         cdef list t1 = [0] * (-diff) + self.coefficients
         cdef list t2 = [0] * diff + other.coefficients
-
         return self.__class__([x+y for x,y in izip(t1, t2)])
 
     def __neg__(self):
@@ -117,10 +112,10 @@ cdef class Polynomial:
         return self + -other
 
     def __mul__(self, Polynomial other):
-        cdef list terms = [0] * (self.degree + other.degree)
+        cdef list terms = [0] * (len(self) + len(other))
 
-        cdef int l1 = self.degree-1
-        cdef int l2 = other.degree-1
+        cdef int l1 = self.degree
+        cdef int l2 = other.degree
         for i1, c1 in enumerate(self.coefficients):
             if c1 == 0:
                 # Optimization
@@ -169,15 +164,15 @@ cdef class Polynomial:
         # of the divisor can go into the highest order term of the dividend
 
         cdef int dividend_power = dividend.degree
-        cdef int dividend_coefficient = dividend[0]
+        cdef object dividend_coefficient = dividend[0]
 
         cdef int divisor_power = divisor.degree
-        cdef int divisor_coefficient = divisor[0]
+        cdef object divisor_coefficient = divisor[0]
         
         cdef int remainder_power
-        cdef int remainder_coefficient
+        cdef object remainder_coefficient # Cannot type as int: can be any type of object, including GF256int. Thus we cannot type except as an object, but certainly not int.
         cdef int quotient_power
-        cdef int quontient_coefficient
+        cdef object quotient_coefficient
         cdef Polynomial remainder
         cdef Polynomial quotient
         cdef Polynomial q
@@ -195,7 +190,10 @@ cdef class Polynomial:
             remainder = dividend
             remainder_power = dividend_power
             remainder_coefficient = dividend_coefficient
-            while remainder_power >= divisor_power: # Until there's no remainder left (or the remainder cannot be divided anymore by the divisor)
+            quotient_power = 1 # just to start the loop. Must not be set to remainder_power - divisor_power because it may skip the loop altogether (and we want to at least do one iteration to set the quotient)
+
+            # Compute how many times the highest order term in the divisor goes into the dividend
+            while quotient_power != 0: # Until there's no remainder left (or the remainder cannot be divided anymore by the divisor)
                 quotient_power = remainder_power - divisor_power
                 quotient_coefficient = remainder_coefficient / divisor_coefficient
                 q = class_( [quotient_coefficient] + [0] * quotient_power ) # construct an array with only the quotient major coefficient (we divide the remainder only with the major coeff)
@@ -225,7 +223,7 @@ cdef class Polynomial:
         return "%s(%r)" % (n, self.coefficients)
     def __str__(self):
         buf = StringIO()
-        cdef int l = self.degree - 1
+        cdef int l = len(self) - 1
         for i, c in enumerate(self.coefficients):
             if not c and i > 0:
                 continue
@@ -241,8 +239,8 @@ cdef class Polynomial:
             buf.write(" + ")
         return buf.getvalue()[:-3]
 
-    cpdef int evaluate(self, int x):
-        "Evaluate this polynomial at value x, returning the result."
+    cpdef int evaluate(self, x):
+        '''Evaluate this polynomial at value x, returning the result.'''
         # Holds the sum over each term in the polynomial
         cdef int c = 0
 
@@ -257,7 +255,7 @@ cdef class Polynomial:
         return c
 
     cpdef int get_coefficient(self, int degree):
-        """Returns the coefficient of the specified term"""
+        '''Returns the coefficient of the specified term'''
         if degree > self.degree:
             return 0
         else:
