@@ -190,17 +190,17 @@ cdef class Polynomial:
             remainder = dividend
             remainder_power = dividend_power
             remainder_coefficient = dividend_coefficient
-            quotient_power = 1 # just to start the loop. Must not be set to remainder_power - divisor_power because it may skip the loop altogether (and we want to at least do one iteration to set the quotient)
+            quotient_power = remainder_power - divisor_power # need to set at least 1 just to start the loop. Warning if set to remainder_power - divisor_power: because it may skip the loop altogether (and we want to at least do one iteration to set the quotient)
 
             # Compute how many times the highest order term in the divisor goes into the dividend
-            while quotient_power != 0: # Until there's no remainder left (or the remainder cannot be divided anymore by the divisor)
-                quotient_power = remainder_power - divisor_power
+            while quotient_power >= 0 and remainder.coefficients != [0]: # Until there's no remainder left (or the remainder cannot be divided anymore by the divisor)
                 quotient_coefficient = remainder_coefficient / divisor_coefficient
                 q = class_( [quotient_coefficient] + [0] * quotient_power ) # construct an array with only the quotient major coefficient (we divide the remainder only with the major coeff)
                 quotient = quotient + q # add the coeff to the full quotient
                 remainder = remainder - q * divisor # divide the remainder with the major coeff quotient multiplied by the divisor, this gives us the new remainder
                 remainder_power = remainder.degree # compute the new remainder degree
                 remainder_coefficient = remainder[0] # Compute the new remainder coefficient
+                quotient_power = remainder_power - divisor_power
                 #print "quotient: %s remainder: %s" % (quotient, remainder)
         return quotient, remainder
 

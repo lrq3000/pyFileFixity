@@ -2440,6 +2440,7 @@ static PyObject *__pyx_pf_3lib_9brownanrs_11cpolynomial_10Polynomial_16__divmod_
   PyObject *__pyx_t_5 = NULL;
   PyObject *__pyx_t_6 = NULL;
   PyObject *__pyx_t_7 = NULL;
+  int __pyx_t_8;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -2650,7 +2651,7 @@ static PyObject *__pyx_pf_3lib_9brownanrs_11cpolynomial_10Polynomial_16__divmod_
  *             remainder = dividend
  *             remainder_power = dividend_power             # <<<<<<<<<<<<<<
  *             remainder_coefficient = dividend_coefficient
- *             quotient_power = 1 # just to start the loop. Must not be set to remainder_power - divisor_power because it may skip the loop altogether (and we want to at least do one iteration to set the quotient)
+ *             quotient_power = remainder_power - divisor_power # need to set at least 1 just to start the loop. Warning if set to remainder_power - divisor_power: because it may skip the loop altogether (and we want to at least do one iteration to set the quotient)
  */
     __pyx_v_remainder_power = __pyx_v_dividend_power;
 
@@ -2658,7 +2659,7 @@ static PyObject *__pyx_pf_3lib_9brownanrs_11cpolynomial_10Polynomial_16__divmod_
  *             remainder = dividend
  *             remainder_power = dividend_power
  *             remainder_coefficient = dividend_coefficient             # <<<<<<<<<<<<<<
- *             quotient_power = 1 # just to start the loop. Must not be set to remainder_power - divisor_power because it may skip the loop altogether (and we want to at least do one iteration to set the quotient)
+ *             quotient_power = remainder_power - divisor_power # need to set at least 1 just to start the loop. Warning if set to remainder_power - divisor_power: because it may skip the loop altogether (and we want to at least do one iteration to set the quotient)
  * 
  */
     __Pyx_INCREF(__pyx_v_dividend_coefficient);
@@ -2667,57 +2668,64 @@ static PyObject *__pyx_pf_3lib_9brownanrs_11cpolynomial_10Polynomial_16__divmod_
     /* "lib\brownanrs\cpolynomial.pyx":193
  *             remainder_power = dividend_power
  *             remainder_coefficient = dividend_coefficient
- *             quotient_power = 1 # just to start the loop. Must not be set to remainder_power - divisor_power because it may skip the loop altogether (and we want to at least do one iteration to set the quotient)             # <<<<<<<<<<<<<<
+ *             quotient_power = remainder_power - divisor_power # need to set at least 1 just to start the loop. Warning if set to remainder_power - divisor_power: because it may skip the loop altogether (and we want to at least do one iteration to set the quotient)             # <<<<<<<<<<<<<<
  * 
  *             # Compute how many times the highest order term in the divisor goes into the dividend
  */
-    __pyx_v_quotient_power = 1;
+    __pyx_v_quotient_power = (__pyx_v_remainder_power - __pyx_v_divisor_power);
 
     /* "lib\brownanrs\cpolynomial.pyx":196
  * 
  *             # Compute how many times the highest order term in the divisor goes into the dividend
- *             while quotient_power != 0: # Until there's no remainder left (or the remainder cannot be divided anymore by the divisor)             # <<<<<<<<<<<<<<
- *                 quotient_power = remainder_power - divisor_power
+ *             while quotient_power >= 0 and remainder.coefficients != [0]: # Until there's no remainder left (or the remainder cannot be divided anymore by the divisor)             # <<<<<<<<<<<<<<
  *                 quotient_coefficient = remainder_coefficient / divisor_coefficient
+ *                 q = class_( [quotient_coefficient] + [0] * quotient_power ) # construct an array with only the quotient major coefficient (we divide the remainder only with the major coeff)
  */
     while (1) {
-      __pyx_t_3 = ((__pyx_v_quotient_power != 0) != 0);
+      __pyx_t_8 = ((__pyx_v_quotient_power >= 0) != 0);
+      if (__pyx_t_8) {
+      } else {
+        __pyx_t_3 = __pyx_t_8;
+        goto __pyx_L6_bool_binop_done;
+      }
+      __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 196; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_1);
+      __Pyx_INCREF(__pyx_int_0);
+      PyList_SET_ITEM(__pyx_t_1, 0, __pyx_int_0);
+      __Pyx_GIVEREF(__pyx_int_0);
+      __pyx_t_7 = PyObject_RichCompare(__pyx_v_remainder->coefficients, __pyx_t_1, Py_NE); __Pyx_XGOTREF(__pyx_t_7); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 196; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_8 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 196; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_3 = __pyx_t_8;
+      __pyx_L6_bool_binop_done:;
       if (!__pyx_t_3) break;
 
       /* "lib\brownanrs\cpolynomial.pyx":197
  *             # Compute how many times the highest order term in the divisor goes into the dividend
- *             while quotient_power != 0: # Until there's no remainder left (or the remainder cannot be divided anymore by the divisor)
- *                 quotient_power = remainder_power - divisor_power             # <<<<<<<<<<<<<<
- *                 quotient_coefficient = remainder_coefficient / divisor_coefficient
- *                 q = class_( [quotient_coefficient] + [0] * quotient_power ) # construct an array with only the quotient major coefficient (we divide the remainder only with the major coeff)
- */
-      __pyx_v_quotient_power = (__pyx_v_remainder_power - __pyx_v_divisor_power);
-
-      /* "lib\brownanrs\cpolynomial.pyx":198
- *             while quotient_power != 0: # Until there's no remainder left (or the remainder cannot be divided anymore by the divisor)
- *                 quotient_power = remainder_power - divisor_power
+ *             while quotient_power >= 0 and remainder.coefficients != [0]: # Until there's no remainder left (or the remainder cannot be divided anymore by the divisor)
  *                 quotient_coefficient = remainder_coefficient / divisor_coefficient             # <<<<<<<<<<<<<<
  *                 q = class_( [quotient_coefficient] + [0] * quotient_power ) # construct an array with only the quotient major coefficient (we divide the remainder only with the major coeff)
  *                 quotient = quotient + q # add the coeff to the full quotient
  */
-      __pyx_t_1 = __Pyx_PyNumber_Divide(__pyx_v_remainder_coefficient, __pyx_v_divisor_coefficient); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 198; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      __Pyx_GOTREF(__pyx_t_1);
-      __Pyx_XDECREF_SET(__pyx_v_quotient_coefficient, __pyx_t_1);
-      __pyx_t_1 = 0;
+      __pyx_t_7 = __Pyx_PyNumber_Divide(__pyx_v_remainder_coefficient, __pyx_v_divisor_coefficient); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 197; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_7);
+      __Pyx_XDECREF_SET(__pyx_v_quotient_coefficient, __pyx_t_7);
+      __pyx_t_7 = 0;
 
-      /* "lib\brownanrs\cpolynomial.pyx":199
- *                 quotient_power = remainder_power - divisor_power
+      /* "lib\brownanrs\cpolynomial.pyx":198
+ *             while quotient_power >= 0 and remainder.coefficients != [0]: # Until there's no remainder left (or the remainder cannot be divided anymore by the divisor)
  *                 quotient_coefficient = remainder_coefficient / divisor_coefficient
  *                 q = class_( [quotient_coefficient] + [0] * quotient_power ) # construct an array with only the quotient major coefficient (we divide the remainder only with the major coeff)             # <<<<<<<<<<<<<<
  *                 quotient = quotient + q # add the coeff to the full quotient
  *                 remainder = remainder - q * divisor # divide the remainder with the major coeff quotient multiplied by the divisor, this gives us the new remainder
  */
-      __pyx_t_7 = PyList_New(1); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 199; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      __Pyx_GOTREF(__pyx_t_7);
+      __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 198; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_1);
       __Pyx_INCREF(__pyx_v_quotient_coefficient);
-      PyList_SET_ITEM(__pyx_t_7, 0, __pyx_v_quotient_coefficient);
+      PyList_SET_ITEM(__pyx_t_1, 0, __pyx_v_quotient_coefficient);
       __Pyx_GIVEREF(__pyx_v_quotient_coefficient);
-      __pyx_t_6 = PyList_New(1 * ((__pyx_v_quotient_power<0) ? 0:__pyx_v_quotient_power)); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 199; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = PyList_New(1 * ((__pyx_v_quotient_power<0) ? 0:__pyx_v_quotient_power)); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 198; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
       { Py_ssize_t __pyx_temp;
         for (__pyx_temp=0; __pyx_temp < __pyx_v_quotient_power; __pyx_temp++) {
@@ -2726,97 +2734,106 @@ static PyObject *__pyx_pf_3lib_9brownanrs_11cpolynomial_10Polynomial_16__divmod_
           __Pyx_GIVEREF(__pyx_int_0);
         }
       }
-      __pyx_t_5 = PyNumber_Add(__pyx_t_7, __pyx_t_6); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 199; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_5 = PyNumber_Add(__pyx_t_1, __pyx_t_6); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 198; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_5);
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_INCREF(__pyx_v_class_);
-      __pyx_t_6 = __pyx_v_class_; __pyx_t_7 = NULL;
+      __pyx_t_6 = __pyx_v_class_; __pyx_t_1 = NULL;
       if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_6))) {
-        __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_6);
-        if (likely(__pyx_t_7)) {
+        __pyx_t_1 = PyMethod_GET_SELF(__pyx_t_6);
+        if (likely(__pyx_t_1)) {
           PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_6);
-          __Pyx_INCREF(__pyx_t_7);
+          __Pyx_INCREF(__pyx_t_1);
           __Pyx_INCREF(function);
           __Pyx_DECREF_SET(__pyx_t_6, function);
         }
       }
-      if (!__pyx_t_7) {
-        __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_5); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 199; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      if (!__pyx_t_1) {
+        __pyx_t_7 = __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_5); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 198; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-        __Pyx_GOTREF(__pyx_t_1);
+        __Pyx_GOTREF(__pyx_t_7);
       } else {
-        __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 199; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 198; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_4);
-        PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_7); __Pyx_GIVEREF(__pyx_t_7); __pyx_t_7 = NULL;
+        PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_1); __Pyx_GIVEREF(__pyx_t_1); __pyx_t_1 = NULL;
         PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_t_5);
         __Pyx_GIVEREF(__pyx_t_5);
         __pyx_t_5 = 0;
-        __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 199; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        __Pyx_GOTREF(__pyx_t_1);
+        __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_4, NULL); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 198; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_7);
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       }
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_3lib_9brownanrs_11cpolynomial_Polynomial))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 199; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      __Pyx_XDECREF_SET(__pyx_v_q, ((struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *)__pyx_t_1));
-      __pyx_t_1 = 0;
+      if (!(likely(((__pyx_t_7) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_7, __pyx_ptype_3lib_9brownanrs_11cpolynomial_Polynomial))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 198; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_XDECREF_SET(__pyx_v_q, ((struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *)__pyx_t_7));
+      __pyx_t_7 = 0;
 
-      /* "lib\brownanrs\cpolynomial.pyx":200
+      /* "lib\brownanrs\cpolynomial.pyx":199
  *                 quotient_coefficient = remainder_coefficient / divisor_coefficient
  *                 q = class_( [quotient_coefficient] + [0] * quotient_power ) # construct an array with only the quotient major coefficient (we divide the remainder only with the major coeff)
  *                 quotient = quotient + q # add the coeff to the full quotient             # <<<<<<<<<<<<<<
  *                 remainder = remainder - q * divisor # divide the remainder with the major coeff quotient multiplied by the divisor, this gives us the new remainder
  *                 remainder_power = remainder.degree # compute the new remainder degree
  */
-      __pyx_t_1 = PyNumber_Add(((PyObject *)__pyx_v_quotient), ((PyObject *)__pyx_v_q)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 200; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      __Pyx_GOTREF(__pyx_t_1);
-      if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_3lib_9brownanrs_11cpolynomial_Polynomial))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 200; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      __Pyx_DECREF_SET(__pyx_v_quotient, ((struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *)__pyx_t_1));
-      __pyx_t_1 = 0;
+      __pyx_t_7 = PyNumber_Add(((PyObject *)__pyx_v_quotient), ((PyObject *)__pyx_v_q)); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 199; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_7);
+      if (!(likely(((__pyx_t_7) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_7, __pyx_ptype_3lib_9brownanrs_11cpolynomial_Polynomial))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 199; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_DECREF_SET(__pyx_v_quotient, ((struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *)__pyx_t_7));
+      __pyx_t_7 = 0;
 
-      /* "lib\brownanrs\cpolynomial.pyx":201
+      /* "lib\brownanrs\cpolynomial.pyx":200
  *                 q = class_( [quotient_coefficient] + [0] * quotient_power ) # construct an array with only the quotient major coefficient (we divide the remainder only with the major coeff)
  *                 quotient = quotient + q # add the coeff to the full quotient
  *                 remainder = remainder - q * divisor # divide the remainder with the major coeff quotient multiplied by the divisor, this gives us the new remainder             # <<<<<<<<<<<<<<
  *                 remainder_power = remainder.degree # compute the new remainder degree
  *                 remainder_coefficient = remainder[0] # Compute the new remainder coefficient
  */
-      __pyx_t_1 = PyNumber_Multiply(((PyObject *)__pyx_v_q), ((PyObject *)__pyx_v_divisor)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 201; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_6 = PyNumber_Subtract(((PyObject *)__pyx_v_remainder), __pyx_t_1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 201; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_7 = PyNumber_Multiply(((PyObject *)__pyx_v_q), ((PyObject *)__pyx_v_divisor)); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 200; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_7);
+      __pyx_t_6 = PyNumber_Subtract(((PyObject *)__pyx_v_remainder), __pyx_t_7); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 200; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
-      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_3lib_9brownanrs_11cpolynomial_Polynomial))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 201; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_3lib_9brownanrs_11cpolynomial_Polynomial))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 200; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF_SET(__pyx_v_remainder, ((struct __pyx_obj_3lib_9brownanrs_11cpolynomial_Polynomial *)__pyx_t_6));
       __pyx_t_6 = 0;
 
-      /* "lib\brownanrs\cpolynomial.pyx":202
+      /* "lib\brownanrs\cpolynomial.pyx":201
  *                 quotient = quotient + q # add the coeff to the full quotient
  *                 remainder = remainder - q * divisor # divide the remainder with the major coeff quotient multiplied by the divisor, this gives us the new remainder
  *                 remainder_power = remainder.degree # compute the new remainder degree             # <<<<<<<<<<<<<<
  *                 remainder_coefficient = remainder[0] # Compute the new remainder coefficient
- *                 #print "quotient: %s remainder: %s" % (quotient, remainder)
+ *                 quotient_power = remainder_power - divisor_power
  */
       __pyx_t_2 = __pyx_v_remainder->degree;
       __pyx_v_remainder_power = __pyx_t_2;
 
-      /* "lib\brownanrs\cpolynomial.pyx":203
+      /* "lib\brownanrs\cpolynomial.pyx":202
  *                 remainder = remainder - q * divisor # divide the remainder with the major coeff quotient multiplied by the divisor, this gives us the new remainder
  *                 remainder_power = remainder.degree # compute the new remainder degree
  *                 remainder_coefficient = remainder[0] # Compute the new remainder coefficient             # <<<<<<<<<<<<<<
+ *                 quotient_power = remainder_power - divisor_power
  *                 #print "quotient: %s remainder: %s" % (quotient, remainder)
- *         return quotient, remainder
  */
-      __pyx_t_6 = __Pyx_GetItemInt(((PyObject *)__pyx_v_remainder), 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 0); if (unlikely(__pyx_t_6 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 203; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+      __pyx_t_6 = __Pyx_GetItemInt(((PyObject *)__pyx_v_remainder), 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 0); if (unlikely(__pyx_t_6 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 202; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF_SET(__pyx_v_remainder_coefficient, __pyx_t_6);
       __pyx_t_6 = 0;
+
+      /* "lib\brownanrs\cpolynomial.pyx":203
+ *                 remainder_power = remainder.degree # compute the new remainder degree
+ *                 remainder_coefficient = remainder[0] # Compute the new remainder coefficient
+ *                 quotient_power = remainder_power - divisor_power             # <<<<<<<<<<<<<<
+ *                 #print "quotient: %s remainder: %s" % (quotient, remainder)
+ *         return quotient, remainder
+ */
+      __pyx_v_quotient_power = (__pyx_v_remainder_power - __pyx_v_divisor_power);
     }
   }
   __pyx_L3:;
 
   /* "lib\brownanrs\cpolynomial.pyx":205
- *                 remainder_coefficient = remainder[0] # Compute the new remainder coefficient
+ *                 quotient_power = remainder_power - divisor_power
  *                 #print "quotient: %s remainder: %s" % (quotient, remainder)
  *         return quotient, remainder             # <<<<<<<<<<<<<<
  * 
