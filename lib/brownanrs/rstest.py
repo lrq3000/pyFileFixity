@@ -1,7 +1,21 @@
 import unittest
 import itertools
+import hashlib
 
 import rs
+
+class TestRSencoding(unittest.TestCase):
+    def test_small_k(self):
+        coder = rs.RSCoder(5, 2)
+        mes = [140, 128]
+        ecc_good = [182, 242, 0]
+        messtr = "".join(chr(x) for x in mes)
+        self.assertEqual(hashlib.md5(messtr).hexdigest(), "8052809d008df30342a22e7910d05600")
+
+        mesandecc = coder.encode(messtr)
+        mesandeccstr = [ord(x) for x in mesandecc]
+        if mesandeccstr == [140, 54, 199, 92, 175]: print("Error in polynomial __divmod__ (probably in the stopping criterion).")
+        self.assertEqual(mesandeccstr, mes + ecc_good)
 
 class TestRSverify(unittest.TestCase):
     def setUp(self):
