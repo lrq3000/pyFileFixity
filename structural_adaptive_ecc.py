@@ -131,6 +131,9 @@ def feature_scaling(x, xmin, xmax, a=0, b=1):
 
 class Hasher(object):
     '''Class to provide a hasher object with various hashing algorithms. What's important is to provide the __len__ so that we can easily compute the block size of ecc entries. Must only use fixed size hashers for the rest of the script to work properly.'''
+    
+    known_algo = ["md5", "shortmd5", "shortsha256", "minimd5", "minisha256"]
+
     def __init__(self, algo="md5"):
         self.algo = algo.lower()
 
@@ -546,6 +549,9 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
 
     if replication_rate < 0 or replication_rate == 2:
         raise ValueError('Replication rate must either be 1 (no replication) or above 3 to be useful (cannot disambiguate with only 2 replications).')
+
+    if hash_algo not in Hasher.known_algo:
+        raise ValueError("Specified hash algorithm %s is unknown!" % hash_algo)
 
     # -- Configure the log file if enabled (ptee.write() will write to both stdout/console and to the log file)
     if args.log:
