@@ -29,7 +29,6 @@
 #                       License: MIT
 #                 Runs on Python 2.7.6
 #              Creation date: 2015-03-12
-#          Last modification: 2015-03-20
 #=================================
 #
 # From : http://simple.wikipedia.org/wiki/Reed-Solomon_error_correction
@@ -63,7 +62,7 @@
 # the intra-ecc on filepath is the hardest because we won't know the size (not fixed-length), but we can use a field_delim. For intra-ecc on hash this is easy if the hash is fixed-length like MD5: we can precisely compute the length of the ECC, thus it will just be another field to extract in entry_fields.
 #
 
-__version__ = "1.0.2"
+__version__ = "1.1"
 
 # Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
 import sys, os
