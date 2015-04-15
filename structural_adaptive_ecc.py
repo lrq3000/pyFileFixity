@@ -543,8 +543,11 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
     hasher = Hasher("md5")
     ecc_params_header = compute_ecc_params(max_block_size, resilience_rate_s1, hasher) # TODO: not static anymore since it's a variable encoding rate, so we have to recompute it on-the-fly for each block relatively to total file size.
     ecc_manager_header = ECC(max_block_size, ecc_params_header["message_size"])
-    ecc_params_variable_average = compute_ecc_params(max_block_size, resilience_rate_s2 + resilience_rate_s3, hasher) # compute the average variable rate to compute statistics
     ecc_manager_variable = ECC(max_block_size, 1)
+    # for stats only
+    ecc_params_variable_average = compute_ecc_params(max_block_size, (resilience_rate_s2 + resilience_rate_s3)/2, hasher) # compute the average variable rate to compute statistics
+    ecc_params_s2 = compute_ecc_params(max_block_size, resilience_rate_s2, hasher)
+    ecc_params_s3 = compute_ecc_params(max_block_size, resilience_rate_s3, hasher)
 
     # == Precomputation of ecc file size
     # Precomputing is important so that the user can know what size to expect before starting (and how much time it will take...).
@@ -572,11 +575,16 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
             filesize_header = size
             filesize_content = 0
         # Size of the ecc entry for this file will be: marker-bytes (\xFF bytes) + length-filepath-string + length-size-string + size of the ecc per block for all blocks in file header + size of the hash per block for all blocks in file header.
-        sizeecc = sizeecc + replication_rate * (len(entrymarker) + len(field_delim)*2 + len(relfilepath) + len(str(size)) + (int(math.ceil(float(filesize_header) / ecc_params_header["message_size"])) * (ecc_params_header["ecc_size"]+ecc_params_header["hash_size"])) + (int(math.ceil(float(filesize_content) / ecc_params_variable_average["message_size"])) * (ecc_params_variable_average["ecc_size"]+ecc_params_variable_average["hash_size"])) ) # Compute the total number of bytes we will add with ecc + hash (accounting for the padding of the remaining characters at the end of the sequence in case it doesn't fit with the message_size, by using ceil() )
+        sizeecc += replication_rate * (len(entrymarker) + len(field_delim)*2 + len(relfilepath) + len(str(size)) + (int(math.ceil(float(filesize_header) / ecc_params_header["message_size"])) * (ecc_params_header["ecc_size"]+ecc_params_header["hash_size"])) + (int(math.ceil(float(filesize_content) / ecc_params_variable_average["message_size"])) * (ecc_params_variable_average["ecc_size"]+ecc_params_variable_average["hash_size"])) ) # Compute the total number of bytes we will add with ecc + hash (accounting for the padding of the remaining characters at the end of the sequence in case it doesn't fit with the message_size, by using ceil() )
     ptee.write("Precomputing done.")
     # TODO: add the size of the ecc format header? (arguments string + PYHEADERECC identifier)
     total_pred_percentage = sizeecc * 100 / sizetotal
     ptee.write("Total ECC size estimation: %s = %g%% of total files size %s." % (sizeof_fmt(sizeecc), total_pred_percentage, sizeof_fmt(sizetotal)))
+    ptee.write("Details per stage:")
+    ptee.write("- Resiliency stage1 of %i%%: For the header (first %i characters) of each file: each block of %i chars will get an ecc of %i chars." % (resilience_rate_s1*100, header_size, ecc_params_header["message_size"], ecc_params_header["ecc_size"]))
+    ptee.write("- Resiliency stage2 of %i%%: for the rest of the file, the parameters will start with: each block of %i chars will get an ecc of %i chars." % (resilience_rate_s2*100, ecc_params_s2["message_size"], ecc_params_s2["ecc_size"]))
+    ptee.write("- Resiliency stage3 of %i%%: progressively towards the end, the parameters will gradually become: each block of %i chars will get an ecc of %i chars." % (resilience_rate_s3*100, ecc_params_s3["message_size"], ecc_params_s3["ecc_size"]))
+    ptee.write("Note: current max_block_size (size of message+ecc blocks) is %i. Consider using a smaller value to greatly speedup the processing (because Reed-Solomon encoding complexity is about O(max_block_size^2))." % max_block_size)
 
     if stats_only: return True
 
@@ -617,8 +625,8 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                     continue
 
                 # Opening the input file's to read its header and compute the ecc/hash blocks
-                if verbose: print("Processing file %s\n" % relfilepath)
-                for i in xrange(replication_rate): # TODO: that's a shame because we recompute several times the whole ecc entry. Try to put the ecc entry in a temporary file at first, and then streamline copy to the ecc file.
+                if verbose: print("\n- Processing file %s" % relfilepath)
+                for i in xrange(replication_rate): # TODO: that's a shame because we recompute several times the whole ecc entry. Try to put the ecc entry in a temporary file at first or in StringIO (does it buffer in a file?), and then streamline copy to the ecc file. Or alternative: ecc fields are replicated, not the whole ecc entry.
                     with open(os.path.join(folderpath,filepath), 'rb') as file:
                         db.write((entrymarker+"%s"+field_delim+"%s"+field_delim) % (relfilepath, filesize)) # first save the file's metadata (filename, filesize, ...)
                         # -- Hash/Ecc encoding (everything is managed inside stream_compute_ecc_hash)
@@ -626,7 +634,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                             db.write( "%s%s" % (str(ecc_entry[0]),str(ecc_entry[1])) )
                             bardisp.update(ecc_entry[2]['message_size'])
                 files_done += 1
-        if bardisp.total > bardisp.n: bardisp.n = bardisp.total # small workaround because n may be higher than total (because of files ending before 'message_size', thus the message is padded and in the end, we have outputted and processed a bit more characters than are really in the files, thus why total can be below n). Doing this allows to keep the trace of the progression bar.
+        if bardisp.n > bardisp.total: bardisp.total = bardisp.n # small workaround because n may be higher than total (because of files ending before 'message_size', thus the message is padded and in the end, we have outputted and processed a bit more characters than are really in the files, thus why total can be below n). Doing this allows to keep the trace of the progression bar.
         bardisp.close()
         ptee.write("All done! Total number of files processed: %i, skipped: %i" % (files_done, files_skipped))
         return 0
@@ -679,7 +687,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                 filepath = os.path.join(folderpath, relfilepath) # Get full absolute filepath from given input folder (because the files may be specified in any folder, in the ecc file the paths are relative, so that the files can be moved around or burnt on optical discs)
                 if errors_filelist and relfilepath not in errors_filelist: continue # if a list of files with errors was supplied (for example by rfigc.py), then we will check only those files and skip the others
 
-                if verbose: print("Processing file %s\n" % relfilepath)
+                if verbose: print("\n- Processing file %s" % relfilepath)
 
                 # -- Check filepath
                 # Check that the filepath isn't corrupted (detectable mainly with replication_rate >= 3, but if a silent error erase a character (not only flip a bit), then it will also be detected this way

@@ -580,7 +580,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                     continue
 
                 # Opening the input file's to read its header and compute the ecc/hash blocks
-                if verbose: print("Processing file %s\n" % relfilepath)
+                if verbose: print("\n- Processing file %s" % relfilepath)
                 with open(os.path.join(folderpath,filepath), 'rb') as file:
                     ecc_entry = (entrymarker+"%s"+field_delim+"%s"+field_delim) % (relfilepath, filesize) # first save the file's metadata (filename, filesize, ...)
                     buf = file.read(header_size) # read the file's header
@@ -641,7 +641,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                 filepath = os.path.join(folderpath, relfilepath) # Get full absolute filepath from given input folder (because the files may be specified in any folder, in the ecc file the paths are relative, so that the files can be moved around or burnt on optical discs)
                 if errors_filelist and relfilepath not in errors_filelist: continue # if a list of files with errors was supplied (for example by rfigc.py), then we will check only those files and skip the others
 
-                if verbose: print("Processing file %s\n" % relfilepath)
+                if verbose: print("\n- Processing file %s" % relfilepath)
 
                 # -- Check filepath
                 # Check that the filepath isn't corrupted (detectable mainly with replication_rate >= 3, but if a silent error erase a character (not only flip a bit), then it will also be detected this way
