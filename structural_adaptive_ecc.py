@@ -587,7 +587,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
         ptee.write("- Resiliency stage3 of %i%%: progressively towards the end, the parameters will gradually become: each block of %i chars will get an ecc of %i chars." % (resilience_rate_s3*100, ecc_params_s3["message_size"], ecc_params_s3["ecc_size"]))
         ptee.write("Note: current max_block_size (size of message+ecc blocks) is %i. Consider using a smaller value to greatly speedup the processing (because Reed-Solomon encoding complexity is about O(max_block_size^2))." % max_block_size)
 
-    if stats_only: return True
+    if stats_only: return 0
 
     # == Generation mode
     # Generate an ecc file, containing ecc entries for every files recursively in the specified root folder.

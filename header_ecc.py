@@ -547,7 +547,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
     total_pred_percentage = sizeheaders * 100 / sizetotal
     ptee.write("Total ECC size estimation: %s = %g%% of total files size %s." % (sizeof_fmt(sizeheaders), total_pred_percentage, sizeof_fmt(sizetotal)))
 
-    if stats_only: return True
+    if stats_only: return 0
 
     # == Generation mode
     # Generate an ecc file, containing ecc entries for every files recursively in the specified root folder.
