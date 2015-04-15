@@ -199,9 +199,9 @@ def find_next_entry(file, entrymarker="\xFF\xFF\xFF\xFF"):
     '''Find the next ecc entry in the ecc file, and return the start and end positions. This will find any string length between two entrymarkers. The reading is very tolerant, so it will always return any valid entry (but also scrambled entries if any, but the decoding will ensure everything's ok).'''
     blocksize = 65535
     found = False
-    start = None
+    start = None # start and end vars are the relative position of the starting/ending entrymarkers in the current buffer
     end = None
-    startcursor = None
+    startcursor = None # startcursor and endcursor are the absolute position of the starting/ending entrymarkers inside the database file
     endcursor = None
     buf = 1
     # Continue the search as long as we did not find at least one starting marker and one ending marker (or end of file)
@@ -209,13 +209,13 @@ def find_next_entry(file, entrymarker="\xFF\xFF\xFF\xFF"):
         # Read a long block at once, we will readjust the file cursor after
         buf = file.read(blocksize)
         # Find the start marker (if not found already)
-        if not start or start == -1:
+        if start is None or start == -1:
             start = buf.find(entrymarker); # relative position of the starting marker in the currently read string
-            if start >= 0:
+            if start >= 0 and not startcursor: # assign startcursor only if it's empty (meaning that we did not find the starting entrymarker, else if found we are only looking for 
                 startcursor = file.tell() - len(buf) + start # absolute position of the starting marker in the file
             start = start + len(entrymarker)
         # If we have a starting marker, we try to find a subsequent marker which will be the ending of our entry (if the entry is corrupted we don't care: it won't pass the entry_to_dict() decoding or subsequent steps of decoding and we will just pass to the next ecc entry). This allows to process any valid entry, no matter if previous ones were scrambled.
-        if startcursor and startcursor >= 0:
+        if startcursor is not None and startcursor >= 0:
             end = buf.find(entrymarker, start)
             if end < 0 and len(buf) < blocksize: # Special case: we didn't find any ending marker but we reached the end of file, then we are probably in fact just reading the last entry (thus there's no ending marker for this entry)
                 end = len(buf) # It's ok, we have our entry, the ending marker is just the end of file
@@ -224,7 +224,11 @@ def find_next_entry(file, entrymarker="\xFF\xFF\xFF\xFF"):
                 endcursor = file.tell() - len(buf) + end
                 file.seek(endcursor)
                 found = True
-        start = 0 # reset the start position for the end buf find at next iteration
+        #print("Start:", start, startcursor)
+        #print("End: ", end, endcursor)
+        # Did not find the full entry in one buffer? Reinit variables for next iteration, but keep in memory startcursor.
+        start = 0 # reset the start position for the end buf find at next iteration (ie: in the arithmetic operations to compute the absolute endcursor position, the start entrymarker won't be accounted because it was discovered in a previous buffer).
+        if not endcursor: file.seek(file.tell()-len(entrymarker)) # Try to fix edge case where blocksize stops the buffer exactly in the middle of the ending entrymarker. The starting marker should always be ok because it should be quite close (or generally immediately after) the previous entry, but the end depends on the end of the current entry (size of the original file), thus the buffer may miss the ending entrymarker. should offset file.seek(-len(entrymarker)) before searching for ending.
 
     entry_pos = None # return None if there's no new entry to read
     if found: # if an entry was found, we return the starting position and ending position of the ecc entry (without the entrymarker). Note: we just return the reading positions and not the entry itself because it can get quite huge and may overflow memory, thus we will read each ecc blocks on request using a generator.
@@ -658,7 +662,6 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
 
     # == Error Correction (and checking by hash) mode
     # For each file, check their headers by block by checking each block against a hash, and if the hash does not match, try to correct with Reed-Solomon and then check the hash again to see if we correctly repaired the block (else the ecc entry might have been corrupted, whether it's the hash or the ecc field, in both cases it's highly unlikely that a wrong repair will match the hash after this wrong repair)
-    # TODO: this part is totally uncomplete!
     elif correct:
         ptee.write("====================================")
         ptee.write("Structural adaptive ECC correction, started on %s" % datetime.datetime.now().isoformat())
