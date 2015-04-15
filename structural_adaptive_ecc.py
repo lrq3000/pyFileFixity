@@ -62,7 +62,7 @@
 # the intra-ecc on filepath is the hardest because we won't know the size (not fixed-length), but we can use a field_delim. For intra-ecc on hash this is easy if the hash is fixed-length like MD5: we can precisely compute the length of the ECC, thus it will just be another field to extract in entry_fields.
 #
 
-__version__ = "0.8"
+__version__ = "0.9b"
 
 # Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
 import sys, os
@@ -135,12 +135,25 @@ class Hasher(object):
         self.algo = algo.lower()
 
     def hash(self, mes):
+        # use hashlib.algorithms_guaranteed to list algorithms
         if self.algo == "md5":
             return hashlib.md5(mes).hexdigest()
+        elif self.algo == "shortmd5": # from: http://www.peterbe.com/plog/best-hashing-function-in-python
+            return hashlib.md5(mes).hexdigest().encode('base64')[:8]
+        elif self.algo == "shortsha256":
+            return hashlib.sha256(mes).hexdigest().encode('base64')[:8]
+        elif self.algo == "minimd5":
+            return hashlib.md5(mes).hexdigest().encode('base64')[:4]
+        elif self.algo == "minisha256":
+            return hashlib.sha256(mes).hexdigest().encode('base64')[:4]
 
     def __len__(self):
         if self.algo == "md5":
             return 32
+        elif self.algo == "shortmd5" or self.algo == "shortsha256":
+            return 8
+        elif self.algo == "minimd5" or self.algo == "minisha256":
+            return 4
 
 class ECC(object):
     '''ECC manager, which provide a modular way to use different kinds of ecc algorithms.'''
@@ -436,7 +449,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
 
     # Optional general arguments
     main_parser.add_argument('--max_block_size', type=int, default=255, required=False,
-                        help='Reed-Solomon max block size (maximum = 255). It is advised to keep it at the maximum for more resilience (see comments at the top of the script for more info).', **widget_text)
+                        help='Reed-Solomon max block size (maximum = 255). It is advised to keep it at the maximum for more resilience (see comments at the top of the script for more info). However, if encoding it too slow, using a smaller value will speed things up greatly, at the expense of more storage space (because hash will relatively take more space - you can use --hash "shortmd5" or --hash "minimd5" to counter balance).', **widget_text)
     main_parser.add_argument('-s', '--size', type=int, default=1024, required=False,
                         help='Headers block size to protect with resilience rate stage 1 (eg: 1024 meants that the first 1k of each file will be protected by stage 1).', **widget_text)
     main_parser.add_argument('-r1', '--resilience_rate_stage1', type=float, default=0.3, required=False,
@@ -453,6 +466,8 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                         help='Only show the predicted total size of the ECC file given the parameters.')
     main_parser.add_argument('-v', '--verbose', action='store_true', required=False, default=False,
                         help='Verbose mode (show more output).')
+    main_parser.add_argument('--hash', metavar='md5;shortmd5;shortsha256...', type=str, required=False,
+                        help='Hash algorithm to use. Choose between: md5, shortmd5, shortsha256, minimd5, minisha256.', **widget_text)
 
     # Correction mode arguments
     main_parser.add_argument('-c', '--correct', action='store_true', required=False, default=False,
@@ -499,6 +514,8 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
     always_include_ext = args.always_include_ext
     if always_include_ext: always_include_ext = tuple(['.'+ext for ext in always_include_ext.split('|')]) # prepare a tuple of extensions (prepending with a dot) so that str.endswith() works (it doesn't with a list, only a tuple)
     verbose = args.verbose
+    hash_algo = args.hash
+    if not hash_algo: hash_algo = "md5"
 
     if correct:
         if not args.output:
@@ -539,7 +556,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
 
     # Precompute some parameters
     resilience_rates = [resilience_rate_s1, resilience_rate_s2, resilience_rate_s3]
-    hasher = Hasher("md5")
+    hasher = Hasher(hash_algo)
     ecc_params_header = compute_ecc_params(max_block_size, resilience_rate_s1, hasher) # TODO: not static anymore since it's a variable encoding rate, so we have to recompute it on-the-fly for each block relatively to total file size.
     ecc_manager_header = ECC(max_block_size, ecc_params_header["message_size"])
     ecc_manager_variable = ECC(max_block_size, 1)
