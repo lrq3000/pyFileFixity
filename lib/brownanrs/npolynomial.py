@@ -47,14 +47,42 @@ GF256int_logtable = np.array([-1, 0, 25, 1, 50, 2, 26, 198, 75, 199, 27, 104, 51
         137, 180, 124, 184, 38, 119, 153, 227, 165, 103, 74, 237, 222, 197,
         49, 254, 24, 13, 99, 140, 128, 192, 247, 112, 7], dtype=int )
 
-class nPolynomial(object):
+def GF256int_add(a, b):
+    "Addition in GF(2^8) is the xor of the two"
+    return a ^ b
+
+def GF256int_neg(a):
+    return a
+
+def GF256int_mul(a, b):
+    "Multiplication in GF(2^8)"
+    if a == 0 or b == 0:
+        return 0
+    x = GF256int_logtable[a]
+    y = GF256int_logtable[b]
+    z = (x + y) % 255
+    return GF256int_exptable[z]
+
+def GF256int_pow(a, power):
+    x = GF256int_logtable[a]
+    z = (x * power) % 255
+    return GF256int_exptable[z]
+
+def GF256int_inverse(a):
+    e = GF256int_logtable[a]
+    return GF256int_exptable[255 - e]
+
+def GF256int_div(a, b):
+    return GF256int_mul(a, GF256int_inverse(b))
+
+class Polynomial(object):
     """Polynomial for GF256int class with numpy implementation.
     This class implements vectorized operations on GF256int, thus the type is "defined" implitly in the operations involving GF256int_logtable and GF256int_exptable.
 
     Polynomial objects are immutable.
 
     Implementation note: this class is NOT type agnostic, contrariwise to polynomial.py and cpolynomial.py."""
-    def __init__(self, coefficients=[], **sparse):
+    def __init__(self, coefficients=None, **sparse):
         """
         There are three ways to initialize a Polynomial object.
         1) With a list, tuple, or other iterable, creates a polynomial using
@@ -80,8 +108,7 @@ class nPolynomial(object):
                     " both")
         if coefficients is not None:
             # Polynomial( [1, 2, 3, ...] )
-            #c = coefficients
-            #if isinstance(coefficients, tuple): c = list(coefficients)
+            #if isinstance(coefficients, tuple): coefficients = list(coefficients)
             # Expunge any leading 0 coefficients
             while len(coefficients) > 0 and coefficients[0] == 0:
                 if isinstance(coefficients, np.ndarray):
@@ -89,7 +116,7 @@ class nPolynomial(object):
                 else:
                     coefficients.pop(0)
             if len(coefficients) == 0:
-                coefficients.append(0)
+                coefficients = [0]
 
             self.coefficients = np.array(coefficients, dtype=int)
         elif sparse:
@@ -109,16 +136,19 @@ class nPolynomial(object):
         else:
             # Polynomial()
             self.coefficients = np.zeros(1, dtype=int)
-        self.degree = len(self.coefficients)
+        # In any case, compute the degree of the polynomial (=the maximum degree)
+        self.degree = len(self.coefficients)-1
 
     def __len__(self):
         """Returns the number of terms in the polynomial"""
-        return self.degree
+        return self.degree+1
+        # return len(self.coefficients)
 
     def degree(self, poly=None):
         """Returns the degree of the polynomial"""
         if not poly:
-            return self.degree - 1
+            return self.degree
+            #return len(self.coefficients) - 1
         elif poly and hasattr("coefficients", poly):
             return len(poly.coefficients) - 1
         else:
@@ -127,7 +157,7 @@ class nPolynomial(object):
             return len(poly)-1
 
     def __add__(self, other):
-        diff = self.degree - other.degree
+        diff = len(self) - len(other)
 
         # Warning: value must be absolute, there's no negative value accepted here! (in fact they will be accepted but the result will be meaningless! and divmod will be in infinite loop)
         t1 = np.pad(np.absolute(self.coefficients), (np.max([0, -diff]),0), mode='constant')
@@ -218,21 +248,26 @@ class nPolynomial(object):
             remainder = dividend
             remainder_power = dividend_power
             remainder_coefficient = dividend_coefficient
-            while remainder_power >= divisor_power: # Until there's no remainder left (or the remainder cannot be divided anymore by the divisor)
-                quotient_power = remainder_power - divisor_power
-                quotient_coefficient = remainder_coefficient / divisor_coefficient
+            quotient_power = remainder_power - divisor_power # need to set at least 1 just to start the loop. Warning if set to remainder_power - divisor_power: because it may skip the loop altogether (and we want to at least do one iteration to set the quotient)
+
+            # Compute how many times the highest order term in the divisor goes into the dividend
+            while quotient_power >= 0 and np.count_nonzero(remainder.coefficients) > 0: # Until there's no remainder left (or the remainder cannot be divided anymore by the divisor)
+                quotient_coefficient = GF256int_div(remainder_coefficient, divisor_coefficient)
                 q = class_( np.pad([quotient_coefficient], (0,quotient_power), mode='constant') ) # construct an array with only the quotient major coefficient (we divide the remainder only with the major coeff)
                 quotient = quotient + q # add the coeff to the full quotient
                 remainder = remainder - q * divisor # divide the remainder with the major coeff quotient multiplied by the divisor, this gives us the new remainder
                 remainder_power = remainder.degree # compute the new remainder degree
                 remainder_coefficient = remainder[0] # Compute the new remainder coefficient
-                #print "quotient: %s remainder: %s" % (quotient, remainder)
+                quotient_power = remainder_power - divisor_power
         return quotient, remainder
 
     def __eq__(self, other):
-        return self.coefficients == other.coefficients
+        if isinstance(self.coefficients, np.ndarray):
+            return self.coefficients.tolist() == other.coefficients.tolist()
+        else:
+            return self.coefficients == other.coefficients
     def __ne__(self, other):
-        return self.coefficients != other.coefficients
+        return not self == other
     def __hash__(self):
         return hash(self.coefficients)
 
@@ -258,7 +293,7 @@ class nPolynomial(object):
         return buf.getvalue()[:-3]
 
     def evaluate(self, x):
-        "Evaluate this polynomial at value x, returning the result."
+        '''Evaluate this polynomial at value x, returning the result.'''
         # Holds the sum over each term in the polynomial
         c = 0
 
@@ -273,7 +308,7 @@ class nPolynomial(object):
         return c
 
     def get_coefficient(self, degree):
-        """Returns the coefficient of the specified term"""
+        '''Returns the coefficient of the specified term'''
         if degree > self.degree:
             return 0
         else:

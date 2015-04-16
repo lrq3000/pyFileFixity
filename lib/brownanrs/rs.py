@@ -3,9 +3,9 @@
 # See LICENSE.txt for license terms
 
 # try: # Numpy implementation import. NOTE: it's working correctly but it's actually slower than the pure-python implementation! (although the code is vectorized and __mul__ is faster, but it seems it's not enough to speed things up and the numpy call overhead is too much for any gain here).
-    # from npolynomial import nPolynomial as Polynomial
-    # from nff import nGF256int as GF256int
-#except ImportError:
+    # from npolynomial import Polynomial
+    # from nff import GF256int
+# except ImportError:
 try: # Cython implementation import. This should be a bit faster than using PyPy with the pure-python implementation.
     from cff import GF256int
     from cpolynomial import Polynomial

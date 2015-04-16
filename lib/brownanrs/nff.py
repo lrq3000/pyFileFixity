@@ -42,27 +42,46 @@ nGF256int_logtable = [None, 0, 25, 1, 50, 2, 26, 198, 75, 199, 27, 104, 51, 238,
         137, 180, 124, 184, 38, 119, 153, 227, 165, 103, 74, 237, 222, 197,
         49, 254, 24, 13, 99, 140, 128, 192, 247, 112, 7]
 
-class nGF256int(int):
+class GF256int(int):
     """Instances of this object are elements of the field GF(2^8)
     Instances are integers in the range 0 to 255
     This field is defined using the irreducable polynomial
     x^8 + x^4 + x^3 + x + 1
     and using 3 as the generator for the exponent table and log table.
     """
+    
+    def __add__(a, b):
+        "Addition in GF(2^8) is the xor of the two"
+        return GF256int(a ^ b)
+    __sub__ = __add__
+    __radd__ = __add__
+    __rsub__ = __add__
+    def __neg__(self):
+        return self
+
+    def __mul__(a, b):
+        "Multiplication in GF(2^8)"
+        if a == 0 or b == 0:
+            return GF256int(0)
+        x = nGF256int_logtable[a]
+        y = nGF256int_logtable[b]
+        z = (x + y) % 255
+        return GF256int(nGF256int_exptable[z])
+    __rmul__ = __mul__
 
     def __pow__(self, power, modulo=None):
-        if isinstance(power, nGF256int):
-            raise TypeError("Raising a Field element to another Field element is not defined. power must be a regular integer")
+        #if isinstance(power, GF256int):
+            #raise TypeError("Raising a Field element to another Field element is not defined. power must be a regular integer")
         x = nGF256int_logtable[self]
         z = (x * power) % 255
-        return nGF256int(nGF256int_exptable[z])
+        return GF256int(nGF256int_exptable[z])
 
     def inverse(self):
         e = nGF256int_logtable[self]
-        return nGF256int(nGF256int_exptable[255 - e])
+        return GF256int(nGF256int_exptable[255 - e])
 
     def __div__(self, other):
-        return self * nGF256int(other).inverse()
+        return self * GF256int(other).inverse()
     def __rdiv__(self, other):
         return self.inverse() * other
 
