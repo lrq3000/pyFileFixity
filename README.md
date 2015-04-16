@@ -32,6 +32,8 @@ The project currently include the following pure-python applications:
 
 Note that all tools are primarily made for command-line usage (type script.py --help to get extended info about the accepted arguments), but you can also use rfigc.py and header_ecc.py with a GUI by using the --gui argument (must be the first and only one argument supplied). The GUI is provided as-is and minimal work will be done to maintain it (the focus will stay on functionality rather than ergonomy).
 
+IMPORTANT: it is CRITICAL that you use the same parameters for correcting mode as when you generated the database/ecc files (this is true for all scripts in this bundle). Of course, some options must be changed: -g must become -c to correct, and --update is a particular case. This works this way on purpose for mainly two reasons: first because it is very hard to autodetect the parameters from a database file alone and it would produce lots of false positives, and secondly (the primary reason) is that storing parameters inside the database file is highly unresilient against corruption (if this part of the database is tampered, the whole becomes unreadable, while if they are stored outside or in your own memory, the database file is always accessible). Thus, it is advised to write down the parameters you used to generate your database directly on the storage media you will store your database file on (eg: if it's an optical disk, write the parameters on the cover or directly on the disk using a marker), or better memorize them by heart.
+
 Recursive/Relative Files Integrity Generator and Checker in Python (aka RFIGC)
 -------------------------------------------------------------------------------------------------------------------
 Recursively generate or check the integrity of files by MD5 and SHA1 hashes, size, modification date or by data structure integrity (only for images).
@@ -135,6 +137,24 @@ If you get issues, you can see the following post on how to install Cython:
 
 https://github.com/cython/cython/wiki/InstallingOnWindows
 
+Also, use a smaller --max_block_size to greatly speedup the operations! That's the trick used to compute very quickly RS ECC on optical discs. You give a bit of resiliency of course (because blocks are smaller, thus you protect a smaller number of characters per ECC. This should not change much, but in case you get a big bit error burst on a contiguous block, you may lose a whole block at once. That's why using RS255 is better, but it's very time consuming. However, the resiliency ratios still hold, so for any other case of bit-flipping with average-sized bursts, this should not be a problem.)
+
+In case of a catastrophic event
+--------------------------------------------
+
+TODO: write more here
+
+In case of a catastrophic event of your data due to the failure of your storage media (eg: your hard drive crashed), then follow the following steps:
+
+1- use dd_rescue to make a full bit-per-bit verbatim copy of your drive before it dies. The nice thing with dd_rescue is that the copy is exact, and also that it can retries or skip in case of bad sectors (it won't crash on your suddenly at half the process).
+
+2- Use testdisk to restore partition or to copy files based on partition filesystem informations.
+
+3- If you could not recover your files, you can try file scraping using photorec or other similar tools as a last resort to extract data based only from files content (no filename, often uncorrect filetype, file boundaries may be wrong so some data may be cut off, etc.).
+
+4- If you used pyFileFixity before the failure of your storage media, you can then use your pre-computed databases to check that files are intact (rfigc.py) and if they aren't, you can recover them (using header_ecc.py and structural_adaptive_ecc.py).
+
+
 Todo
 -------
 
@@ -149,7 +169,16 @@ http://jeremykun.com/2014/03/13/programming-with-finite-fields/
 
 Note3: some speed optimizations were done (like precomputing every polynomials for any k, so that a variable rate encoder such as in structural_adaptive_ecc.py won't be slowed down), the last big thing to optimize is `polynomial.py:__divmod__()` which is a recursive function (very bad in Python). Should try to flatten this out (in a __while__ or better in a __for__ loop), and then maybe convert to Cython.
 
+Note4: maybe try to parallelize? The problem is that all CPU intensive work is done in classes's methods, and usually parallelization doesn't work on classes...
+
+Note5: still need 10 times speedup in polynomial/ff operations to be reasonable, and 100 times speedup to be really useful for day-to-day. By lowering max_block_size, it becomes usable, but with a 10x speedup it should be really useable. Try to use a more efficient polynomial division algorithm ? Or implement in C/C++ directly (Boost Python?).
+http://www.math.uzh.ch/?file&key1=23398
+
 - header_ecc.py and structural_adaptive_ecc.py enhance tolerance against faulty hash/ecc blocks and faulty ecc entries (eg: when an entrymarker has wrongly spawned somewhere because of a corruption, when fields aren't well delimited etc.). Could just use multiple try-catch blocks and try to skip errors (if it's only one hash/ecc block fields, we can skip to next block. If it's the whole entry, we skip to next entry).
 
 - Implement near-optimal decoders such as LDPC or turbo-codes. Near-optimal decoders are a bit less efficient than Reed-Solomn (they can recover fewer errors), but they are so much faster that it may be worth for huge datasets where the encoding computation time of Reed-Solomon is just impractical. Maybe use this python with numpy library (no compilation): https://github.com/veeresht/CommPy
 Also this library includes interleavers, which may be interesting to be more resilient with RS too. However I hardly see how to interleave without the recovery file being less resilient to tampering (because if you interleave, you have to store this interleaving info somewhere, and it will probably be in the ecc recovery file, which will make it less resilient against corruption although the protected files will be more resilient thank's to interleaving...).
+
+- structural_adaptive_ecc.py: --update "change/remove/add" (change will update ecc entries if changed, remove will remove if file is not present anymore, add will encode new files not already in ecc file). For all, use another ecc file: must be different from input ecc file (from which we will streamline read and output to the target ecc file only if meet conditions).
+
+- rfigc.py --recover_from_filescrapping to help in case of file scraping: it will walk through all files in a folder and compare to both hashes in database, and if there's a match, it will copy the file over and assign it its correct name and datestamp into output folder.
