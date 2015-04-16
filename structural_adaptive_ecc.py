@@ -62,7 +62,7 @@
 # the intra-ecc on filepath is the hardest because we won't know the size (not fixed-length), but we can use a field_delim. For intra-ecc on hash this is easy if the hash is fixed-length like MD5: we can precisely compute the length of the ECC, thus it will just be another field to extract in entry_fields.
 #
 
-__version__ = "0.9.2"
+__version__ = "0.9.3b"
 
 # Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
 import sys, os
@@ -133,9 +133,18 @@ class Hasher(object):
     '''Class to provide a hasher object with various hashing algorithms. What's important is to provide the __len__ so that we can easily compute the block size of ecc entries. Must only use fixed size hashers for the rest of the script to work properly.'''
     
     known_algo = ["md5", "shortmd5", "shortsha256", "minimd5", "minisha256"]
+    __slots__ = ['algo', 'length']
 
     def __init__(self, algo="md5"):
+        # Store the selected hashing algo
         self.algo = algo.lower()
+        # Precompute length so that it's very fast to access it later
+        if self.algo == "md5":
+            self.length = 32
+        elif self.algo == "shortmd5" or self.algo == "shortsha256":
+            self.length = 8
+        elif self.algo == "minimd5" or self.algo == "minisha256":
+            self.length = 4
 
     def hash(self, mes):
         # use hashlib.algorithms_guaranteed to list algorithms
@@ -151,12 +160,7 @@ class Hasher(object):
             return hashlib.sha256(mes).hexdigest().encode('base64')[:4]
 
     def __len__(self):
-        if self.algo == "md5":
-            return 32
-        elif self.algo == "shortmd5" or self.algo == "shortsha256":
-            return 8
-        elif self.algo == "minimd5" or self.algo == "minisha256":
-            return 4
+        return self.length
 
 class ECC(object):
     '''ECC manager, which provide a modular way to use different kinds of ecc algorithms.'''
@@ -342,7 +346,7 @@ def compute_ecc_params(max_block_size, rate, hasher):
     hash_size = len(hasher) # 32 when we use MD5
     return {"message_size": message_size, "ecc_size": ecc_size, "hash_size": hash_size}
 
-def stream_compute_ecc_hash(ecc_manager, hasher, file, max_block_size, header_size, resilience_rates, as_string=False):
+def stream_compute_ecc_hash(ecc_manager, hasher, file, max_block_size, header_size, resilience_rates):
     '''Generate a stream of hash/ecc blocks, of variable encoding rate and size, given a file.'''
     curpos = file.tell()
     size = os.fstat(file.fileno()).st_size
@@ -359,11 +363,9 @@ def stream_compute_ecc_hash(ecc_manager, hasher, file, max_block_size, header_si
         ecc = ecc_manager.encode(mes, k=ecc_params["message_size"])
         #print("mes %i (%i) - ecc %i (%i) - hash %i (%i)" % (len(mes), message_size, len(ecc), ecc_params["ecc_size"], len(hash), ecc_params["hash_size"])) # DEBUGLINE
 
-        # Return the result (either in string for easy writing into a file, or in a list for easy post-processing)
-        if as_string:
-            yield "%s%s" % (str(hash),str(ecc))
-        else:
-            yield [hash, ecc, ecc_params]
+        # Return the result
+        yield [hash, ecc, ecc_params]
+        # Prepare for next iteration
         curpos = file.tell()
 
 
@@ -638,7 +640,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
             # Processing ecc on files
             files_done = 0
             files_skipped = 0
-            bardisp = tqdm.tqdm(total=sizetotal, leave=True, unit='B', unit_format=True)
+            bardisp = tqdm.tqdm(total=sizetotal, leave=True, unit='B', unit_format=True, mininterval=1)
             for (dirpath, filename) in recwalk(folderpath):
                 # Get full absolute filepath
                 filepath = os.path.join(dirpath,filename)
@@ -657,7 +659,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                     with open(os.path.join(folderpath,filepath), 'rb') as file:
                         db.write((entrymarker+"%s"+field_delim+"%s"+field_delim) % (relfilepath, filesize)) # first save the file's metadata (filename, filesize, ...)
                         # -- Hash/Ecc encoding (everything is managed inside stream_compute_ecc_hash)
-                        for ecc_entry in stream_compute_ecc_hash(ecc_manager_variable, hasher, file, max_block_size, header_size, resilience_rates, as_string=False): # then compute the ecc/hash entry for this file's header (each value will be a block, a string of hash+ecc per block of data, because Reed-Solomon is limited to a maximum of 255 bytes, including the original_message+ecc! And in addition we want to use a variable rate for RS that is decreasing along the file)
+                        for ecc_entry in stream_compute_ecc_hash(ecc_manager_variable, hasher, file, max_block_size, header_size, resilience_rates): # then compute the ecc/hash entry for this file's header (each value will be a block, a string of hash+ecc per block of data, because Reed-Solomon is limited to a maximum of 255 bytes, including the original_message+ecc! And in addition we want to use a variable rate for RS that is decreasing along the file)
                             db.write( "%s%s" % (str(ecc_entry[0]),str(ecc_entry[1])) )
                             bardisp.update(ecc_entry[2]['message_size'])
                 files_done += 1

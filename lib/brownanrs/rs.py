@@ -2,10 +2,10 @@
 # Copyright (c) 2010 Andrew Brown <brownan@cs.duke.edu, brownan@gmail.com>
 # See LICENSE.txt for license terms
 
-# try: # Numpy implementation import. NOTE: it's working correctly but it's actually slower than the pure-python implementation! (although the code is vectorized and __mul__ is faster, but it seems it's not enough to speed things up and the numpy call overhead is too much for any gain here).
-    # from npolynomial import Polynomial
-    # from nff import GF256int
-# except ImportError:
+#try: # Numpy implementation import. NOTE: it's working correctly but it's actually slower than the pure-python implementation! (although the code is vectorized and __mul__ is faster, but it seems it's not enough to speed things up and the numpy call overhead is too much for any gain here).
+#    from npolynomial import Polynomial
+#    from nff import GF256int
+#except ImportError:
 try: # Cython implementation import. This should be a bit faster than using PyPy with the pure-python implementation.
     from cff import GF256int
     from cpolynomial import Polynomial
@@ -106,6 +106,7 @@ class RSCoder(object):
 
         # Encode message as a polynomial:
         m = Polynomial([GF256int(ord(x)) for x in message])
+        #m = Polynomial(map(GF256int, map(ord,message)))
         #m = Polynomial([GF256int(x) for x in array.array('b', message).tolist()]) # equivalent to: Polynomial([GF256int(ord(x)) for x in message])
 
         # Shift polynomial up by n-k by multiplying by x^(n-k)
@@ -120,12 +121,12 @@ class RSCoder(object):
         # Since c is a multiple of g, it has (at least) n-k roots: α^1 through
         # α^(n-k)
 
-        if poly:
-            return c
-
-        # Turn the polynomial c back into a byte string
-        return "".join(chr(x) for x in c.coefficients).rjust(n, "\0")
-        #return array.array('B', c).tostring().rjust(n, "\0") # faster than but equivalent to: "".join(chr(x) for x in c).rjust(n, "\0") # see: https://www.python.org/doc/essays/list2str/
+        if not poly:
+            # Turn the polynomial c back into a byte string
+            return ''.join([chr(x) for x in c.coefficients]).rjust(n, "\0") # rjust is useful for the nostrip feature
+            #return ''.join(map(chr,c.coefficients)).rjust(255, "\0") # faster but doesn't validate unittest...
+            #return array.array('B', c).tostring().rjust(n, "\0") # faster than but equivalent to: "".join(chr(x) for x in c).rjust(n, "\0") # see: https://www.python.org/doc/essays/list2str/
+        else: return c
 
     def verify(self, code, k=None):
         """Verifies the code is valid by testing that the code as a polynomial

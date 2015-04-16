@@ -173,6 +173,8 @@ Note4: maybe try to parallelize? The problem is that all CPU intensive work is d
 
 Note5: still need 10 times speedup in polynomial/ff operations to be reasonable, and 100 times speedup to be really useful for day-to-day. By lowering max_block_size, it becomes usable, but with a 10x speedup it should be really useable. Try to use a more efficient polynomial division algorithm ? Or implement in C/C++ directly (Boost Python?).
 http://www.math.uzh.ch/?file&key1=23398
+http://en.wikipedia.org/wiki/Horner's_method
+http://en.wikipedia.org/wiki/Multiply%E2%80%93accumulate_operation#Fused_multiply.E2.80.93add
 
 - header_ecc.py and structural_adaptive_ecc.py enhance tolerance against faulty hash/ecc blocks and faulty ecc entries (eg: when an entrymarker has wrongly spawned somewhere because of a corruption, when fields aren't well delimited etc.). Could just use multiple try-catch blocks and try to skip errors (if it's only one hash/ecc block fields, we can skip to next block. If it's the whole entry, we skip to next entry).
 

@@ -94,10 +94,14 @@ class Polynomial(object):
         return self.__class__([x+y for x,y in izip(t1, t2)])
 
     def __neg__(self):
-        return self.__class__([-x for x in self.coefficients])
+        if self[0].__class__.__name__ == "GF256int": # optimization: -GF256int(x) == GF256int(x), so it's useless to do a loop in this case
+            return self
+        else:
+            return self.__class__([-x for x in self.coefficients])
+
     def __sub__(self, other):
         return self + -other
-            
+
     def __mul__(self, other):
         terms = [0] * (len(self) + len(other))
 
@@ -161,10 +165,10 @@ class Polynomial(object):
         elif dividend_power < divisor_power:
             # Doesn't divide at all, return 0 for the quotient and the entire
             # dividend as the remainder
-            quotient = class_([0])
+            quotient = class_()
             remainder = dividend
         else: # dividend_power >= divisor_power
-            quotient = class_([0] * dividend_power) # init the quotient array
+            quotient = class_() # init the quotient array
             # init the remainder to the dividend, and we will divide it sucessively by the quotient major coefficient
             remainder = dividend
             remainder_power = dividend_power

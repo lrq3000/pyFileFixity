@@ -97,21 +97,24 @@ cdef class Polynomial:
 #                poly.pop()   # normalize
 #            return len(poly)-1
 
-    def __add__(self, Polynomial other):
+    def __add__(Polynomial self, Polynomial other):
         cdef int diff = len(self) - len(other)
         cdef list t1 = [0] * (-diff) + self.coefficients
         cdef list t2 = [0] * diff + other.coefficients
         return self.__class__([x+y for x,y in izip(t1, t2)])
 
-    def __neg__(self):
+    def __neg__(Polynomial self):
         cdef list c = []
-        for x in self.coefficients:
-            c.append(-x)
-        return self.__class__(c)
-    def __sub__(self, Polynomial other):
+        if self[0].__class__.__name__ == "GF256int": # optimization: -GF256int(x) == GF256int(x), so it's useless to do a loop in this case
+            return self
+        else:
+            for x in self.coefficients:
+                c.append(-x)
+            return self.__class__(c)
+    def __sub__(Polynomial self, Polynomial other):
         return self + -other
 
-    def __mul__(self, Polynomial other):
+    def __mul__(Polynomial self, Polynomial other):
         cdef list terms = [0] * (len(self) + len(other))
 
         cdef int l1 = self.degree
@@ -127,9 +130,9 @@ cdef class Polynomial:
                     terms[-((l1-i1)+(l2-i2))-1] += c1*c2
         return self.__class__(terms)
 
-    def __floordiv__(self, Polynomial other):
+    def __floordiv__(Polynomial self, Polynomial other):
         return divmod(self, other)[0]
-    def __mod__(self, Polynomial other):
+    def __mod__(Polynomial self, Polynomial other):
         return divmod(self, other)[1]
 
     def __divmod__(Polynomial dividend, Polynomial divisor):
@@ -182,10 +185,10 @@ cdef class Polynomial:
         elif dividend_power < divisor_power:
             # Doesn't divide at all, return 0 for the quotient and the entire
             # dividend as the remainder
-            quotient = class_([0])
+            quotient = class_()
             remainder = dividend
         else: # dividend_power >= divisor_power
-            quotient = class_([0] * dividend_power) # init the quotient array
+            quotient = class_() # init the quotient array
             # init the remainder to the dividend, and we will divide it sucessively by the quotient major coefficient
             remainder = dividend
             remainder_power = dividend_power
