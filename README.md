@@ -178,7 +178,7 @@ http://www.math.uzh.ch/?file&key1=23398
 http://en.wikipedia.org/wiki/Horner's_method
 http://en.wikipedia.org/wiki/Multiply%E2%80%93accumulate_operation#Fused_multiply.E2.80.93add
 
-Note6: with latest implementations, we have a 100x speedup when using PyPy 2.5.0: on an Intel Core i7 M640 2.80GHz and 4GB RAM on a SSD hard disk, encoding speed is ~600kB/s with --ecc_algo 2, ~900kB/s with --ecc_algo 3 and if you set --max_block_size 150 --ecc_algo 3 you get ~1.5MB/s, which is quite correct (~2 hours to encode 10GB). Not bad!
+Note6: with latest implementations, we have a 100x speedup when using PyPy 2.5.0: on an Intel Core i7 M640 2.80GHz and 4GB RAM on a SSD hard disk, encoding speed is ~600kB/s with --ecc_algo 2, ~1.3MB/s with --ecc_algo 3 and if you set --max_block_size 150 --ecc_algo 3 you get ~1.5MB/s, which is quite correct (~2 hours to encode 10GB). Not bad! However if we could achieve a 10x more speed boost to attain 10MB/s, it would just be perfect! If anyone knows how to optimize with Cython, it would be a great help, because I can't squeeze enough juice out of that...
 
 - header_ecc.py and structural_adaptive_ecc.py enhance tolerance against faulty hash/ecc blocks and faulty ecc entries (eg: when an entrymarker has wrongly spawned somewhere because of a corruption, when fields aren't well delimited etc.). Could just use multiple try-catch blocks and try to skip errors (if it's only one hash/ecc block fields, we can skip to next block. If it's the whole entry, we skip to next entry).
 
