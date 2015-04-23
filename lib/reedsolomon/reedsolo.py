@@ -123,7 +123,7 @@ def init_tables_base3():
         45, 119, 153, 176, 203, 70, 202, 69, 207, 74, 222, 121, 139, 134,
         145, 168, 227, 62, 66, 198, 81, 243, 14, 18, 54, 90, 238, 41, 123,
         141, 140, 143, 138, 133, 148, 167, 242, 13, 23, 57, 75, 221, 124,
-        132, 151, 162, 253, 28, 36, 108, 180, 199, 82, 246, 1]
+        132, 151, 162, 253, 28, 36, 108, 180, 199, 82, 246, 1] * 2
 
     # Logarithm table, base 3
     gf_log = [None, 0, 25, 1, 50, 2, 26, 198, 75, 199, 27, 104, 51, 238, 223,
@@ -221,16 +221,15 @@ def rs_generator_poly_base3(nsize, fcr=0):
     return g_all
 
 def rs_encode_msg(msg_in, nsym, fcr=0, gen=None):
-    if len(msg_in) + nsym > 255:
-        raise ValueError("message too long")
+    if len(msg_in) + nsym > 255: raise ValueError("message too long")
     if gen is None: gen = rs_generator_poly(nsym, fcr)
     msg_out = bytearray(len(msg_in) + nsym)
     msg_out[:len(msg_in)] = msg_in
     for i in range(0, len(msg_in)):
         coef = msg_out[i]
-        if coef != 0:
+        if coef != 0: # optimization, avoid computing something useless
             for j in range(0, len(gen)):
-                msg_out[i + j] ^= gf_mul(gen[j], coef)
+                if gen[j] != 0: msg_out[i + j] ^= gf_exp[(gf_log[gen[j]] + gf_log[coef])] # optimization, equivalent to gf_mul(gen[j], coef)
     msg_out[:len(msg_in)] = msg_in
     return msg_out
 

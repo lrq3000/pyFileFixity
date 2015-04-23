@@ -131,9 +131,9 @@ class Polynomial(object):
         msg_out[:len(dividend)] = dividend
         for i in range(0, len(dividend)):
             coef = msg_out[i]
-            if coef != 0:
+            if coef != 0: # optimization, avoid computing something useless
                 for j in range(0, len(divisor)):
-                    msg_out[i + j] += divisor[j] * coef
+                    if divisor[j] != 0: msg_out[i + j] += divisor[j] * coef
         return Polynomial(msg_out[len(dividend):])
 
     def __divmod__(dividend, divisor):
