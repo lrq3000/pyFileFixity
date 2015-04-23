@@ -17,7 +17,7 @@ ext = '.pyx' if USE_CYTHON else '.c'
 
 extensions = [
                         Extension('lib.brownanrs.cff', [os.path.join('lib', 'brownanrs', 'cff'+ext)]),
-                        Extension('lib.brownanrs.cpolynomial', [os.path.join('lib', 'brownanrs', 'cpolynomial'+ext)])
+                        Extension('lib.brownanrs.cpolynomial', [os.path.join('lib', 'brownanrs', 'cpolynomial'+ext)]),
                     ]
 
 if USE_CYTHON: extensions = cythonize(extensions)

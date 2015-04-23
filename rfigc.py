@@ -43,7 +43,7 @@
 # NOTE: this software is similar in purpose to the (more advanced) MD5deep / HashDeep for hash set auditing: http://md5deep.sourceforge.net/
 #
 
-__version__ = "1.0"
+__version__ = "1.1"
 
 # Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
 import sys, os
@@ -263,6 +263,12 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
     main_parser.add_argument('-r', '--remove', action='store_true', required=False, default=False,
                         help='Remove missing files (if --update).')
 
+    # Recover from file scraping
+    main_parser.add_argument('--filescraping_recovery', action='store_true', required=False, default=False,
+                        help='Given a folder of unorganized files, compare to the database and restore the filename and directory structure into the output folder.')
+    main_parser.add_argument('-o', '--output', metavar='/path/to/root/folder', type=is_dir, nargs=1, required=False,
+                        help='Path to the output folder where to output the files reorganized after --recover_from_filescraping.', **widget_dir)
+
     #== Parsing the arguments
     args = main_parser.parse_args(argv) # Storing all arguments to args
 
@@ -279,6 +285,9 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
     update = args.update
     append = args.append
     remove = args.remove
+    outputpath = None
+    if args.output: outputpath = fullpath(args.output[0])
+    filescraping = args.filescraping_recovery
 
     errors_file = None
     if args.errors_file: errors_file = os.path.basename(fullpath(args.errors_file[0]))
@@ -289,6 +298,9 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
 
     if update and (not append and not remove):
         raise ValueError('--update specified but not --append nor --remove. You must specify at least one of these modes when using --update!')
+
+    if filescraping and not outputpath:
+        raise ValueError('Output path needed when --recover_from_filescraping.')
 
     # -- Configure the log file if enabled (ptee.write() will write to both stdout/console and to the log file)
     if args.log:
@@ -424,8 +436,73 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
         ptee.write("----------------------------------------------------")
         ptee.write("All files processed: Total: %i - Added: %i.\n\n" % (filescount, addcount))
 
+    # -- Filescraping recovery mode
+    # We will compare all files from the input path and reorganize the ones that are recognized into the output path
+    elif filescraping:
+        import shutil
+        ptee.write("====================================")
+        ptee.write("RIFGC File Scraping Recovery started on %s" % datetime.datetime.now().isoformat())
+        ptee.write("====================================")
+
+        ptee.write("Loading the database into memory, please wait...")
+        md5list = {}
+        sha1list = {}
+        dbrows = {} # TODO: instead of memorizing everything in memory, store just the reading cursor position at the beginning of the line with the size and then just read when necessary from the db file directly
+        id = 0
+        with open(database, 'rb') as db:
+            for row in csv.DictReader(db):
+                id += 1
+                if (len(row['md5']) > 0 and len(row['sha1']) > 0):
+                    md5list[row['md5']] = id
+                    sha1list[row['sha1']] = id
+                    dbrows[id] = row
+        ptee.write("Loading done.")
+
+        if len(dbrows) == 0:
+            ptee.write("Nothing to do, there's no md5 nor sha1 hashes in the database file!")
+            return(1) # return with an error
+
+        # Counting the total number of files that we will have to process
+        ptee.write("Counting total number of files to process, please wait...")
+        filestodocount = 0
+        for _ in tqdm.tqdm(recwalk(folderpath)):
+            filestodocount = filestodocount + 1
+        ptee.write("Counting done.")
+        
+        # Recursively traversing the root directory and save the metadata in the db for each file
+        ptee.write("Processing file scraping recovery, walking through all files from input folder...")
+        filescount = 0
+        copiedcount = 0
+        for (dirpath, filename) in tqdm.tqdm(recwalk(folderpath), total=filestodocount, leave=True):
+                filescount = filescount + 1
+                # Get full absolute filepath
+                filepath = os.path.join(dirpath,filename)
+                # Get database relative path (from scanning root folder)
+                relfilepath = os.path.relpath(filepath, folderpath) # File relative path from the root (so that we can easily check the files later even if the absolute path is different)
+
+                # Generate the hashes from the currently inspected file
+                md5hash, sha1hash = generate_hashes(filepath)
+                # If it match with a file in the database, we will copy it over with the correct name, directory structure, file extension and last modification date
+                if md5hash in md5list and sha1hash in sha1list and md5list[md5hash] == sha1list[sha1hash]:
+                    # Load the db infos for this file
+                    row = dbrows[md5list[md5hash]]
+                    ptee.write("- Found: %s --> %s.\n" % (filepath, row['path']))
+                    # Generate full absolute filepath of the output file
+                    outfilepath = os.path.join(outputpath, row['path'])
+                    # Recursively create the directory tree structure
+                    outfiledir = os.path.dirname(outfilepath)
+                    if not os.path.isdir(outfiledir): os.makedirs(outfiledir) # if the target directory does not exist, create it (and create recursively all parent directories too)
+                    # Copy over and set attributes
+                    shutil.copy2(filepath, outfilepath)
+                    filestats = os.stat(filepath)
+                    os.utime(outfilepath, (filestats.st_atime, float(row['last_modification_timestamp'])))
+                    # Counter...
+                    copiedcount += 1
+        ptee.write("----------------------------------------------------")
+        ptee.write("All files processed: Total: %i - Recovered: %i.\n\n" % (filescount, copiedcount))
+
     # -- Check the files from a database
-    elif not update and not generate:
+    elif not update and not generate and not filescraping:
         ptee.write("====================================")
         ptee.write("RIFGC Check started on %s" % datetime.datetime.now().isoformat())
         ptee.write("====================================")
@@ -500,7 +577,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
         ptee.write("----------------------------------------------------")
         ptee.write("All files checked: Total: %i - Files with errors: %i.\n\n" % (filescount, errorscount))
 
-
+    return 0 # return with no error
 
 # Calling main function if the script is directly called (not imported as a library in another program)
 if __name__ == "__main__":

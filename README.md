@@ -154,7 +154,7 @@ In case of a catastrophic event of your data due to the failure of your storage 
 
 3- If you could not recover your files, you can try file scraping using photorec or other similar tools as a last resort to extract data based only from files content (no filename, often uncorrect filetype, file boundaries may be wrong so some data may be cut off, etc.).
 
-4- If you used pyFileFixity before the failure of your storage media, you can then use your pre-computed databases to check that files are intact (rfigc.py) and if they aren't, you can recover them (using header_ecc.py and structural_adaptive_ecc.py).
+4- If you used pyFileFixity before the failure of your storage media, you can then use your pre-computed databases to check that files are intact (rfigc.py) and if they aren't, you can recover them (using header_ecc.py and structural_adaptive_ecc.py). It can also help if you recovered your files via data scraping, because your files will be totally unorganized, but you can use a previously generated database file to recover the full names and directory tree structure using rfigc.py --filescraping_recover.
 
 
 Todo
@@ -187,5 +187,3 @@ Maybe use this python with numpy library (no compilation): https://github.com/ve
 Also this library includes interleavers, which may be interesting to be more resilient with RS too. However I hardly see how to interleave without the recovery file being less resilient to tampering (because if you interleave, you have to store this interleaving info somewhere, and it will probably be in the ecc recovery file, which will make it less resilient against corruption although the protected files will be more resilient thank's to interleaving...).
 
 - structural_adaptive_ecc.py: --update "change/remove/add" (change will update ecc entries if changed, remove will remove if file is not present anymore, add will encode new files not already in ecc file). For all, use another ecc file: must be different from input ecc file (from which we will streamline read and output to the target ecc file only if meet conditions).
-
-- rfigc.py --recover_from_filescrapping to help in case of file scraping: it will walk through all files in a folder and compare to both hashes in database, and if there's a match, it will copy the file over and assign it its correct name and datestamp into output folder.
