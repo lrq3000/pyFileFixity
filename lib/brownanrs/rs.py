@@ -1,5 +1,6 @@
 # encoding: UTF-8
 # Copyright (c) 2010 Andrew Brown <brownan@cs.duke.edu, brownan@gmail.com>
+# Copyright (c) 2015 Stephen Larroque <LRQ3000@gmail.com>
 # See LICENSE.txt for license terms
 
 #try: # Numpy implementation import. NOTE: it's working correctly but it's actually slower than the pure-python implementation! (although the code is vectorized and __mul__ is faster, but it seems it's not enough to speed things up and the numpy call overhead is too much for any gain here).
@@ -60,7 +61,7 @@ class RSCoder(object):
         self.k = k
 
         self.g = {}
-        self.h = {}
+        #self.h = {}
 
         # Generate the generator polynomial for RS codes
         # g(x) = (x-α^1)(x-α^2)...(x-α^(n-k))
@@ -73,15 +74,16 @@ class RSCoder(object):
             self.g[n-alpha] = g # copy.deepcopy(g)
 
         # h(x) = (x-α^(n-k+1))...(x-α^n)
-        h = Polynomial([GF256int(1)])
-        for alpha in xrange(n-1, n+1): self.h[alpha] = h
-        for alpha in xrange(n, 0, -1):
-            p = Polynomial([GF256int(1), GF256int(3)**alpha])
-            h = h * p
-            self.h[n-alpha+1] = h
+        #h = Polynomial([GF256int(1)])
+        #for alpha in xrange(n-1, n+1): self.h[alpha] = h
+        #for alpha in xrange(n, 0, -1):
+        #    p = Polynomial([GF256int(1), GF256int(3)**alpha])
+        #    h = h * p
+        #    self.h[n-alpha+1] = h
 
         # g*h is used in verification, and is always x^n-1
-        # TODO: This is hardcoded for (255,223)
+
+        # TODO: The following line gtimesh is hardcoded for (255,223)
         # But it doesn't matter since my verify method doesn't use it
         #self.gtimesh = Polynomial(x255=GF256int(1), x0=GF256int(1))
 
@@ -109,7 +111,7 @@ class RSCoder(object):
         #m = Polynomial(map(GF256int, map(ord,message)))
         #m = Polynomial([GF256int(x) for x in array.array('b', message).tolist()]) # equivalent to: Polynomial([GF256int(ord(x)) for x in message])
 
-        # Shift polynomial up by n-k by multiplying by x^(n-k)
+        # Shift polynomial up by n-k by multiplying by x^(n-k). This effectively pad the message with \0 bytes if the user forgot to do it.
         mprime = m * Polynomial([GF256int(1)] + [GF256int(0)]*(n-k))
 
         # mprime = q*g + b for some q
@@ -128,6 +130,35 @@ class RSCoder(object):
             #return array.array('B', c).tostring().rjust(n, "\0") # faster than but equivalent to: "".join(chr(x) for x in c).rjust(n, "\0") # see: https://www.python.org/doc/essays/list2str/
         else: return c
 
+    def encode_fast(self, message, poly=False, k=None):
+        '''Fast encoding of a message, using synthetic division and other tricks to minimize the number of operations on Polynomials.'''
+        n = self.n
+        if not k: k = self.k
+
+        if len(message)>k:
+            raise ValueError("Message length is max %d. Message was %d" % (k,
+                len(message)))
+
+        # Encode message as a polynomial:
+        m = Polynomial([GF256int(ord(x)) for x in message])
+
+        # Encode message as a polynomial and shift polynomial up by n-k (without multiplication, this is an optimization). This effectively pad the message with \0 bytes if the user forgot to do it.
+        mprime = Polynomial(m.coefficients + [GF256int(0)]*(n-k))
+
+        # mprime = q*g + b for some q
+        # so let's find b:
+        #b = mprime % self.g[k]
+        b = m._fastmod(self.g[k], self.n-k)
+
+        # Append the polynomial ecc code to the original message
+        c = mprime.coefficients[:-len(b.coefficients)] + b.coefficients
+
+        if not poly:
+            # Turn the polynomial c back into a byte string
+            return ''.join([chr(x) for x in c]).rjust(n, "\0") # rjust is useful for the nostrip feature
+            #return bytearray(c).rjust(n, "\0") # based on %timeit, bytearray is 4x faster than list comprehension for this job, but PyPy does a better job at speeding up list comprehensions than bytearray, so better keep the list comprehension.
+        else: return Polynomial(c)
+
     def verify(self, code, k=None):
         """Verifies the code is valid by testing that the code as a polynomial
         code divides g
@@ -135,7 +166,7 @@ class RSCoder(object):
         """
         n = self.n
         if not k: k = self.k
-        h = self.h[k]
+        #h = self.h[k]
         g = self.g[k]
 
         c = Polynomial([GF256int(ord(x)) for x in code])
@@ -146,6 +177,25 @@ class RSCoder(object):
         # Since all codewords are multiples of g, checking that code divides g
         # suffices for validating a codeword.
         return c % g == Polynomial(x0=0)
+
+    def check(self, r, k=None):
+        '''Check if there's any error in a message+ecc. Can be used before decoding, in addition to hashes to detect if the message was tampered, or after decoding to check that the message was fully recovered.
+        returns True/False
+        '''
+        n = self.n
+        if not k: k = self.k
+        #h = self.h[k]
+        g = self.g[k]
+
+        # Turn r into a polynomial
+        r = Polynomial([GF256int(ord(x)) for x in r])
+
+        # Compute the syndromes:
+        sz = self._syndromes(r, k=k)
+
+        # Checking that the syndrome is all 0 is sufficient to check if there are no more any errors in the decoded message
+        #return all(int(x) == 0 for x in sz)
+        return sz.coefficients.count(GF256int(0)) == len(sz) # Faster than all()
 
     def decode(self, r, nostrip=False, k=None):
         """Given a received string or byte array r, attempts to decode it. If
@@ -202,15 +252,16 @@ class RSCoder(object):
         c = r - E
 
         # Form it back into a string and return all but the last n-k bytes
-        ret = "".join(chr(x) for x in c.coefficients[:-(n-k)])
+        ret = ''.join(chr(x) for x in c.coefficients[:-(n-k)])
+        ecc = ''.join(chr(x) for x in c.coefficients[-(n-k):]) # also return the corrected ecc, so that user can check()
         #                                            :-(
 
         if nostrip:
             # Polynomial objects don't store leading 0 coefficients, so we
             # actually need to pad this to k bytes
-            return ret.rjust(k, "\0")
+            return ret.rjust(k, "\0"), ecc
         else:
-            return ret
+            return ret, ecc
 
 
     def _syndromes(self, r, k=None):
@@ -298,33 +349,22 @@ class RSCoder(object):
 
             # Now compute the next tao and gamma
             # There are two ways to do this
-            if Delta == ZERO or 2*D[l] > (l+1):
+            if Delta == ZERO or 2*D[l] > (l+1) \
+                or (2*D[l] == (l+1) and B[l] == 0):
                 # Rule A
                 D.append( D[l] )
                 B.append( B[l] )
                 tao.append( Z * tao[l] )
                 gamma.append( Z * gamma[l] )
 
-            elif Delta != ZERO and 2*D[l] < (l+1):
+            elif (Delta != ZERO and 2*D[l] < (l+1)) \
+                or (2*D[l] == (l+1) and B[l] != 0):
                 # Rule B
                 D.append( l + 1 - D[l] )
                 B.append( 1 - B[l] )
                 tao.append( sigma[l] // Delta )
                 gamma.append( omega[l] // Delta )
-            elif 2*D[l] == (l+1):
-                if B[l] == 0:
-                    # Rule A (same as above)
-                    D.append( D[l] )
-                    B.append( B[l] )
-                    tao.append( Z * tao[l] )
-                    gamma.append( Z * gamma[l] )
 
-                else:
-                    # Rule B (same as above)
-                    D.append( l + 1 - D[l] )
-                    B.append( 1 - B[l] )
-                    tao.append( sigma[l] // Delta )
-                    gamma.append( omega[l] // Delta )
             else:
                 raise Exception("Code shouldn't have gotten here")
 
@@ -344,13 +384,15 @@ class RSCoder(object):
         Chien's search. Chien's search is a way to evaluate the polynomial
         such that each evaluation only takes constant time. This here simply
         does 255 evaluations straight up, which is much less efficient.
+        Said differently, we simply do a bruteforce search by trial substitution to find the zeros of this polynomial, which identifies the error locations.
         """
         X = []
         j = []
         p = GF256int(3)
+        # Try for each possible location
         for l in xrange(1,256):
             # These evaluations could be more efficient, but oh well
-            if sigma.evaluate( p**l ) == 0:
+            if sigma.evaluate( p**l ) == 0: # If it's 0, then bingo! It's an error location
                 X.append( p**(-l) )
                 # This is different than the notes, I think the notes were in error
                 # Notes said j values were just l, when it's actually 255-l

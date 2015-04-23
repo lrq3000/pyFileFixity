@@ -62,7 +62,7 @@
 # the intra-ecc on filepath is the hardest because we won't know the size (not fixed-length), but we can use a field_delim. For intra-ecc on hash this is easy if the hash is fixed-length like MD5: we can precisely compute the length of the ECC, thus it will just be another field to extract in entry_fields.
 #
 
-__version__ = "0.9.3b"
+__version__ = "0.9.4b"
 
 # Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
 import sys, os
@@ -82,15 +82,11 @@ import shlex # for string parsing as argv argument to main(), unnecessary otherw
 from lib.tee import Tee # Redirect print output to the terminal as well as in a log file
 #import pprint # Unnecessary, used only for debugging purposes
 
-import lib.brownanrs.rs as brownanrs # Pure python implementation of Reed-Solomon with configurable max_block_size and automatic error detection (you don't have to specify where they are).
-rsmode = 1 # to allow different implementations (possibly more efficient) of Reed-Solomon in the future
+# ECC and hashing facade libraries
+from lib.eccman import ECCMan
+from lib.hasher import Hasher
 
-# try:
-    # import lib.brownanrs.rs as brownanrs
-    # rsmode = 1
-# except ImportError:
-        # import lib.reedsolomon.reedsolo as reedsolo
-        # rsmode = 2
+
 
 #***********************************
 #     AUXILIARY FUNCTIONS
@@ -129,78 +125,7 @@ def feature_scaling(x, xmin, xmax, a=0, b=1):
     '''Generalized feature scaling (unused, only useful for variable error correction rate in the future)'''
     return a + float(x - xmin) * (b - a) / (xmax - xmin)
 
-class Hasher(object):
-    '''Class to provide a hasher object with various hashing algorithms. What's important is to provide the __len__ so that we can easily compute the block size of ecc entries. Must only use fixed size hashers for the rest of the script to work properly.'''
-    
-    known_algo = ["md5", "shortmd5", "shortsha256", "minimd5", "minisha256"]
-    __slots__ = ['algo', 'length']
-
-    def __init__(self, algo="md5"):
-        # Store the selected hashing algo
-        self.algo = algo.lower()
-        # Precompute length so that it's very fast to access it later
-        if self.algo == "md5":
-            self.length = 32
-        elif self.algo == "shortmd5" or self.algo == "shortsha256":
-            self.length = 8
-        elif self.algo == "minimd5" or self.algo == "minisha256":
-            self.length = 4
-
-    def hash(self, mes):
-        # use hashlib.algorithms_guaranteed to list algorithms
-        if self.algo == "md5":
-            return hashlib.md5(mes).hexdigest()
-        elif self.algo == "shortmd5": # from: http://www.peterbe.com/plog/best-hashing-function-in-python
-            return hashlib.md5(mes).hexdigest().encode('base64')[:8]
-        elif self.algo == "shortsha256":
-            return hashlib.sha256(mes).hexdigest().encode('base64')[:8]
-        elif self.algo == "minimd5":
-            return hashlib.md5(mes).hexdigest().encode('base64')[:4]
-        elif self.algo == "minisha256":
-            return hashlib.sha256(mes).hexdigest().encode('base64')[:4]
-
-    def __len__(self):
-        return self.length
-
-class ECC(object):
-    '''ECC manager, which provide a modular way to use different kinds of ecc algorithms.'''
-    def __init__(self, n, k):
-        self.ecc_manager = brownanrs.RSCoder(n, k)
-        self.n = n
-        self.k = k
-
-    def encode(self, message, k=None, debug=False):
-        if not k: k = self.k
-        message, _ = self.pad(message, k=k)
-        if debug: print message
-        if rsmode == 1:
-            mesecc = self.ecc_manager.encode(message, k=k)
-            ecc = mesecc[len(message):]
-            return ecc
-
-    def decode(self, message, ecc, k=None):
-        if not k: k = self.k
-        message, pad = self.pad(message, k=k)
-        if rsmode == 1:
-            res = self.ecc_manager.decode(message + ecc, nostrip=True, k=k) # Avoid automatic stripping because we are working with binary streams, thus we should manually strip padding only when we know we padded
-            if pad: # Strip the null bytes if we padded the message before decoding
-                res = res[len(pad):len(res)]
-            return res
-    
-    def pad(self, message, k=None):
-        '''Automatically pad with null bytes a message if too small, or leave unchanged if not necessary. This allows to keep track of padding and strip the null bytes after decoding reliably with binary data.'''
-        if not k: k = self.k
-        pad = None
-        if len(message) < k:
-            pad = "\x00" * (k-len(message))
-            message = pad + message
-        return [message, pad]
-
-    def check(self, message, ecc, k=None):
-        if not k: k = self.k
-        message = self.pad(message)
-        if rsmode == 1:
-            return self.ecc_manager.verify(message, ecc, k=k)
+#--------------------------------
 
 def find_next_entry(file, entrymarker="\xFF\xFF\xFF\xFF"):
     '''Find the next ecc entry in the ecc file, and return the start and end positions. This will find any string length between two entrymarkers. The reading is very tolerant, so it will always return any valid entry (but also scrambled entries if any, but the decoding will ensure everything's ok).'''
@@ -272,12 +197,15 @@ def stream_entry_assemble(hasher, file, eccfile, entry_fields, max_block_size, h
     eccfile.seek(entry_fields["ecc_field_pos"][0])
     curpos = file.tell()
     ecc_curpos = eccfile.tell()
-    while (ecc_curpos < entry_fields["ecc_field_pos"][1]):
-        if curpos < header_size:
+    while (ecc_curpos < entry_fields["ecc_field_pos"][1]): # continue reading the input file until we reach the position of the previously detected ending marker
+        # Compute the current rate, depending on where we are inside the input file (headers? later stage?)
+        if curpos < header_size: # header stage: constant rate
             rate = resilience_rates[0]
-        else:
+        else: # later stage 2 or 3: progressive rate
             rate = feature_scaling(curpos, header_size, entry_fields["filesize"], resilience_rates[1], resilience_rates[2]) # find the rate for the current stream of data (interpolate between stage 2 and stage 3 rates depending on the cursor position in the file)
+        # From the rate, compute the ecc parameters
         ecc_params = compute_ecc_params(max_block_size, rate, hasher)
+        # Extract the message block from input file, given the computed ecc parameters
         mes = file.read(ecc_params["message_size"])
         if len(mes) == 0: return # quit if message is empty (reached end-of-file), this is a safeguard if ecc pos ending was miscalculated (we thus only need the starting position to be correct)
         buf = eccfile.read(ecc_params["hash_size"]+ecc_params["ecc_size"])
@@ -285,8 +213,11 @@ def stream_entry_assemble(hasher, file, eccfile, entry_fields, max_block_size, h
         ecc = buf[ecc_params["hash_size"]:]
 
         yield {"message": mes, "hash": hash, "ecc": ecc, "rate": rate, "ecc_params": ecc_params, "curpos": curpos, "ecc_curpos": ecc_curpos}
+        # Prepare for the next iteration of the loop
         curpos = file.tell()
         ecc_curpos = eccfile.tell()
+    # Just a quick safe guard against ecc ending marker misdetection
+    if curpos < os.fstat(file.fileno()).st_size: print("WARNING: end of ecc track reached but not the end of file! Either the ecc ending marker was misdetected, or either the file hash changed! Some blocks maybe may not have been properly checked!")
 
  # TODO: entries_disambiguate() NOT READY! we can either disambiguate on the fly (since the ecc field is not longer completely loaded in memory) each block (should be implemented inside (entry_fields and entry_assemble) or we can pre-compute disambiguation by reading each character in parallel from the file and then outputting to a temporary file.
 def entries_disambiguate(entries, field_delim="\xFF", ptee=None): # field_delim is only useful if there are errors
@@ -356,7 +287,7 @@ def stream_compute_ecc_hash(ecc_manager, hasher, file, max_block_size, header_si
         else:
             rate = feature_scaling(curpos, header_size, size, resilience_rates[1], resilience_rates[2]) # find the rate for the current stream of data (interpolate between stage 2 and stage 3 rates depending on the cursor position in the file)
         ecc_params = compute_ecc_params(max_block_size, rate, hasher)
-        #ecc_manager = ECC(max_block_size, ecc_params["message_size"])
+        #ecc_manager = ECCMan(max_block_size, ecc_params["message_size"])
 
         mes = file.read(ecc_params["message_size"])
         hash = hasher.hash(mes)
@@ -457,6 +388,8 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                         help='Path to the file containing the ECC informations.', **widget_filesave)
 
     # Optional general arguments
+    main_parser.add_argument('--ecc_algo', type=int, default=1, required=False,
+                        help='What algorithm use to generate and verify the ECC? Values possible: 1-4. 1 is the formal, fully verified Reed-Solomon in base 3 ; 2 is a faster implementation but still based on the formal base 3 ; 3 is an even faster implementation but based on another library which may not be correct ; 4 is the fastest implementation supporting US FAA ADSB UAT RS FEC standard but is totally incompatible with the other three (a text encoded with any of 1-3 modes will be decodable with any one of them).', **widget_text)
     main_parser.add_argument('--max_block_size', type=int, default=255, required=False,
                         help='Reed-Solomon max block size (maximum = 255). It is advised to keep it at the maximum for more resilience (see comments at the top of the script for more info). However, if encoding it too slow, using a smaller value will speed things up greatly, at the expense of more storage space (because hash will relatively take more space - you can use --hash "shortmd5" or --hash "minimd5" to counter balance).', **widget_text)
     main_parser.add_argument('-s', '--size', type=int, default=1024, required=False,
@@ -473,10 +406,10 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                         help='Path to the log file. (Output will be piped to both the stdout and the log file)', **widget_filesave)
     main_parser.add_argument('--stats_only', action='store_true', required=False, default=False,
                         help='Only show the predicted total size of the ECC file given the parameters.')
-    main_parser.add_argument('-v', '--verbose', action='store_true', required=False, default=False,
-                        help='Verbose mode (show more output).')
     main_parser.add_argument('--hash', metavar='md5;shortmd5;shortsha256...', type=str, required=False,
                         help='Hash algorithm to use. Choose between: md5, shortmd5, shortsha256, minimd5, minisha256.', **widget_text)
+    main_parser.add_argument('-v', '--verbose', action='store_true', required=False, default=False,
+                        help='Verbose mode (show more output).')
 
     # Correction mode arguments
     main_parser.add_argument('-c', '--correct', action='store_true', required=False, default=False,
@@ -487,6 +420,8 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                         help='Path to the error file generated by RFIGC.py. The software will automatically correct those files and only those files.', **widget_file)
     main_parser.add_argument('--ignore_size', action='store_true', required=False, default=False,
                         help='On correction, if the file size differs from when the ecc file was generated, ignore and try to correct anyway (this may work with file where data was appended without changing the rest. For compressed formats like zip, this will probably fail).')
+    main_parser.add_argument('--no_fast_check', action='store_true', required=False, default=False,
+                        help='On correction, block corruption is only checked with the hash (the ecc will still be checked after correction, but not before). If no_fast_check is enabled, then ecc will also be checked before. This allows to find blocks corrupted by malicious intent (the block is corrupted but the hash has been corrupted as well to match the corrupted block, because it\'s almost impossible that following a hardware or logical fault, the hash match the corrupted block).')
 
     # Generate mode arguments
     main_parser.add_argument('-g', '--generate', action='store_true', required=False, default=False,
@@ -522,9 +457,11 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
     skip_size_below = args.skip_size_below
     always_include_ext = args.always_include_ext
     if always_include_ext: always_include_ext = tuple(['.'+ext for ext in always_include_ext.split('|')]) # prepare a tuple of extensions (prepending with a dot) so that str.endswith() works (it doesn't with a list, only a tuple)
-    verbose = args.verbose
     hash_algo = args.hash
     if not hash_algo: hash_algo = "md5"
+    ecc_algo = args.ecc_algo
+    fast_check = not args.no_fast_check
+    verbose = args.verbose
 
     if correct:
         if not args.output:
@@ -570,8 +507,8 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
     resilience_rates = [resilience_rate_s1, resilience_rate_s2, resilience_rate_s3]
     hasher = Hasher(hash_algo)
     ecc_params_header = compute_ecc_params(max_block_size, resilience_rate_s1, hasher) # TODO: not static anymore since it's a variable encoding rate, so we have to recompute it on-the-fly for each block relatively to total file size.
-    ecc_manager_header = ECC(max_block_size, ecc_params_header["message_size"])
-    ecc_manager_variable = ECC(max_block_size, 1)
+    ecc_manager_header = ECCMan(max_block_size, ecc_params_header["message_size"], algo=ecc_algo)
+    ecc_manager_variable = ECCMan(max_block_size, 1, algo=ecc_algo)
     # for stats only
     ecc_params_variable_average = compute_ecc_params(max_block_size, (resilience_rate_s2 + resilience_rate_s3)/2, hasher) # compute the average variable rate to compute statistics
     ecc_params_s2 = compute_ecc_params(max_block_size, resilience_rate_s2, hasher)
@@ -613,7 +550,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
         ptee.write("- Resiliency stage1 of %i%%: For the header (first %i characters) of each file: each block of %i chars will get an ecc of %i chars." % (resilience_rate_s1*100, header_size, ecc_params_header["message_size"], ecc_params_header["ecc_size"]))
         ptee.write("- Resiliency stage2 of %i%%: for the rest of the file, the parameters will start with: each block of %i chars will get an ecc of %i chars." % (resilience_rate_s2*100, ecc_params_s2["message_size"], ecc_params_s2["ecc_size"]))
         ptee.write("- Resiliency stage3 of %i%%: progressively towards the end, the parameters will gradually become: each block of %i chars will get an ecc of %i chars." % (resilience_rate_s3*100, ecc_params_s3["message_size"], ecc_params_s3["ecc_size"]))
-        ptee.write("Note: current max_block_size (size of message+ecc blocks) is %i. Consider using a smaller value to greatly speedup the processing (because Reed-Solomon encoding complexity is about O(max_block_size^2))." % max_block_size)
+        if max_block_size > 100: ptee.write("Note: current max_block_size (size of message+ecc blocks) is %i. Consider using a smaller value to greatly speedup the processing (because Reed-Solomon encoding complexity is about O(max_block_size^2)) at the expense of generating a bigger ecc file." % max_block_size)
 
     if stats_only: return 0
 
@@ -630,6 +567,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
             db.write("**PYSTRUCTADAPTECCv%s**\n" % (''.join([x * 3 for x in __version__]))) # each character in the version will be repeated 3 times, so that in case of tampering, a majority vote can try to disambiguate)
             # Write the parameters (they are NOT reloaded automatically, you have to specify them at commandline! It's the user role to memorize those parameters (using any means: own brain memory, keep a copy on paper, on email, etc.), so that the parameters are NEVER tampered. The parameters MUST be ultra reliable so that errors in the ECC file can be more efficiently recovered.
             for i in xrange(3): db.write("** Parameters: "+" ".join(sys.argv[1:]) + "\n") # copy them 3 times just to be redundant in case of ecc file corruption
+            db.write("** Generated under %s\n" % ecc_manager_variable.description())
             # NOTE: there's NO HEADER for the ecc file! Ecc entries are all independent of each others, you just need to supply the decoding arguments at commandline, and the ecc entries can be decoded. This is done on purpose to be remove the risk of critical spots in ecc file (there is still a critical spot in the filepath and on hashes, see intra-ecc in todo).
 
             # Compile the list of files to put in the header
@@ -682,6 +620,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                 errors_filelist.append(row['filepath'])
 
         # Read the ecc file
+        dbsize = os.stat(database).st_size # must get db file size before opening it in order not to move the cursor
         with open(database, 'rb') as db:
             # Counters
             files_count = 0
@@ -689,21 +628,27 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
             files_repaired_partially = 0
             files_repaired_completely = 0
             files_skipped = 0
+            bardisp_first_open = True
 
             # Main loop: process each ecc entry
             entry = 1 # to start the while loop
-            while tqdm.tqdm(entry, leave=True): # TODO: update progress bar based on ecc file size
+            bardisp = tqdm.tqdm(total=dbsize, leave=True, desc='DBREAD', unit='B', unit_format=True) # display progress bar based on reading the database file (since we don't know how many files we will process beforehand nor how many total entries we have)
+            while entry:
 
                 # -- Read the next ecc entry (extract the raw string from the ecc file)
                 if replication_rate == 1:
                     entry_pos = find_next_entry(db, entrymarker)
+                    if entry_pos:
+                        if bardisp_first_open: bardisp.n = entry_pos[0]-len(entrymarker) # add the size of the comments in the ecc header
+                        bardisp.update(entry_pos[1]-entry_pos[0]+len(entrymarker)) # update progress bar
 
                 # -- Disambiguation/Replication management: if replication rate was used, then fetch all entries for the same file at once, and then disambiguate by majority vote
-                else:
+                else: # TODO: replication not ready yet
                     entries_pos = []
                     for i in xrange(replication_rate):
                         entries_pos.append(find_next_entry(db, entrymarker))
                     entry_pos = entries_disambiguate(entries_pos, field_delim, ptee)
+                    if entry_pos: bardisp.update((entry_pos[1]-entry_pos[0]+len(entrymarker))*replication_rate) # update progress bar
                 # No entry? Then we finished because this is the end of file (stop condition)
                 if not entry_pos: break
 
@@ -747,8 +692,8 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                 with open(filepath, 'rb') as file:
                     # For each message block, check the message with hash and repair with ecc if necessary
                     for i, e in enumerate(stream_entry_assemble(hasher, file, db, entry_p, max_block_size, header_size, resilience_rates)): # Extract and assemble each message block from the original file with its corresponding ecc and hash
-                        # If the message block has a different hash, it was corrupted (or the hash is corrupted, or both)
-                        if hasher.hash(e["message"]) != e["hash"]:
+                        # If the message block has a different hash or the message+ecc is corrupted (syndrome is not null), it was corrupted (or the hash is corrupted or one of the characters of the ecc was corrupted, or both). In any case, it's an any clause here (any potential corruption condition triggers the correction).
+                        if hasher.hash(e["message"]) != e["hash"] or (not fast_check and not ecc_manager_variable.check(e["message"], e["ecc"], k=e["ecc_params"]["message_size"])):
                             corrupted = True
                             break
                 # -- Reconstruct/Copying the repaired file
@@ -761,23 +706,35 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                         outfiledir = os.path.dirname(outfilepath)
                         if not os.path.isdir(outfiledir): os.makedirs(outfiledir) # if the target directory does not exist, create it (and create recursively all parent directories too)
                         with open(outfilepath, 'wb') as outfile:
+                            # TODO: optimize to copy over what we have already checked, so that we get directly to the first error that triggered the correction
                             # For each message block, check the message with hash and repair with ecc if necessary
                             for i, e in enumerate(stream_entry_assemble(hasher, file, db, entry_p, max_block_size, header_size, resilience_rates)): # Extract and assemble each message block from the original file with its corresponding ecc and hash
                                 # If the message block has a different hash, it was corrupted (or the hash is corrupted, or both)
-                                if hasher.hash(e["message"]) == e["hash"]:
+                                if hasher.hash(e["message"]) == e["hash"] and (fast_check or ecc_manager_variable.check(e["message"], e["ecc"], k=e["ecc_params"]["message_size"])):
                                     outfile.write(e["message"])
                                 else:
                                     # Try to repair the block using ECC
                                     ptee.write("File %s: corruption in block %i. Trying to fix it." % (relfilepath, i))
-                                    repaired_block = ecc_manager_variable.decode(e["message"], e["ecc"], k=e["ecc_params"]["message_size"])
-                                    # Check if the repair was successful.
-                                    if repaired_block and hasher.hash(repaired_block) == e["hash"]: # If the hash now match the repaired message block, we commit the new block
+                                    try:
+                                        repaired_block, repaired_ecc = ecc_manager_variable.decode(e["message"], e["ecc"], k=e["ecc_params"]["message_size"])
+                                    except ReedSolomonError, e: # the reedsolo lib may raise an exception when it can't decode. We ensure that we can still continue to decode the rest of the file, and the other files.
+                                        repaired_block = None
+                                        repaired_ecc = None
+                                        print(e)
+                                    # Check if the repair was successful. This is an "all" condition: if all checks fail, then the correction failed. Else, we assume that the checks failed because the ecc entry was partially corrupted (it's highly improbable that any one check success by chance, it's a lot more probable that it's simply that the entry was partially corrupted, eg: the hash was corrupted and thus cannot match anymore).
+                                    hash_ok = (hasher.hash(repaired_block) == e["hash"])
+                                    ecc_ok = ecc_manager_variable.check(repaired_block, repaired_ecc, k=e["ecc_params"]["message_size"])
+                                    if repaired_block and (hash_ok or ecc_ok): # If the hash now match the repaired message block, we commit the new block
                                         outfile.write(repaired_block) # save the repaired block
-                                        ptee.write("File %s: block %i repaired!" % (relfilepath, i))
+                                        # Show a precise report about the repair
+                                        if hash_ok and ecc_ok: ptee.write("File %s: block %i repaired!" % (relfilepath, i))
+                                        elif not hash_ok: ptee.write("File %s: block %i probably repaired with matching ecc check but with a hash error (assume the hash was corrupted)." % (relfilepath, i))
+                                        elif not ecc_ok: ptee.write("File %s: block %i probably repaired with matching hash but with ecc check error (assume the ecc was partially corrupted)." % (relfilepath, i))
+                                        # Turn on the repaired flag, to trigger the copying of the file (else it will be removed if all blocks repairs failed in this file)
                                         repaired_one_block = True
                                     else: # Else the hash does not match: the repair failed (either because the ecc is too much tampered, or because the hash is corrupted. Either way, we don't commit). # TODO: maybe it's just the hash that was corrupted and the repair worked out, we need more resiliency against that by computing ecc for the hash too (I call this: intra-ecc).
                                         outfile.write(e["message"]) # copy the bad block that we can't repair...
-                                        ptee.write("Error: file %s could not repair block %i (hash mismatch). You may try with Dans-labs/bit-recover." % (relfilepath, i)) # you need to code yourself to use bit-recover, it's in perl but it should work given the hash computed by this script and the corresponding message block.
+                                        ptee.write("Error: file %s could not repair block %i (both hash and ecc check mismatch). If you know where the errors are, you can set the characters to a null character so that the ecc may correct twice more characters." % (relfilepath, i)) # you need to code yourself to use bit-recover, it's in perl but it should work given the hash computed by this script and the corresponding message block.
                                         repaired_partially = True
                     # Copying the last access time and last modification time from the original file TODO: a more reliable way would be to use the db computed by rfigc.py, because if a software maliciously tampered the data, then the modification date may also have changed (but not if it's a silent error, in that case we're ok).
                     filestats = os.stat(filepath)
@@ -791,6 +748,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                     else:
                         files_repaired_completely += 1
         # All ecc entries processed for checking and potentally repairing, we're done correcting!
+        bardisp.close() # at the end, the bar may not be 100% because of the headers that are skipped by read_next_entry() and are not accounted in bardisp.
         ptee.write("All done! Stats:\n- Total files processed: %i\n- Total files corrupted: %i\n- Total files repaired completely: %i\n- Total files repaired partially: %i\n- Total files corrupted but not repaired at all: %i\n- Total files skipped: %i" % (files_count, files_corrupted, files_repaired_completely, files_repaired_partially, files_corrupted - (files_repaired_partially + files_repaired_completely), files_skipped) )
         return 0
 

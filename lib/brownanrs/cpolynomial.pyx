@@ -135,6 +135,18 @@ cdef class Polynomial:
     def __mod__(Polynomial self, Polynomial other):
         return divmod(self, other)[1]
 
+    cpdef Polynomial _fastmod(Polynomial dividend, Polynomial divisor, int nsym):
+        cdef int i
+        cdef int j
+        cdef list msg_out = [0] * (len(dividend) + nsym)
+        msg_out[:len(dividend)] = dividend
+        for i in range(0, len(dividend)):
+            coef = msg_out[i]
+            if coef != 0:
+                for j in range(0, len(divisor)):
+                    msg_out[i + j] += divisor[j] * coef
+        return Polynomial(msg_out[len(dividend):])
+
     def __divmod__(Polynomial dividend, Polynomial divisor):
         '''Implementation of the Polynomial Long Division, without recursion. Polynomial Long Division is very similar to a simple division of integers, see purplemath.com. Implementation inspired by the pseudo-code from Rosettacode.org'''
         '''Pseudocode:

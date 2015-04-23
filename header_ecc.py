@@ -62,7 +62,7 @@
 # the intra-ecc on filepath is the hardest because we won't know the size (not fixed-length), but we can use a field_delim. For intra-ecc on hash this is easy if the hash is fixed-length like MD5: we can precisely compute the length of the ECC, thus it will just be another field to extract in entry_fields.
 #
 
-__version__ = "1.1"
+__version__ = "1.2"
 
 # Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
 import sys, os
@@ -82,15 +82,11 @@ import shlex # for string parsing as argv argument to main(), unnecessary otherw
 from lib.tee import Tee # Redirect print output to the terminal as well as in a log file
 #import pprint # Unnecessary, used only for debugging purposes
 
-import lib.brownanrs.rs as brownanrs # Pure python implementation of Reed-Solomon with configurable max_block_size and automatic error detection (you don't have to specify where they are).
-rsmode = 1 # to allow different implementations (possibly more efficient) of Reed-Solomon in the future
+# ECC and hashing facade libraries
+from lib.eccman import ECCMan
+from lib.hasher import Hasher
 
-# try:
-    # import lib.brownanrs.rs as brownanrs
-    # rsmode = 1
-# except ImportError:
-        # import lib.reedsolomon.reedsolo as reedsolo
-        # rsmode = 2
+
 
 #***********************************
 #     AUXILIARY FUNCTIONS
@@ -129,53 +125,7 @@ def feature_scaling(x, xmin, xmax, a=0, b=1):
     '''Generalized feature scaling (unused, only useful for variable error correction rate in the future)'''
     return a + float(x - xmin) * (b - a) / (xmax - xmin)
 
-class Hasher(object):
-    '''Class to provide a hasher object with various hashing algorithms. What's important is to provide the __len__ so that we can easily compute the block size of ecc entries. Must only use fixed size hashers for the rest of the script to work properly.'''
-    def __init__(self, algo="md5"):
-        self.algo = algo.lower()
-
-    def hash(self, mes):
-        if self.algo == "md5":
-            return hashlib.md5(mes).hexdigest()
-
-    def __len__(self):
-        if self.algo == "md5":
-            return 32
-
-class ECC(object):
-    '''ECC manager, which provide a modular way to use different kinds of ecc algorithms.'''
-    def __init__(self, n, k):
-        self.ecc_manager = brownanrs.RSCoder(n, k)
-        self.n = n
-        self.k = k
-
-    def encode(self, message):
-        message, _ = self.pad(message)
-        if rsmode == 1:
-            mesecc = self.ecc_manager.encode(message)
-            ecc = mesecc[len(message):]
-            return ecc
-
-    def decode(self, message, ecc):
-        message, pad = self.pad(message)
-        if rsmode == 1:
-            res = self.ecc_manager.decode(message + ecc, nostrip=True) # Avoid automatic stripping because we are working with binary streams, thus we should manually strip padding only when we know we padded
-            if pad: # Strip the null bytes if we padded the message before decoding
-                res = res[len(pad):len(res)]
-            return res
-    
-    def pad(self, message):
-        '''Automatically pad with null bytes a message if too small, or leave unchanged if not necessary. This allows to keep track of padding and strip the null bytes after decoding reliably with binary data.'''
-        pad = None
-        if len(message) < self.k:
-            pad = "\x00" * (self.k-len(message))
-            message = pad + message
-        return [message, pad]
-
-    def check(self, message, ecc):
-        message = self.pad(message)
-        if rsmode == 1:
-            return self.ecc_manager.verify(message, ecc)
+#--------------------------------
 
 def read_next_entry(file, entrymarker="\xFF\xFF\xFF\xFF"):
     '''Read the next ecc entry (string) in the ecc file. This will read any string length between two entrymarkers. The reading is very tolerant, so it will always return any valid entry (but also scrambled entries if any, but the decoding will ensure everything's ok).'''
@@ -415,6 +365,8 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                         
 
     # Optional general arguments
+    main_parser.add_argument('--ecc_algo', type=int, default=1, required=False,
+                        help='What algorithm use to generate and verify the ECC? Values possible: 1-4. 1 is the formal, fully verified Reed-Solomon in base 3 ; 2 is a faster implementation but still based on the formal base 3 ; 3 is an even faster implementation but based on another library which may not be correct ; 4 is the fastest implementation supporting US FAA ADSB UAT RS FEC standard but is totally incompatible with the other three (a text encoded with any of 1-3 modes will be decodable with any one of them).', **widget_text)
     main_parser.add_argument('--max_block_size', type=int, default=255, required=False,
                         help='Reed-Solomon max block size (maximum = 255). It is advised to keep it at the maximum for more resilience (see comments at the top of the script for more info).', **widget_text)
     main_parser.add_argument('-s', '--size', type=int, default=1024, required=False,
@@ -427,6 +379,8 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                         help='Path to the log file. (Output will be piped to both the stdout and the log file)', **widget_filesave)
     main_parser.add_argument('--stats_only', action='store_true', required=False, default=False,
                         help='Only show the predicted total size of the ECC file given the parameters.')
+    main_parser.add_argument('--hash', metavar='md5;shortmd5;shortsha256...', type=str, required=False,
+                        help='Hash algorithm to use. Choose between: md5, shortmd5, shortsha256, minimd5, minisha256.', **widget_text)
     main_parser.add_argument('-v', '--verbose', action='store_true', required=False, default=False,
                         help='Verbose mode (show more output).')
 
@@ -439,6 +393,8 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                         help='Path to the error file generated by RFIGC.py (this specify in csv format the list of files to check, and only those files will be checked and repaired). Do not specify this argument if you want to check and repair all files.', **widget_file)
     main_parser.add_argument('--ignore_size', action='store_true', required=False, default=False,
                         help='On correction, if the file size differs from when the ecc file was generated, ignore and try to correct anyway (this may work with file where data was appended without changing the rest. For compressed formats like zip, this will probably fail).')
+    main_parser.add_argument('--no_fast_check', action='store_true', required=False, default=False,
+                        help='On correction, block corruption is only checked with the hash (the ecc will still be checked after correction, but not before). If no_fast_check is enabled, then ecc will also be checked before. This allows to find blocks corrupted by malicious intent (the block is corrupted but the hash has been corrupted as well to match the corrupted block, because it\'s almost impossible that following a hardware or logical fault, the hash match the corrupted block).')
 
     # Generate mode arguments
     main_parser.add_argument('-g', '--generate', action='store_true', required=False, default=False,
@@ -472,6 +428,10 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
     skip_size_below = args.skip_size_below
     always_include_ext = args.always_include_ext
     if always_include_ext: always_include_ext = tuple(['.'+ext for ext in always_include_ext.split('|')]) # prepare a tuple of extensions (prepending with a dot) so that str.endswith() works (it doesn't with a list, only a tuple)
+    hash_algo = args.hash
+    if not hash_algo: hash_algo = "md5"
+    ecc_algo = args.ecc_algo
+    fast_check = not args.no_fast_check
     verbose = args.verbose
 
     if correct:
@@ -512,9 +472,9 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
     # == PROCESSING BRANCHING == #
 
     # Precompute some parameters
-    hasher = Hasher("md5")
+    hasher = Hasher(hash_algo)
     ecc_params = compute_ecc_params(max_block_size, resilience_rate, hasher)
-    ecc_manager = ECC(max_block_size, ecc_params["message_size"])
+    ecc_manager = ECCMan(max_block_size, ecc_params["message_size"], algo=ecc_algo)
 
     # == Precomputation of ecc file size
     # Precomputing is important so that the user can know what size to expect before starting (and how much time it will take...).
@@ -561,6 +521,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
             db.write("**PYHEADERECCv%s**\n" % (''.join([x * 3 for x in __version__]))) # each character in the version will be repeated 3 times, so that in case of tampering, a majority vote can try to disambiguate
             # Write the parameters (they are NOT reloaded automatically, you have to specify them at commandline! It's the user role to memorize those parameters (using any means: own brain memory, keep a copy on paper, on email, etc.), so that the parameters are NEVER tampered. The parameters MUST be ultra reliable so that errors in the ECC file can be more efficiently recovered.
             for i in xrange(3): db.write("** Parameters: "+" ".join(sys.argv[1:]) + "\n") # copy them 3 times just to be redundant in case of ecc file corruption
+            db.write("** Generated under %s\n" % ecc_manager.description())
             # NOTE: there's NO HEADER for the ecc file! Ecc entries are all independent of each others, you just need to supply the decoding arguments at commandline, and the ecc entries can be decoded. This is done on purpose to be remove the risk of critical spots in ecc file (there is still a critical spot in the filepath and on hashes, see intra-ecc in todo).
 
             # Processing ecc on files
@@ -672,17 +633,27 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                 # For each message block, check the message with hash and repair with ecc if necessary
                 for i, e in enumerate(entry_asm):
                     # If the message block has a different hash, it was corrupted (or the hash is corrupted, or both)
-                    if hasher.hash(e["message"]) != e["hash"]:
+                    if hasher.hash(e["message"]) != e["hash"] or (not fast_check and not ecc_manager.check(e["message"], e["ecc"])):
                         corrupted = True
                         # Try to repair the block using ECC
                         ptee.write("File %s: corruption in block %i. Trying to fix it." % (relfilepath, i))
-                        repaired_block = ecc_manager.decode(e["message"], e["ecc"])
+                        try:
+                            repaired_block, repaired_ecc = ecc_manager.decode(e["message"], e["ecc"])
+                        except ReedSolomonError, e: # the reedsolo lib may raise an exception when it can't decode. We ensure that we can still continue to decode the rest of the file, and the other files.
+                            repaired_block = None
+                            repaired_ecc = None
+                            print(e)
                         # Check if the repair was successful.
-                        if repaired_block and hasher.hash(repaired_block) == e["hash"]: # If the hash now match the repaired message block, we commit the new block
+                        hash_ok = (hasher.hash(repaired_block) == e["hash"])
+                        ecc_ok = ecc_manager.check(repaired_block, repaired_ecc)
+                        if repaired_block and (hash_ok or ecc_ok): # If either the hash or the ecc check now match the repaired message block, we commit the new block
                             entry_asm[i]["message_repaired"] = repaired_block # save the repaired block
-                            ptee.write("File %s: block %i repaired!" % (relfilepath, i))
-                        else: # Else the hash does not match: the repair failed (either because the ecc is too much tampered, or because the hash is corrupted. Either way, we don't commit). # TODO: maybe it's just the hash that was corrupted and the repair worked out, we need more resiliency against that by computing ecc for the hash too (I call this: intra-ecc).
-                            ptee.write("Error: file %s could not repair block %i (hash mismatch). You may try with Dans-labs/bit-recover." % (relfilepath, i)) # you need to code yourself to use bit-recover, it's in perl but it should work given the hash computed by this script and the corresponding message block.
+                            # Show a precise report about the repair
+                            if hash_ok and ecc_ok: ptee.write("File %s: block %i repaired!" % (relfilepath, i))
+                            elif not hash_ok: ptee.write("File %s: block %i probably repaired with matching ecc check but with a hash error (assume the hash was corrupted)." % (relfilepath, i))
+                            elif not ecc_ok: ptee.write("File %s: block %i probably repaired with matching hash but with ecc check error (assume the ecc was partially corrupted)." % (relfilepath, i))
+                        else: # Else the hash and the ecc check do not match: the repair failed (either because the ecc is too much tampered, or because the hash is corrupted. Either way, we don't commit). # TODO: maybe it's just the hash that was corrupted and the repair worked out, we need more resiliency against that by computing ecc for the hash too (I call this: intra-ecc).
+                            ptee.write("Error: file %s could not repair block %i (both hash and ecc check mismatch)." % (relfilepath, i)) # you need to code yourself to use bit-recover, it's in perl but it should work given the hash computed by this script and the corresponding message block.
                             repaired_partially = True
                 # -- Reconstruct/Copying the repaired file
                 # If this file had a corruption in one of its header blocks, then we will reconstruct the file header and then append the rest of the file (which can then be further repaired by other tools such as PAR2).

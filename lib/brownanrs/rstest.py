@@ -17,6 +17,14 @@ class TestRSencoding(unittest.TestCase):
         if mesandeccstr == [140, 54, 199, 92, 175]: print("Error in polynomial __divmod__ (probably in the stopping criterion).")
         self.assertEqual(mesandeccstr, mes + ecc_good)
 
+    def test_fast_encode(self):
+        coder = rs.RSCoder(255, 180)
+        mes = 'hello world'
+        mesecc = coder.encode_fast(mes, k=180).lstrip("\0")
+        mesecclist = [ord(x) for x in mesecc]
+        good_res = [104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 52, 234, 152, 75, 39, 171, 122, 196, 96, 245, 151, 167, 164, 13, 207, 148, 5, 112, 192, 124, 46, 134, 198, 32, 49, 75, 204, 217, 71, 148, 43, 66, 94, 210, 201, 128, 80, 185, 30, 219, 33, 53, 174, 183, 121, 191, 69, 203, 2, 206, 194, 109, 221, 51, 207, 4, 129, 37, 255, 237, 174, 104, 199, 28, 33, 90, 10, 74, 125, 113, 70, 59, 150, 197, 157]
+        self.assertEqual(mesecclist, good_res)
+
 class TestRSverify(unittest.TestCase):
     def setUp(self):
         self.coder = rs.RSCoder(255,223)

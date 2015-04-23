@@ -2,6 +2,8 @@
 # Copyright (c) 2015 Stephen Larroque <LRQ3000@gmail.com>
 # See LICENSE.txt for license terms
 
+# TODO: use set instead of list? or bytearray?
+
 from cStringIO import StringIO
 from itertools import izip
 
@@ -122,6 +124,17 @@ class Polynomial(object):
         return divmod(self, other)[0]
     def __mod__(self, other):
         return divmod(self, other)[1]
+    
+    def _fastmod(dividend, divisor, nsym):
+        '''Fast polynomial division by using Synthetic division (Horner's method)? Returns only the quotient (no remainder). Transposed from the reedsolomon library: https://github.com/tomerfiliba/reedsolomon'''
+        msg_out = [0] * (len(dividend) + nsym)
+        msg_out[:len(dividend)] = dividend
+        for i in range(0, len(dividend)):
+            coef = msg_out[i]
+            if coef != 0:
+                for j in range(0, len(divisor)):
+                    msg_out[i + j] += divisor[j] * coef
+        return Polynomial(msg_out[len(dividend):])
 
     def __divmod__(dividend, divisor):
         '''Implementation of the Polynomial Long Division, without recursion. Polynomial Long Division is very similar to a simple division of integers, see purplemath.com. Implementation inspired by the pseudo-code from Rosettacode.org'''
