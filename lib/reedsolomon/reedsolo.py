@@ -271,14 +271,14 @@ def rs_correct_errata_base3(nsym, msg, synd, err_pos, err_loc):
     X = []
     for i in range(0, len(err_pos)):
         l = 255 - err_pos[i]
-        X.append( reedsolo.gf_pow(3, -l) )
+        X.append( gf_pow(3, -l) )
     Y = []
     s = nsym // 2
     for l, Xl in enumerate(X):
         # Compute the first part of Yl
-        Yl = reedsolo.gf_pow(Xl,s)
-        Yl = reedsolo.gf_mul( Yl, reedsolo.gf_poly_eval(err_loc, reedsolo.gf_inverse(Xl)) )
-        Yl = reedsolo.gf_mul( Yl, reedsolo.gf_inverse(Xl) )
+        Yl = gf_pow(Xl,s)
+        Yl = gf_mul( Yl, gf_poly_eval(err_loc, gf_inverse(Xl)) )
+        Yl = gf_mul( Yl, gf_inverse(Xl) )
 
         # Compute the sequence product and multiply its inverse in
         prod = 1
@@ -289,8 +289,8 @@ def rs_correct_errata_base3(nsym, msg, synd, err_pos, err_loc):
                 Xj = X[ji]
             else:
                 Xj = 0
-            prod = reedsolo.gf_mul(prod, reedsolo.gf_add(Xl, Xj))
-        Yl = reedsolo.gf_mul(Yl, reedsolo.gf_inverse(prod))
+            prod = gf_mul(prod, gf_add(Xl, Xj))
+        Yl = gf_mul(Yl, gf_inverse(prod))
         Y.append(Yl)
 
     # Put the error and locations together to form the error polynomial
@@ -303,7 +303,7 @@ def rs_correct_errata_base3(nsym, msg, synd, err_pos, err_loc):
     E = Elist[::-1]
 
     # And we get our message corrected!
-    c = reedsolo.gf_poly_add(msg, E)
+    c = gf_poly_add(msg, E)
     return c
 
 def rs_gen_error_poly(synd):
