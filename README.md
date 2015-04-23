@@ -119,7 +119,9 @@ The script structural-adaptive-ecc.py implements this idea, which can be seen as
 Cython implementation
 ---------------------------------
 
-A speedy Cython implementation of the Reed-Solomon library is included. It should provide C-speed (a little better than PyPy) for all scripts. It is not needed, since a pure-python implementation is used by default, but it can be useful if you want to encode big datasets of several hundred of GB.
+This section describes how to use the Cython implementation. However, you should first try PyPy, as it did give 10x to 100x speedup over Cython in our case.
+
+A speedy Cython implementation of the Reed-Solomon library is included. It should provide C-speed for all scripts (as long as you use --ecc_algo 1 or 2, not 3 nor 4). It is not needed, since a pure-python implementation is used by default, but it can be useful if you want to encode big datasets of several hundred of GB.
 
 If you want to build it the C/Cython implementation, do the following:
 
@@ -158,7 +160,7 @@ In case of a catastrophic event of your data due to the failure of your storage 
 Todo
 -------
 
-- Integrate with https://github.com/Dans-labs/bit-recover ? (need to convert the perl script into python...).
+- Integrate with https://github.com/Dans-labs/bit-recover ? (need to convert the perl script into python...). Note: from my own tests, it doesn't work so well as the author thinks it is, I couldn't even correct a single corruption... Or maybe I am using it the wrong way (but I used the test scripts included, with no modification. That's weird...).
 
 - Speed optimize the Reed-Solomon library? (using Numpy or Cython? But I want to keep a pure python implementation available just in case, or make a Cython implementation that is also compatible with normal python). Use pprofile to check where to optimize first.
 
@@ -176,9 +178,12 @@ http://www.math.uzh.ch/?file&key1=23398
 http://en.wikipedia.org/wiki/Horner's_method
 http://en.wikipedia.org/wiki/Multiply%E2%80%93accumulate_operation#Fused_multiply.E2.80.93add
 
+Note6: with latest implementations, we have a 100x speedup when using PyPy 2.5.0: on an Intel Core i7 M640 2.80GHz and 4GB RAM on a SSD hard disk, encoding speed is ~600kB/s with --ecc_algo 2, ~900kB/s with --ecc_algo 3 and if you set --max_block_size 150 --ecc_algo 3 you get ~1.5MB/s, which is quite correct (~2 hours to encode 10GB). Not bad!
+
 - header_ecc.py and structural_adaptive_ecc.py enhance tolerance against faulty hash/ecc blocks and faulty ecc entries (eg: when an entrymarker has wrongly spawned somewhere because of a corruption, when fields aren't well delimited etc.). Could just use multiple try-catch blocks and try to skip errors (if it's only one hash/ecc block fields, we can skip to next block. If it's the whole entry, we skip to next entry).
 
-- Implement near-optimal decoders such as LDPC or turbo-codes. Near-optimal decoders are a bit less efficient than Reed-Solomn (they can recover fewer errors), but they are so much faster that it may be worth for huge datasets where the encoding computation time of Reed-Solomon is just impractical. Maybe use this python with numpy library (no compilation): https://github.com/veeresht/CommPy
+- Implement near-optimal decoders such as LDPC or turbo-codes. Near-optimal decoders are a bit less efficient than Reed-Solomn (they can recover fewer errors), but they are so much faster that it may be worth for huge datasets where the encoding computation time of Reed-Solomon is just impractical. Also another big advantage is that they are less prone to the cliff effect: this means that even if we can't correct the whole message because too much corruption, they may allow to partially correct it nevertheless.
+Maybe use this python with numpy library (no compilation): https://github.com/veeresht/CommPy
 Also this library includes interleavers, which may be interesting to be more resilient with RS too. However I hardly see how to interleave without the recovery file being less resilient to tampering (because if you interleave, you have to store this interleaving info somewhere, and it will probably be in the ecc recovery file, which will make it less resilient against corruption although the protected files will be more resilient thank's to interleaving...).
 
 - structural_adaptive_ecc.py: --update "change/remove/add" (change will update ecc entries if changed, remove will remove if file is not present anymore, add will encode new files not already in ecc file). For all, use another ecc file: must be different from input ecc file (from which we will streamline read and output to the target ecc file only if meet conditions).
