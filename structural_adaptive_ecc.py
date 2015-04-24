@@ -53,8 +53,6 @@
 # or http://www.bth.se/fou/cuppsats.nsf/all/bcb2fd16e55a96c2c1257c5e00666323/$file/BTH2013KARLSSON.pdf
 # or https://www.usenix.org/legacy/events/fast09/tech/full_papers/plank/plank_html/
 # - Also backup folders meta-data? (to reconstruct the tree in case a folder is truncated by bit rot)
-# - intra-ecc on: filepath, and on hash of every blocks? (this should use a lot less storage space than replication for the same efficiency, but the problem is how to delimit fields since we won't know the size of the ecc. For the ecc of hashes, yes we can know because hash is fixed length and so will be the ecc of the hash, but for the ecc of the filepath it will be proportional to the filepath. And an ecc can contain any character such as \x00, thus it will make our fields detection buggy).
-# the intra-ecc on filepath is the hardest because we won't know the size (not fixed-length), but we can use a field_delim. For intra-ecc on hash this is easy if the hash is fixed-length like MD5: we can precisely compute the length of the ECC, thus it will just be another field to extract in entry_fields.
 #
 
 __version__ = "0.9.6"
@@ -75,6 +73,7 @@ import math
 import csv # to process the errors_file from rfigc.py
 import shlex # for string parsing as argv argument to main(), unnecessary otherwise
 from lib.tee import Tee # Redirect print output to the terminal as well as in a log file
+import StringIO # to support intra-ecc
 #import pprint # Unnecessary, used only for debugging purposes
 
 # ECC and hashing facade libraries
@@ -173,18 +172,23 @@ def entry_fields(file, entry_pos, field_delim="\xFF"):
     entry = entry.lstrip(field_delim) # if there was some slight adjustment error (example: the last ecc block of the last file was the field_delim, then we will start with a field_delim, and thus we need to remove the trailing field_delim which is useless and will make the field detection buggy). This is not really a big problem for the previous file's ecc block: the missing ecc characters (which were mistaken for a field_delim), will just be missing (so we will lose a bit of resiliency for the last block of the previous file, but that's not a huge issue, the correction can still rely on the other characters).
     # TODO: do in a while loop in case the filename is really big (bigger than blocksize) - or in case we add intra-ecc for filename
 
-    # Extract each field
+    # Find field delimiters positions
     first = entry.find(field_delim)
     second = entry.find(field_delim, first+len(field_delim))
+    third = entry.find(field_delim, second+len(field_delim))
+    # Note: we do not try to find all the field delimiters because we optimize here: we just walk the string to find the exact number of field_delim we are looking for, and after we stop, no need to walk through the whole string.
+
+    # Extract each field
     relfilepath = entry[:first]
     filesize = entry[first+len(field_delim):second]
-    ecc_field_pos = [entry_pos[0]+second+len(field_delim),entry_pos[1]]
+    relfilepath_ecc = entry[second+len(field_delim):third]
+    ecc_field_pos = [entry_pos[0]+third+len(field_delim), entry_pos[1]] # return the starting and ending position of the rest of the ecc track, which contains blocks of hash/ecc of the original file's content.
 
     # Place the cursor at the beginning of the ecc_field
     file.seek(ecc_field_pos[0])
 
     # entries = [ {"message":, "ecc":, "hash":}, etc.]
-    return {"relfilepath": relfilepath, "filesize": int(filesize), "ecc_field_pos": ecc_field_pos}
+    return {"relfilepath": relfilepath, "relfilepath_ecc": relfilepath_ecc, "filesize": int(filesize), "ecc_field_pos": ecc_field_pos}
 
 def stream_entry_assemble(hasher, file, eccfile, entry_fields, max_block_size, header_size, resilience_rates):
     '''From an entry with its parameters (filename, filesize), assemble a list of each block from the original file along with the relative hash and ecc for easy processing later.'''
@@ -212,7 +216,9 @@ def stream_entry_assemble(hasher, file, eccfile, entry_fields, max_block_size, h
         curpos = file.tell()
         ecc_curpos = eccfile.tell()
     # Just a quick safe guard against ecc ending marker misdetection
-    if curpos < os.fstat(file.fileno()).st_size: print("WARNING: end of ecc track reached but not the end of file! Either the ecc ending marker was misdetected, or either the file hash changed! Some blocks maybe may not have been properly checked!")
+    file.seek(0, os.SEEK_END) # alternative way of finding the total size: go to the end of the file
+    size = file.tell()
+    if curpos < size: print("WARNING: end of ecc track reached but not the end of file! Either the ecc ending marker was misdetected, or either the file hash changed! Some blocks maybe may not have been properly checked!")
 
  # TODO: entries_disambiguate() NOT READY! we can either disambiguate on the fly (since the ecc field is not longer completely loaded in memory) each block (should be implemented inside (entry_fields and entry_assemble) or we can pre-compute disambiguation by reading each character in parallel from the file and then outputting to a temporary file.
 def entries_disambiguate(entries, field_delim="\xFF", ptee=None): # field_delim is only useful if there are errors
@@ -275,16 +281,25 @@ def compute_ecc_params(max_block_size, rate, hasher):
 
 def stream_compute_ecc_hash(ecc_manager, hasher, file, max_block_size, header_size, resilience_rates):
     '''Generate a stream of hash/ecc blocks, of variable encoding rate and size, given a file.'''
-    curpos = file.tell()
-    size = os.fstat(file.fileno()).st_size
-    while curpos < size:
-        if curpos < header_size:
+    curpos = file.tell() # init the reading cursor at the beginning of the file
+    # Find the total size to know when to stop
+    #size = os.fstat(file.fileno()).st_size # old way of doing it, doesn't work with StringIO objects
+    file.seek(0, os.SEEK_END) # alternative way of finding the total size: go to the end of the file
+    size = file.tell()
+    file.seek(0, curpos) # place the reading cursor back at the beginning of the file
+    # Main encoding loop
+    while curpos < size: # Continue encoding while we do not reach the end of the file
+        # Calculating the encoding rate
+        if curpos < header_size: # if we are still reading the file's header, we use a constant rate
             rate = resilience_rates[0]
-        else:
+        else: # else we use a progressive rate for the rest of the file the we calculate on-the-fly depending on our current reading cursor position in the file
             rate = feature_scaling(curpos, header_size, size, resilience_rates[1], resilience_rates[2]) # find the rate for the current stream of data (interpolate between stage 2 and stage 3 rates depending on the cursor position in the file)
-        ecc_params = compute_ecc_params(max_block_size, rate, hasher)
-        #ecc_manager = ECCMan(max_block_size, ecc_params["message_size"])
 
+        # Compute the ecc parameters given the calculated rate
+        ecc_params = compute_ecc_params(max_block_size, rate, hasher)
+        #ecc_manager = ECCMan(max_block_size, ecc_params["message_size"]) # not necessary to create an ecc manager anymore, as it is very costly. Now we can specify a value for k on the fly (tables for all possible values of k are pre-generated in the reed-solomon libraries)
+
+        # Compute the ecc and hash for the current message block
         mes = file.read(ecc_params["message_size"])
         hash = hasher.hash(mes)
         ecc = ecc_manager.encode(mes, k=ecc_params["message_size"])
@@ -396,6 +411,8 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                         help='Resilience rate for stage 2 (after headers, this is the starting rate applied to the rest of the file, which will be gradually lessened towards the end of the file to the stage 3 rate).', **widget_text)
     main_parser.add_argument('-r3', '--resilience_rate_stage3', type=float, default=0.1, required=False,
                         help='Resilience rate for stage 3 (rate that will be applied towards the end of the files).', **widget_text)
+    main_parser.add_argument('-ri', '--resilience_rate_intra', type=float, default=0.5, required=False,
+                        help='Resilience rate for intra-ecc (ecc on meta-data, such as filepath, thus this defines the ecc for the critical spots!).', **widget_text)
     main_parser.add_argument('--replication_rate', type=int, default=1, required=False,
                         help='Replication rate, if you want to duplicate each ecc entry (DO NOT USE, not implemented yet, see sourcecode for what to implement).', **widget_text)
     main_parser.add_argument('-l', '--log', metavar='/some/folder/filename.log', type=str, nargs=1, required=False,
@@ -448,6 +465,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
     resilience_rate_s1 = args.resilience_rate_stage1
     resilience_rate_s2 = args.resilience_rate_stage2
     resilience_rate_s3 = args.resilience_rate_stage3
+    resilience_rate_intra = args.resilience_rate_intra
     replication_rate = args.replication_rate
     ignore_size = args.ignore_size
     skip_size_below = args.skip_size_below
@@ -473,8 +491,8 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
     elif generate and os.path.isfile(database) and not force:
         raise NameError('Specified database ecc file %s already exists! Use --force if you want to overwrite.' % database)
 
-    if resilience_rate_s1 <= 0 or resilience_rate_s2 <= 0 or resilience_rate_s3 <= 0:
-        raise ValueError('Resilience rates cannot be negative and they must be floating numbers.');
+    if resilience_rate_s1 <= 0 or resilience_rate_s2 <= 0 or resilience_rate_s3 <= 0 or resilience_rate_intra <= 0:
+        raise ValueError('Resilience rates cannot be negative nor zero and they must be floating numbers.');
 
     if max_block_size < 2 or max_block_size > 255:
         raise ValueError('RS max block size must be between 2 and 255.')
@@ -499,12 +517,15 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
 
     # == PROCESSING BRANCHING == #
 
-    # Precompute some parameters
+    # Precompute some parameters and load up ecc manager objects
     resilience_rates = [resilience_rate_s1, resilience_rate_s2, resilience_rate_s3]
     hasher = Hasher(hash_algo)
+    hasher_intra = Hasher('none') # for intra_ecc we don't use any hash
     ecc_params_header = compute_ecc_params(max_block_size, resilience_rate_s1, hasher)
     ecc_manager_header = ECCMan(max_block_size, ecc_params_header["message_size"], algo=ecc_algo)
     ecc_manager_variable = ECCMan(max_block_size, 1, algo=ecc_algo)
+    ecc_params_intra = compute_ecc_params(max_block_size, resilience_rate_intra, hasher)
+    ecc_manager_intra = ECCMan(max_block_size, ecc_params_intra["message_size"], algo=ecc_algo)
     # for stats only
     ecc_params_variable_average = compute_ecc_params(max_block_size, (resilience_rate_s2 + resilience_rate_s3)/2, hasher) # compute the average variable rate to compute statistics
     ecc_params_s2 = compute_ecc_params(max_block_size, resilience_rate_s2, hasher)
@@ -591,10 +612,13 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                 if verbose: print("\n- Processing file %s" % relfilepath)
                 for i in xrange(replication_rate): # TODO: that's a shame because we recompute several times the whole ecc entry. Try to put the ecc entry in a temporary file at first or in StringIO (does it buffer in a file?), and then streamline copy to the ecc file. Or alternative: ecc fields are replicated, not the whole ecc entry.
                     with open(os.path.join(folderpath,filepath), 'rb') as file:
-                        db.write((entrymarker+"%s"+field_delim+"%s"+field_delim) % (relfilepath, filesize)) # first save the file's metadata (filename, filesize, ...)
-                        # -- Hash/Ecc encoding (everything is managed inside stream_compute_ecc_hash)
+                        # -- Intra-ecc generation: Compute an ecc for the filepath, to avoid a critical spot here (so that we don't care that the filepath gets corrupted, we have an ecc to fix it!)
+                        fpfile = StringIO.StringIO(relfilepath)
+                        intra_ecc = [str(x[1]) for x in stream_compute_ecc_hash(ecc_manager_intra, hasher, fpfile, max_block_size, len(relfilepath), [resilience_rate_intra])] # "hack" the function by tricking it to always use a constant rate, by setting the header_size=len(relfilepath), and supplying the resilience_rate_intra instead of resilience_rate_s1 (the one for header)
+                        db.write(("%s%s%s%s%s%s%s") % (entrymarker, relfilepath, field_delim, filesize, field_delim, ''.join(intra_ecc), field_delim)) # first save the file's metadata (filename, filesize, ecc for filename, ...), separated with field_delim
+                        # -- Hash/Ecc encoding of file's content (everything is managed inside stream_compute_ecc_hash)
                         for ecc_entry in stream_compute_ecc_hash(ecc_manager_variable, hasher, file, max_block_size, header_size, resilience_rates): # then compute the ecc/hash entry for this file's header (each value will be a block, a string of hash+ecc per block of data, because Reed-Solomon is limited to a maximum of 255 bytes, including the original_message+ecc! And in addition we want to use a variable rate for RS that is decreasing along the file)
-                            db.write( "%s%s" % (str(ecc_entry[0]),str(ecc_entry[1])) )
+                            db.write( "%s%s" % (str(ecc_entry[0]),str(ecc_entry[1])) ) # note that there's no separator between consecutive blocks, but by calculating the ecc parameters, we will know when decoding the size of each block!
                             bardisp.update(ecc_entry[2]['message_size'])
                 files_done += 1
         if bardisp.n > bardisp.total: bardisp.total = bardisp.n # small workaround because n may be higher than total (because of files ending before 'message_size', thus the message is padded and in the end, we have outputted and processed a bit more characters than are really in the files, thus why total can be below n). Doing this allows to keep the trace of the progression bar.
@@ -651,8 +675,38 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                 # -- Extract the fields from the ecc entry
                 entry_p = entry_fields(db, entry_pos, field_delim)
 
-                # -- Get file infos
-                relfilepath = entry_p["relfilepath"] # Relative file path
+                # -- Get file path, check its correctness and correct it by using intra-ecc if necessary
+                relfilepath = entry_p["relfilepath"] # Relative file path, given in the ecc fields
+                # convert strings to StringIO object so that we can trick our ecc reading functions that normally works only on files
+                fpfile = StringIO.StringIO(relfilepath)
+                fpfile_ecc = StringIO.StringIO(entry_p["relfilepath_ecc"])
+                fpentry_p = {"ecc_field_pos": [0, len(relfilepath)]} # create a fake entry_pos so that the ecc reading function works correctly
+                relfilepath_correct = [] # will store each block of the corrected (or already correct) filepath
+                fpcorrupted = False # check if filepath was corrupted
+                fpcorrected = True # check if filepath was corrected (if it was corrupted)
+                # Decode each block of the filepath
+                for e in stream_entry_assemble(hasher_intra, fpfile, fpfile_ecc, fpentry_p, max_block_size, len(relfilepath), [resilience_rate_intra]):
+                    # Check if this block of the filepath is OK, if yes then we just copy it over
+                    if ecc_manager_intra.check(e["message"], e["ecc"]):
+                        relfilepath_correct.append(e["message"])
+                    else: # Else this block is corrupted, we will try to fix it using the ecc
+                        fpcorrupted = True
+                        repaired_block, repaired_ecc = ecc_manager_intra.decode(e["message"], e["ecc"])
+                        # Check if the block was successfully repaired: if yes then we copy the repaired block...
+                        if ecc_manager_intra.check(repaired_block, repaired_ecc):
+                            relfilepath_correct.append(repaired_block)
+                        else: # ... else it failed, then we copy the original corrupted block and report an error later
+                            relfilepath_correct.append(e["message"])
+                            fpcorrected = False
+                # Join all the blocks into one string to build the final filepath
+                relfilepath = ''.join(relfilepath_correct)
+                # Report errors
+                if fpcorrupted:
+                    if fpcorrected: ptee.write("\n- Fixed error in filepath %s." % relfilepath)
+                    else: ptee.write("\n- Error in filepath, could not correct completely: %s. Please fix manually by editing the ecc file or at least set the corrupted characters to null bytes." % relfilepath)
+                # -- End of intra-ecc on filepath
+
+                # Build the absolute file path
                 filepath = os.path.join(folderpath, relfilepath) # Get full absolute filepath from given input folder (because the files may be specified in any folder, in the ecc file the paths are relative, so that the files can be moved around or burnt on optical discs)
                 if errors_filelist and relfilepath not in errors_filelist: continue # if a list of files with errors was supplied (for example by rfigc.py), then we will check only those files and skip the others
 
@@ -666,7 +720,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                     continue
                 # Check that file still exists before checking it
                 if not os.path.isfile(filepath):
-                    ptee.write("Error: file %s could not be found: either file was moved or the ecc entry was corrupted. If replication_rate is enabled, maybe the majority vote was wrong. You can try to fix manually the entry." % relfilepath)
+                    ptee.write("Error: file %s could not be found: either file was moved or the ecc entry was corrupted (filepath is incorrect?)." % relfilepath)
                     files_skipped += 1
                     continue
 

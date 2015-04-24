@@ -29,7 +29,7 @@ import hashlib
 class Hasher(object):
     '''Class to provide a hasher object with various hashing algorithms. What's important is to provide the __len__ so that we can easily compute the block size of ecc entries. Must only use fixed size hashers for the rest of the script to work properly.'''
     
-    known_algo = ["md5", "shortmd5", "shortsha256", "minimd5", "minisha256"]
+    known_algo = ["md5", "shortmd5", "shortsha256", "minimd5", "minisha256", "none"]
     __slots__ = ['algo', 'length']
 
     def __init__(self, algo="md5"):
@@ -42,6 +42,8 @@ class Hasher(object):
             self.length = 8
         elif self.algo == "minimd5" or self.algo == "minisha256":
             self.length = 4
+        elif self.algo == "none":
+            self.length = 0
 
     def hash(self, mes):
         # use hashlib.algorithms_guaranteed to list algorithms
@@ -55,6 +57,8 @@ class Hasher(object):
             return hashlib.md5(mes).hexdigest().encode('base64')[:4]
         elif self.algo == "minisha256":
             return hashlib.sha256(mes).hexdigest().encode('base64')[:4]
+        elif self.algo == "none":
+            return ''
 
     def __len__(self):
         return self.length
