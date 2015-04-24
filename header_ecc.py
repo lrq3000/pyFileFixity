@@ -47,17 +47,12 @@
 #  If 2s + r < 2t (s errors, r erasures) t
 #
 # TODO:
-# - Use zfec (https://pypi.python.org/pypi/zfec) for more speed. PROBLEM: the philosophy is different, it splits the file in parts. The goal is to be able to reassemble the file from any k parts (from n total). Maybe then try to optimize using numba or numpy or Cython?
-# Or use Cauchy Reed-Solomon, which significantly outperforms simple Reed-Solomon?
+# - Performance boost in Reed-Solomon libraries. A big work was done, and it's quite fast when using PyPy 2.5.0, but 10x more speedup (to attain 10MB/s encoding rate) would just be perfect! Decoding rate is sufficiently speedy as it is, no need to optimize that part.
+# Use Cauchy Reed-Solomon, which significantly outperforms simple Reed-Solomon?
 # or https://bitbucket.org/kmgreen2/pyeclib with jerasure
 # or http://www.bth.se/fou/cuppsats.nsf/all/bcb2fd16e55a96c2c1257c5e00666323/$file/BTH2013KARLSSON.pdf
 # or https://www.usenix.org/legacy/events/fast09/tech/full_papers/plank/plank_html/
-# Note: Pypy v2.5.0 speeds the script without any modification!
 # - Also backup folders meta-data? (to reconstruct the tree in case a folder is truncated by bit rot)
-# - add a Reed-solomon on hashes, so that we are sure that if error correction is not tampered but the hash is, we can still repair the block? (because the repair is in fact ok, it's just that the hash is corrupted and won't match, but we should prevent this scenario. An ecc on the hash may fix the issue). Currently, replication_rate >= 3 will prevent a bit this scenario using majority vote.
-# - replace tqdm with https://github.com/WoLpH/python-progressbar for a finer progress bar and ETA? (currently ETA is computed on the number of files processed, but it should really be on the total number of characters processed over the total size) - BUT requirement is that it doesn't require an external library only available on Linux (such as ncurses)
-# or this: https://github.com/lericson/fish
-# - --gui option using https://github.com/chriskiehl/Gooey
 # - intra-ecc on: filepath, and on hash of every blocks? (this should use a lot less storage space than replication for the same efficiency, but the problem is how to delimit fields since we won't know the size of the ecc. For the ecc of hashes, yes we can know because hash is fixed length and so will be the ecc of the hash, but for the ecc of the filepath it will be proportional to the filepath. And an ecc can contain any character such as \x00, thus it will make our fields detection buggy).
 # the intra-ecc on filepath is the hardest because we won't know the size (not fixed-length), but we can use a field_delim. For intra-ecc on hash this is easy if the hash is fixed-length like MD5: we can precisely compute the length of the ECC, thus it will just be another field to extract in entry_fields.
 #
@@ -338,7 +333,7 @@ Note: Folders meta-data is NOT accounted, only the files! Use DVDisaster or a si
     '''
     ep = '''Use --gui as the first argument to use with a GUI (via Gooey).
 
-Note1: this is a pure-python implementation (except for MD5 hash but a pure-python alternative is provided in lib/md5py.py), thus it may be VERY slow to generate an ecc file. To speed-up things considerably, you can use PyPy v2.5.0 or above, there will be a speed-up of at least 5x from our experiments. Feel free to profile using easy_profiler.py and try to optimize the reed-solomon library.
+Note1: this is a pure-python implementation (except for MD5 hash but a pure-python alternative is provided in lib/md5py.py), thus it may be VERY slow to generate an ecc file. To speed-up things considerably, you can use PyPy v2.5.0 or above, there will be a speed-up of at least 100x from our experiments (you can expect an encoding rate of more than 1MB/s). Feel free to profile using easy_profiler.py and try to optimize the encoding parts of the reed-solomon libraries.
 
 Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null bytes), resilience_rate errors (bit-flips, thus a character that changes but not necessarily a null byte) and amount to an additional storage of 2*resilience_rate storage compared to the original files size.'''
 
@@ -523,7 +518,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
             # Write the parameters (they are NOT reloaded automatically, you have to specify them at commandline! It's the user role to memorize those parameters (using any means: own brain memory, keep a copy on paper, on email, etc.), so that the parameters are NEVER tampered. The parameters MUST be ultra reliable so that errors in the ECC file can be more efficiently recovered.
             for i in xrange(3): db.write("** Parameters: "+" ".join(sys.argv[1:]) + "\n") # copy them 3 times just to be redundant in case of ecc file corruption
             db.write("** Generated under %s\n" % ecc_manager.description())
-            # NOTE: there's NO HEADER for the ecc file! Ecc entries are all independent of each others, you just need to supply the decoding arguments at commandline, and the ecc entries can be decoded. This is done on purpose to be remove the risk of critical spots in ecc file (there is still a critical spot in the filepath and on hashes, see intra-ecc in todo).
+            # NOTE: there's NO HEADER for the ecc file! Ecc entries are all independent of each others, you just need to supply the decoding arguments at commandline, and the ecc entries can be decoded. This is done on purpose to be remove the risk of critical spots in ecc file.
 
             # Processing ecc on files
             files_done = 0
@@ -653,7 +648,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                             if hash_ok and ecc_ok: ptee.write("File %s: block %i repaired!" % (relfilepath, i))
                             elif not hash_ok: ptee.write("File %s: block %i probably repaired with matching ecc check but with a hash error (assume the hash was corrupted)." % (relfilepath, i))
                             elif not ecc_ok: ptee.write("File %s: block %i probably repaired with matching hash but with ecc check error (assume the ecc was partially corrupted)." % (relfilepath, i))
-                        else: # Else the hash and the ecc check do not match: the repair failed (either because the ecc is too much tampered, or because the hash is corrupted. Either way, we don't commit). # TODO: maybe it's just the hash that was corrupted and the repair worked out, we need more resiliency against that by computing ecc for the hash too (I call this: intra-ecc).
+                        else: # Else the hash and the ecc check do not match: the repair failed (either because the ecc is too much tampered, or because the hash is corrupted. Either way, we don't commit).
                             ptee.write("Error: file %s could not repair block %i (both hash and ecc check mismatch)." % (relfilepath, i)) # you need to code yourself to use bit-recover, it's in perl but it should work given the hash computed by this script and the corresponding message block.
                             repaired_partially = True
                 # -- Reconstruct/Copying the repaired file
