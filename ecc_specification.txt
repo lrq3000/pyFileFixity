@@ -1,0 +1,7 @@
+**This is an example ECC file with clear specification of each field. Lines beginning with ** and finishing with a line return \n are considered comments. In fact, all lines before the first entrymarker are considered comments and are just skipped. Note that after the headers comments, the file is binary, and thus there's no line returns.
+**SOFTWAREIDENTv111...000**
+** Parameters: <recap-of-parameters-here>
+** Parameters: <recap-of-parameters-here>
+** Parameters: <recap-of-parameters-here>
+** Generated under <recap-of-ecc-algorithm-and-parameters-here>.
+<entry-marker>[relative-file1-path.file-extension]<field_delim>[file-size]<field_delim>[relative-file1-path-ecc]<field_delim>[block0-hash][block0-ecc][block1-hash][block1-ecc][block2-hash][block2-ecc]...<entry-marker>[relative-file2-path.file-extension]<field_delim>[file-size]<field_delim>[relative-file2-path-ecc]<field_delim>[block0-hash][block0-ecc][block1-hash][block1-ecc][block2-hash][block2-ecc]...
