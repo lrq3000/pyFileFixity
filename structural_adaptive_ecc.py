@@ -436,6 +436,8 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                         help='On correction, if the file size differs from when the ecc file was generated, ignore and try to correct anyway (this may work with file where data was appended without changing the rest. For compressed formats like zip, this will probably fail).')
     main_parser.add_argument('--no_fast_check', action='store_true', required=False, default=False,
                         help='On correction, block corruption is only checked with the hash (the ecc will still be checked after correction, but not before). If no_fast_check is enabled, then ecc will also be checked before. This allows to find blocks corrupted by malicious intent (the block is corrupted but the hash has been corrupted as well to match the corrupted block, because it\'s almost impossible that following a hardware or logical fault, the hash match the corrupted block).')
+    main_parser.add_argument('--skip_missing', action='store_true', required=False, default=False,
+                        help='Skip missing files (no warning).')
 
     # Generate mode arguments
     main_parser.add_argument('-g', '--generate', action='store_true', required=False, default=False,
@@ -469,6 +471,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
     resilience_rate_intra = args.resilience_rate_intra
     replication_rate = args.replication_rate
     ignore_size = args.ignore_size
+    skip_missing = args.skip_missing
     skip_size_below = args.skip_size_below
     always_include_ext = args.always_include_ext
     if always_include_ext: always_include_ext = tuple(['.'+ext for ext in always_include_ext.split('|')]) # prepare a tuple of extensions (prepending with a dot) so that str.endswith() works (it doesn't with a list, only a tuple)
@@ -721,7 +724,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                     continue
                 # Check that file still exists before checking it
                 if not os.path.isfile(filepath):
-                    ptee.write("Error: file %s could not be found: either file was moved or the ecc entry was corrupted (filepath is incorrect?)." % relfilepath)
+                    if not skip_missing: ptee.write("Error: file %s could not be found: either file was moved or the ecc entry was corrupted (filepath is incorrect?)." % relfilepath)
                     files_skipped += 1
                     continue
 
