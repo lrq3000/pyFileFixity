@@ -62,7 +62,7 @@
 # the intra-ecc on filepath is the hardest because we won't know the size (not fixed-length), but we can use a field_delim. For intra-ecc on hash this is easy if the hash is fixed-length like MD5: we can precisely compute the length of the ECC, thus it will just be another field to extract in entry_fields.
 #
 
-__version__ = "1.2"
+__version__ = "1.3"
 
 # Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
 import sys, os
@@ -241,7 +241,8 @@ def entries_disambiguate(entries, field_delim="\xFF", ptee=None): # field_delim 
 
 def compute_ecc_params(max_block_size, rate, hasher):
     '''Compute the ecc parameters (size of the message, size of the hash, size of the ecc)'''
-    message_size = max_block_size - int(round(max_block_size * rate * 2, 0))
+    #message_size = max_block_size - int(round(max_block_size * rate * 2, 0)) # old way to compute, wasn't really correct because we applied the rate on the total message+ecc size, when we should apply the rate to the message size only (that is not known beforehand, but we want the ecc size (k) = 2*rate*message_size or in other words that k + k * 2 * rate = n)
+    message_size = int(round(float(max_block_size) / (1 + 2*rate), 0))
     ecc_size = max_block_size - message_size
     hash_size = len(hasher) # 32 when we use MD5
     return {"message_size": message_size, "ecc_size": ecc_size, "hash_size": hash_size}
