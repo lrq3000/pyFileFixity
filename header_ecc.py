@@ -53,11 +53,9 @@
 # or http://www.bth.se/fou/cuppsats.nsf/all/bcb2fd16e55a96c2c1257c5e00666323/$file/BTH2013KARLSSON.pdf
 # or https://www.usenix.org/legacy/events/fast09/tech/full_papers/plank/plank_html/
 # - Also backup folders meta-data? (to reconstruct the tree in case a folder is truncated by bit rot)
-# - intra-ecc on: filepath, and on hash of every blocks? (this should use a lot less storage space than replication for the same efficiency, but the problem is how to delimit fields since we won't know the size of the ecc. For the ecc of hashes, yes we can know because hash is fixed length and so will be the ecc of the hash, but for the ecc of the filepath it will be proportional to the filepath. And an ecc can contain any character such as \x00, thus it will make our fields detection buggy).
-# the intra-ecc on filepath is the hardest because we won't know the size (not fixed-length), but we can use a field_delim. For intra-ecc on hash this is easy if the hash is fixed-length like MD5: we can precisely compute the length of the ECC, thus it will just be another field to extract in entry_fields.
 #
 
-__version__ = "1.3"
+__version__ = "1.4"
 
 # Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
 import sys, os
@@ -75,11 +73,13 @@ import math
 import csv # to process the errors_file from rfigc.py
 import shlex # for string parsing as argv argument to main(), unnecessary otherwise
 from lib.tee import Tee # Redirect print output to the terminal as well as in a log file
+import StringIO # to support intra-ecc
 #import pprint # Unnecessary, used only for debugging purposes
 
 # ECC and hashing facade libraries
 from lib.eccman import ECCMan
 from lib.hasher import Hasher
+from lib.reedsolomon.reedsolo import ReedSolomonError
 
 
 
@@ -157,31 +157,44 @@ def read_next_entry(file, entrymarker="\xFF\xFF\xFF\xFF"):
 def entry_fields(entry, field_delim="\xFF"):
     '''From a raw ecc entry (a string), extract the filename, filesize, and the rest being blocks of hash and ecc per blocks of the original file's header'''
     entry = entry.lstrip(field_delim) # if there was some slight adjustment error (example: the last ecc block of the last file was the field_delim, then we will start with a field_delim, and thus we need to remove the trailing field_delim which is useless and will make the field detection buggy). This is not really a big problem for the previous file's ecc block: the missing ecc characters (which were mistaken for a field_delim), will just be missing (so we will lose a bit of resiliency for the last block of the previous file, but that's not a huge issue, the correction can still rely on the other characters).
+
+    # Find field delimiters positions
     first = entry.find(field_delim)
     second = entry.find(field_delim, first+len(field_delim))
+    third = entry.find(field_delim, second+len(field_delim))
+    # Note: we do not try to find all the field delimiters because we optimize here: we just walk the string to find the exact number of field_delim we are looking for, and after we stop, no need to walk through the whole string.
+
+    # Extract each field
     relfilepath = entry[:first]
     filesize = entry[first+len(field_delim):second]
-    ecc_field = entry[second+len(field_delim):]
+    relfilepath_ecc = entry[second+len(field_delim):third]
+    ecc_field = entry[third+len(field_delim):]
     # entries = [ {"message":, "ecc":, "hash":}, etc.]
     #print(entry)
     #print(len(entry))
-    return {"relfilepath": relfilepath, "filesize": int(filesize), "ecc_field": ecc_field}
+    return {"relfilepath": relfilepath, "relfilepath_ecc": relfilepath_ecc, "filesize": int(filesize), "ecc_field": ecc_field}
 
-def entry_assemble(entry_fields, ecc_params, header_size, filepath):
+def entry_assemble(entry_fields, ecc_params, header_size, filepath, fileheader=None):
     '''From an entry with its parameters (filename, filesize), assemble a list of each block from the original file along with the relative hash and ecc for easy processing later.'''
     # Extract the header from the file
-    with open(filepath, 'rb') as file: # filepath is the absolute path to the original file (the one with maybe corruptions, NOT the output repaired file!)
-        if entry_fields["filesize"] < header_size:
-            fileheader = file.read(entry_fields["filesize"])
-        else:
-            fileheader = file.read(header_size)
+    if fileheader is None:
+        with open(filepath, 'rb') as file: # filepath is the absolute path to the original file (the one with maybe corruptions, NOT the output repaired file!)
+            # Compute the size of the buffer to read: either header_size if possible, but if the file is smaller than that then we will read the whole file.
+            if entry_fields["filesize"] < header_size:
+                fileheader = file.read(entry_fields["filesize"])
+            else:
+                fileheader = file.read(header_size)
+
     # Cut the header and the ecc entry into blocks, and then assemble them so that we can easily process block by block
     entry_asm = []
     for i, j in itertools.izip(xrange(0, len(fileheader), ecc_params["message_size"]), xrange(0, len(entry_fields["ecc_field"]), ecc_params["hash_size"] + ecc_params["ecc_size"])):
+        # Extract each fields from each block
         mes = fileheader[i:i+ecc_params["message_size"]]
         hash = entry_fields["ecc_field"][j:j+ecc_params["hash_size"]]
         ecc = entry_fields["ecc_field"][j+ecc_params["hash_size"]:j+ecc_params["hash_size"]+ecc_params["ecc_size"]]
         entry_asm.append({"message": mes, "hash": hash, "ecc": ecc})
+
+    # Return a list of fields for each block
     return entry_asm
 
 def entries_disambiguate(entries, field_delim="\xFF", ptee=None): # field_delim is only useful if there are errors
@@ -369,6 +382,8 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                         help='Headers block size to protect with ecc (eg: 1024 meants that the first 1k of each file will be protected).', **widget_text)
     main_parser.add_argument('-r', '--resilience_rate', type=float, default=0.3, required=False,
                         help='Resilience rate for files headers (eg: 0.3 = 30% of errors can be recovered but size of codeword will be 60% of the data block, thus the ecc file will be about 60% the size of your data).', **widget_text)
+    main_parser.add_argument('-ri', '--resilience_rate_intra', type=float, default=0.5, required=False,
+                        help='Resilience rate for intra-ecc (ecc on meta-data, such as filepath, thus this defines the ecc for the critical spots!).', **widget_text)
     main_parser.add_argument('--replication_rate', type=int, default=1, required=False,
                         help='Replication rate, if you want to duplicate each ecc entry. This is better than just duplicating your ecc file: with a replication_rate >= 3, in case of a tampering of the ecc file, a majority vote can try to disambiguate and restore correct ecc entries (if 2 entries agree on a character, then it\'s probably correct).', **widget_text)
     main_parser.add_argument('-l', '--log', metavar='/some/folder/filename.log', type=str, nargs=1, required=False,
@@ -419,6 +434,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
     max_block_size = args.max_block_size
     header_size = args.size
     resilience_rate = args.resilience_rate
+    resilience_rate_intra = args.resilience_rate_intra
     replication_rate = args.replication_rate
     ignore_size = args.ignore_size
     skip_size_below = args.skip_size_below
@@ -444,8 +460,8 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
     elif generate and os.path.isfile(database) and not force:
         raise NameError('Specified database ecc file %s already exists! Use --force if you want to overwrite.' % database)
 
-    if resilience_rate <= 0:
-        raise ValueError('Resilience rate cannot be negative and it must be a float number.');
+    if resilience_rate <= 0 or resilience_rate_intra <= 0:
+        raise ValueError('Resilience rate cannot be negative nor zero and it must be a float number.');
 
     if max_block_size < 2 or max_block_size > 255:
         raise ValueError('RS max block size must be between 2 and 255.')
@@ -467,10 +483,13 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
 
     # == PROCESSING BRANCHING == #
 
-    # Precompute some parameters
+    # Precompute some parameters and load up ecc manager objects (big optimization as g_exp and g_log tables calculation is done only once)
     hasher = Hasher(hash_algo)
+    hasher_intra = Hasher('none') # for intra_ecc we don't use any hash
     ecc_params = compute_ecc_params(max_block_size, resilience_rate, hasher)
     ecc_manager = ECCMan(max_block_size, ecc_params["message_size"], algo=ecc_algo)
+    ecc_params_intra = compute_ecc_params(max_block_size, resilience_rate_intra, hasher_intra)
+    ecc_manager_intra = ECCMan(max_block_size, ecc_params_intra["message_size"], algo=ecc_algo)
 
     # == Precomputation of ecc file size
     # Precomputing is important so that the user can know what size to expect before starting (and how much time it will take...).
@@ -538,7 +557,8 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                 # Opening the input file's to read its header and compute the ecc/hash blocks
                 if verbose: print("\n- Processing file %s" % relfilepath)
                 with open(os.path.join(folderpath,filepath), 'rb') as file:
-                    ecc_entry = (entrymarker+"%s"+field_delim+"%s"+field_delim) % (relfilepath, filesize) # first save the file's metadata (filename, filesize, ...)
+                    relfilepath_ecc = ''.join(compute_ecc_hash(ecc_manager_intra, hasher_intra, relfilepath, max_block_size, resilience_rate_intra, ecc_params_intra["message_size"], True))
+                    ecc_entry = ("%s%s%s%s%s%s%s") % (entrymarker, relfilepath, field_delim, filesize, field_delim, relfilepath_ecc, field_delim) # first save the file's metadata (filename, filesize, filepath ecc, ...)
                     buf = file.read(header_size) # read the file's header
                     ecc_entry = ecc_entry + ''.join(compute_ecc_hash(ecc_manager, hasher, buf, max_block_size, resilience_rate, ecc_params["message_size"], True)) # then compute the ecc/hash entry for this file's header (this will be a chain of multiple ecc/hash fields per block of data, because Reed-Solomon is limited to a maximum of 255 bytes, including the original_message+ecc!)
                     for i in xrange(replication_rate): db.write(ecc_entry) # commit to the ecc file, and replicate the number of times required
@@ -594,6 +614,33 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
 
                 # -- Get file infos
                 relfilepath = entry_p["relfilepath"] # Relative file path
+                fpentry_fields = {"ecc_field": entry_p["relfilepath_ecc"]}
+                relfilepath_correct = [] # will store each block of the corrected (or already correct) filepath
+                fpcorrupted = False # check if filepath was corrupted
+                fpcorrected = True # check if filepath was corrected (if it was corrupted)
+                # Decode each block of the filepath
+                for e in entry_assemble(fpentry_fields, ecc_params_intra, len(relfilepath), '', relfilepath):
+                    # Check if this block of the filepath is OK, if yes then we just copy it over
+                    if ecc_manager_intra.check(e["message"], e["ecc"]):
+                        relfilepath_correct.append(e["message"])
+                    else: # Else this block is corrupted, we will try to fix it using the ecc
+                        fpcorrupted = True
+                        repaired_block, repaired_ecc = ecc_manager_intra.decode(e["message"], e["ecc"])
+                        # Check if the block was successfully repaired: if yes then we copy the repaired block...
+                        if ecc_manager_intra.check(repaired_block, repaired_ecc):
+                            relfilepath_correct.append(repaired_block)
+                        else: # ... else it failed, then we copy the original corrupted block and report an error later
+                            relfilepath_correct.append(e["message"])
+                            fpcorrected = False
+                # Join all the blocks into one string to build the final filepath
+                relfilepath = ''.join(relfilepath_correct)
+                # Report errors
+                if fpcorrupted:
+                    if fpcorrected: ptee.write("\n- Fixed error in filepath %s." % relfilepath)
+                    else: ptee.write("\n- Error in filepath, could not correct completely: %s. Please fix manually by editing the ecc file or at least set the corrupted characters to null bytes." % relfilepath)
+                # -- End of intra-ecc on filepath
+
+                # Build the absolute file path
                 filepath = os.path.join(folderpath, relfilepath) # Get full absolute filepath from given input folder (because the files may be specified in any folder, in the ecc file the paths are relative, so that the files can be moved around or burnt on optical discs)
                 if errors_filelist and relfilepath not in errors_filelist: continue # if a list of files with errors was supplied (for example by rfigc.py), then we will check only those files and skip the others
 

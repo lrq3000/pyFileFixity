@@ -55,7 +55,7 @@
 # - Also backup folders meta-data? (to reconstruct the tree in case a folder is truncated by bit rot)
 #
 
-__version__ = "0.9.6"
+__version__ = "1.0"
 
 # Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
 import sys, os
@@ -79,6 +79,7 @@ import StringIO # to support intra-ecc
 # ECC and hashing facade libraries
 from lib.eccman import ECCMan
 from lib.hasher import Hasher
+from lib.reedsolomon.reedsolo import ReedSolomonError
 
 
 
@@ -517,14 +518,14 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
 
     # == PROCESSING BRANCHING == #
 
-    # Precompute some parameters and load up ecc manager objects
+    # Precompute some parameters and load up ecc manager objects (big optimization as g_exp and g_log tables calculation is done only once)
     resilience_rates = [resilience_rate_s1, resilience_rate_s2, resilience_rate_s3]
     hasher = Hasher(hash_algo)
     hasher_intra = Hasher('none') # for intra_ecc we don't use any hash
     ecc_params_header = compute_ecc_params(max_block_size, resilience_rate_s1, hasher)
     ecc_manager_header = ECCMan(max_block_size, ecc_params_header["message_size"], algo=ecc_algo)
     ecc_manager_variable = ECCMan(max_block_size, 1, algo=ecc_algo)
-    ecc_params_intra = compute_ecc_params(max_block_size, resilience_rate_intra, hasher)
+    ecc_params_intra = compute_ecc_params(max_block_size, resilience_rate_intra, hasher_intra)
     ecc_manager_intra = ECCMan(max_block_size, ecc_params_intra["message_size"], algo=ecc_algo)
     # for stats only
     ecc_params_variable_average = compute_ecc_params(max_block_size, (resilience_rate_s2 + resilience_rate_s3)/2, hasher) # compute the average variable rate to compute statistics
@@ -614,8 +615,8 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                     with open(os.path.join(folderpath,filepath), 'rb') as file:
                         # -- Intra-ecc generation: Compute an ecc for the filepath, to avoid a critical spot here (so that we don't care that the filepath gets corrupted, we have an ecc to fix it!)
                         fpfile = StringIO.StringIO(relfilepath)
-                        intra_ecc = [str(x[1]) for x in stream_compute_ecc_hash(ecc_manager_intra, hasher, fpfile, max_block_size, len(relfilepath), [resilience_rate_intra])] # "hack" the function by tricking it to always use a constant rate, by setting the header_size=len(relfilepath), and supplying the resilience_rate_intra instead of resilience_rate_s1 (the one for header)
-                        db.write(("%s%s%s%s%s%s%s") % (entrymarker, relfilepath, field_delim, filesize, field_delim, ''.join(intra_ecc), field_delim)) # first save the file's metadata (filename, filesize, ecc for filename, ...), separated with field_delim
+                        intra_ecc = ''.join( [str(x[1]) for x in stream_compute_ecc_hash(ecc_manager_intra, hasher_intra, fpfile, max_block_size, len(relfilepath), [resilience_rate_intra])] ) # "hack" the function by tricking it to always use a constant rate, by setting the header_size=len(relfilepath), and supplying the resilience_rate_intra instead of resilience_rate_s1 (the one for header)
+                        db.write(("%s%s%s%s%s%s%s") % (entrymarker, relfilepath, field_delim, filesize, field_delim, intra_ecc, field_delim)) # first save the file's metadata (filename, filesize, ecc for filename, ...), separated with field_delim
                         # -- Hash/Ecc encoding of file's content (everything is managed inside stream_compute_ecc_hash)
                         for ecc_entry in stream_compute_ecc_hash(ecc_manager_variable, hasher, file, max_block_size, header_size, resilience_rates): # then compute the ecc/hash entry for this file's header (each value will be a block, a string of hash+ecc per block of data, because Reed-Solomon is limited to a maximum of 255 bytes, including the original_message+ecc! And in addition we want to use a variable rate for RS that is decreasing along the file)
                             db.write( "%s%s" % (str(ecc_entry[0]),str(ecc_entry[1])) ) # note that there's no separator between consecutive blocks, but by calculating the ecc parameters, we will know when decoding the size of each block!
