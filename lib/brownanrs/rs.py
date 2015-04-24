@@ -211,12 +211,12 @@ class RSCoder(object):
         n = self.n
         if not k: k = self.k
 
-        if self.verify(r):
+        if self.verify(r): # the code is already valid, there's nothing to do
             # The last n-k bytes are parity
             if nostrip:
-                return r[:-(n-k)]
+                return r[:-(n-k)], r[-(n-k):]
             else:
-                return r[:-(n-k)].lstrip("\0")
+                return r[:-(n-k)].lstrip("\0"), r[-(n-k):]
 
         # Turn r into a polynomial
         r = Polynomial([GF256int(ord(x)) for x in r])
