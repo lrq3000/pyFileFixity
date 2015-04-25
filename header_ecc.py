@@ -55,7 +55,7 @@
 # - Also backup folders meta-data? (to reconstruct the tree in case a folder is truncated by bit rot)
 #
 
-__version__ = "1.5"
+__version__ = "1.6"
 
 # Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
 import sys, os
@@ -73,6 +73,7 @@ import math
 import csv # to process the errors_file from rfigc.py
 import shlex # for string parsing as argv argument to main(), unnecessary otherwise
 from lib.tee import Tee # Redirect print output to the terminal as well as in a log file
+import struct # to support indexes backup file
 #import pprint # Unnecessary, used only for debugging purposes
 
 # ECC and hashing facade libraries
@@ -492,6 +493,8 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
     ecc_manager = ECCMan(max_block_size, ecc_params["message_size"], algo=ecc_algo)
     ecc_params_intra = compute_ecc_params(max_block_size, resilience_rate_intra, hasher_intra)
     ecc_manager_intra = ECCMan(max_block_size, ecc_params_intra["message_size"], algo=ecc_algo)
+    ecc_params_idx = compute_ecc_params(16, 0.5, hasher_intra)
+    ecc_manager_idx = ECCMan(16, ecc_params_idx["message_size"], algo=ecc_algo)
 
     # == Precomputation of ecc file size
     # Precomputing is important so that the user can know what size to expect before starting (and how much time it will take...).
@@ -535,7 +538,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
         ptee.write("Header ECC generation, started on %s" % datetime.datetime.now().isoformat())
         ptee.write("====================================")
 
-        with open(database, 'wb') as db:
+        with open(database, 'wb') as db, open(database+".idx", 'wb') as dbidx:
             # Write ECC file header identifier (unique string + version)
             db.write("**PYHEADERECCv%s**\n" % (''.join([x * 3 for x in __version__]))) # each character in the version will be repeated 3 times, so that in case of tampering, a majority vote can try to disambiguate
             # Write the parameters (they are NOT reloaded automatically, you have to specify them at commandline! It's the user role to memorize those parameters (using any means: own brain memory, keep a copy on paper, on email, etc.), so that the parameters are NEVER tampered. The parameters MUST be ultra reliable so that errors in the ECC file can be more efficiently recovered.
@@ -561,11 +564,21 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                 # Opening the input file's to read its header and compute the ecc/hash blocks
                 if verbose: print("\n- Processing file %s" % relfilepath)
                 with open(os.path.join(folderpath,filepath), 'rb') as file:
+                    # -- Intra-ecc generation: Compute an ecc for the filepath, to avoid a critical spot here (so that we don't care that the filepath gets corrupted, we have an ecc to fix it!)
                     relfilepath_ecc = ''.join(compute_ecc_hash(ecc_manager_intra, hasher_intra, relfilepath, max_block_size, resilience_rate_intra, ecc_params_intra["message_size"], True))
                     ecc_entry = ("%s%s%s%s%s%s%s") % (entrymarker, relfilepath, field_delim, filesize, field_delim, relfilepath_ecc, field_delim) # first save the file's metadata (filename, filesize, filepath ecc, ...)
+                    # -- Hash/Ecc encoding of file's content (everything is managed inside stream_compute_ecc_hash)
                     buf = file.read(header_size) # read the file's header
                     ecc_entry = ecc_entry + ''.join(compute_ecc_hash(ecc_manager, hasher, buf, max_block_size, resilience_rate, ecc_params["message_size"], True)) # then compute the ecc/hash entry for this file's header (this will be a chain of multiple ecc/hash fields per block of data, because Reed-Solomon is limited to a maximum of 255 bytes, including the original_message+ecc!)
-                    for i in xrange(replication_rate): db.write(ecc_entry) # commit to the ecc file, and replicate the number of times required
+                    for i in xrange(replication_rate):
+                        entrymarker_pos = db.tell() # backup the position of the start of this ecc entry
+                        # -- Committing the hash/ecc encoding of the file's content
+                        db.write(ecc_entry) # commit to the ecc file, and replicate the number of times required
+                        # -- External indexes backup: calculate the position of the entrymarker and of each field delimiter, and compute their ecc, and save into the index backup file. This will allow later to retrieve the position of each marker in the ecc file, and repair them if necessary, while just incurring a very cheap storage cost.
+                        markers_pos = [entrymarker_pos, entrymarker_pos+len(entrymarker)+len(relfilepath), entrymarker_pos+len(entrymarker)+len(relfilepath)+len(field_delim)+len(str(filesize)), db.tell()-len(field_delim)] # Make the list of all markers positions for this ecc entry. The first and last indexes are the most important (first is the entrymarker, the last is the field_delim just before the ecc track start)
+                        markers_pos = [struct.pack('>Q', x) for x in markers_pos] # Convert to a binary representation in 8 bytes using unsigned long long (up to 16 EB, this should be more than sufficient)
+                        markers_pos_ecc = [ecc_manager_idx.encode(x) for x in markers_pos] # compute the ecc for each number
+                        dbidx.write(''.join([str(x) for items in zip(markers_pos,markers_pos_ecc) for x in items])) # couple each marker's position with its ecc, and write them all consecutively into the index backup file
                 files_done += 1
         ptee.write("All done! Total number of files processed: %i, skipped: %i" % (files_done, files_skipped))
         return 0

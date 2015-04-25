@@ -55,7 +55,7 @@
 # - Also backup folders meta-data? (to reconstruct the tree in case a folder is truncated by bit rot)
 #
 
-__version__ = "1.1"
+__version__ = "1.2"
 
 # Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
 import sys, os
@@ -74,6 +74,7 @@ import csv # to process the errors_file from rfigc.py
 import shlex # for string parsing as argv argument to main(), unnecessary otherwise
 from lib.tee import Tee # Redirect print output to the terminal as well as in a log file
 from StringIO import StringIO # to support intra-ecc
+import struct # to support indexes backup file
 #import pprint # Unnecessary, used only for debugging purposes
 
 # ECC and hashing facade libraries
@@ -532,6 +533,8 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
     ecc_manager_variable = ECCMan(max_block_size, 1, algo=ecc_algo)
     ecc_params_intra = compute_ecc_params(max_block_size, resilience_rate_intra, hasher_intra)
     ecc_manager_intra = ECCMan(max_block_size, ecc_params_intra["message_size"], algo=ecc_algo)
+    ecc_params_idx = compute_ecc_params(16, 0.5, hasher_intra)
+    ecc_manager_idx = ECCMan(16, ecc_params_idx["message_size"], algo=ecc_algo)
     # for stats only
     ecc_params_variable_average = compute_ecc_params(max_block_size, (resilience_rate_s2 + resilience_rate_s3)/2, hasher) # compute the average variable rate to compute statistics
     ecc_params_s2 = compute_ecc_params(max_block_size, resilience_rate_s2, hasher)
@@ -585,7 +588,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
         ptee.write("Structural adaptive ECC generation, started on %s" % datetime.datetime.now().isoformat())
         ptee.write("====================================")
 
-        with open(database, 'wb') as db:
+        with open(database, 'wb') as db, open(database+".idx", 'wb') as dbidx:
             # Write ECC file header identifier (unique string + version)
             db.write("**PYSTRUCTADAPTECCv%s**\n" % (''.join([x * 3 for x in __version__]))) # each character in the version will be repeated 3 times, so that in case of tampering, a majority vote can try to disambiguate)
             # Write the parameters (they are NOT reloaded automatically, you have to specify them at commandline! It's the user role to memorize those parameters (using any means: own brain memory, keep a copy on paper, on email, etc.), so that the parameters are NEVER tampered. The parameters MUST be ultra reliable so that errors in the ECC file can be more efficiently recovered.
@@ -618,10 +621,16 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                 if verbose: print("\n- Processing file %s" % relfilepath)
                 for i in xrange(replication_rate): # TODO: that's a shame because we recompute several times the whole ecc entry. Try to put the ecc entry in a temporary file at first or in StringIO (does it buffer in a file?), and then streamline copy to the ecc file. Or alternative: ecc fields are replicated, not the whole ecc entry.
                     with open(os.path.join(folderpath,filepath), 'rb') as file:
+                        entrymarker_pos = db.tell() # backup the position of the start of this ecc entry
                         # -- Intra-ecc generation: Compute an ecc for the filepath, to avoid a critical spot here (so that we don't care that the filepath gets corrupted, we have an ecc to fix it!)
                         fpfile = StringIO(relfilepath)
                         intra_ecc = ''.join( [str(x[1]) for x in stream_compute_ecc_hash(ecc_manager_intra, hasher_intra, fpfile, max_block_size, len(relfilepath), [resilience_rate_intra])] ) # "hack" the function by tricking it to always use a constant rate, by setting the header_size=len(relfilepath), and supplying the resilience_rate_intra instead of resilience_rate_s1 (the one for header)
                         db.write(("%s%s%s%s%s%s%s") % (entrymarker, relfilepath, field_delim, filesize, field_delim, intra_ecc, field_delim)) # first save the file's metadata (filename, filesize, ecc for filename, ...), separated with field_delim
+                        # -- External indexes backup: calculate the position of the entrymarker and of each field delimiter, and compute their ecc, and save into the index backup file. This will allow later to retrieve the position of each marker in the ecc file, and repair them if necessary, while just incurring a very cheap storage cost.
+                        markers_pos = [entrymarker_pos, entrymarker_pos+len(entrymarker)+len(relfilepath), entrymarker_pos+len(entrymarker)+len(relfilepath)+len(field_delim)+len(str(filesize)), db.tell()-len(field_delim)] # Make the list of all markers positions for this ecc entry. The first and last indexes are the most important (first is the entrymarker, the last is the field_delim just before the ecc track start)
+                        markers_pos = [struct.pack('>Q', x) for x in markers_pos] # Convert to a binary representation in 8 bytes using unsigned long long (up to 16 EB, this should be more than sufficient)
+                        markers_pos_ecc = [ecc_manager_idx.encode(x) for x in markers_pos] # compute the ecc for each number
+                        dbidx.write(''.join([str(x) for items in zip(markers_pos,markers_pos_ecc) for x in items])) # couple each marker's position with its ecc, and write them all consecutively into the index backup file
                         # -- Hash/Ecc encoding of file's content (everything is managed inside stream_compute_ecc_hash)
                         for ecc_entry in stream_compute_ecc_hash(ecc_manager_variable, hasher, file, max_block_size, header_size, resilience_rates): # then compute the ecc/hash entry for this file's header (each value will be a block, a string of hash+ecc per block of data, because Reed-Solomon is limited to a maximum of 255 bytes, including the original_message+ecc! And in addition we want to use a variable rate for RS that is decreasing along the file)
                             db.write( "%s%s" % (str(ecc_entry[0]),str(ecc_entry[1])) ) # note that there's no separator between consecutive blocks, but by calculating the ecc parameters, we will know when decoding the size of each block!
