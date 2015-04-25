@@ -25,6 +25,7 @@
 # THE SOFTWARE.
 
 import hashlib
+#import zlib
 
 class Hasher(object):
     '''Class to provide a hasher object with various hashing algorithms. What's important is to provide the __len__ so that we can easily compute the block size of ecc entries. Must only use fixed size hashers for the rest of the script to work properly.'''

@@ -65,7 +65,6 @@ sys.path.append(os.path.join(thispathname, 'lib'))
 # Import necessary libraries
 import lib.argparse as argparse
 import datetime, time
-import hashlib, zlib
 import lib.tqdm as tqdm
 import itertools
 import math

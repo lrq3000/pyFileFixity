@@ -65,9 +65,8 @@ sys.path.append(os.path.join(thispathname, 'lib'))
 # Import necessary libraries
 import lib.argparse as argparse
 import datetime, time
-import hashlib, zlib
 import lib.tqdm as tqdm
-import itertools
+#import itertools
 import math
 #import operator # to get the max out of a dict
 import csv # to process the errors_file from rfigc.py
