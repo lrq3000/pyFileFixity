@@ -48,10 +48,10 @@ class ECCMan(object):
         self.n = n
         self.k = k
 
-    def encode(self, message, k=None, debug=False):
+    def encode(self, message, k=None):
+        '''Encode one message block (up to 255) into an ecc'''
         if not k: k = self.k
         message, _ = self.pad(message, k=k)
-        if debug: print message
         if self.algo == 1:
             mesecc = self.ecc_manager.encode(message, k=k)
         elif self.algo == 2:
@@ -65,8 +65,10 @@ class ECCMan(object):
         return ecc
 
     def decode(self, message, ecc, k=None):
+        '''Repair a message and its ecc also, given the message and its ecc (both can be corrupted, we will still try to fix both of them)'''
         if not k: k = self.k
         message, pad = self.pad(message, k=k)
+        ecc, _ = self.rpad(ecc, k=k) # fill ecc with null bytes if too small (maybe the field delimiters were misdetected and this truncated the ecc? But we maybe still can correct if the truncation is less than the resilience rate)
         if self.algo == 1 or self.algo == 2 or self.algo == 3:
             res, ecc_repaired = self.ecc_manager.decode(message + ecc, nostrip=True, k=k) # Avoid automatic stripping because we are working with binary streams, thus we should manually strip padding only when we know we padded
         elif self.algo == 4:
@@ -79,7 +81,7 @@ class ECCMan(object):
         return res, ecc_repaired
 
     def pad(self, message, k=None):
-        '''Automatically pad with null bytes a message if too small, or leave unchanged if not necessary. This allows to keep track of padding and strip the null bytes after decoding reliably with binary data.'''
+        '''Automatically left pad with null bytes a message if too small, or leave unchanged if not necessary. This allows to keep track of padding and strip the null bytes after decoding reliably with binary data.'''
         if not k: k = self.k
         pad = None
         if len(message) < k:
@@ -87,17 +89,28 @@ class ECCMan(object):
             message = pad + message
         return [message, pad]
 
-    def verify(self, message, ecc, k=None):
-        '''Verify that a message+ecc is a correct RS code'''
+    def rpad(self, ecc, k=None):
+        '''Automatically right pad with null bytes an ecc to fill for missing bytes if too small, or leave unchanged if not necessary. This can be used as a workaround for field delimiter misdetection.'''
         if not k: k = self.k
-        message = self.pad(message)
+        pad = None
+        if len(ecc) < self.n-k:
+            pad = "\x00" * (self.n-k-len(ecc))
+            ecc = ecc + pad
+        return [ecc, pad]
+
+    def verify(self, message, ecc, k=None):
+        '''Verify that a message+ecc is a correct RS code (essentially it's the same purpose as check, the only difference is the methodology)'''
+        if not k: k = self.k
+        message, _ = self.pad(message, k=k)
+        ecc, _ = self.rpad(ecc, k=k)
         if self.algo == 1 or self.algo == 2:
             return self.ecc_manager.verify(message + ecc, k=k)
 
     def check(self, message, ecc, k=None):
         '''Check if there's any error in a message+ecc. Can be used before decoding, in addition to hashes to detect if the message was tampered, or after decoding to check that the message was fully recovered.'''
         if not k: k = self.k
-        message, _ = self.pad(message)
+        message, _ = self.pad(message, k=k)
+        ecc, _ = self.rpad(ecc, k=k)
         if self.algo == 1 or self.algo == 2:
             return self.ecc_manager.check(message + ecc, k=k)
         elif self.algo == 3:

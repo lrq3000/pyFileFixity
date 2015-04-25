@@ -55,7 +55,7 @@
 # - Also backup folders meta-data? (to reconstruct the tree in case a folder is truncated by bit rot)
 #
 
-__version__ = "1.4"
+__version__ = "1.4.2"
 
 # Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
 import sys, os
@@ -675,6 +675,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                 entry_asm = entry_assemble(entry_p, ecc_params, header_size, filepath) # Extract and assemble each message block from the original file with its corresponding ecc and hash
                 corrupted = False # flag to signal that the file was corrupted and we need to reconstruct it afterwards
                 repaired_partially = False # flag to signal if a file was repaired only partially
+                err_consecutive = True # flag to check if the ecc track is misaligned/misdetected (we only encounter corrupted blocks that we can't fix)
                 # For each message block, check the message with hash and repair with ecc if necessary
                 for i, e in enumerate(entry_asm):
                     # If the message block has a different hash, it was corrupted (or the hash is corrupted, or both)
@@ -697,9 +698,16 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                             if hash_ok and ecc_ok: ptee.write("File %s: block %i repaired!" % (relfilepath, i))
                             elif not hash_ok: ptee.write("File %s: block %i probably repaired with matching ecc check but with a hash error (assume the hash was corrupted)." % (relfilepath, i))
                             elif not ecc_ok: ptee.write("File %s: block %i probably repaired with matching hash but with ecc check error (assume the ecc was partially corrupted)." % (relfilepath, i))
+                            err_consecutive = False
                         else: # Else the hash and the ecc check do not match: the repair failed (either because the ecc is too much tampered, or because the hash is corrupted. Either way, we don't commit).
                             ptee.write("Error: file %s could not repair block %i (both hash and ecc check mismatch)." % (relfilepath, i)) # you need to code yourself to use bit-recover, it's in perl but it should work given the hash computed by this script and the corresponding message block.
                             repaired_partially = True
+                            # Detect if the ecc track is misaligned/misdetected (we encounter only errors that we can't fix)
+                            if err_consecutive and i >= 10: # threshold is ten consecutive uncorrectable errors
+                                ptee.write("Failure: Too many consecutive uncorrectable errors for %s. Most likely, the ecc track was misdetected (try to repair the entrymarkers and field delimiters). Skipping this track/file." % relfilepath)
+                                break
+                    else:
+                        err_consecutive = False
                 # -- Reconstruct/Copying the repaired file
                 # If this file had a corruption in one of its header blocks, then we will reconstruct the file header and then append the rest of the file (which can then be further repaired by other tools such as PAR2).
                 if corrupted:

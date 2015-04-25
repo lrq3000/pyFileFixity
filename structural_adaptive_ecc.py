@@ -55,7 +55,7 @@
 # - Also backup folders meta-data? (to reconstruct the tree in case a folder is truncated by bit rot)
 #
 
-__version__ = "1.0"
+__version__ = "1.0.2"
 
 # Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
 import sys, os
@@ -140,7 +140,7 @@ def find_next_entry(file, entrymarker="\xFF\xFF\xFF\xFF"):
             start = buf.find(entrymarker); # relative position of the starting marker in the currently read string
             if start >= 0 and not startcursor: # assign startcursor only if it's empty (meaning that we did not find the starting entrymarker, else if found we are only looking for 
                 startcursor = file.tell() - len(buf) + start # absolute position of the starting marker in the file
-            start = start + len(entrymarker)
+            if start >= 0: start = start + len(entrymarker)
         # If we have a starting marker, we try to find a subsequent marker which will be the ending of our entry (if the entry is corrupted we don't care: it won't pass the entry_to_dict() decoding or subsequent steps of decoding and we will just pass to the next ecc entry). This allows to process any valid entry, no matter if previous ones were scrambled.
         if startcursor is not None and startcursor >= 0:
             end = buf.find(entrymarker, start)
@@ -153,8 +153,10 @@ def find_next_entry(file, entrymarker="\xFF\xFF\xFF\xFF"):
                 found = True
         #print("Start:", start, startcursor)
         #print("End: ", end, endcursor)
+        # Stop criterion to avoid infinite loop: in the case we could not find any entry in the rest of the file and we reached the EOF, we just quit now
+        if len(buf) < blocksize: break
         # Did not find the full entry in one buffer? Reinit variables for next iteration, but keep in memory startcursor.
-        start = 0 # reset the start position for the end buf find at next iteration (ie: in the arithmetic operations to compute the absolute endcursor position, the start entrymarker won't be accounted because it was discovered in a previous buffer).
+        if start > 0: start = 0 # reset the start position for the end buf find at next iteration (ie: in the arithmetic operations to compute the absolute endcursor position, the start entrymarker won't be accounted because it was discovered in a previous buffer).
         if not endcursor: file.seek(file.tell()-len(entrymarker)) # Try to fix edge case where blocksize stops the buffer exactly in the middle of the ending entrymarker. The starting marker should always be ok because it should be quite close (or generally immediately after) the previous entry, but the end depends on the end of the current entry (size of the original file), thus the buffer may miss the ending entrymarker. should offset file.seek(-len(entrymarker)) before searching for ending.
 
     entry_pos = None # return None if there's no new entry to read
@@ -695,6 +697,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                         relfilepath_correct.append(e["message"])
                     else: # Else this block is corrupted, we will try to fix it using the ecc
                         fpcorrupted = True
+                        # Repair the message block and the ecc
                         repaired_block, repaired_ecc = ecc_manager_intra.decode(e["message"], e["ecc"])
                         # Check if the block was successfully repaired: if yes then we copy the repaired block...
                         if ecc_manager_intra.check(repaired_block, repaired_ecc):
@@ -755,6 +758,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                 if corrupted:
                     files_corrupted += 1
                     repaired_one_block = False # flag to check that we could repair at least one block, else we will delete the output file since we didn't do anything
+                    err_consecutive = True # flag to check if the ecc track is misaligned/misdetected (we only encounter corrupted blocks that we can't fix)
                     with open(filepath, 'rb') as file:
                         outfilepath = os.path.join(outputpath, relfilepath) # get the full path to the output file
                         outfiledir = os.path.dirname(outfilepath)
@@ -766,6 +770,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                                 # If the message block has a different hash, it was corrupted (or the hash is corrupted, or both)
                                 if hasher.hash(e["message"]) == e["hash"] and (fast_check or ecc_manager_variable.check(e["message"], e["ecc"], k=e["ecc_params"]["message_size"])):
                                     outfile.write(e["message"])
+                                    err_consecutive = False
                                 else:
                                     # Try to repair the block using ECC
                                     ptee.write("File %s: corruption in block %i. Trying to fix it." % (relfilepath, i))
@@ -786,10 +791,16 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                                         elif not ecc_ok: ptee.write("File %s: block %i probably repaired with matching hash but with ecc check error (assume the ecc was partially corrupted)." % (relfilepath, i))
                                         # Turn on the repaired flag, to trigger the copying of the file (else it will be removed if all blocks repairs failed in this file)
                                         repaired_one_block = True
+                                        err_consecutive = False
                                     else: # Else the hash does not match: the repair failed (either because the ecc is too much tampered, or because the hash is corrupted. Either way, we don't commit).
                                         outfile.write(e["message"]) # copy the bad block that we can't repair...
                                         ptee.write("Error: file %s could not repair block %i (both hash and ecc check mismatch). If you know where the errors are, you can set the characters to a null character so that the ecc may correct twice more characters." % (relfilepath, i)) # you need to code yourself to use bit-recover, it's in perl but it should work given the hash computed by this script and the corresponding message block.
                                         repaired_partially = True
+                                        # Detect if the ecc track is misaligned/misdetected (we encounter only errors that we can't fix)
+                                        if err_consecutive and i >= 10: # threshold is ten consecutive uncorrectable errors
+                                            ptee.write("Failure: Too many consecutive uncorrectable errors for %s. Most likely, the ecc track was misdetected (try to repair the entrymarkers and field delimiters). Skipping this track/file." % relfilepath)
+                                            db.seek(entry_p["ecc_field_pos"][1]) # Optimization: move the reading cursor to the beginning of the next ecc entry, this will save some iterations in find_next_entry()
+                                            break
                     # Copying the last access time and last modification time from the original file TODO: a more reliable way would be to use the db computed by rfigc.py, because if a software maliciously tampered the data, then the modification date may also have changed (but not if it's a silent error, in that case we're ok).
                     filestats = os.stat(filepath)
                     os.utime(outfilepath, (filestats.st_atime, filestats.st_mtime))
