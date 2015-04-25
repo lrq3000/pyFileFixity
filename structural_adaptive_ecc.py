@@ -73,7 +73,7 @@ import math
 import csv # to process the errors_file from rfigc.py
 import shlex # for string parsing as argv argument to main(), unnecessary otherwise
 from lib.tee import Tee # Redirect print output to the terminal as well as in a log file
-import StringIO # to support intra-ecc
+from StringIO import StringIO # to support intra-ecc
 #import pprint # Unnecessary, used only for debugging purposes
 
 # ECC and hashing facade libraries
@@ -617,7 +617,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                 for i in xrange(replication_rate): # TODO: that's a shame because we recompute several times the whole ecc entry. Try to put the ecc entry in a temporary file at first or in StringIO (does it buffer in a file?), and then streamline copy to the ecc file. Or alternative: ecc fields are replicated, not the whole ecc entry.
                     with open(os.path.join(folderpath,filepath), 'rb') as file:
                         # -- Intra-ecc generation: Compute an ecc for the filepath, to avoid a critical spot here (so that we don't care that the filepath gets corrupted, we have an ecc to fix it!)
-                        fpfile = StringIO.StringIO(relfilepath)
+                        fpfile = StringIO(relfilepath)
                         intra_ecc = ''.join( [str(x[1]) for x in stream_compute_ecc_hash(ecc_manager_intra, hasher_intra, fpfile, max_block_size, len(relfilepath), [resilience_rate_intra])] ) # "hack" the function by tricking it to always use a constant rate, by setting the header_size=len(relfilepath), and supplying the resilience_rate_intra instead of resilience_rate_s1 (the one for header)
                         db.write(("%s%s%s%s%s%s%s") % (entrymarker, relfilepath, field_delim, filesize, field_delim, intra_ecc, field_delim)) # first save the file's metadata (filename, filesize, ecc for filename, ...), separated with field_delim
                         # -- Hash/Ecc encoding of file's content (everything is managed inside stream_compute_ecc_hash)
@@ -682,8 +682,8 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                 # -- Get file path, check its correctness and correct it by using intra-ecc if necessary
                 relfilepath = entry_p["relfilepath"] # Relative file path, given in the ecc fields
                 # convert strings to StringIO object so that we can trick our ecc reading functions that normally works only on files
-                fpfile = StringIO.StringIO(relfilepath)
-                fpfile_ecc = StringIO.StringIO(entry_p["relfilepath_ecc"])
+                fpfile = StringIO(relfilepath)
+                fpfile_ecc = StringIO(entry_p["relfilepath_ecc"])
                 fpentry_p = {"ecc_field_pos": [0, len(relfilepath)]} # create a fake entry_pos so that the ecc reading function works correctly
                 relfilepath_correct = [] # will store each block of the corrected (or already correct) filepath
                 fpcorrupted = False # check if filepath was corrupted

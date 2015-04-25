@@ -73,7 +73,6 @@ import math
 import csv # to process the errors_file from rfigc.py
 import shlex # for string parsing as argv argument to main(), unnecessary otherwise
 from lib.tee import Tee # Redirect print output to the terminal as well as in a log file
-import StringIO # to support intra-ecc
 #import pprint # Unnecessary, used only for debugging purposes
 
 # ECC and hashing facade libraries
@@ -545,7 +544,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
             # Processing ecc on files
             files_done = 0
             files_skipped = 0
-            for (dirpath, filename) in tqdm.tqdm(recwalk(folderpath), total=filescount, leave=True):
+            for (dirpath, filename) in tqdm.tqdm(recwalk(folderpath), total=filescount, leave=True, unit="files"):
                 # Get full absolute filepath
                 filepath = os.path.join(dirpath,filename)
                 # Get database relative path (from scanning root folder)
