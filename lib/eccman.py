@@ -94,6 +94,7 @@ class ECCMan(object):
         if not k: k = self.k
         pad = None
         if len(ecc) < self.n-k:
+            print("Warning: the ecc field may have been truncated (entrymarker or field_delim misdetection?).")
             pad = "\x00" * (self.n-k-len(ecc))
             ecc = ecc + pad
         return [ecc, pad]
