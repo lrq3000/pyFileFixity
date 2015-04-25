@@ -519,9 +519,11 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
         # Size of the ecc entry for this file will be: entrymarker-bytes + field_delim-bytes*occurrence + length-filepath-string + length-size-string + length-filepath-ecc + size of the ecc per block for all blocks in file header + size of the hash per block for all blocks in file header.
         sizeheaders = sizeheaders + replication_rate * (len(entrymarker) + len(field_delim)*3 + len(relfilepath) + len(str(size)) + int(float(len(relfilepath))*resilience_rate_intra) + (int(math.ceil(float(header_size_add) / ecc_params["message_size"])) * (ecc_params["ecc_size"]+ecc_params["hash_size"])) ) # Compute the total number of bytes we will add with ecc + hash (accounting for the padding of the remaining characters at the end of the sequence in case it doesn't fit with the message_size, by using ceil() )
     ptee.write("Precomputing done.")
-    # TODO: add the size of the ecc format header? (arguments string + PYHEADERECC identifier)
-    total_pred_percentage = sizeheaders * 100 / sizetotal
-    ptee.write("Total ECC size estimation: %s = %g%% of total files size %s." % (sizeof_fmt(sizeheaders), total_pred_percentage, sizeof_fmt(sizetotal)))
+    if generate: # show statistics only if generating an ecc file
+        # TODO: add the size of the ecc format header? (arguments string + PYHEADERECC identifier)
+        total_pred_percentage = sizeheaders * 100 / sizetotal
+        ptee.write("Total ECC size estimation: %s = %g%% of total files size %s." % (sizeof_fmt(sizeheaders), total_pred_percentage, sizeof_fmt(sizetotal)))
+        ptee.write("Details: resiliency of %i%%: For the header (first %i characters) of each file: each block of %i chars will get an ecc of %i chars." % (resilience_rate*100, header_size, ecc_params["message_size"], ecc_params["ecc_size"]))
 
     if stats_only: return 0
 
