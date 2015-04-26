@@ -243,15 +243,15 @@ Note: An ecc structure repair does NOT allow to recover from more errors on your
                     curpos = dbidx.tell() # backup current position for error messages
                     buf = dbidx.read(max_block_size)
                     # Update progress bar
-                    bardisp.update(idx.tell()-bardisp.n)
+                    bardisp.update(dbidx.tell()-bardisp.n)
                     # If we have reached EOF, then we stop here
                     if not buf: break
 
                     # Else it's ok we have an index block, we process it
                     idx_total += 1
                     # Extract the marker's infos and the ecc
-                    marker_str = buf[:ecc_manager_idx["message_size"]]
-                    ecc = buf[ecc_manager_idx["message_size"]:]
+                    marker_str = buf[:ecc_params_idx["message_size"]]
+                    ecc = buf[ecc_params_idx["message_size"]:]
                     # Check if the marker's infos are corrupted, if yes, then we will try to fix that using the ecc
                     if not ecc_manager_idx.check(marker_str, ecc):
                         # Trying to fix the marker's infos using the ecc
@@ -271,7 +271,7 @@ Note: An ecc structure repair does NOT allow to recover from more errors on your
                     # Repair ecc file's marker using our correct (or repaired) marker's infos
                     marker_type = int(marker_str[0]) # marker's type is always stored on the first byte/character
                     marker_pos = struct.unpack('>Q', marker_str[1:]) # marker's position is encoded as a big-endian unsigned long long, in a 8 bytes/chars string
-                    db.seek(marker_pos) # move the ecc reading cursor to the beginning of the marker
+                    db.seek(marker_pos[0]) # move the ecc reading cursor to the beginning of the marker
                     # Rewrite the marker over the ecc file
                     db.write(markers[marker_type-1])
                     markers_repaired[marker_type-1] += 1
