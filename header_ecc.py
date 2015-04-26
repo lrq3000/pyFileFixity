@@ -168,10 +168,19 @@ def entry_fields(entry, field_delim="\xFF"):
     filesize = entry[first+len(field_delim):second]
     relfilepath_ecc = entry[second+len(field_delim):third]
     ecc_field = entry[third+len(field_delim):]
+
+    # Try to convert to an int, an error may happen
+    try:
+        filesize = int(filesize)
+    except Exception, e:
+        print("Exception when trying to detect the filesize in ecc field (it may be corrupted), skipping: ")
+        print(e)
+        filesize = 0
+
     # entries = [ {"message":, "ecc":, "hash":}, etc.]
     #print(entry)
     #print(len(entry))
-    return {"relfilepath": relfilepath, "relfilepath_ecc": relfilepath_ecc, "filesize": int(filesize), "ecc_field": ecc_field}
+    return {"relfilepath": relfilepath, "relfilepath_ecc": relfilepath_ecc, "filesize": filesize, "ecc_field": ecc_field}
 
 def entry_assemble(entry_fields, ecc_params, header_size, filepath, fileheader=None):
     '''From an entry with its parameters (filename, filesize), assemble a list of each block from the original file along with the relative hash and ecc for easy processing later.'''
@@ -673,7 +682,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                     if ignore_size:
                         ptee.write("Warning: file %s has a different size: %s (before: %s). Will still try to correct it (but the blocks may not match!)." % (relfilepath, filesize, entry_p["filesize"]))
                     else:
-                        ptee.write("Error: file %s has a different size: %s (before: %s). Skipping the file correction because blocks may not match." % (relfilepath, filesize, entry_p["filesize"]))
+                        ptee.write("Error: file %s has a different size: %s (before: %s). Skipping the file correction because blocks may not match (you can set --ignore_size to still correct even if size is different, maybe just the entry was corrupted)." % (relfilepath, filesize, entry_p["filesize"]))
                         files_skipped += 1
                         continue
 

@@ -190,8 +190,16 @@ def entry_fields(file, entry_pos, field_delim="\xFF"):
     # Place the cursor at the beginning of the ecc_field
     file.seek(ecc_field_pos[0])
 
+    # Try to convert to an int, an error may happen
+    try:
+        filesize = int(filesize)
+    except Exception, e:
+        print("Exception when trying to detect the filesize in ecc field (it may be corrupted), skipping: ")
+        print(e)
+        filesize = 0
+
     # entries = [ {"message":, "ecc":, "hash":}, etc.]
-    return {"relfilepath": relfilepath, "relfilepath_ecc": relfilepath_ecc, "filesize": int(filesize), "ecc_field_pos": ecc_field_pos}
+    return {"relfilepath": relfilepath, "relfilepath_ecc": relfilepath_ecc, "filesize": filesize, "ecc_field_pos": ecc_field_pos}
 
 def stream_entry_assemble(hasher, file, eccfile, entry_fields, max_block_size, header_size, resilience_rates):
     '''From an entry with its parameters (filename, filesize), assemble a list of each block from the original file along with the relative hash and ecc for easy processing later.'''
@@ -738,7 +746,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                     if ignore_size:
                         ptee.write("Warning: file %s has a different size: %s (before: %s). Will still try to correct it (but the blocks may not match!)." % (relfilepath, filesize, entry_p["filesize"]))
                     else:
-                        ptee.write("Error: file %s has a different size: %s (before: %s). Skipping the file correction because blocks may not match." % (relfilepath, filesize, entry_p["filesize"]))
+                        ptee.write("Error: file %s has a different size: %s (before: %s). Skipping the file correction because blocks may not match (you can set --ignore_size to still correct even if size is different, maybe just the entry was corrupted)." % (relfilepath, filesize, entry_p["filesize"]))
                         files_skipped += 1
                         continue
 
