@@ -201,7 +201,7 @@ def entry_fields(file, entry_pos, field_delim="\xFF"):
     # entries = [ {"message":, "ecc":, "hash":}, etc.]
     return {"relfilepath": relfilepath, "relfilepath_ecc": relfilepath_ecc, "filesize": filesize, "ecc_field_pos": ecc_field_pos}
 
-def stream_entry_assemble(hasher, file, eccfile, entry_fields, max_block_size, header_size, resilience_rates):
+def stream_entry_assemble(hasher, file, eccfile, entry_fields, max_block_size, header_size, resilience_rates, constantmode=False):
     '''From an entry with its parameters (filename, filesize), assemble a list of each block from the original file along with the relative hash and ecc for easy processing later.'''
     # Cut the header and the ecc entry into blocks, and then assemble them so that we can easily process block by block
     eccfile.seek(entry_fields["ecc_field_pos"][0])
@@ -209,7 +209,7 @@ def stream_entry_assemble(hasher, file, eccfile, entry_fields, max_block_size, h
     ecc_curpos = eccfile.tell()
     while (ecc_curpos < entry_fields["ecc_field_pos"][1]): # continue reading the input file until we reach the position of the previously detected ending marker
         # Compute the current rate, depending on where we are inside the input file (headers? later stage?)
-        if curpos < header_size: # header stage: constant rate
+        if curpos < header_size or constantmode: # header stage: constant rate
             rate = resilience_rates[0]
         else: # later stage 2 or 3: progressive rate
             rate = feature_scaling(curpos, header_size, entry_fields["filesize"], resilience_rates[1], resilience_rates[2]) # find the rate for the current stream of data (interpolate between stage 2 and stage 3 rates depending on the cursor position in the file)
@@ -700,7 +700,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                 fpcorrupted = False # check if filepath was corrupted
                 fpcorrected = True # check if filepath was corrected (if it was corrupted)
                 # Decode each block of the filepath
-                for e in stream_entry_assemble(hasher_intra, fpfile, fpfile_ecc, fpentry_p, max_block_size, len(relfilepath), [resilience_rate_intra]):
+                for e in stream_entry_assemble(hasher_intra, fpfile, fpfile_ecc, fpentry_p, max_block_size, len(relfilepath), [resilience_rate_intra], constantmode=True):
                     # Check if this block of the filepath is OK, if yes then we just copy it over
                     if ecc_manager_intra.check(e["message"], e["ecc"]):
                         relfilepath_correct.append(e["message"])
