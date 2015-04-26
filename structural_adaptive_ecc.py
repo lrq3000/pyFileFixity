@@ -77,7 +77,7 @@ import struct # to support indexes backup file
 #import pprint # Unnecessary, used only for debugging purposes
 
 # ECC and hashing facade libraries
-from lib.eccman import ECCMan
+from lib.eccman import ECCMan, compute_ecc_params
 from lib.hasher import Hasher
 from lib.reedsolomon.reedsolo import ReedSolomonError
 
@@ -273,14 +273,6 @@ def entries_disambiguate(entries, field_delim="\xFF", ptee=None): # field_delim 
             # After printing the error, return None so that we won't try to decode a corrupted ecc entry
             #final_entry = None
     return final_entry
-
-def compute_ecc_params(max_block_size, rate, hasher):
-    '''Compute the ecc parameters (size of the message, size of the hash, size of the ecc)'''
-    #message_size = max_block_size - int(round(max_block_size * rate * 2, 0)) # old way to compute, wasn't really correct because we applied the rate on the total message+ecc size, when we should apply the rate to the message size only (that is not known beforehand, but we want the ecc size (k) = 2*rate*message_size or in other words that k + k * 2 * rate = n)
-    message_size = int(round(float(max_block_size) / (1 + 2*rate), 0))
-    ecc_size = max_block_size - message_size
-    hash_size = len(hasher) # 32 when we use MD5
-    return {"message_size": message_size, "ecc_size": ecc_size, "hash_size": hash_size}
 
 def stream_compute_ecc_hash(ecc_manager, hasher, file, max_block_size, header_size, resilience_rates):
     '''Generate a stream of hash/ecc blocks, of variable encoding rate and size, given a file.'''
@@ -532,8 +524,8 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
     ecc_manager_variable = ECCMan(max_block_size, 1, algo=ecc_algo)
     ecc_params_intra = compute_ecc_params(max_block_size, resilience_rate_intra, hasher_intra)
     ecc_manager_intra = ECCMan(max_block_size, ecc_params_intra["message_size"], algo=ecc_algo)
-    ecc_params_idx = compute_ecc_params(16, 0.5, hasher_intra)
-    ecc_manager_idx = ECCMan(16, ecc_params_idx["message_size"], algo=ecc_algo)
+    ecc_params_idx = compute_ecc_params(27, 1, hasher_intra)
+    ecc_manager_idx = ECCMan(27, ecc_params_idx["message_size"], algo=ecc_algo)
     # for stats only
     ecc_params_variable_average = compute_ecc_params(max_block_size, (resilience_rate_s2 + resilience_rate_s3)/2, hasher) # compute the average variable rate to compute statistics
     ecc_params_s2 = compute_ecc_params(max_block_size, resilience_rate_s2, hasher)
@@ -628,8 +620,9 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                         # -- External indexes backup: calculate the position of the entrymarker and of each field delimiter, and compute their ecc, and save into the index backup file. This will allow later to retrieve the position of each marker in the ecc file, and repair them if necessary, while just incurring a very cheap storage cost.
                         markers_pos = [entrymarker_pos, entrymarker_pos+len(entrymarker)+len(relfilepath), entrymarker_pos+len(entrymarker)+len(relfilepath)+len(field_delim)+len(str(filesize)), db.tell()-len(field_delim)] # Make the list of all markers positions for this ecc entry. The first and last indexes are the most important (first is the entrymarker, the last is the field_delim just before the ecc track start)
                         markers_pos = [struct.pack('>Q', x) for x in markers_pos] # Convert to a binary representation in 8 bytes using unsigned long long (up to 16 EB, this should be more than sufficient)
-                        markers_pos_ecc = [ecc_manager_idx.encode(x) for x in markers_pos] # compute the ecc for each number
-                        dbidx.write(''.join([str(x) for items in zip(markers_pos,markers_pos_ecc) for x in items])) # couple each marker's position with its ecc, and write them all consecutively into the index backup file
+                        markers_types = ["1", "2", "2", "2"]
+                        markers_pos_ecc = [ecc_manager_idx.encode(x+y) for x,y in zip(markers_types,markers_pos)] # compute the ecc for each number
+                        dbidx.write(''.join([str(x) for items in zip(markers_types,markers_pos,markers_pos_ecc) for x in items])) # couple each marker's position with its ecc, and write them all consecutively into the index backup file
                         # -- Hash/Ecc encoding of file's content (everything is managed inside stream_compute_ecc_hash)
                         for ecc_entry in stream_compute_ecc_hash(ecc_manager_variable, hasher, file, max_block_size, header_size, resilience_rates): # then compute the ecc/hash entry for this file's header (each value will be a block, a string of hash+ecc per block of data, because Reed-Solomon is limited to a maximum of 255 bytes, including the original_message+ecc! And in addition we want to use a variable rate for RS that is decreasing along the file)
                             db.write( "%s%s" % (str(ecc_entry[0]),str(ecc_entry[1])) ) # note that there's no separator between consecutive blocks, but by calculating the ecc parameters, we will know when decoding the size of each block!

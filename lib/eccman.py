@@ -28,6 +28,13 @@
 import lib.brownanrs.rs as brownanrs # Pure python implementation of Reed-Solomon with configurable max_block_size and automatic error detection (you don't have to specify where they are). This is a base 3 implementation that is formally correct and with unit tests.
 import lib.reedsolomon.reedsolo as reedsolo # Faster pure python implementation of Reed-Solomon, with a base 3 compatible encoder (but not yet decoder! But you can use brownanrs to decode).
 
+def compute_ecc_params(max_block_size, rate, hasher):
+    '''Compute the ecc parameters (size of the message, size of the hash, size of the ecc). This is an helper function to easily compute the parameters from a resilience rate to instanciate an ECCMan object.'''
+    #message_size = max_block_size - int(round(max_block_size * rate * 2, 0)) # old way to compute, wasn't really correct because we applied the rate on the total message+ecc size, when we should apply the rate to the message size only (that is not known beforehand, but we want the ecc size (k) = 2*rate*message_size or in other words that k + k * 2 * rate = n)
+    message_size = int(round(float(max_block_size) / (1 + 2*rate), 0))
+    ecc_size = max_block_size - message_size
+    hash_size = len(hasher) # 32 when we use MD5
+    return {"message_size": message_size, "ecc_size": ecc_size, "hash_size": hash_size}
 
 class ECCMan(object):
     '''Error correction code manager, which provides a facade API to use different kinds of ecc algorithms or libraries.'''
