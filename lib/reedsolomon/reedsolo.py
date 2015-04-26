@@ -364,7 +364,7 @@ def rs_correct_msg(msg_in, nsym, fcr=0):
     if len(msg_in) > 255:
         raise ValueError("message too long")
     msg_out = list(msg_in)     # copy of message
-    # find erasures/errors (ie: characters that were either replaced by null byte or changed to another character)
+    # find erasures (characters that are below 0, thus we know these aren't valid characters, we know the position of those missing characters thus we can fix 2x more than erasures)
     erase_pos = []
     for i in range(0, len(msg_out)):
         if msg_out[i] < 0:
@@ -372,6 +372,7 @@ def rs_correct_msg(msg_in, nsym, fcr=0):
             erase_pos.append(i)
     if len(erase_pos) > nsym:
         raise ReedSolomonError("Too many erasures to correct")
+    # find errors (ie: characters that were either replaced by null byte or changed to another character, we don't know their positions thus we can only correct less than erasures)
     synd = rs_calc_syndromes(msg_out, nsym, fcr)
     if max(synd) == 0:
         return msg_out[:-nsym], msg_out[-nsym:]  # no errors
@@ -380,6 +381,7 @@ def rs_correct_msg(msg_in, nsym, fcr=0):
     err_pos = rs_find_errors(err_poly, len(msg_out))
     if err_pos is None:
         raise ReedSolomonError("Could not locate error")
+    # Now try to correct them all
     msg_out = rs_correct_errata(msg_out, synd, erase_pos + err_pos, fcr)
     synd = rs_calc_syndromes(msg_out, nsym, fcr)
     if max(synd) > 0:

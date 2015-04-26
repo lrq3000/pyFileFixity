@@ -176,7 +176,7 @@ class RSCoder(object):
 
         # Since all codewords are multiples of g, checking that code divides g
         # suffices for validating a codeword.
-        return c % g == Polynomial(x0=0)
+        return c % g == Polynomial(x0=0) # TODO: for faster computation replace by c._fastmod(g, self.n-k) ?
 
     def check(self, r, k=None):
         '''Check if there's any error in a message+ecc. Can be used before decoding, in addition to hashes to detect if the message was tampered, or after decoding to check that the message was fully recovered.
@@ -211,18 +211,27 @@ class RSCoder(object):
         n = self.n
         if not k: k = self.k
 
-        if self.verify(r): # the code is already valid, there's nothing to do
+        # Deprecated check: we do it below in a faster way (we always compute the syndrome only once and it allows to check or to correct without recomputing anythome more
+#        if self.verify(r): # the code is already valid, there's nothing to do
+#            # The last n-k bytes are parity
+#            if nostrip:
+#                return r[:-(n-k)], r[-(n-k):]
+#            else:
+#                return r[:-(n-k)].lstrip("\0"), r[-(n-k):]
+
+        # Turn r into a polynomial
+        rp = Polynomial([GF256int(ord(x)) for x in r])
+
+        # Compute the syndromes:
+        sz = self._syndromes(rp, k=k)
+
+        if sz.coefficients.count(GF256int(0)) == len(sz): # the code is already valid, there's nothing to do
             # The last n-k bytes are parity
             if nostrip:
                 return r[:-(n-k)], r[-(n-k):]
             else:
                 return r[:-(n-k)].lstrip("\0"), r[-(n-k):]
-
-        # Turn r into a polynomial
-        r = Polynomial([GF256int(ord(x)) for x in r])
-
-        # Compute the syndromes:
-        sz = self._syndromes(r, k=k)
+        
 
         # Find the error locator polynomial and error evaluator polynomial
         # using the Berlekamp-Massey algorithm
@@ -249,7 +258,7 @@ class RSCoder(object):
         E = Polynomial( Elist[::-1] )
 
         # And we get our real codeword!
-        c = r - E
+        c = rp - E
 
         # Form it back into a string and return all but the last n-k bytes
         ret = ''.join(chr(x) for x in c.coefficients[:-(n-k)])
