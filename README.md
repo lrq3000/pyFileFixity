@@ -94,6 +94,9 @@ xists (if --generate).
 ove).
   -a, --append          Append new files (if --update).
   -r, --remove          Remove missing files (if --update).
+  
+  --filescraping_recovery          Given a folder of unorganized files, compare to the database and restore the filename and directory structure into the output folder.
+  -o, --output          Path to the output folder where to output the files reorganized after --recover_from_filescraping.
 ```
 
 Header Error Correction Code script
@@ -103,20 +106,22 @@ This script was made to be used in combination with other more common file redun
 
 An interesting benefit of this approach is that it has a low storage (and computational) overhead that scales linearly to the number of files, whatever their size is: for example, if we have a set of 40k files for a total size of 60 GB, with a resiliency_rate of 30% and header_size of 1KB (we limit to the first 1K bytes/characters = our file header), then, without counting the hash per block and other meta-data, the final ECC file will be about 2*resiliency_rate * number_of_files * header_size = 24.5 MB. This size can be lower if there are many files smaller than 1KB. This is a pretty low storage overhead to backup the headers of such a big number of files.
 
-The script is pure-python as are its dependencies: it is thus completely cross-platform and open source. However, this imply that it is quite slow, but PyPy v2.5.0 was successfully tested against the script without any modification, and a speed increase of 5x could be observed. This is still slow but at least it's useable for real datasets.
+The script is pure-python as are its dependencies: it is thus completely cross-platform and open source. However, this imply that it is quite slow, but PyPy v2.5.0 was successfully tested against the script without any modification, and a speed increase of more 100x could be observed, so that you can expect a rate of more than 1MB/s, which is quite fast.
 
 Structural Adaptive Error Correction Encoder
 ----------------------------------------------------------------
 
 This script implements a variable error correction rate encoder: each file is ecc encoded using a variable resiliency rate -- using a high constant resiliency rate for the header part (resiliency rate stage 1, high), then a variable resiliency rate is applied to the rest of the file's content, with a higher rate near the beginning of the file (resiliency rate stage 2, medium) which progressively decreases until the end of file (resiliency rate stage 3, the lowest).
 
-The idea is that the critical parts of files usually are placed at the top, and data becomes less and less critical along the file. What is meant by critical is both the critical spots (eg: if you tamper only one character of a file's header you have good chances of losing your entire file) and critically encoded information (eg: archive formats usually encode compressed symbols as they go along the file, which means that the first occurrence is encoded, and then the archive simply writes a reference to the symbol. Thus, the first occurrence is encoded at the top, and subsequent encoding of this same data pattern will just be one symbol, and thus it matters less as long as the original symbol is correctly encoded and its information preserved, we can always try to restore the reference symbols later).
+The idea is that the critical parts of files usually are placed at the top, and data becomes less and less critical along the file. What is meant by critical is both the critical spots (eg: if you tamper only one character of a file's header you have good chances of losing your entire file, ie, you cannot even open it) and critically encoded information (eg: archive formats usually encode compressed symbols as they go along the file, which means that the first occurrence is encoded, and then the archive simply writes a reference to the symbol. Thus, the first occurrence is encoded at the top, and subsequent encoding of this same data pattern will just be one symbol, and thus it matters less as long as the original symbol is correctly encoded and its information preserved, we can always try to restore the reference symbols later). Moreover, really redundant data will be placed at the top because they can be reused a lot, while data that cannot be too much compressed will be placed later, and thus, corruption of this less compressed data is a lot less critical because only a few characters will be changed in the uncompressed file (since the data is less compressed, a character change on the not-so-much compressed data won't have very significant impact on the uncompressed data).
 
-This variable error correction rate would allow to protect more the critical parts of a file (the header and the beginning of a file, for example in compressed file formats such as zip this is where the most importantly strings are encoded) for the same amount of storage as a standard constant error correction rate.
+This variable error correction rate should allow to protect more the critical parts of a file (the header and the beginning of a file, for example in compressed file formats such as zip or jpg this is where the most importantly strings are encoded) for the same amount of storage as a standard constant error correction rate.
 
-Furthermore, the currently designed format of the ecc file would allow two things that are not available in all current file ecc generators such as PAR2: 1- this would allow to partially repair a file, even if not all the blocks can be corrected (in PAR2, a file is repaired only if all blocks can be repaired, which is a shame because there are still other blocks that could be repaired and thus produce a less corrupted file) ; 2- the ecc file format is quite simple and readable, easy to process by any script, which would allow other softwares to also work on it (and it was also done in this way to be more resilient against error corruptions, so that even if an entry is corrupted, other entries are independent and can maybe be used, thus the ecc is very error tolerant).
+Of course, you can set the resiliency rate for each stage to the values you want, so that you can even do the opposite: setting a higher resiliency rate for stage 3 than stage 2 will produce an ecc that is greater towards the end of the contents of your files.
 
-The script structural-adaptive-ecc.py implements this idea, which can be seen as an extension of header-ecc.py (and in fact the idea was the other way around: structural-adaptive-ecc.py was conceived first but was too complicated, then header-ecc.py was implemented as a working lessened implementation only for headers, and then structural-adaptive-ecc.py was finished using header-ecc.py code progress). It works, it was a bit tested but not extensively, so make sure you test the script by yourself to see if it's robust enough for your needs (any feedback about this would be greatly appreciated!).
+Furthermore, the currently designed format of the ecc file would allow two things that are not available in all current file ecc generators such as PAR2: 1- it allows to partially repair a file, even if not all the blocks can be corrected (in PAR2, a file is repaired only if all blocks can be repaired, which is a shame because there are still other blocks that could be repaired and thus produce a less corrupted file) ; 2- the ecc file format is quite simple and readable, easy to process by any script, which would allow other softwares to also work on it (and it was also done in this way to be more resilient against error corruptions, so that even if an entry is corrupted, other entries are independent and can maybe be used, thus the ecc is very error tolerant. This idea was implemented in repair_ecc.py but it could be extended, especially if you know the pattern of the corruption).
+
+The script structural-adaptive-ecc.py implements this idea, which can be seen as an extension of header-ecc.py (and in fact the idea was the other way around: structural-adaptive-ecc.py was conceived first but was too complicated, then header-ecc.py was implemented as a working lessened implementation only for headers, and then structural-adaptive-ecc.py was finished using header-ecc.py code progress). It works, it was a quite well tested for my own needs on datasets of hundred of GB, but it's not foolproof so make sure you test the script by yourself to see if it's robust enough for your needs (any feedback about this would be greatly appreciated!).
 
 Cython implementation
 ---------------------------------
@@ -141,7 +146,7 @@ If you get issues, you can see the following post on how to install Cython:
 
 https://github.com/cython/cython/wiki/InstallingOnWindows
 
-Also, use a smaller --max_block_size to greatly speedup the operations! That's the trick used to compute very quickly RS ECC on optical discs. You give a bit of resiliency of course (because blocks are smaller, thus you protect a smaller number of characters per ECC. This should not change much, but in case you get a big bit error burst on a contiguous block, you may lose a whole block at once. That's why using RS255 is better, but it's very time consuming. However, the resiliency ratios still hold, so for any other case of bit-flipping with average-sized bursts, this should not be a problem.)
+Also, use a smaller --max_block_size to greatly speedup the operations! That's the trick used to compute very quickly RS ECC on optical discs. You give up a bit of resiliency of course (because blocks are smaller, thus you protect a smaller number of characters per ECC. In the end, this should not change much about real resiliency, but in case you get a big bit error burst on a contiguous block, you may lose a whole block at once. That's why using RS255 is better, but it's very time consuming. However, the resiliency ratios still hold, so for any other case of bit-flipping with average-sized bursts, this should not be a problem as long as the size of the bursts is smaller than an ecc block.)
 
 In case of a catastrophic event
 --------------------------------------------
@@ -161,8 +166,6 @@ In case of a catastrophic event of your data due to the failure of your storage 
 
 Todo
 -------
-
-- Integrate with https://github.com/Dans-labs/bit-recover ? (need to convert the perl script into python...). Note: from my own tests, it doesn't work so well as the author thinks it is, I couldn't even correct a single corruption... Or maybe I am using it the wrong way (but I used the test scripts included, with no modification. That's weird...).
 
 - Speed optimize the Reed-Solomon library? (using Numpy or Cython? But I want to keep a pure python implementation available just in case, or make a Cython implementation that is also compatible with normal python). Use pprofile to check where to optimize first.
 
@@ -193,3 +196,5 @@ Also this library includes interleavers, which may be interesting to be more res
 - structure check for movies/video files using moviepy https://github.com/Zulko/moviepy ?
 
 - adapt the RS decoding to support erasures correction (by considering null bytes as erasures). For corruption because of scratches on optical discs, this would be perfect. This would boost the resilience rate by 2x.
+
+- Integrate with https://github.com/Dans-labs/bit-recover ? (need to convert the perl script into python...). Note: from my own tests, it doesn't work so well as the author thinks it is, I couldn't even correct a single corruption... Or maybe I am using it the wrong way (but I used the test scripts included, with no modification. That's weird...).
