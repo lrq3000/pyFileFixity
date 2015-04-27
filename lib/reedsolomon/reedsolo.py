@@ -243,25 +243,26 @@ def rs_calc_syndromes(msg, nsym, fcr=0):
 
 def rs_correct_errata(msg_in, synd, pos, fcr=0):
     msg = list(msg_in)
-    # calculate error locator polynomial using Forney algorithm
+    # calculate error locator polynomial (berlekamp-massey again? = sigma?)
     q = [1]
     for i in range(0, len(pos)):
         x = gf_exp[len(msg) - 1 - pos[i]]
         q = gf_poly_mul(q, [x, 1])
-    # calculate error evaluator polynomial
+    # calculate error evaluator polynomial (= omega?)
     p = synd[0:len(pos)]
     p.reverse()
     p = gf_poly_mul(p, q)
     p = p[len(p) - len(pos):len(p)]
     # formal derivative of error locator eliminates even terms
     q = q[len(q) & 1:len(q):2]
-    # compute corrections
+    # compute corrections using Forney algorithm
     for i in range(0, len(pos)):
         x = gf_exp[pos[i] + 256 - len(msg)]
         exp = ((len(msg) - 1 - pos[i])*(1 - fcr)) % 255
         xp = gf_exp[exp]
         y = gf_mul(gf_poly_eval(p, x), xp)
         z = gf_poly_eval(q, gf_mul(x, x))
+        # Apply on the message, same as gf_poly_add(msg, gf_div(y,z)) (this isn't the Forney algorithm, we just apply the result here)
         msg[pos[i]] ^= gf_div(y, z)
     return msg
 
