@@ -380,6 +380,95 @@ class RSCoder(object):
 
         return sigma[-1], omega[-1]
 
+    def _berlekamp_massey_fast(self, s, k=None):
+        '''Computes and returns the error locator polynomial (sigma) and the
+        error evaluator polynomial (omega) with a faster implementation
+        The parameter s is the syndrome polynomial (syndromes encoded in a
+        generator function) as returned by _syndromes. Don't be confused with
+        the other s = (n-k)/2
+
+        Notes:
+        The error polynomial:
+        E(x) = E_0 + E_1 x + ... + E_(n-1) x^(n-1)
+
+        j_1, j_2, ..., j_s are the error positions. (There are at most s
+        errors)
+
+        Error location X_i is defined: X_i = α^(j_i)
+        that is, the power of α corresponding to the error location
+
+        Error magnitude Y_i is defined: E_(j_i)
+        that is, the coefficient in the error polynomial at position j_i
+
+        Error locator polynomial:
+        sigma(z) = Product( 1 - X_i * z, i=1..s )
+        roots are the reciprocals of the error locations
+        ( 1/X_1, 1/X_2, ...)
+
+        Error evaluator polynomial omega(z) not written here
+        '''
+        n = self.n
+        if not k: k = self.k
+
+        # Initialize:
+        sigma = sigmaprev =  Polynomial([GF256int(1)])
+        omega = omegaprev =  Polynomial([GF256int(1)])
+        B =    Polynomial([GF256int(1)])
+        A =  Polynomial([GF256int(0)])
+        L =      0
+        #M =     0
+
+        # Polynomial constants:
+        ONE = Polynomial([GF256int(1)])
+        ZERO = GF256int(0)
+        Z = Polynomial([GF256int(1), GF256int(0)])
+        
+        # Iteratively compute the polynomials 2s times. The last ones will be
+        # correct
+        for l in xrange(n-k):
+            K = l+1
+            # Goal for each iteration: Compute sigma[K] and omega[K] such that
+            # (1 + s)*sigma[l] == omega[l] in mod z^(K)
+
+            # For this particular loop iteration, we have sigma[l] and omega[l],
+            # and are computing sigma[K] and omega[K]
+            
+            # First find Delta, the non-zero coefficient of z^(K) in
+            # (1 + s) * sigma[l]
+            # This delta is valid for l (this iteration) only
+            Delta = ( (ONE + s) * sigma ).get_coefficient(K)
+
+            # Can now compute sigma[K] and omega[K] from
+            # sigma[l], omega[l], B[l], A[l], and Delta
+            sigmaprev = sigma
+            omegaprev = omega
+            sigma = sigmaprev - (Z * B).scale(Delta)
+            omega = omegaprev - (Z * A).scale(Delta)
+
+            # Now compute the next B and A
+            # There are two ways to do this
+            if Delta == ZERO or 2*L > K:
+                #or (2*L == K and M == 0):
+                # Rule A
+                B = Z * B
+                A = Z * A
+                #L = L
+                #M = M
+
+            #elif (Delta != ZERO and 2*L < K) \
+            #    or (2*L == K and M != 0):
+            else:
+                # Rule B
+                B = sigmaprev.scale(Delta.inverse())
+                A = omegaprev.scale(Delta.inverse())
+                L = K - L
+                #M = 1 - M
+
+            #else:
+            #    raise Exception("Code shouldn't have gotten here")
+
+        return sigma, omega
+
     def _chien_search(self, sigma):
         '''Recall the definition of sigma, it has s roots. To find them, this
         function evaluates sigma at all 255 non-zero points to find the roots
