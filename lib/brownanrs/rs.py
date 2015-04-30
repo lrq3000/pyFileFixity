@@ -423,6 +423,8 @@ class RSCoder(object):
         ZERO = GF256int(0)
         Z = Polynomial([GF256int(1), GF256int(0)])
         
+        s2 = ONE+s
+        
         # Iteratively compute the polynomials 2s times. The last ones will be
         # correct
         for l in xrange(n-k):
@@ -436,7 +438,7 @@ class RSCoder(object):
             # First find Delta, the non-zero coefficient of z^(K) in
             # (1 + s) * sigma[l]
             # This delta is valid for l (this iteration) only
-            Delta = ( (ONE + s) * sigma ).get_coefficient(K)
+            Delta = s2.mul_at(sigma, K)
 
             # Can now compute sigma[K] and omega[K] from
             # sigma[l], omega[l], B[l], A[l], and Delta

@@ -130,6 +130,21 @@ cdef class Polynomial:
                     terms[-((l1-i1)+(l2-i2))-1] += c1*c2
         return self.__class__(terms)
 
+    cpdef mul_at(Polynomial self, Polynomial other, int k):
+        '''Compute the multiplication between two polynomials only at the specified coefficient (this is a lot cheaper than doing the full polynomial multiplication and then extract only the required coefficient)'''
+        cdef int i
+
+        if k > (self.degree + other.degree): return 0 # optimization: if the required coefficient is above the maximum coefficient of the resulting polynomial, we can already predict that and just return 0
+
+        term = 0
+
+        for i in xrange(min(len(self), len(other))):
+            coef1 = self.coefficients[-(k-i+1)]
+            coef2 = other.coefficients[-(i+1)]
+            if coef1 == 0 or coef2 == 0: continue # optimization, skip if any coef is 0, the multiplication will bring nothing but 0
+            term += coef1 * coef2
+        return term
+
     cpdef scale(Polynomial self, other):
         '''Multiply a polynomial with a scalar'''
         return self.__class__([self.coefficients[i] * other for i in xrange(len(self))])
