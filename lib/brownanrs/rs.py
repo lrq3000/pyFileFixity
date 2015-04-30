@@ -17,7 +17,7 @@ except ImportError: # Else, we import the pure-python implementation (the refere
 #import copy
 #import array # avoid because PyPy has troubles! https://bitbucket.org/pypy/pypy/issue/1989/arrayarray-creation-5x-slower-than-cpython
 
-"""This module implements Reed-Solomon Encoding.
+'''This module implements Reed-Solomon Encoding.
 It supports arbitrary configurations for n and k, the codeword length and
 message length. This can be used to adjust the error correcting power of the
 code.
@@ -37,11 +37,11 @@ with leading null bytes if necessary) and then 32 bytes of parity data.
 Use the -d flag to decode data on standard in to standard out. This reads in
 blocks of 255 bytes, and outputs the decoded data from them. If there are less
 than 16 errors per block, your data will be recovered.
-"""
+'''
 
 class RSCoder(object):
     def __init__(self, n, k):
-        """Creates a new Reed-Solomon Encoder/Decoder object configured with
+        '''Creates a new Reed-Solomon Encoder/Decoder object configured with
         the given n and k values.
         n is the length of a codeword, must be less than 256
         k is the length of the message, must be less than n
@@ -49,7 +49,7 @@ class RSCoder(object):
         The code will have error correcting power s where 2s = n - k
 
         The typical RSCoder is RSCoder(255, 223)
-        """
+        '''
         if n < 0 or k < 0:
             raise ValueError("n and k must be positive")
         if not n < 256:
@@ -88,7 +88,7 @@ class RSCoder(object):
         #self.gtimesh = Polynomial(x255=GF256int(1), x0=GF256int(1))
 
     def encode(self, message, poly=False, k=None):
-        """Encode a given string with reed-solomon encoding. Returns a byte
+        '''Encode a given string with reed-solomon encoding. Returns a byte
         string with the k message bytes and n-k parity bytes at the end.
         
         If a message is < k bytes long, it is assumed to be padded at the front
@@ -98,7 +98,7 @@ class RSCoder(object):
 
         If poly is not False, returns the encoded Polynomial object instead of
         the polynomial translated back to a string (useful for debugging)
-        """
+        '''
         n = self.n
         if not k: k = self.k
 
@@ -160,10 +160,10 @@ class RSCoder(object):
         else: return Polynomial(c)
 
     def verify(self, code, k=None):
-        """Verifies the code is valid by testing that the code as a polynomial
+        '''Verifies the code is valid by testing that the code as a polynomial
         code divides g
         returns True/False
-        """
+        '''
         n = self.n
         if not k: k = self.k
         #h = self.h[k]
@@ -198,7 +198,7 @@ class RSCoder(object):
         return sz.coefficients.count(GF256int(0)) == len(sz) # Faster than all()
 
     def decode(self, r, nostrip=False, k=None):
-        """Given a received string or byte array r, attempts to decode it. If
+        '''Given a received string or byte array r, attempts to decode it. If
         it's a valid codeword, or if there are no more than (n-k)/2 errors, the
         message is returned.
 
@@ -207,7 +207,7 @@ class RSCoder(object):
         stripped, but that can cause problems if decoding binary data. When
         nostrip is True, messages returned are always k bytes long. This is
         useful to make sure no data is lost when decoding binary data.
-        """
+        '''
         n = self.n
         if not k: k = self.k
 
@@ -274,9 +274,9 @@ class RSCoder(object):
 
 
     def _syndromes(self, r, k=None):
-        """Given the received codeword r in the form of a Polynomial object,
+        '''Given the received codeword r in the form of a Polynomial object,
         computes the syndromes and returns the syndrome polynomial
-        """
+        '''
         n = self.n
         if not k: k = self.k
 
@@ -293,7 +293,7 @@ class RSCoder(object):
         return sz
 
     def _berlekamp_massey(self, s, k=None):
-        """Computes and returns the error locator polynomial (sigma) and the
+        '''Computes and returns the error locator polynomial (sigma) and the
         error evaluator polynomial (omega)
         The parameter s is the syndrome polynomial (syndromes encoded in a
         generator function) as returned by _syndromes. Don't be confused with
@@ -318,7 +318,7 @@ class RSCoder(object):
         ( 1/X_1, 1/X_2, ...)
 
         Error evaluator polynomial omega(z) not written here
-        """
+        '''
         n = self.n
         if not k: k = self.k
 
@@ -381,7 +381,7 @@ class RSCoder(object):
         return sigma[-1], omega[-1]
 
     def _chien_search(self, sigma):
-        """Recall the definition of sigma, it has s roots. To find them, this
+        '''Recall the definition of sigma, it has s roots. To find them, this
         function evaluates sigma at all 255 non-zero points to find the roots
         The inverse of the roots are X_i, the error locations
 
@@ -394,7 +394,7 @@ class RSCoder(object):
         such that each evaluation only takes constant time. This here simply
         does 255 evaluations straight up, which is much less efficient.
         Said differently, we simply do a bruteforce search by trial substitution to find the zeros of this polynomial, which identifies the error locations.
-        """
+        '''
         X = []
         j = []
         p = GF256int(3)
@@ -410,7 +410,7 @@ class RSCoder(object):
         return X, j
 
     def _forney(self, omega, X, k=None):
-        """Computes the error magnitudes"""
+        '''Computes the error magnitudes'''
         # XXX Is floor division okay here? Should this be ceiling?
         if not k: k = self.k
         s = (self.n - k) // 2

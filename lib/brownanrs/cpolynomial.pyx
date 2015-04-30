@@ -12,7 +12,7 @@ from itertools import izip
 @cython.nonecheck(False) # Turn off nonecheck locally for the function
 @cython.boundscheck(False) # turn off boundscheck for this function
 cdef class Polynomial:
-    """Completely general polynomial class.
+    '''Completely general polynomial class.
 
     Polynomial objects are immutable.
 
@@ -21,13 +21,13 @@ cdef class Polynomial:
     operations), the Polynomial class still assumes the additive identity and
     multiplicative identity are 0 and 1 respectively. If you're doing math over
     some strange field or using non-numbers as coefficients, this class will
-    need to be modified."""
+    need to be modified.'''
 
     cdef public list coefficients
     cdef public int degree
 
     def __cinit__(self, list coefficients=None, **sparse):
-        """
+        '''
         There are three ways to initialize a Polynomial object.
         1) With a list, tuple, or other iterable, creates a polynomial using
         the items as coefficients in order of decreasing power
@@ -46,7 +46,7 @@ cdef class Polynomial:
 
         >>> print Polynomial(x5=5, x9=4, x0=2) 
         4x^9 + 5x^5 + 2
-        """
+        '''
         if coefficients is not None and sparse:
             raise TypeError("Specify coefficients list /or/ keyword terms, not"
                     " both")
@@ -81,12 +81,12 @@ cdef class Polynomial:
         self.degree = len(self.coefficients)-1
 
     def __len__(self):
-        """Returns the number of terms in the polynomial"""
+        '''Returns the number of terms in the polynomial'''
         return self.degree+1
         # return len(self.coefficients)
 
 #    cpdef get_degree(self, Polynomial poly=None):
-#        """Returns the degree of the polynomial"""
+#        '''Returns the degree of the polynomial'''
 #        if not poly:
 #            return self.degree
 #            #return len(self.coefficients) - 1

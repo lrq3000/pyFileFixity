@@ -53,12 +53,12 @@ cdef int[:] GF256int_logtable = GF256int_logtable_a
 @cython.nonecheck(False) # Turn off nonecheck locally for the function
 @cython.boundscheck(False) # turn off boundscheck for this function
 cdef class GF256int(cython.int):
-    """Instances of this object are elements of the field GF(2^8)
+    '''Instances of this object are elements of the field GF(2^8)
     Instances are integers in the range 0 to 255
     This field is defined using the irreducable polynomial
     x^8 + x^4 + x^3 + x + 1
     and using 3 as the generator for the exponent table and log table.
-    """
+    '''
     # Maps integers to GF256int instances
     #cache = {}
 
@@ -119,12 +119,12 @@ cdef class GF256int(cython.int):
         return "%s(%r)" % (n, int(self))
 
 #    def multiply(self, other):
-#        """A slow multiply method. This method gives the same results as the
+#        '''A slow multiply method. This method gives the same results as the
 #        other multiply method, but is implemented to illustrate how it works
 #        and how the above tables were generated.
 #
 #        This procedure is called Peasant's Algorithm (I believe)
-#        """
+#        '''
 #        a = int(self)
 #        b = int(other)
 #

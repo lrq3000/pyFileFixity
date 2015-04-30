@@ -8,7 +8,7 @@ from cStringIO import StringIO
 from itertools import izip
 
 class Polynomial(object):
-    """Completely general polynomial class.
+    '''Completely general polynomial class.
     
     Polynomial objects are immutable.
     
@@ -17,9 +17,9 @@ class Polynomial(object):
     operations), the Polynomial class still assumes the additive identity and
     multiplicative identity are 0 and 1 respectively. If you're doing math over
     some strange field or using non-numbers as coefficients, this class will
-    need to be modified."""
+    need to be modified.'''
     def __init__(self, coefficients=None, **sparse):
-        """
+        '''
         There are three ways to initialize a Polynomial object.
         1) With a list, tuple, or other iterable, creates a polynomial using
         the items as coefficients in order of decreasing power
@@ -38,7 +38,7 @@ class Polynomial(object):
 
         >>> print Polynomial(x5=5, x9=4, x0=2) 
         4x^9 + 5x^5 + 2
-        """
+        '''
         if coefficients is not None and sparse:
             raise TypeError("Specify coefficients list /or/ keyword terms, not"
                     " both")
@@ -73,12 +73,12 @@ class Polynomial(object):
         self.degree = len(self.coefficients)-1
 
     def __len__(self):
-        """Returns the number of terms in the polynomial"""
+        '''Returns the number of terms in the polynomial'''
         return self.degree+1
         # return len(self.coefficients)
 
     def get_degree(self, poly=None):
-        """Returns the degree of the polynomial"""
+        '''Returns the degree of the polynomial'''
         if not poly:
             return self.degree
             #return len(self.coefficients) - 1
@@ -200,14 +200,14 @@ class Polynomial(object):
         return quotient, remainder
 
     # def __olddivmod__(dividend, divisor):
-        # """Implements polynomial long-division recursively. I know this is
+        # '''Implements polynomial long-division recursively. I know this is
         # horribly inefficient, no need to rub it in. I know it can even throw
         # recursion depth errors on some versions of Python.
 
         # However, not being a math person myself, I implemented this from my
         # memory of how polynomial long division works. It's straightforward and
         # doesn't do anything fancy. There's no magic here.
-        # """
+        # '''
         # class_ = dividend.__class__
 
         # # See how many times the highest order term
