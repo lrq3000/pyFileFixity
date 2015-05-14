@@ -105,6 +105,7 @@ class Polynomial(object):
         return self + -other
 
     def __mul__(self, other):
+        '''Multiply two polynomials (also works over Galois Fields, but it's a general approach). Algebraically, multiplying polynomials over a Galois field is equivalent to convolving vectors containing the polynomials' coefficients, where the convolution operation uses arithmetic over the same Galois field (see Matlab's gfconv()).'''
         terms = [0] * (len(self) + len(other))
 
         l1 = self.degree
@@ -138,12 +139,13 @@ class Polynomial(object):
         return self.__class__([self.coefficients[i] * other for i in xrange(len(self))])
 
     def __floordiv__(self, other):
-        return divmod(self, other)[0]
+        return divmod(self, other)[0] # if other is not a polynomial but a single integer/GF256int, then a faster way to do this is simply to compute: self.scale(other.inverse())
     def __mod__(self, other):
         return divmod(self, other)[1]
-    
+
     def _fastmod(dividend, divisor, nsym):
         '''Fast polynomial division by using Synthetic division (Horner's method)? Returns only the quotient (no remainder). Transposed from the reedsolomon library: https://github.com/tomerfiliba/reedsolomon'''
+        # Note: Algebraically, dividing polynomials over a Galois field is equivalent to deconvolving vectors containing the polynomials' coefficients, where the deconvolution operation uses arithmetic over the same Galois field. See MatLab's gfdeconv(). Maybe the algorithm may get faster using a deconvolution.
         msg_out = [0] * (len(dividend) + nsym)
         msg_out[:len(dividend)] = dividend
         for i in range(0, len(dividend)):
