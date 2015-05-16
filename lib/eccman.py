@@ -77,6 +77,9 @@ class ECCMan(object):
         message, pad = self.pad(message, k=k)
         ecc, _ = self.rpad(ecc, k=k) # fill ecc with null bytes if too small (maybe the field delimiters were misdetected and this truncated the ecc? But we maybe still can correct if the truncation is less than the resilience rate)
         if self.algo == 1 or self.algo == 2 or self.algo == 3:
+            if self.algo == 3: # can be in bytearray type, then we need to convert to str for the algo to work
+                message = str(message)
+                ecc = str(ecc)
             res, ecc_repaired = self.ecc_manager.decode(message + ecc, nostrip=True, k=k) # Avoid automatic stripping because we are working with binary streams, thus we should manually strip padding only when we know we padded
         elif self.algo == 4:
             res, ecc_repaired = reedsolo.rs_correct_msg(bytearray(message + ecc), self.n-k, fcr=self.fcr)

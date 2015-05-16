@@ -239,7 +239,7 @@ In fact it's totally copy-pasted by: http://web.mit.edu/~emin/www.old/source_cod
 
 - Todo: implement safety checks from Reed-Solomon Codes by Bernard Sklar : http://ptgmedia.pearsoncmg.com/images/art_sklar7_reed-solomon/elementLinks/art_sklar7_reed-solomon.pdf
 
-- Maybe todo: implement reed-solomon extension supporting insertions and deletions of characters in a message block (but it may not be very useful in our case, since mediums usually cannot insert nor delete characters...).
+- Maybe todo: implement reed-solomon extension supporting insertions and deletions of characters in a message block (but it may not be very useful in our case, since mediums usually cannot insert nor delete characters... Should first see if storage mediums can be phase distortion channels or not.).
 
 - NOTTODO: faster decoder, implement the Euclidian decoder instead of Berlekamp-Massey. They are both equivalent. However, Euclidian decoder could be implemented if there could be some significant gain (speedup or correction capacity). See "Efficient algorithms for decoding Reed-Solomon codes with erasures", by Todd Matee https://mthsc.clemson.edu/misc/MAM_2014/bmj9b.pdf, see also 2tn decoder of Blahut: Blahut, Richard E. "A universal Reed-Solomon decoder." IBM Journal of Research and Development 28.2 (1984): 150-158. http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.84.2084&rep=rep1&type=pdf and for a simple introduction to the euclidian algo (in fact it's called Sugiyama Algorithm for Solving Key Equation): http://web.ntpu.edu.tw/~yshan/BCH_decoding.pdf
 Inversion-less berlekamp-massey in MatLab: https://groups.google.com/forum/message/raw?msg=comp.dsp/5BNwkCcvFbU/9duaEwX9sSAJ
