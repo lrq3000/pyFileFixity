@@ -68,10 +68,11 @@ def format_sizeof(num, suffix='bytes'):
 #***********************************
 
 def main(argv=None):
+    # Setup configuration variables. Change here if you want to.
     max_block_size = 255
     resilience_rate = 0.2
     ecc_algo = 3
-    msg_nb = 100000
+    msg_nb = 200000
     tamper_rate = 0.4 # tamper rate is relative to the number of ecc bytes, not the whole message (not like the resilience_rate)
     tamper_mode = 'noise' # noise or erasure
     no_decoding = True
@@ -99,7 +100,7 @@ def main(argv=None):
         total_time += time.clock() - start
         bardisp.update(max_block_size)
     bardisp.close()
-    print("Encoding: total time elapsed: %f sec for %s of data. Speed: %s." % (total_time, format_sizeof(total_size, 'B'), format_sizeof(total_size/total_time, 'B') ))
+    print("Encoding: total time elapsed: %f sec for %s of data. Real Speed (only encoding, no other computation): %s." % (total_time, format_sizeof(total_size, 'B'), format_sizeof(total_size/total_time, 'B/sec') ))
     
     # -- Decoding test
     if not no_decoding:
@@ -138,7 +139,7 @@ def main(argv=None):
             total_time += time.clock() - start
             bardisp.update(max_block_size)
         bardisp.close()
-        print("Decoding: total time elapsed: %f sec for %s of data. Speed: %s." % (total_time, format_sizeof(total_size, 'B'), format_sizeof(total_size/total_time, 'B') ))
+        print("Decoding: total time elapsed: %f sec for %s of data. Real Speed (only decoding, no other computation): %s." % (total_time, format_sizeof(total_size, 'B'), format_sizeof(total_size/total_time, 'B/sec') ))
 
     return 0
 
