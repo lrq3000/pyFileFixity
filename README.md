@@ -187,7 +187,10 @@ In case of a catastrophic event of your data due to the failure of your storage 
 
 4- If you used pyFileFixity before the failure of your storage media, you can then use your pre-computed databases to check that files are intact (rfigc.py) and if they aren't, you can recover them (using header_ecc.py and structural_adaptive_ecc.py). It can also help if you recovered your files via data scraping, because your files will be totally unorganized, but you can use a previously generated database file to recover the full names and directory tree structure using rfigc.py --filescraping_recover.
 
-Also, you can try to fix some of your files using specialized repairing tools (but remember that such tool cannot guarantee you the same recovering capacity as an error correction code - and in addition, error correction code can tell you when it has recovered successfully). For example, for tar files, you can use fixtar: https://github.com/BestSolution-at/fixtar
+Also, you can try to fix some of your files using specialized repairing tools (but remember that such tool cannot guarantee you the same recovering capacity as an error correction code - and in addition, error correction code can tell you when it has recovered successfully). For example:
+
+- for tar files, you can use fixtar: https://github.com/BestSolution-at/fixtar
+- for RAID mounting and recovery, you can use "Raid faster - recover better" (rfrb) tool by Sabine Seufert and Christian Zoubek: https://github.com/lrq3000/rfrb
 
 Protecting directory tree meta-data
 --------------------------------------------------
@@ -214,6 +217,7 @@ Here are some tools with a similar philosophy to pyFileFixity, which you can use
 - TestDisk: for file scraping, when nothing else worked.
 - dd_rescue: for disk scraping (allows to forcefully read a whole disk at the bit level and copy everything it can, passing bad sector with options to retry them later on after a first full pass over the correct sectors).
 - ZFS: a file system which includes ecc correction directly. The whole filesystem, including directory tree meta-data, are protected. If you want ecc protection on your computer for all your files, this is the way to go.
+- Encryption: technically, you can encrypt your files without losing too much redundancy, as long as you use an encryption scheme that is block-based such as DES: if one block gets corrupted, it won't be decryptable, but the rest of the files' encrypted blocks should be decryptable without any problem. So encrypting with such algorithms leads to similar files as non-solid archives such as deflate zip. Of course, for very long term storage, it's better to avoid encryption and compression (because you raise the information contained in a single block of data, thus if you lose one block, you lose more data), but if it's really necessary to you, you can still maintain high chances of recovering your files by using block-based encryption/compression.
 
 Todo
 -------
