@@ -126,7 +126,7 @@ ove).
 Header Error Correction Code script
 ----------------------------------------------------
 
-This script was made to be used in combination with other more common file redundancy generators (such as PAR2, I advise MultiPar). This is an additional layer of protection for your files: by using a higher resiliency rate on the headers of your files, you ensure that you will be probably able to open them in the future, avoiding the "critical spots" (where if you modify just one bit, your whole file may become unreadable, usually bits residing in the headers).
+This script was made to be used in combination with other more common file redundancy generators (such as PAR2, I advise MultiPar). This is an additional layer of protection for your files: by using a higher resiliency rate on the headers of your files, you ensure that you will be probably able to open them in the future, avoiding the "critical spots", also called "fracture-critical" in redundancy engineering (where if you modify just one bit, your whole file may become unreadable, usually bits residing in the headers - in other words, a single blow makes the whole thing collapse, just like non-redundant bridges).
 
 An interesting benefit of this approach is that it has a low storage (and computational) overhead that scales linearly to the number of files, whatever their size is: for example, if we have a set of 40k files for a total size of 60 GB, with a resiliency_rate of 30% and header_size of 1KB (we limit to the first 1K bytes/characters = our file header), then, without counting the hash per block and other meta-data, the final ECC file will be about 2*resiliency_rate * number_of_files * header_size = 24.5 MB. This size can be lower if there are many files smaller than 1KB. This is a pretty low storage overhead to backup the headers of such a big number of files.
 
@@ -218,6 +218,7 @@ Here are some tools with a similar philosophy to pyFileFixity, which you can use
 - dd_rescue: for disk scraping (allows to forcefully read a whole disk at the bit level and copy everything it can, passing bad sector with options to retry them later on after a first full pass over the correct sectors).
 - ZFS: a file system which includes ecc correction directly. The whole filesystem, including directory tree meta-data, are protected. If you want ecc protection on your computer for all your files, this is the way to go.
 - Encryption: technically, you can encrypt your files without losing too much redundancy, as long as you use an encryption scheme that is block-based such as DES: if one block gets corrupted, it won't be decryptable, but the rest of the files' encrypted blocks should be decryptable without any problem. So encrypting with such algorithms leads to similar files as non-solid archives such as deflate zip. Of course, for very long term storage, it's better to avoid encryption and compression (because you raise the information contained in a single block of data, thus if you lose one block, you lose more data), but if it's really necessary to you, you can still maintain high chances of recovering your files by using block-based encryption/compression.
+- SnapRAID: http://snapraid.sourceforge.net/
 
 Todo
 -------
