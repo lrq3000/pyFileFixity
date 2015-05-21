@@ -148,6 +148,16 @@ Furthermore, the currently designed format of the ecc file would allow two thing
 
 The script structural-adaptive-ecc.py implements this idea, which can be seen as an extension of header-ecc.py (and in fact the idea was the other way around: structural-adaptive-ecc.py was conceived first but was too complicated, then header-ecc.py was implemented as a working lessened implementation only for headers, and then structural-adaptive-ecc.py was finished using header-ecc.py code progress). It works, it was a quite well tested for my own needs on datasets of hundred of GB, but it's not foolproof so make sure you test the script by yourself to see if it's robust enough for your needs (any feedback about this would be greatly appreciated!).
 
+ECC Algorithms
+-----------------------
+
+You can specify different ecc algorithms using the --ecc_algo switch. Here is a list:
+
+- --ecc_algo 1: standard Reed-Solomon in galois field 2^8 of root 3. This is the most mathematically correct implementation, it was extensively unit tested and tested in practice, and the code is a near carbon copy of the mathematical algorithms, so if you want to study and understand how Reed-Solomon works, this is the best implementation.
+- --ecc_algo 2: a faster implementation of Reed-Solomon in GF256 and root 3. It's in fact the same algorithms used in --ecc_algo 3, but object-oriented, so that the operations are more similar to the mathematical notation (eg: a * b instead of gf_mul(a,b)). This implementation should also be safe for production, it should always give the same results as --ecc_algo 1, but a lot faster.
+- --ecc_algo 3: the fastest implementation of Reed-Solomon in GF256 and root 3. The object-oriented layout is absent, so that the function calls are cheaper. Use PyPy to get the full speed. This implementation should be safe, but for your real applications, you should first generate an ecc file with --ecc_algo 1 or 2, and then check that the generated ecc file is the same with --ecc_algo 3.
+- --ecc_algo 4: a general Reed-Solomon in GF256 with configurable root. This is a very fast implementation too, but the generated ecc files will be totally uncompatible with the other implementations (and I don't guarantee the generated ecc is correct). Use with caution. However, the bright side is that you can configure the root, so that you can generate ecc blocks compatible with other RS systems.
+
 Cython implementation
 ---------------------------------
 
@@ -171,7 +181,9 @@ If you get issues, you can see the following post on how to install Cython:
 
 https://github.com/cython/cython/wiki/InstallingOnWindows
 
-Also, use a smaller --max_block_size to greatly speedup the operations! That's the trick used to compute very quickly RS ECC on optical discs. You give up a bit of resiliency of course (because blocks are smaller, thus you protect a smaller number of characters per ECC. In the end, this should not change much about real resiliency, but in case you get a big bit error burst on a contiguous block, you may lose a whole block at once. That's why using RS255 is better, but it's very time consuming. However, the resiliency ratios still hold, so for any other case of bit-flipping with average-sized bursts, this should not be a problem as long as the size of the bursts is smaller than an ecc block.)
+3- You can now launch pyFileFixity like usual, it should automatically detect the C/Cython compiled files and use that to speedup processing.
+
+Note about speed: Also, use a smaller --max_block_size to greatly speedup the operations! That's the trick used to compute very quickly RS ECC on optical discs. You give up a bit of resiliency of course (because blocks are smaller, thus you protect a smaller number of characters per ECC. In the end, this should not change much about real resiliency, but in case you get a big bit error burst on a contiguous block, you may lose a whole block at once. That's why using RS255 is better, but it's very time consuming. However, the resiliency ratios still hold, so for any other case of bit-flipping with average-sized bursts, this should not be a problem as long as the size of the bursts is smaller than an ecc block.)
 
 In case of a catastrophic event
 --------------------------------------------
