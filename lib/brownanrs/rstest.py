@@ -70,22 +70,22 @@ class TestRSdecoding(unittest.TestCase):
         self.assertEqual(255, len(codestr))
 
         # Decode with default behavior: stripping of leading null bytes
-        decode = self.coder.decode(codestr)
-        decode2 = self.coder.decode(codestr[:5] + "\x50" + codestr[6:])
+        decode, _ = self.coder.decode(codestr)
+        decode2, _ = self.coder.decode(codestr[:5] + "\x50" + codestr[6:])
 
         self.assertEqual(self.string, decode)
         self.assertEqual(self.string, decode2)
 
         # Decode with nostrip
-        decode = self.coder.decode(codestr, nostrip=True)
-        decode2 = self.coder.decode(codestr[:5] + "\x50" + codestr[6:], nostrip=True)
+        decode, _ = self.coder.decode(codestr, nostrip=True)
+        decode2, _ = self.coder.decode(codestr[:5] + "\x50" + codestr[6:], nostrip=True)
 
         self.assertEqual(otherstr, decode)
         self.assertEqual(otherstr, decode2)
 
     def test_noerr(self):
         """Make sure a codeword with no errors decodes"""
-        decode = self.coder.decode(self.code)
+        decode, _ = self.coder.decode(self.code)
         self.assertEqual(self.string, decode)
 
     def test_oneerr(self):
@@ -94,7 +94,7 @@ class TestRSdecoding(unittest.TestCase):
             newch = chr( (ord(c)+50) % 256 )
             r = self.code[:i] + newch + self.code[i+1:]
 
-            decode = self.coder.decode(r)
+            decode, _ = self.coder.decode(r)
 
             self.assertEqual(self.string, decode)
 
@@ -110,7 +110,7 @@ class TestRSdecoding(unittest.TestCase):
             r[i2] = (r[i2] + 50) % 256
 
             r = "".join(chr(x) for x in r)
-            decode = self.coder.decode(r)
+            decode, _ = self.coder.decode(r)
             self.assertEqual(self.string, decode)
 
     def test_16err(self):
@@ -122,7 +122,7 @@ class TestRSdecoding(unittest.TestCase):
             r[e] = (r[e] + 50) % 256
 
         r = "".join(chr(x) for x in r)
-        decode = self.coder.decode(r)
+        decode, _ = self.coder.decode(r)
         self.assertEqual(self.string, decode)
 
     def test_17err(self):
@@ -137,7 +137,7 @@ class TestRSdecoding(unittest.TestCase):
             r[e] = (r[e] + 50) % 256
 
         r = "".join(chr(x) for x in r)
-        decode = self.coder.decode(r)
+        decode, _ = self.coder.decode(r)
         self.assertNotEqual(self.string, decode)
 
 class TestOtherConfig(unittest.TestCase):
@@ -149,7 +149,7 @@ class TestOtherConfig(unittest.TestCase):
         code = coder.encode(m)
 
         self.assertTrue( coder.verify(code) )
-        self.assertEqual(m, coder.decode(code) )
+        self.assertEqual(m, coder.decode(code)[0] )
 
         self.assertEqual(255, len(code))
 
@@ -169,7 +169,7 @@ class TestOtherConfig(unittest.TestCase):
             c[pos] = (c[pos] + 50) % 255
 
         c = "".join(chr(x) for x in c)
-        decode = coder.decode(c)
+        decode, _ = coder.decode(c)
         self.assertEqual(m, decode)
 
     def test30_10(self):
@@ -179,7 +179,7 @@ class TestOtherConfig(unittest.TestCase):
         code = coder.encode(m)
 
         self.assertTrue( coder.verify(code) )
-        self.assertEqual(m, coder.decode(code) )
+        self.assertEqual(m, coder.decode(code)[0] )
         self.assertEqual(30, len(code))
 
         # Change 10 bytes. This code should tolerate up to 10 bytes changed
@@ -190,7 +190,7 @@ class TestOtherConfig(unittest.TestCase):
             c[pos] = (c[pos] + 50) % 255
 
         c = "".join(chr(x) for x in c)
-        decode = coder.decode(c)
+        decode, _ = coder.decode(c)
         self.assertEqual(m, decode)
 
 

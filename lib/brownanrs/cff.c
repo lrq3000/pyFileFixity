@@ -553,7 +553,7 @@ struct __pyx_memoryviewslice_obj;
  * @cython.nonecheck(False) # Turn off nonecheck locally for the function
  * @cython.boundscheck(False) # turn off boundscheck for this function
  * cdef class GF256int(cython.int):             # <<<<<<<<<<<<<<
- *     """Instances of this object are elements of the field GF(2^8)
+ *     '''Instances of this object are elements of the field GF(2^8)
  *     Instances are integers in the range 0 to 255
  */
 struct __pyx_obj_3lib_9brownanrs_3cff_GF256int {
@@ -643,7 +643,7 @@ struct __pyx_memoryviewslice_obj {
  * @cython.nonecheck(False) # Turn off nonecheck locally for the function
  * @cython.boundscheck(False) # turn off boundscheck for this function
  * cdef class GF256int(cython.int):             # <<<<<<<<<<<<<<
- *     """Instances of this object are elements of the field GF(2^8)
+ *     '''Instances of this object are elements of the field GF(2^8)
  *     Instances are integers in the range 0 to 255
  */
 
