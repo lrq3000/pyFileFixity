@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# This is an alternative implementation that is of the same structure as the reedsolo library but with more comments and more meaningful variables names. From: the article: http://www.drdobbs.com/testing/error-correction-with-reed-solomon/240157266
 
 
 class ReedSolomon:
