@@ -35,6 +35,16 @@ directory.
 
 `<http://www.cs.duke.edu/courses/spring10/cps296.3/decoding_rs.pdf>`_
 
+The code was lately updated to support errors-and-erasures decoding (both at the same
+time), and to be universal (you can supply the parameters to be compatible with almost
+any other RS codec).
+
+The codec has decent performances if you use PyPy with the fast methods (~1 MB/s),
+but it would be faster if we drop the oriented-object design (implementing everything in
+functions), but this would be at the expense of mathematical clarity. If you are interested,
+see the reedsolo library by Tomer Filiba, which is exactly the same implementation but
+without object-oriented design (about 5x speedup).
+
 Files
 -----
 rs.py

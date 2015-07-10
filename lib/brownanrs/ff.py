@@ -1,9 +1,22 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 # Copyright (c) 2010 Andrew Brown <brownan@cs.duke.edu, brownan@gmail.com>
 # Copyright (c) 2015 Stephen Larroque <LRQ3000@gmail.com>
 # See LICENSE.txt for license terms
 
-# Exponent table for 3, a generator for GF(256)
-GF256int_exptable = [1, 3, 5, 15, 17, 51, 85, 255, 26, 46, 114, 150, 161, 248, 19,
+# For fast software computation in Finite Fields, see the excellent paper: Huang, Cheng, and Lihao Xu. "Fast software implementation of finite field operations." Washington University in St. Louis, Tech. Rep (2003).
+# to understand the basic mathematical notions behind finite fields, see the excellent tutorial: http://research.swtch.com/field
+
+import array
+
+# Galois Field's characteristic, by default, it's GF(2^8) == GF(256)
+# Note that it's -1 (thus for GF(2^8) it's really 255 and not 256) because this is historically tied to the definition of Reed-Solomon codes: since the 0 and 256 values are impossible, we effectively have only 255 possible values. But later were defined (singly) extended Reed-Solomon codes, which include the 0 and thus 256 values, and then doubly extended Reed-Solomon codes which include the 0 and 256 == infinity.
+GF2_charac = int(2**8 - 1)
+GF2_c_exp = 8
+
+# Exponent table for generator=3 and prim=0x11b in GF(2^8)
+GF2int_exptable = array.array("i", [1, 3, 5, 15, 17, 51, 85, 255, 26, 46, 114, 150, 161, 248, 19,
         53, 95, 225, 56, 72, 216, 115, 149, 164, 247, 2, 6, 10, 30, 34,
         102, 170, 229, 52, 92, 228, 55, 89, 235, 38, 106, 190, 217, 112,
         144, 171, 230, 49, 83, 245, 4, 12, 20, 60, 68, 204, 79, 209, 104,
@@ -20,10 +33,10 @@ GF256int_exptable = [1, 3, 5, 15, 17, 51, 85, 255, 26, 46, 114, 150, 161, 248, 1
         45, 119, 153, 176, 203, 70, 202, 69, 207, 74, 222, 121, 139, 134,
         145, 168, 227, 62, 66, 198, 81, 243, 14, 18, 54, 90, 238, 41, 123,
         141, 140, 143, 138, 133, 148, 167, 242, 13, 23, 57, 75, 221, 124,
-        132, 151, 162, 253, 28, 36, 108, 180, 199, 82, 246, 1]
+        132, 151, 162, 253, 28, 36, 108, 180, 199, 82, 246, 1])
 
-# Logarithm table, base 3
-GF256int_logtable = [None, 0, 25, 1, 50, 2, 26, 198, 75, 199, 27, 104, 51, 238, 223,
+# Logarithm table for the same GF parameters
+GF2int_logtable = array.array("i", [-1, 0, 25, 1, 50, 2, 26, 198, 75, 199, 27, 104, 51, 238, 223, # log(0) is undefined, it should be none, but for performance we use an array, thus we need to set an integer, here we replace None by -1
         3, 100, 4, 224, 14, 52, 141, 129, 239, 76, 113, 8, 200, 248, 105,
         28, 193, 125, 194, 29, 181, 249, 185, 39, 106, 77, 228, 166, 114,
         154, 201, 9, 120, 101, 47, 138, 5, 33, 15, 225, 36, 18, 240, 130,
@@ -40,16 +53,122 @@ GF256int_logtable = [None, 0, 25, 1, 50, 2, 26, 198, 75, 199, 27, 104, 51, 238, 
         149, 207, 205, 55, 63, 91, 209, 83, 57, 132, 60, 65, 162, 109, 71,
         20, 42, 158, 93, 86, 242, 211, 171, 68, 17, 146, 217, 35, 32, 46,
         137, 180, 124, 184, 38, 119, 153, 227, 165, 103, 74, 237, 222, 197,
-        49, 254, 24, 13, 99, 140, 128, 192, 247, 112, 7]
+        49, 254, 24, 13, 99, 140, 128, 192, 247, 112, 7])
 
-class GF256int(int):
-    '''Instances of this object are elements of the field GF(2^8)
-    Instances are integers in the range 0 to 255
+def rwh_primes1(n):
+    # http://stackoverflow.com/questions/2068372/fastest-way-to-list-all-primes-below-n-in-python/3035188#3035188
+    ''' Returns  a list of primes < n '''
+    sieve = [True] * (n/2)
+    for i in xrange(3,int(n**0.5)+1,2):
+        if sieve[i/2]:
+            sieve[i*i/2::i] = [False] * ((n-i*i-1)/(2*i)+1)
+    return [2] + [2*i+1 for i in xrange(1,n/2) if sieve[i]]
+
+def find_prime_polynomials(generator=2, c_exp=8, fast_primes=False, single=False):
+    '''Compute the list of prime polynomials for the given generator and galois field characteristic exponent.'''
+    # fast_primes will output less results but will be significantly faster.
+    # single will output the first prime polynomial found, so if all you want is to just find one prime polynomial to generate the LUT for Reed-Solomon to work, then just use that.
+
+    # A prime polynomial (necessarily irreducible) is necessary to reduce the multiplications in the Galois Field, so as to avoid overflows.
+    # Why do we need a "prime polynomial"? Can't we just reduce modulo 255 (for GF(2^8) for example)? Because we need the values to be unique.
+    # For example: if the generator (alpha) = 2 and c_exp = 8 (GF(2^8) == GF(256)), then the generated Galois Field (0, 1, α, α^1, α^2, ..., α^(p-1)) will be galois field it becomes 0, 1, 2, 4, 8, 16, etc. However, upon reaching 128, the next value will be doubled (ie, next power of 2), which will give 256. Then we must reduce, because we have overflowed above the maximum value of 255. But, if we modulo 255, this will generate 256 == 1. Then 2, 4, 8, 16, etc. giving us a repeating pattern of numbers. This is very bad, as it's then not anymore a bijection (ie, a non-zero value doesn't have a unique index). That's why we can't just modulo 255, but we need another number above 255, which is called the prime polynomial.
+    # Why so much hassle? Because we are using precomputed look-up tables for multiplication: instead of multiplying a*b, we precompute alpha^a, alpha^b and alpha^(a+b), so that we can just use our lookup table at alpha^(a+b) and get our result. But just like in our original field we had 0,1,2,...,p-1 distinct unique values, in our "LUT" field using alpha we must have unique distinct values (we don't care that they are different from the original field as long as they are unique and distinct). That's why we need to avoid duplicated values, and to avoid duplicated values we need to use a prime irreducible polynomial.
+
+    # Here is implemented a bruteforce approach to find all these prime polynomials, by generating every possible prime polynomials (ie, every integers between field_charac+1 and field_charac*2), and then we build the whole Galois Field, and we reject the candidate prime polynomial if it duplicates even one value or if it generates a value above field_charac (ie, cause an overflow).
+    # Note that this algorithm is slow if the field is too big (above 12), because it's an exhaustive search algorithm. There are probabilistic approaches, and almost surely prime approaches, but there is no determistic polynomial time algorithm to find irreducible monic polynomials. More info can be found at: http://people.mpi-inf.mpg.de/~csaha/lectures/lec9.pdf
+    # Another faster algorithm may be found at Adleman, Leonard M., and Hendrik W. Lenstra. "Finding irreducible polynomials over finite fields." Proceedings of the eighteenth annual ACM symposium on Theory of computing. ACM, 1986.
+
+    # Prepare the finite field characteristic (2^p - 1), this also represent the maximum possible value in this field
+    root_charac = 2 # we're in GF(2)
+    field_charac = int(root_charac**c_exp - 1)
+    field_charac_next = int(root_charac**(c_exp+1) - 1)
+
+    prim_candidates = []
+    if fast_primes:
+        prim_candidates = rwh_primes1(field_charac_next) # generate maybe prime polynomials and check later if they really are irreducible
+        prim_candidates = [x for x in prim_candidates if x > field_charac] # filter out too small primes
+    else:
+        prim_candidates = xrange(field_charac+2, field_charac_next, root_charac) # try each possible prime polynomial, but skip even numbers (because divisible by 2 so necessarily not irreducible)
+
+    # Start of the main loop
+    correct_primes = []
+    for prim in prim_candidates: # try potential candidates primitive irreducible polys
+        seen = bytearray(field_charac+1) # memory variable to indicate if a value was already generated in the field (value at index x is set to 1) or not (set to 0 by default)
+        conflict = False # flag to know if there was at least one conflict
+
+        # Second loop, build the whole Galois Field
+        x = GF2int(1)
+        for i in xrange(field_charac):
+            # Compute the next value in the field (ie, the next power of alpha/generator)
+            x = x.multiply(generator, prim, field_charac+1)
+
+            # Rejection criterion: if the value overflowed (above field_charac) or is a duplicate of a previously generated power of alpha, then we reject this polynomial (not prime)
+            if x > field_charac or seen[x] == 1:
+                conflict = True
+                break
+            # Else we flag this value as seen (to maybe detect future duplicates), and we continue onto the next power of alpha
+            else:
+                seen[x] = 1
+
+        # End of the second loop: if there's no conflict (no overflow nor duplicated value), this is a prime polynomial!
+        if not conflict: 
+            correct_primes.append(prim)
+            if single: return prim
+
+    # Return the list of all prime polynomials
+    return correct_primes # you can use the following to print the hexadecimal representation of each prime polynomial: print [hex(i) for i in correct_primes]
+
+def init_lut(generator=3, prim=0x11b, c_exp=8):
+    '''Precompute the logarithm and anti-log (look-up) tables for faster computation later, using the provided primitive polynomial.
+    These tables are used for multiplication/division since addition/substraction are simple XOR operations inside GF of characteristic 2.
+    The basic idea is quite simple: since b**(log_b(x), log_b(y)) == x * y given any number b (the base or generator of the logarithm), then we can use any number b to precompute logarithm and anti-log (exponentiation) tables to use for multiplying two numbers x and y.
+    That's why when we use a different base/generator number, the log and anti-log tables are drastically different, but the resulting computations are the same given any such tables.
+    For more infos, see https://en.wikipedia.org/wiki/Finite_field_arithmetic#Implementation_tricks
+    '''
+    # generator is the generator number (the "increment" that will be used to walk through the field by multiplication, this must be a prime number). This is basically the base of the logarithm/anti-log tables. Also often noted "alpha" in academic books.
+    # prim is the primitive/prime (binary) polynomial and must be irreducible (it can't represented as the product of two smaller polynomials). It's a polynomial in the binary sense: each bit is a coefficient, but in fact it's an integer between 0 and 255, and not a list of gf values. For more infos: http://research.swtch.com/field
+    # note that the choice of generator or prime polynomial doesn't matter very much: any two finite fields of size p^n have identical structure, even if they give the individual elements different names (ie, the coefficients of the codeword will be different, but the final result will be the same: you can always correct as many errors/erasures with any choice for those parameters). That's why it makes sense to refer to all the finite fields, and all decoders based on Reed-Solomon, of size p^n as one concept: GF(p^n). It can however impact sensibly the speed (because some parameters will generate sparser tables).
+
+    global GF2int_exptable, GF2int_logtable, GF2_charac, GF2_c_exp
+    GF2_charac = int(2**c_exp - 1)
+    GF2_c_exp = int(c_exp)
+    exptable = [-1] * (GF2_charac+1) # anti-log (exponential) table. The first two elements will always be [GF2int(1), generator]
+    logtable = [-1] * (GF2_charac+1) # log table, log[0] is impossible and thus unused
+
+    # Construct the anti-log table
+    # It's basically the cumulative product of 1 by the generator number, on and on and on until you have walked through the whole field.
+    # That's why exptable is always dense (all entries are filled), but logtable may be sparse (lots of empty values, because multiple logtable's entries point to the same exptable's entry).
+    g = GF2int(1)
+    for i in range(GF2_charac+1): # note that the last item of exptable will always be equal to the first item in the table, because g^p==g^0 because of the modulo p (we're in a finite field!).
+        exptable[i] = g # compute anti-log for this value and store it in a table
+        #logtable[g] = i # compute logtable at the same time as exptable (but log[1] will always be equal to g^255, which may be weird when compared to lists of logtables online but this is equivalent)
+        g = g.multiply(generator, prim, GF2_charac+1) # equivalent to: g = generator**(i+1)
+
+    # Construct the log table
+    # Ignore the last element of the field because fields wrap back around.
+    # The log of 1 can have two values: either g^0 (the exact value change depending on parameters) or it could be 255 (g^255=1) because of the wraparound
+    # Note that either way, this does not change anything any output later (ie, the ecc symbols will be the same either way).
+    for i, x in enumerate(exptable[:-1]):
+        logtable[x] = i
+
+    # Optimization: convert to integer arrays
+    GF2int_exptable = array.array('i', exptable)
+    GF2int_logtable = array.array('i', logtable)
+    return GF2int_exptable, GF2int_logtable
+
+
+
+class GF2int(int):
+    '''Instances of this object are elements of the field GF(2^p)
+    Instances are integers in the range 0 to p-1
     This field is defined using the irreducable polynomial
     x^8 + x^4 + x^3 + x + 1
     and using 3 as the generator for the exponent table and log table.
     '''
-    # Maps integers to GF256int instances
+
+    __slots__ = [] # define all properties to save memory (can't add new properties at runtime) and it speeds up a lot. Here there's no property at all since it's only a type extending integers.
+
+    # Maps integers to GF2int instances
     #cache = {}
 
     # def __new__(cls, value): # Note: works but commented out because on computers, we'd rather use less CPU than use less memory.
@@ -57,47 +176,64 @@ class GF256int(int):
         # # Caching sacrifices a bit of speed for less memory usage. This way,
         # # there are only a max of 256 instances of this class at any time.
         # try:
-            # return GF256int.cache[value]
+            # return GF2int.cache[value]
         # except KeyError:
-            # if value > 255 or value < 0:
-                # raise ValueError("Field elements of GF(2^8) are between 0 and 255. Cannot be %s" % value)
+            # if value > GF2_charac or value < 0:
+                # raise ValueError("Field elements of GF(2^p) are between 0 and %i. Cannot be %s" % (GF2_charac, value))
 
             # newval = int.__new__(cls, value)
-            # GF256int.cache[int(value)] = newval
+            # GF2int.cache[int(value)] = newval
             # return newval
 
     def __add__(a, b):
-        "Addition in GF(2^8) is the xor of the two"
-        return GF256int(a ^ b)
+        '''Addition in GF(2^8) is the xor of the two'''
+        # Technical notes on why it works: In practice only one table is needed. That would be for the GP(256) multiply. Note that all arithmetic is carry-less, meaning that there is no carry-propagation.
+        # Addition and subtraction without carry is equivalent to an xor.
+        # So in GF(256), a + b and a - b are both equivalent to a xor b.
+        # For more infos, see the great post at http://stackoverflow.com/questions/8440654/addition-and-multiplication-in-a-galois-field
+        return GF2int(a ^ b)
     __sub__ = __add__
     __radd__ = __add__
     __rsub__ = __add__
     def __neg__(self):
         return self
-    
+
     def __mul__(a, b):
-        "Multiplication in GF(2^8)"
-        if a == 0 or b == 0:
-            return GF256int(0)
-        x = GF256int_logtable[a]
-        y = GF256int_logtable[b]
-        z = (x + y) % 255
-        return GF256int(GF256int_exptable[z])
+        '''Multiplication in GF(2^8)'''
+        # GF(256) multiplication is also carry-less, and can be done using carry-less multiplication in a similar way with carry-less addition/subtraction. This can be done efficiently with hardware support via say Intel's CLMUL instruction set.
+        # a * b is really the same as exp(log(a) + log(b)). And because GF256 has only 256 elements, there are only GF2_charac unique powers of "x", and same for log. So these are easy to put in a lookup table.
+        if a == 0 or b == 0: # not an optimization, it's necessary because log(0) is undefined
+            return GF2int(0)
+        x = GF2int_logtable[a]
+        y = GF2int_logtable[b]
+        #z = (x + y) % GF2_charac # in logarithms, addition = multiplication after exponentiation
+        # Faster implementation of finite field multiplication: z = (log[a]+log[b] & GF2_charac) + (log[a]+log[b] >> GF2_c_exp), you can replace GF2_charac by (2^m)-1 and GF2_c_exp by m (eg: for GF(2^16), you'd get 65535 and 16). This optimization was shown in paper: "Fast software implementation of finite field operations", Cheng Huang and Lihao Xu, Washington University in St. Louis, Tech. Rep (2003).
+        z = (x + y)
+        z = (z & GF2_charac) + (z >> GF2_c_exp)
+        return GF2int(GF2int_exptable[z])
     __rmul__ = __mul__
 
     def __pow__(self, power, modulo=None):
-        if isinstance(power, GF256int):
+        # TODO: maybe try to implement the fast exponentiation here (implement binary exponentiation in Galois Fields that uses Montgomery Multiplication and using normal basis): http://stackoverflow.com/a/11640271/1121352  Algorithms for exponentiation in finite fields, by Shuhong Gao, Joachim Von Zur Gathen, Daniel Panario and Victor Shoup
+        if isinstance(power, GF2int):
             raise TypeError("Raising a Field element to another Field element is not defined. power must be a regular integer")
-        x = GF256int_logtable[self]
-        z = (x * power) % 255
-        return GF256int(GF256int_exptable[z])
+        x = GF2int_logtable[self]
+        z = (x * power) % GF2_charac
+        return GF2int(GF2int_exptable[z])
 
     def inverse(self):
-        e = GF256int_logtable[self]
-        return GF256int(GF256int_exptable[255 - e])
+        e = GF2int_logtable[self]
+        return GF2int(GF2int_exptable[GF2_charac - e])
 
     def __div__(self, other):
-        return self * GF256int(other).inverse()
+        #return self * GF2int(other).inverse() # self / other = self * inv(other) . This is equivalent to what is below, but 2x slower.
+        if self == 0 or other == 0:
+            return GF2int(0)
+        x = GF2int_logtable[self]
+        y = GF2int_logtable[other]
+        z = (x - y) % GF2_charac # in logarithms, substraction = division after exponentiation
+        return GF2int(GF2int_exptable[z])
+
     def __rdiv__(self, other):
         return self.inverse() * other
 
@@ -105,23 +241,88 @@ class GF256int(int):
         n = self.__class__.__name__
         return "%s(%r)" % (n, int(self))
 
-#    def multiply(self, other):
-#        '''A slow multiply method. This method gives the same results as the
-#        other multiply method, but is implemented to illustrate how it works
-#        and how the above tables were generated.
-#
-#        This procedure is called Peasant's Algorithm (I believe)
-#        '''
-#        a = int(self)
-#        b = int(other)
-#
-#        p = a
-#        r = 0
-#        while b:
-#            if b & 1: r = r ^ p
-#            b = b >> 1
-#            p = p << 1
-#            if p & 0x100: p = p ^ 0x11b
-#
-#        return GF256int(r)
-        
+    def _to_binpoly(x):
+        '''Convert a Galois Field's number into a nice polynomial'''
+        if x <= 0: return "0"
+        b = 1 # init to 2^0 = 1
+        c = [] # stores the degrees of each term of the polynomials
+        i = 0 # counter for b = 2^i
+        while x > 0:
+            b = (1 << i) # generate a number power of 2: 2^0, 2^1, 2^2, ..., 2^i. Equivalent to b = 2^i
+            if x & b : # then check if x is divisible by the power of 2. Equivalent to x % 2^i == 0
+                # If yes, then...
+                c.append(i) # append this power (i, the exponent, gives us the coefficient)
+                x ^= b # and compute the remainder of x / b
+            i = i+1 # increment to compute the next power of 2
+        return " + ".join(["x^%i" % y for y in c[::-1]]) # print a nice binary polynomial
+
+    def multiply(a, b, prim=0x11b, field_charac_full=256):
+        '''A slow multiply method. This method gives the same results as the
+        other __mul__ method but without needing precomputed tables,
+        thus it can be used to generate those tables.
+
+        If prim is set to 0, the function produces the result of a standard multiplication of integers (outside of a finite field, ie, no modular reduction and no carry-less operations).
+
+        This procedure is called Russian Peasant Multiplication algorithm, which is just a general algorithm to multiply two integers together.
+        The only two differences that you need to account for when doing multiplication in a finite field (as opposed to just integers) are:
+        1- carry-less addition and substraction (XOR in GF(2^p))
+        2- modular reduction (to avoid duplicate values in the field) using a prime polynomial
+        '''
+
+        r = 0
+        a = int(a)
+        b = int(b)
+        while b: # while b is not 0
+            if b & 1: r = r ^ a if prim > 0 else r + a # b is odd, then add the corresponding a to r (the sum of all a's corresponding to odd b's will give the final product). Note that since we're in GF(2), the addition is in fact an XOR (very important because in GF(2) the multiplication and additions are carry-less, thus it changes the result!).
+            b = b >> 1 # equivalent to b // 2
+            a = a << 1 # equivalent to a*2
+            if prim > 0 and a & field_charac_full: a = a ^ prim # GF modulo: if a >= 256 then apply modular reduction using the primitive polynomial (we just substract, but since the primitive number can be above 256 then we directly XOR). If you comment this line out, you get the same result as standard multiplication on integers.
+
+        return GF2int(r)
+
+    def multiply_slow(x, y, prim=0x11b):
+        '''Another equivalent (but even slower) way to compute multiplication in Galois Fields without using a precomputed look-up table.
+        This is the form you will most often see in academic literature, by using the standard carry-less multiplication + modular reduction using an irreducible prime polynomial.'''
+
+        ### Define bitwise carry-less operations as inner functions ###
+        def cl_mult(x,y):
+            '''Bitwise carry-less multiplication on integers'''
+            z = 0
+            i = 0
+            while (y>>i) > 0:
+                if y & (1<<i):
+                    z ^= x<<i
+                i += 1
+            return z
+
+        def bit_length(n):
+            '''Compute the position of the most significant bit (1) of an integer. Equivalent to int.bit_length()'''
+            bits = 0
+            while n >> bits: bits += 1
+            return bits
+
+        def cl_div(dividend, divisor=None):
+            '''Bitwise carry-less long division on integers and returns the remainder'''
+            # Compute the position of the most significant bit for each integers
+            dl1 = bit_length(dividend)
+            dl2 = bit_length(divisor)
+            # If the dividend is smaller than the divisor, just exit
+            if dl1 < dl2:
+                return dividend
+            # Else, align the most significant 1 of the divisor to the most significant 1 of the dividend (by shifting the divisor)
+            for i in xrange(dl1-dl2,-1,-1):
+                # Check that the dividend is divisible (useless for the first iteration but important for the next ones)
+                if dividend & (1 << i+dl2-1):
+                    # If divisible, then shift the divisor to align the most significant bits and XOR (carry-less substraction)
+                    dividend ^= divisor << i
+            return dividend
+
+        ### Main GF multiplication routine ###
+
+        # Multiply the gf numbers
+        result = cl_mult(x,y)
+        # Then do a modular reduction (ie, remainder from the division) with an irreducible primitive polynomial so that it stays inside GF bounds
+        if prim > 0:
+            result = cl_div(result, prim)
+
+        return result

@@ -25,8 +25,16 @@
 # THE SOFTWARE.
 
 # ECC libraries
-import lib.brownanrs.rs as brownanrs # Pure python implementation of Reed-Solomon with configurable max_block_size and automatic error detection (you don't have to specify where they are). This is a base 3 implementation that is formally correct and with unit tests.
-import lib.reedsolomon.reedsolo as reedsolo # Faster pure python implementation of Reed-Solomon, with a base 3 compatible encoder (but not yet decoder! But you can use brownanrs to decode).
+try:
+    import lib.reedsolomon.creedsolo as reedsolo
+    import lib.brownanrs.rs as brownanrs
+    #import lib.brownanrs.crs as brownanrs
+except ImportError:
+    import lib.brownanrs.rs as brownanrs # Pure python implementation of Reed-Solomon with configurable max_block_size and automatic error detection (you don't have to specify where they are). This is a base 3 implementation that is formally correct and with unit tests.
+    import lib.reedsolomon.reedsolo as reedsolo # Faster pure python implementation of Reed-Solomon, with a base 3 compatible encoder (but not yet decoder! But you can use brownanrs to decode).
+
+rs_encode_msg = reedsolo.rs_encode_msg # local reference for small speed boost
+#rs_encode_msg_precomp = reedsolo.rs_encode_msg_precomp
 
 def compute_ecc_params(max_block_size, rate, hasher):
     '''Compute the ecc parameters (size of the message, size of the hash, size of the ecc). This is an helper function to easily compute the parameters from a resilience rate to instanciate an ECCMan object.'''
@@ -40,16 +48,30 @@ class ECCMan(object):
     '''Error correction code manager, which provides a facade API to use different kinds of ecc algorithms or libraries.'''
 
     def __init__(self, n, k, algo=1):
+        self.c_exp = 8 # we stay in GF(2^8) for this software
+        self.field_charac = int((2**self.c_exp) - 1)
+
         if algo == 1 or algo == 2: # brownanrs library implementations: fully correct base 3 implementation, and mode 2 is for fast encoding
-            self.ecc_manager = brownanrs.RSCoder(n, k)
+            self.gen_nb = 3
+            self.prim = 0x11b
+            self.fcr = 1
+
+            self.ecc_manager = brownanrs.RSCoder(n, k, generator=self.gen_nb, prim=self.prim, fcr=self.fcr)
         elif algo == 3: # reedsolo fast implementation, compatible with brownanrs in base 3
-            reedsolo.init_tables_base3()
-            self.g = reedsolo.rs_generator_poly_base3(n)
-            self.ecc_manager = brownanrs.RSCoder(n, k) # used for decoding
+            self.gen_nb = 3
+            self.prim = 0x11b
+            self.fcr = 1
+
+            reedsolo.init_tables(generator=self.gen_nb, prim=self.prim)
+            self.g = reedsolo.rs_generator_poly_all(n, fcr=self.fcr, generator=self.gen_nb)
+            #self.gf_mul_arr, self.gf_add_arr = reedsolo.gf_precomp_tables()
         elif algo == 4: # reedsolo fast implementation, incompatible with any other implementation
-            reedsolo.init_tables(0x187) # parameters for US FAA ADSB UAT RS FEC
+            self.gen_nb = 2
             self.prim = 0x187
             self.fcr = 120
+
+            reedsolo.init_tables(self.prim) # parameters for US FAA ADSB UAT RS FEC
+            self.g = reedsolo.rs_generator_poly_all(n, fcr=self.fcr, generator=self.gen_nb)
 
         self.algo = algo
         self.n = n
@@ -63,59 +85,75 @@ class ECCMan(object):
             mesecc = self.ecc_manager.encode(message, k=k)
         elif self.algo == 2:
             mesecc = self.ecc_manager.encode_fast(message, k=k)
-        elif self.algo == 3:
-            mesecc = reedsolo.rs_encode_msg(message, self.n-k, gen=self.g[k])
-        elif self.algo == 4:
-            mesecc = reedsolo.rs_encode_msg(message, self.n-k, fcr=self.fcr)
+        elif self.algo == 3 or self.algo == 4:
+            mesecc = rs_encode_msg(message, self.n-k, fcr=self.fcr, gen=self.g[self.n-k])
+            #mesecc = rs_encode_msg_precomp(message, self.n-k, fcr=self.fcr, gen=self.g[self.n-k])
 
         ecc = mesecc[len(message):]
         return ecc
 
-    def decode(self, message, ecc, k=None):
+    def decode(self, message, ecc, k=None, enable_erasures=False, erasures_char="\x00", only_erasures=False):
         '''Repair a message and its ecc also, given the message and its ecc (both can be corrupted, we will still try to fix both of them)'''
         if not k: k = self.k
+
+        # Optimization, use bytearray
+        message = bytearray(message)
+        ecc = bytearray(ecc)
+
+        # Detect erasures positions and replace with null bytes (replacing erasures with null bytes is necessary for correct syndrome computation)
+        erasures_pos = None
+        if enable_erasures:
+            # Concatenate to find erasures in the whole codeword
+            mesecc = message + ecc
+            # Find the positions of the erased characters
+            erasures_pos = [i for i in xrange(len(mesecc)) if mesecc[i] == erasures_char]
+            # Replace erased characters with 0 (null byte) so that decoding is easier
+            message.replace(erasures_char, "\x00")
+            ecc.replace(erasures_char, "\x00")
+
+        # Pad with null bytes if necessary
         message, pad = self.pad(message, k=k)
         ecc, _ = self.rpad(ecc, k=k) # fill ecc with null bytes if too small (maybe the field delimiters were misdetected and this truncated the ecc? But we maybe still can correct if the truncation is less than the resilience rate)
-        if self.algo == 1 or self.algo == 2 or self.algo == 3:
-            if self.algo == 3: # can be in bytearray type, then we need to convert to str for the algo to work
-                message = str(message)
-                ecc = str(ecc)
-            res, ecc_repaired = self.ecc_manager.decode(message + ecc, nostrip=True, k=k) # Avoid automatic stripping because we are working with binary streams, thus we should manually strip padding only when we know we padded
+
+        # Decoding
+        if self.algo == 1:
+            msg_repaired, ecc_repaired = self.ecc_manager.decode(message + ecc, nostrip=True, k=k, erasures_pos=erasures_pos, only_erasures=only_erasures) # Avoid automatic stripping because we are working with binary streams, thus we should manually strip padding only when we know we padded
+        elif self.algo == 2:
+            msg_repaired, ecc_repaired = self.ecc_manager.decode_fast(message + ecc, nostrip=True, k=k, erasures_pos=erasures_pos, only_erasures=only_erasures)
+        elif self.algo == 3:
+            #msg_repaired, ecc_repaired = self.ecc_manager.decode_fast(message + ecc, nostrip=True, k=k, erasures_pos=erasures_pos, only_erasures=only_erasures)
+            msg_repaired, ecc_repaired = reedsolo.rs_correct_msg_nofsynd(bytearray(message + ecc), self.n-k, fcr=self.fcr, generator=self.gen_nb, erase_pos=erasures_pos, only_erasures=only_erasures)
+            msg_repaired = bytearray(msg_repaired)
+            ecc_repaired = bytearray(ecc_repaired)
         elif self.algo == 4:
-            res, ecc_repaired = reedsolo.rs_correct_msg(bytearray(message + ecc), self.n-k, fcr=self.fcr)
-            res = bytearray(res)
+            msg_repaired, ecc_repaired = reedsolo.rs_correct_msg(bytearray(message + ecc), self.n-k, fcr=self.fcr, generator=self.gen_nb, erase_pos=erasures_pos, only_erasures=only_erasures)
+            msg_repaired = bytearray(msg_repaired)
             ecc_repaired = bytearray(ecc_repaired)
 
         if pad: # Strip the null bytes if we padded the message before decoding
-            res = res[len(pad):len(res)]
-        return res, ecc_repaired
+            msg_repaired = msg_repaired[len(pad):len(msg_repaired)]
+        return msg_repaired, ecc_repaired
 
     def pad(self, message, k=None):
-        '''Automatically left pad with null bytes a message if too small, or leave unchanged if not necessary. This allows to keep track of padding and strip the null bytes after decoding reliably with binary data.'''
+        '''Automatically left pad with null bytes a message if too small, or leave unchanged if not necessary. This allows to keep track of padding and strip the null bytes after decoding reliably with binary data. Equivalent to shortening (shortened reed-solomon code).'''
         if not k: k = self.k
         pad = None
         if len(message) < k:
-            pad = "\x00" * (k-len(message))
+            #pad = "\x00" * (k-len(message))
+            pad = bytearray(k-len(message))
             message = pad + message
         return [message, pad]
 
     def rpad(self, ecc, k=None):
-        '''Automatically right pad with null bytes an ecc to fill for missing bytes if too small, or leave unchanged if not necessary. This can be used as a workaround for field delimiter misdetection.'''
+        '''Automatically right pad with null bytes an ecc to fill for missing bytes if too small, or leave unchanged if not necessary. This can be used as a workaround for field delimiter misdetection. Equivalent to puncturing (punctured reed-solomon code).'''
         if not k: k = self.k
         pad = None
         if len(ecc) < self.n-k:
             print("Warning: the ecc field may have been truncated (entrymarker or field_delim misdetection?).")
-            pad = "\x00" * (self.n-k-len(ecc))
+            #pad = "\x00" * (self.n-k-len(ecc))
+            pad = bytearray(self.n-k-len(ecc))
             ecc = ecc + pad
         return [ecc, pad]
-
-    def verify(self, message, ecc, k=None):
-        '''Verify that a message+ecc is a correct RS code (essentially it's the same purpose as check, the only difference is the methodology)'''
-        if not k: k = self.k
-        message, _ = self.pad(message, k=k)
-        ecc, _ = self.rpad(ecc, k=k)
-        if self.algo == 1 or self.algo == 2:
-            return self.ecc_manager.verify(message + ecc, k=k)
 
     def check(self, message, ecc, k=None):
         '''Check if there's any error in a message+ecc. Can be used before decoding, in addition to hashes to detect if the message was tampered, or after decoding to check that the message was fully recovered.'''
@@ -123,17 +161,15 @@ class ECCMan(object):
         message, _ = self.pad(message, k=k)
         ecc, _ = self.rpad(ecc, k=k)
         if self.algo == 1 or self.algo == 2:
-            return self.ecc_manager.check(message + ecc, k=k)
-        elif self.algo == 3:
-            return reedsolo.rs_check_base3(bytearray(message + ecc), self.n-k)
-        elif self.algo == 4:
-            return reedsolo.rs_check(bytearray(message + ecc), self.n-k, fcr=self.fcr)
+            return self.ecc_manager.check_fast(message + ecc, k=k)
+        elif self.algo == 3 or self.algo == 4:
+            return reedsolo.rs_check(bytearray(message + ecc), self.n-k, fcr=self.fcr, generator=self.gen_nb)
 
     def description(self):
         '''Provide a description for each algorithm available, useful to print in ecc file'''
         if self.algo <= 3:
-            return "Reed-Solomon with polynomials in Galois field 256 (2^8) of base 3."
+            return "Reed-Solomon with polynomials in Galois field of characteristic %i (2^%i) with generator=%s, prime poly=%s and first consecutive root=%s." % (self.field_charac, self.c_exp, self.gen_nb, hex(self.prim), self.fcr)
         elif self.algo == 4:
-            return "Reed-Solomon with polynomials in Galois field 256 (2^8) under US FAA ADSB UAT RS FEC standard with prim=%s and fcr=%s." % (self.prim, self.fcr)
+            return "Reed-Solomon with polynomials in Galois field of characteristic %i (2^%i) under US FAA ADSB UAT RS FEC standard with generator=%s, prime poly=%s and first consecutive root=%s." % (self.field_charac, self.c_exp, self.gen_nb, hex(self.prim), self.fcr)
         else:
             return "No description for this ECC algorithm."
