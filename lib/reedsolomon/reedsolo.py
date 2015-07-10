@@ -572,7 +572,7 @@ def rs_find_error_locator(synd, nsym, erase_loc=None, erase_count=0):
                 old_loc = gf_poly_scale(err_loc, gf_inverse(delta)) # effectively we are doing err_loc * 1/delta = err_loc // delta
                 err_loc = new_loc
                 # Update the update flag
-                #L = K - L # incorrect: L = K - L - erase_count, this will lead to an uncorrect decoding in cases where it should correctly decode!
+                #L = K - L # the update flag L is tricky: in Blahut's schema, it's mandatory to use `L = K - L - erase_count` (and indeed in a previous draft of this function, if you forgot to do `- erase_count` it would lead to correcting only 2*(errors+erasures) <= (n-k) instead of 2*errors+erasures <= (n-k)), but in this latest draft, this will lead to a wrong decoding in some cases where it should correctly decode! Thus you should try with and without `- erase_count` to update L on your own implementation and see which one works OK without producing wrong decoding failures.
 
             # Update with the discrepancy
             err_loc = gf_poly_add(err_loc, gf_poly_scale(old_loc, delta))

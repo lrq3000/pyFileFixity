@@ -558,7 +558,7 @@ class RSCoder(object):
             B = [ Polynomial([GF2int(1)]) ] # this is the error locator support/secondary polynomial, which is a funky way to say that it's just a temporary variable that will help us construct sigma, the error locator polynomial
             omega = [ Polynomial([GF2int(1)]) ] # error evaluator polynomial. We don't need to initialize it with erasures_loc, it will still work, because Delta is computed using sigma, which itself is correctly initialized with erasures if needed.
             A = [ Polynomial([GF2int(0)]) ] # this is the error evaluator support/secondary polynomial, to help us construct omega
-        L = [ 0 ] # necessary variable to check when updating is necessary and to check bounds (to avoid wrongly eliminating the higher order terms). For more infos, see https://www.cs.duke.edu/courses/spring11/cps296.3/decoding_rs.pdf
+        L = [ 0 ] # update flag: necessary variable to check when updating is necessary and to check bounds (to avoid wrongly eliminating the higher order terms). For more infos, see https://www.cs.duke.edu/courses/spring11/cps296.3/decoding_rs.pdf
         M = [ 0 ] # optional variable to check bounds (so that we do not mistakenly overwrite the higher order terms). This is not necessary, it's only an additional safe check. For more infos, see the presentation decoding_rs.pdf by Andrew Brown in the doc folder.
 
         # Fix the syndrome shifting: when computing the syndrome, some implementations may prepend a 0 coefficient for the lowest degree term (the constant). This is a case of syndrome shifting, thus the syndrome will be bigger than the number of ecc symbols (I don't know what purpose serves this shifting). If that's the case, then we need to account for the syndrome shifting when we use the syndrome such as inside BM, by skipping those prepended coefficients.
@@ -616,7 +616,7 @@ class RSCoder(object):
                 # Rule B
                 B.append( sigma[l] // Delta )
                 A.append( omega[l] // Delta )
-                L.append( K - L[l] ) # incorrect: L = K - L - erasures_count, this will lead to an uncorrect decoding in cases where it should correctly decode!
+                L.append( K - L[l] ) # the update flag L is tricky: in Blahut's schema, it's mandatory to use `L = K - L - erasures_count` (and indeed in a previous draft of this function, if you forgot to do `- erasures_count` it would lead to correcting only 2*(errors+erasures) <= (n-k) instead of 2*errors+erasures <= (n-k)), but in this latest draft, this will lead to a wrong decoding in some cases where it should correctly decode! Thus you should try with and without `- erasures_count` to update L on your own implementation and see which one works OK without producing wrong decoding failures.
                 M.append( 1 - M[l] )
 
             else:
@@ -656,7 +656,7 @@ class RSCoder(object):
             omega = omegaprev = Polynomial([GF2int(1)]) # error evaluator polynomial. We don't need to initialize it with erasures_loc, it will still work, because Delta is computed using sigma, which itself is correctly initialized with erasures if needed.
             omegaprev = Polynomial([GF2int(1)])
             A = Polynomial([GF2int(0)]) # this is the error evaluator support/secondary polynomial, to help us construct omega
-        L = 0 # necessary variable to check when updating is necessary and to check bounds (to avoid wrongly eliminating the higher order terms). For more infos, see https://www.cs.duke.edu/courses/spring11/cps296.3/decoding_rs.pdf
+        L = 0 # update flag: necessary variable to check when updating is necessary and to check bounds (to avoid wrongly eliminating the higher order terms). For more infos, see https://www.cs.duke.edu/courses/spring11/cps296.3/decoding_rs.pdf
         #M = 0 # optional variable to check bounds (so that we do not mistakenly overwrite the higher order terms). This is not necessary, it's only an additional safe check. For more infos, see the presentation decoding_rs.pdf by Andrew Brown in the doc folder.
 
         # Fix the syndrome shifting: when computing the syndrome, some implementations may prepend a 0 coefficient for the lowest degree term (the constant). This is a case of syndrome shifting, thus the syndrome will be bigger than the number of ecc symbols (I don't know what purpose serves this shifting). If that's the case, then we need to account for the syndrome shifting when we use the syndrome such as inside BM, by skipping those prepended coefficients.
@@ -715,7 +715,7 @@ class RSCoder(object):
                 # Rule B
                 B = sigmaprev.scale(Delta.inverse())
                 A = omegaprev.scale(Delta.inverse())
-                L = K - L # incorrect: L = K - L - erasures_count, this will lead to an uncorrect decoding in cases where it should correctly decode!
+                L = K - L # the update flag L is tricky: in Blahut's schema, it's mandatory to use `L = K - L - erasures_count` (and indeed in a previous draft of this function, if you forgot to do `- erasures_count` it would lead to correcting only 2*(errors+erasures) <= (n-k) instead of 2*errors+erasures <= (n-k)), but in this latest draft, this will lead to a wrong decoding in some cases where it should correctly decode! Thus you should try with and without `- erasures_count` to update L on your own implementation and see which one works OK without producing wrong decoding failures.
                 #M = 1 - M
 
             #else:
