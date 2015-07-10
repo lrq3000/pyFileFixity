@@ -71,8 +71,8 @@ def main(argv=None):
     # Setup configuration variables. Change here if you want to.
     max_block_size = 255
     resilience_rate = 0.2
-    ecc_algo = 3
-    msg_nb = 200000
+    ecc_algo = 4
+    msg_nb = 1000000
     tamper_rate = 0.4 # tamper rate is relative to the number of ecc bytes, not the whole message (not like the resilience_rate)
     tamper_mode = 'noise' # noise or erasure
     no_decoding = True
@@ -93,8 +93,9 @@ def main(argv=None):
     total_time = 0
     total_size = msg_nb*max_block_size
     bardisp = tqdm.tqdm(total=total_size, leave=True, desc='ENC', unit='B', unit_format=True) # display progress bar based on the number of bytes encoded
+    k = ecc_params["message_size"]
     # Generate a random string and encode it
-    for msg in gen_random_string(msg_nb, ecc_params["message_size"]):
+    for msg in gen_random_string(msg_nb, k):
         start = time.clock()
         ecc_manager.encode(msg)
         total_time += time.clock() - start
