@@ -55,7 +55,7 @@
 # - Also backup folders meta-data? (to reconstruct the tree in case a folder is truncated by bit rot)
 #
 
-__version__ = "1.6"
+__version__ = "1.7"
 
 # Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
 import sys, os
@@ -609,7 +609,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
 
             # Main loop: process each ecc entry
             entry = 1 # to start the while loop
-            bardisp = tqdm.tqdm(total=dbsize, leave=True, desc='DBREAD', unit='B', unit_format=True) # display progress bar based on reading the database file (since we don't know how many files we will process beforehand nor how many total entries we have)
+            bardisp = tqdm.tqdm(total=dbsize, leave=True, desc='DBREAD', unit='B', unit_scale=True) # display progress bar based on reading the database file (since we don't know how many files we will process beforehand nor how many total entries we have)
             while entry:
 
                 # -- Read the next ecc entry (extract the raw string from the ecc file)
@@ -630,7 +630,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                 # -- Extract the fields from the ecc entry
                 entry_p = entry_fields(entry, field_delim)
 
-                # -- Get file infos
+                # -- Get file path, check its correctness and correct it by using intra-ecc if necessary
                 relfilepath = entry_p["relfilepath"] # Relative file path
                 fpentry_fields = {"ecc_field": entry_p["relfilepath_ecc"]}
                 relfilepath_correct = [] # will store each block of the corrected (or already correct) filepath
@@ -643,9 +643,14 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                         relfilepath_correct.append(e["message"])
                     else: # Else this block is corrupted, we will try to fix it using the ecc
                         fpcorrupted = True
-                        repaired_block, repaired_ecc = ecc_manager_intra.decode(e["message"], e["ecc"])
+                        try:
+                            repaired_block, repaired_ecc = ecc_manager_intra.decode(e["message"], e["ecc"])
+                        except ReedSolomonError, exc: # the reedsolo lib may raise an exception when it can't decode. We ensure that we can still continue to decode the rest of the file, and the other files.
+                            repaired_block = None
+                            repaired_ecc = None
+                            print(exc)
                         # Check if the block was successfully repaired: if yes then we copy the repaired block...
-                        if ecc_manager_intra.check(repaired_block, repaired_ecc):
+                        if repaired_block is not None and ecc_manager_intra.check(repaired_block, repaired_ecc):
                             relfilepath_correct.append(repaired_block)
                         else: # ... else it failed, then we copy the original corrupted block and report an error later
                             relfilepath_correct.append(e["message"])
@@ -701,14 +706,14 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                         ptee.write("File %s: corruption in block %i. Trying to fix it." % (relfilepath, i))
                         try:
                             repaired_block, repaired_ecc = ecc_manager.decode(e["message"], e["ecc"])
-                        except ReedSolomonError, e: # the reedsolo lib may raise an exception when it can't decode. We ensure that we can still continue to decode the rest of the file, and the other files.
+                        except ReedSolomonError, exc: # the reedsolo lib may raise an exception when it can't decode. We ensure that we can still continue to decode the rest of the file, and the other files.
                             repaired_block = None
                             repaired_ecc = None
-                            print(e)
+                            print(exc)
                         # Check if the repair was successful.
                         hash_ok = (hasher.hash(repaired_block) == e["hash"])
                         ecc_ok = ecc_manager.check(repaired_block, repaired_ecc)
-                        if repaired_block and (hash_ok or ecc_ok): # If either the hash or the ecc check now match the repaired message block, we commit the new block
+                        if repaired_block is not None and (hash_ok or ecc_ok): # If either the hash or the ecc check now match the repaired message block, we commit the new block
                             entry_asm[i]["message_repaired"] = repaired_block # save the repaired block
                             # Show a precise report about the repair
                             if hash_ok and ecc_ok: ptee.write("File %s: block %i repaired!" % (relfilepath, i))

@@ -7,13 +7,12 @@
 
 # TODO: use set instead of list? or bytearray?
 
-from cStringIO import StringIO
-from itertools import izip
+from _compat import _range, _StringIO, _izip
 
 class Polynomial(object):
     '''Completely general polynomial class.
     
-    Polynomial objects are immutable.
+    Polynomial objects are mutable.
     
     Implementation note: while this class is mostly agnostic to the type of
     coefficients used (as long as they support the usual mathematical
@@ -61,14 +60,14 @@ class Polynomial(object):
             self.coefficients = coefficients
         elif sparse:
             # Polynomial(x32=...)
-            powers = sparse.keys()
+            powers = list(sparse.keys())
             powers.sort(reverse=1)
             # Not catching possible exceptions from the following line, let
             # them bubble up.
             highest = int(powers[0][1:])
             coefficients = [0] * (highest+1)
 
-            for power, coeff in sparse.iteritems():
+            for power, coeff in sparse.items():
                 power = int(power[1:])
                 coefficients[highest - power] = coeff
 
@@ -101,7 +100,7 @@ class Polynomial(object):
         diff = len(self) - len(other)
         t1 = [0] * (-diff) + self.coefficients
         t2 = [0] * diff + other.coefficients
-        return self.__class__([x+y for x,y in izip(t1, t2)])
+        return self.__class__([x+y for x,y in _izip(t1, t2)])
 
     def __neg__(self):
         if self[0].__class__.__name__ == "GF2int": # optimization: -GF2int(x) == GF2int(x), so it's useless to do a loop in this case
@@ -136,7 +135,7 @@ class Polynomial(object):
 
         term = 0
 
-        for i in xrange(min(len(self), len(other))):
+        for i in _range(min(len(self), len(other))):
             coef1 = self.coefficients[-(k-i+1)]
             coef2 = other.coefficients[-(i+1)]
             if coef1 == 0 or coef2 == 0: continue # log(0) is undefined, skip (and in addition it's a nice optimization)
@@ -145,7 +144,7 @@ class Polynomial(object):
 
     def scale(self, scalar):
         '''Multiply a polynomial with a scalar'''
-        return self.__class__([self.coefficients[i] * scalar for i in xrange(len(self))])
+        return self.__class__([self.coefficients[i] * scalar for i in _range(len(self))])
 
     def __floordiv__(self, other):
         return divmod(self, other)[0]
@@ -166,11 +165,11 @@ class Polynomial(object):
         # Note: for RS encoding, you should supply divisor = mprime (not m, you need the padded message)
         msg_out = list(dividend) # Copy the dividend
         normalizer = divisor[0] # precomputing for performance
-        for i in xrange(len(dividend)-(len(divisor)-1)):
+        for i in _range(len(dividend)-(len(divisor)-1)):
             msg_out[i] /= normalizer # for general polynomial division (when polynomials are non-monic), the usual way of using synthetic division is to divide the divisor g(x) with its leading coefficient (call it a). In this implementation, this means:we need to compute: coef = msg_out[i] / gen[0]. For more infos, see http://en.wikipedia.org/wiki/Synthetic_division
             coef = msg_out[i] # precaching
             if coef != 0: # log(0) is undefined, so we need to avoid that case explicitly (and it's also a good optimization)
-                for j in xrange(1, len(divisor)): # in synthetic division, we always skip the first coefficient of the divisior, because it's only used to normalize the dividend coefficient
+                for j in _range(1, len(divisor)): # in synthetic division, we always skip the first coefficient of the divisior, because it's only used to normalize the dividend coefficient
                     if divisor[j] != 0: # log(0) is undefined so we need to avoid that case
                         msg_out[i + j] += -divisor[j] * coef
 
@@ -184,10 +183,10 @@ class Polynomial(object):
         BEWARE: it works only for monic divisor polynomial! (which is always the case with Reed-Solomon's generator polynomials)'''
 
         msg_out = list(dividend) # Copy the dividend list and pad with 0 where the ecc bytes will be computed
-        for i in xrange(len(dividend)-(len(divisor)-1)):
+        for i in _range(len(dividend)-(len(divisor)-1)):
             coef = msg_out[i] # precaching
             if coef != 0: # log(0) is undefined, so we need to avoid that case explicitly (and it's also a good optimization)
-                for j in xrange(1, len(divisor)): # in synthetic division, we always skip the first coefficient of the divisior, because it's only used to normalize the dividend coefficient (which is here useless since the divisor, the generator polynomial, is always monic)
+                for j in _range(1, len(divisor)): # in synthetic division, we always skip the first coefficient of the divisior, because it's only used to normalize the dividend coefficient (which is here useless since the divisor, the generator polynomial, is always monic)
                     #if divisor[j] != 0: # log(0) is undefined so we need to check that, but it slow things down in fact and it's useless in our case (reed-solomon encoding) since we know that all coefficients in the generator are not 0
                     msg_out[i + j] ^= divisor[j] * coef # equivalent to the more mathematically correct (but xoring directly is faster): msg_out[i + j] += -divisor[j] * coef
                     # Note: we could speed things up a bit if we could inline the table lookups, but the Polynomial class is generic, it doesn't know anything about the underlying fields and their operators. Good OOP design, bad for performances in Python because of function calls and the optimizations we can't do (such as precomputing gf_exp[divisor]). That's what is done in reedsolo lib, this is one of the reasons it is faster.
@@ -312,7 +311,7 @@ class Polynomial(object):
         n = self.__class__.__name__
         return "%s(%r)" % (n, self.coefficients)
     def __str__(self):
-        buf = StringIO()
+        buf = _StringIO()
         l = len(self) - 1
         for i, c in enumerate(self.coefficients):
             if not c and i > 0:
@@ -345,29 +344,29 @@ class Polynomial(object):
 
         # Faster alternative using Horner's Scheme
         y = self[0]
-        for i in xrange(1, len(self)):
+        for i in _range(1, len(self)):
             y = y * x + self.coefficients[i]
         return y
 
     def evaluate_array(self, x):
         '''Simple way of evaluating a polynomial at value x, but here we return both the full array (evaluated at each polynomial position) and the sum'''
         x_gf = self.coefficients[0].__class__(x)
-        arr = [self.coefficients[-i]*x_gf**(i-1) for i in xrange(len(self), 0, -1)]
+        arr = [self.coefficients[-i]*x_gf**(i-1) for i in _range(len(self), 0, -1)]
         # if x == 1: arr = sum(self.coefficients)
         return arr, sum(arr)
 
     def derive(self):
         '''Compute the formal derivative of the polynomial: sum(i*coeff[i] x^(i-1))'''
         #res = [0] * (len(self)-1) # pre-allocate the list, it will be one item shorter because the constant coefficient (x^0) will be removed
-        #for i in xrange(2, len(self)+1): # start at 2 to skip the first coeff which is useless since it's a constant (x^0) so we +1, and because we work in reverse (lower coefficients are on the right) so +1 again
+        #for i in _range(2, len(self)+1): # start at 2 to skip the first coeff which is useless since it's a constant (x^0) so we +1, and because we work in reverse (lower coefficients are on the right) so +1 again
             #res[-(i-1)] = (i-1) * self[-i] # self[-i] == coeff[i] and i-1 is the x exponent (eg: x^1, x^2, x^3, etc.)
         #return Polynomial(res)
 
         # One liner way to do it (also a bit faster too)
-        #return Polynomial( [(i-1) * self[-i] for i in xrange(2, len(self)+1)][::-1] )
+        #return Polynomial( [(i-1) * self[-i] for i in _range(2, len(self)+1)][::-1] )
         # Another faster version
         L = len(self)-1
-        return Polynomial( [(L-i) * self[i] for i in xrange(0, len(self)-1)] )
+        return Polynomial( [(L-i) * self[i] for i in _range(0, len(self)-1)] )
 
     def get_coefficient(self, degree):
         '''Returns the coefficient of the specified term'''

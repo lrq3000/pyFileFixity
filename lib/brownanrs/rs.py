@@ -5,6 +5,8 @@
 # Copyright (c) 2015 Stephen Larroque <LRQ3000@gmail.com>
 # See LICENSE.txt for license terms
 
+from _compat import _range, _str
+
 try: # Cython implementation import. This should be a bit faster than using PyPy with the pure-python implementation.
     from cff import GF2int, init_lut
     from cpolynomial import Polynomial
@@ -90,16 +92,16 @@ class RSCoder(object):
         # g(x) = (x-α^1)(x-α^2)...(x-α^(n-k))
         # α is 3, a generator for GF(2^8)
         g = Polynomial([GF2int(1)])
-        for i in xrange(0, 2): self.g[i] = g
-        for i in xrange(0,n):
+        for i in _range(0, 2): self.g[i] = g
+        for i in _range(0,n):
             p = Polynomial([GF2int(1), GF2int(self.generator)**(i+fcr)])
             g = g * p
             self.g[n-(i+1)] = g # copy.deepcopy(g)
 
         # h(x) = (x-α^(n-k+1))...(x-α^n)
         #h = Polynomial([GF2int(1)])
-        #for i in xrange(n-1, n+1): self.h[i] = h
-        #for i in xrange(n, 0, -1):
+        #for i in _range(n-1, n+1): self.h[i] = h
+        #for i in _range(n, 0, -1):
         #    p = Polynomial([GF2int(1), GF2int(self.generator)**(i+fcr)])
         #    h = h * p
         #    self.h[n-i+1] = h
@@ -110,9 +112,10 @@ class RSCoder(object):
         # But it doesn't matter since my verify method doesn't use it
         #self.gtimesh = Polynomial(x255=GF2int(1), x0=GF2int(1))
 
-    def encode(self, message, poly=False, k=None):
-        '''Encode a given string with reed-solomon encoding. Returns a byte
-        string with the k message bytes and n-k parity bytes at the end.
+    def encode(self, message, poly=False, k=None, return_string=True):
+        '''Encode a given string or list of values (between 0 and gf2_charac)
+        with reed-solomon encoding. Returns a list of values (or a string if return_string is true)
+        with the k message bytes and n-k parity bytes at the end.
         
         If a message is < k bytes long, it is assumed to be padded at the front
         with null bytes.
@@ -129,13 +132,12 @@ class RSCoder(object):
             raise ValueError("Message length is max %d. Message was %d" % (k,
                 len(message)))
 
+        # If we were given a string, convert to a list (important to support fields above 2^8)
+        if isinstance(message, _str):
+            message = [ord(x) for x in message]
+
         # Encode message as a polynomial:
-        if isinstance(message, basestring):
-            m = Polynomial([GF2int(ord(x)) for x in message])
-            #m = Polynomial(map(GF2int, map(ord,message)))
-            #m = Polynomial([GF2int(x) for x in array.array('b', message).tolist()]) # equivalent to: Polynomial([GF2int(ord(x)) for x in message])
-        else:
-            m = Polynomial([GF2int(x) for x in message])
+        m = Polynomial([GF2int(x) for x in message])
 
         # Shift polynomial up by n-k by multiplying by x^(n-k) to reserve the first n-k coefficients for the ecc. This effectively pad the message with \0 bytes for the lower coefficients (where the ecc will be placed).
         mprime = m * Polynomial([GF2int(1)] + [GF2int(0)]*(n-k))
@@ -151,12 +153,15 @@ class RSCoder(object):
 
         if not poly:
             # Turn the polynomial c back into a string
-            return ''.join([chr(x) for x in c.coefficients]).rjust(n, "\0") # rjust is useful for the nostrip feature
-            #return ''.join(map(chr,c.coefficients)).rjust(self.gf2_charac, "\0") # faster but doesn't validate unittest...
-            #return array.array('B', c).tostring().rjust(n, "\0") # faster than but equivalent to: "".join(chr(x) for x in c).rjust(n, "\0") # see: https://www.python.org/doc/essays/list2str/
-        else: return c
+            ret = self._list_rjust(c.coefficients, n, 0) # rjust is useful for the nostrip feature
+            if return_string and self.gf2_charac < 256:
+                ret = self._list2str(ret)
+        else:
+            ret = c
 
-    def encode_fast(self, message, poly=False, k=None):
+        return ret
+
+    def encode_fast(self, message, poly=False, k=None, return_string=True):
         '''Fast encoding of a message, using synthetic division and other tricks to minimize the number of operations on Polynomials.'''
         n = self.n
         if not k: k = self.k
@@ -165,11 +170,12 @@ class RSCoder(object):
             raise ValueError("Message length is max %d. Message was %d" % (k,
                 len(message)))
 
+        # If we were given a string, convert to a list (important to support fields above 2^8)
+        if isinstance(message, _str):
+            message = [ord(x) for x in message]
+
         # Encode message as a polynomial:
-        if isinstance(message, basestring):
-            m = Polynomial([GF2int(ord(x)) for x in message])
-        else:
-            m = Polynomial([GF2int(x) for x in message])
+        m = Polynomial([GF2int(x) for x in message])
 
         # Encode message as a polynomial and shift polynomial up by n-k to reserve the first n-k coefficients for the ecc (without multiplication, this is an optimization). This effectively pad the message with \0 bytes for the lower coefficients (where the ecc will be placed).
         mprime = Polynomial(m.coefficients + [GF2int(0)]*(n-k))
@@ -184,13 +190,17 @@ class RSCoder(object):
         c = mprime.coefficients[:-len(b.coefficients)] + b.coefficients # equivalent to c = mprime - b
 
         if not poly:
-            # Turn the polynomial c back into a byte string
-            return ''.join([chr(x) for x in c]).rjust(n, "\0") # rjust is useful for the nostrip feature
-            #return bytearray(c).rjust(n, "\0") # based on %timeit, bytearray is 4x faster than list comprehension for this job, but PyPy does a better job at speeding up list comprehensions than bytearray, so better keep the list comprehension.
-        else: return Polynomial(c)
+            # Turn the polynomial c back into a string
+            ret = self._list_rjust(c, n, 0) # rjust is useful for the nostrip feature
+            if return_string and self.gf2_charac < 256:
+                ret = self._list2str(ret)
+        else:
+            ret = Polynomial(c)
 
-    def check(self, code, k=None):
-        '''Verifies the code is valid by testing that the code (message+ecc) as a polynomial code divides g
+        return ret
+
+    def check(self, r, k=None):
+        '''Verifies the codeword is valid by testing that the codeword (message+ecc) as a polynomial code divides g
         returns True/False
         '''
         n = self.n
@@ -198,15 +208,17 @@ class RSCoder(object):
         #h = self.h[k]
         g = self.g[k]
 
-        if isinstance(code, basestring):
-            c = Polynomial([GF2int(ord(x)) for x in code])
-        else:
-            c = Polynomial([GF2int(x) for x in code])
+        # If we were given a string, convert to a list (important to support fields above 2^8)
+        if isinstance(r, _str):
+            r = [ord(x) for x in r]
+
+        # Turn r into a polynomial
+        c = Polynomial([GF2int(x) for x in r])
 
         # This works too, but takes longer. Both checks are just as valid.
         #return (c*h)%gtimesh == Polynomial(x0=0)
 
-        # Since all codewords are multiples of g, checking that code divides g
+        # Since all codewords are multiples of g, checking that codeword c divides g
         # suffices for validating a codeword.
         return c % g == Polynomial(x0=0) # TODO: for faster computation replace by c._fastmod(g, self.n-k) ?
 
@@ -219,11 +231,12 @@ class RSCoder(object):
         #h = self.h[k]
         g = self.g[k]
 
+        # If we were given a string, convert to a list (important to support fields above 2^8)
+        if isinstance(r, _str):
+            r = [ord(x) for x in r]
+
         # Turn r into a polynomial
-        if isinstance(r, basestring):
-            r = Polynomial([GF2int(ord(x)) for x in r])
-        else:
-            r = Polynomial([GF2int(x) for x in r])
+        r = Polynomial([GF2int(x) for x in r])
 
         # Compute the syndromes:
         sz = self._syndromes(r, k=k)
@@ -232,10 +245,10 @@ class RSCoder(object):
         #return all(int(x) == 0 for x in sz)
         return sz.coefficients.count(GF2int(0)) == len(sz) # Faster than all()
 
-    def decode(self, r, nostrip=False, k=None, erasures_pos=None, only_erasures=False):
-        '''Given a received string or byte array r, attempts to decode it. If
-        it's a valid codeword, or if there are no more than (n-k)/2 errors, the
-        message is returned.
+    def decode(self, r, nostrip=False, k=None, erasures_pos=None, only_erasures=False, return_string=True):
+        '''Given a received string or byte array or list r of values between
+        0 and gf2_charac, attempts to decode it. If it's a valid codeword, or
+        if there are no more than (n-k)/2 errors, the repaired message is returned.
 
         A message always has k bytes, if a message contained less it is left
         padded with null bytes. When decoded, these leading null bytes are
@@ -251,19 +264,12 @@ class RSCoder(object):
         n = self.n
         if not k: k = self.k
 
-        # Deprecated check: we do it below in a faster way (we always compute the syndrome only once and it allows to check or to correct without recomputing anythome more
-#        if self.verify(r): # the code is already valid, there's nothing to do
-#            # The last n-k bytes are parity
-#            if nostrip:
-#                return r[:-(n-k)], r[-(n-k):]
-#            else:
-#                return r[:-(n-k)].lstrip("\0"), r[-(n-k):]
+        # If we were given a string, convert to a list (important to support fields above 2^8)
+        if isinstance(r, _str):
+            r = [ord(x) for x in r]
 
         # Turn r into a polynomial
-        if isinstance(r, basestring):
-            rp = Polynomial([GF2int(ord(x)) for x in r])
-        else:
-            rp = Polynomial([GF2int(x) for x in r])
+        rp = Polynomial([GF2int(x) for x in r])
 
         if erasures_pos:
             # Convert string positions to coefficients positions for the algebra to work (see _find_erasures_locator(), ecc characters represent the first coefficients while the message is put last, so it's exactly the reverse of the string positions where the message is first and the ecc is last, thus it's just like if you read the message+ecc string in reverse)
@@ -280,10 +286,14 @@ class RSCoder(object):
 
         if sz.coefficients.count(GF2int(0)) == len(sz): # the code is already valid, there's nothing to do
             # The last n-k bytes are parity
-            if nostrip:
-                return r[:-(n-k)], r[-(n-k):]
-            else:
-                return r[:-(n-k)].lstrip("\0"), r[-(n-k):]
+            ret = r[:-(n-k)]
+            ecc = r[-(n-k):]
+            if not nostrip:
+                ret = self._list_lstrip(r[:-(n-k)], 0)
+            if return_string and self.gf2_charac < 256:
+                ret = self._list2str(ret)
+                ecc = self._list2str(ecc) 
+            return ret, ecc
 
         # Erasures locator polynomial computation
         erasures_loc = None
@@ -314,10 +324,14 @@ class RSCoder(object):
 
         # Sanity check: Cannot guarantee correct decoding of more than n-k errata (Singleton Bound, n-k being the minimum distance), and we cannot even check if it's correct (the syndrome will always be all 0 if we try to decode above the bound), thus it's better to just return the input as-is.
         if len(j) > n-k:
-            if nostrip:
-                return r[:-(n-k)], r[-(n-k):]
-            else:
-                return r[:-(n-k)].lstrip("\0"), r[-(n-k):]
+            ret = r[:-(n-k)]
+            ecc = r[-(n-k):]
+            if not nostrip:
+                ret = self._list_lstrip(r[:-(n-k)], 0)
+            if return_string and self.gf2_charac < 256:
+                ret = self._list2str(ret)
+                ecc = self._list2str(ecc) 
+            return ret, ecc
 
         # And finally, find the error magnitudes with Forney's Formula
         # Y is an array of GF(2^8) values corresponding to the error magnitude
@@ -328,7 +342,7 @@ class RSCoder(object):
         # Note that an alternative would be to compute the error-spectrum polynomial E(x) which satisfies E(x)*Sigma(x) = 0 (mod x^n - 1) = Omega(x)(x^n - 1) -- see Blahut, Algebraic codes for data transmission
         Elist = [GF2int(0)] * self.gf2_charac
         if len(Y) >= len(j): # failsafe: if the number of erratas is higher than the number of coefficients in the magnitude polynomial, we failed!
-            for i in xrange(self.gf2_charac): # FIXME? is this really necessary to go to self.gf2_charac? len(rp) wouldn't be just enough? (since the goal is anyway to substract E to rp)
+            for i in _range(self.gf2_charac): # FIXME? is this really necessary to go to self.gf2_charac? len(rp) wouldn't be just enough? (since the goal is anyway to substract E to rp)
                 if i in j:
                     Elist[i] = Y[j.index(i)]
             E = Polynomial( Elist[::-1] ) # reverse the list because we used the coefficient degrees (j) instead of the error positions
@@ -340,23 +354,28 @@ class RSCoder(object):
 
         if len(c) > len(r): c = rp # failsafe: in case the correction went totally wrong (we repaired padded null bytes instead of the message! thus we end up with a longer message than what we should have), then we just return the uncorrected message. Note: we compare the length of c with r on purpose, that's not an error: if we compare with rp, if the first few characters were erased (null bytes) in r, then in rp the Polynomial will automatically skip them, thus the length will always be smaller in that case.
 
-        # Form it back into a string and return all but the last n-k bytes
-        ret = ''.join(chr(x) for x in c.coefficients[:-(n-k)])
-        ecc = ''.join(chr(x) for x in c.coefficients[-(n-k):]) # also return the corrected ecc, so that user can check()
+        # Split the polynomial into two parts: the corrected message and the corrected ecc
+        ret = c.coefficients[:-(n-k)]
+        ecc = c.coefficients[-(n-k):]
 
         if nostrip:
             # Polynomial objects don't store leading 0 coefficients, so we
             # actually need to pad this to k bytes
-            return ret.rjust(k, "\0"), ecc
-        else:
-            return ret, ecc
+            ret = self._list_rjust(ret, k, 0)
 
-    def decode_fast(self, r, nostrip=False, k=None, erasures_pos=None, only_erasures=False):
+        if return_string and self.gf2_charac < 256: # automatically disable return_string if the field is above 255 (chr would fail, so it's up to the user to define the mapping)
+            # Form it back into a string 
+            ret = self._list2str(ret)
+            ecc = self._list2str(ecc)
+
+        return ret, ecc # also return the corrected ecc, so that user can check()
+
+    def decode_fast(self, r, nostrip=False, k=None, erasures_pos=None, only_erasures=False, return_string=True):
         '''Faster decoding of a message with ecc bytes, using optimized algorithms (use PyPy to get really fast!).
 
-        Given a received string or byte array r, attempts to decode it. If
-        it's a valid codeword, or if there are no more than (n-k)/2 errors, the
-        message is returned.
+        Given a received string or byte array or list r of values between
+        0 and gf2_charac, attempts to decode it. If it's a valid codeword, or
+        if there are no more than (n-k)/2 errors, the repaired message is returned.
 
         A message always has k bytes, if a message contained less it is left
         padded with null bytes. When decoded, these leading null bytes are
@@ -369,19 +388,12 @@ class RSCoder(object):
         n = self.n
         if not k: k = self.k
 
-        # Deprecated check: we do it below in a faster way (we always compute the syndrome only once and it allows to check or to correct without recomputing anythome more
-#        if self.verify(r): # the code is already valid, there's nothing to do
-#            # The last n-k bytes are parity
-#            if nostrip:
-#                return r[:-(n-k)], r[-(n-k):]
-#            else:
-#                return r[:-(n-k)].lstrip("\0"), r[-(n-k):]
+        # If we were given a string, convert to a list (important to support fields above 2^8)
+        if isinstance(r, _str):
+            r = [ord(x) for x in r]
 
         # Turn r into a polynomial
-        if isinstance(r, basestring):
-            rp = Polynomial([GF2int(ord(x)) for x in r])
-        else:
-            rp = Polynomial([GF2int(x) for x in r])
+        rp = Polynomial([GF2int(x) for x in r])
 
         if erasures_pos:
             # Convert string positions to coefficients positions for the algebra to work (see _find_erasures_locator(), ecc characters represent the first coefficients while the message is put last, so it's exactly the reverse of the string positions where the message is first and the ecc is last, thus it's just like if you read the message+ecc string in reverse)
@@ -393,10 +405,14 @@ class RSCoder(object):
 
         if sz.coefficients.count(GF2int(0)) == len(sz): # the code is already valid, there's nothing to do
             # The last n-k bytes are parity
-            if nostrip:
-                return r[:-(n-k)], r[-(n-k):]
-            else:
-                return r[:-(n-k)].lstrip("\0"), r[-(n-k):]
+            ret = r[:-(n-k)]
+            ecc = r[-(n-k):]
+            if not nostrip:
+                ret = self._list_lstrip(r[:-(n-k)], 0)
+            if return_string and self.gf2_charac < 256:
+                ret = self._list2str(ret)
+                ecc = self._list2str(ecc) 
+            return ret, ecc
 
         # Erasures locator polynomial computation
         erasures_loc = None
@@ -426,10 +442,14 @@ class RSCoder(object):
 
         # Sanity check: Cannot guarantee correct decoding of more than n-k errata (Singleton Bound, n-k being the minimum distance), and we cannot even check if it's correct (the syndrome will always be all 0 if we try to decode above the bound), thus it's better to just return the input as-is.
         if len(j) > n-k:
-            if nostrip:
-                return r[:-(n-k)], r[-(n-k):]
-            else:
-                return r[:-(n-k)].lstrip("\0"), r[-(n-k):]
+            ret = r[:-(n-k)]
+            ecc = r[-(n-k):]
+            if not nostrip:
+                ret = self._list_lstrip(r[:-(n-k)], 0)
+            if return_string and self.gf2_charac < 256:
+                ret = self._list2str(ret)
+                ecc = self._list2str(ecc) 
+            return ret, ecc
 
         # And finally, find the error magnitudes with Forney's Formula
         # Y is an array of GF(2^8) values corresponding to the error magnitude
@@ -439,7 +459,7 @@ class RSCoder(object):
         # Put the error and locations together to form the error polynomial
         # Note that an alternative would be to compute the error-spectrum polynomial E(x) which satisfies E(x)*Sigma(x) = 0 (mod x^n - 1) = Omega(x)(x^n - 1) -- see Blahut, Algebraic codes for data transmission
         Elist = [GF2int(0)] * self.gf2_charac
-        for i in xrange(self.gf2_charac):
+        for i in _range(self.gf2_charac):
             if i in j:
                 Elist[i] = Y[j.index(i)]
         E = Polynomial( Elist[::-1] )
@@ -449,20 +469,39 @@ class RSCoder(object):
 
         if len(c) > len(r): c = rp # failsafe: in case the correction went totally wrong (we repaired padded null bytes instead of the message! thus we end up with a longer message than what we should have), then we just return the uncorrected message. Note: we compare the length of c with r on purpose, that's not an error: if we compare with rp, if the first few characters were erased (null bytes) in r, then in rp the Polynomial will automatically skip them, thus the length will always be smaller in that case.
 
-        # Form it back into a string and return all but the last n-k bytes
-        ret = ''.join(chr(x) for x in c.coefficients[:-(n-k)])
-        ecc = ''.join(chr(x) for x in c.coefficients[-(n-k):]) # also return the corrected ecc, so that user can check()
+        # Split the polynomial into two parts: the corrected message and the corrected ecc
+        ret = c.coefficients[:-(n-k)]
+        ecc = c.coefficients[-(n-k):]
 
         if nostrip:
             # Polynomial objects don't store leading 0 coefficients, so we
             # actually need to pad this to k bytes
-            return ret.rjust(k, "\0"), ecc
-        else:
-            return ret, ecc
+            ret = self._list_rjust(ret, k, 0)
+
+        if return_string and self.gf2_charac < 256: # automatically disable return_string if the field is above 255 (chr would fail, so it's up to the user to define the mapping)
+            # Form it back into a string
+            ret = self._list2str(ret)
+            ecc = self._list2str(ecc) 
+
+        return ret, ecc # also return the corrected ecc, so that user can check()
 
 
     def _list2gfpoly(self, L):
         return Polynomial([GF2int(x) for x in L])
+
+    def _list2str(self, L):
+        return ''.join(chr(x) for x in L)
+
+    def _list_lstrip(self, L, val=0):
+        '''Left strip the specified value'''
+        for i in _range(len(L)):
+            if L[i] != val:
+                return L[i:]
+
+    def _list_rjust(self, L, width, fillchar=0):
+        '''Left pad with the specified value to obtain a list of the specified width (length)'''
+        length = max(0, width - len(L))
+        return [fillchar]*length + L
 
     def _syndromes(self, r, k=None):
         '''Given the received codeword r in the form of a Polynomial object,
@@ -473,13 +512,13 @@ class RSCoder(object):
         if not k: k = self.k
         # Note the + [GF2int(0)] : we add a 0 coefficient for the lowest degree (the constant). This effectively shifts the syndrome, and will shift every computations depending on the syndromes (such as the errors locator polynomial, errors evaluator polynomial, etc. but not the errors positions).
         # This is not necessary as anyway syndromes are defined such as there are only non-zero coefficients (the only 0 is the shift of the constant here) and subsequent computations will/must account for the shift by skipping the first iteration (eg, the often seen range(1, n-k+1)), but you can also avoid prepending the 0 coeff and adapt every subsequent computations to start from 0 instead of 1.
-        return Polynomial( [r.evaluate( GF2int(self.generator)**(l+self.fcr) ) for l in xrange(n-k-1, -1, -1)] + [GF2int(0)], keep_zero=True ) # IMPORTANT: for the syndrome, we want to keep all terms, even null ones! This is because the length of the syndrome gives us a precious information to compute the syndrome shift in Berlekamp-Massey and other places.
+        return Polynomial( [r.evaluate( GF2int(self.generator)**(l+self.fcr) ) for l in _range(n-k-1, -1, -1)] + [GF2int(0)], keep_zero=True ) # IMPORTANT: for the syndrome, we want to keep all terms, even null ones! This is because the length of the syndrome gives us a precious information to compute the syndrome shift in Berlekamp-Massey and other places.
 
         # s[l] is the received codeword evaluated at α^l for 1 <= l <= s
         # α in this implementation is 3
         #s = [0] * (n-k+1)
         #s[-1] = GF2int(0) # s[0] is 0 (coefficient of z^0)
-        #for l in xrange(1, n-k+1):
+        #for l in _range(1, n-k+1):
         #    s[-(l+1)] = r.evaluate( GF2int(self.generator)**l )
 
         # Now build a polynomial out of all our s[l] values
@@ -575,7 +614,7 @@ class RSCoder(object):
         s2 = ONE + s
 
         # Iteratively compute the polynomials n-k-erasures_count times. The last ones will be correct (since the algorithm refines the error/errata locator polynomial iteratively depending on the discrepancy, which is kind of a difference-from-correctness measure).
-        for l in xrange(0, n-k-erasures_count): # skip the first erasures_count iterations because we already computed the partial errata locator polynomial (by initializing with the erasures locator polynomial)
+        for l in _range(0, n-k-erasures_count): # skip the first erasures_count iterations because we already computed the partial errata locator polynomial (by initializing with the erasures locator polynomial)
             K = erasures_count+l+synd_shift # skip the FIRST erasures_count iterations (not the last iterations, that's very important!)
 
             # Goal for each iteration: Compute sigma[l+1] and omega[l+1] such that
@@ -673,7 +712,7 @@ class RSCoder(object):
         s2 = ONE+s
 
         # Iteratively compute the polynomials n-k-erasures_count times. The last ones will be correct (since the algorithm refines the error/errata locator polynomial iteratively depending on the discrepancy, which is kind of a difference-from-correctness measure).
-        for l in xrange(n-k-erasures_count): # skip the first erasures_count iterations because we already computed the partial errata locator polynomial (by initializing with the erasures locator polynomial)
+        for l in _range(n-k-erasures_count): # skip the first erasures_count iterations because we already computed the partial errata locator polynomial (by initializing with the erasures locator polynomial)
             K = erasures_count+l+synd_shift # skip the FIRST erasures_count iterations (not the last iterations, that's very important!)
 
             # Goal for each iteration: Compute sigma[l+1] and omega[l+1] such that
@@ -768,7 +807,7 @@ class RSCoder(object):
         j = []
         p = GF2int(self.generator)
         # Try for each possible location
-        for l in xrange(1, self.gf2_charac+1): # range 1:256 is important: if you use range 0:255, if the last byte of the ecc symbols is corrupted, it won't be correctable! You need to use the range 1,256 to include this last byte.
+        for l in _range(1, self.gf2_charac+1): # range 1:256 is important: if you use range 0:255, if the last byte of the ecc symbols is corrupted, it won't be correctable! You need to use the range 1,256 to include this last byte.
             #l = (i+self.fcr)
             # These evaluations could be more efficient, but oh well
             if sigma.evaluate( p**l ) == 0: # If it's 0, then bingo! It's an error location
@@ -793,11 +832,11 @@ class RSCoder(object):
         X = []
         j = []
         p = GF2int(self.generator)
-        if not hasattr(self, 'const_poly'): self.const_poly = [GF2int(self.generator)**(i+self.fcr) for i in xrange(self.gf2_charac, -1, -1)] # constant polynomial that will allow us to update the previous polynomial evaluation to get the next one
+        if not hasattr(self, 'const_poly'): self.const_poly = [GF2int(self.generator)**(i+self.fcr) for i in _range(self.gf2_charac, -1, -1)] # constant polynomial that will allow us to update the previous polynomial evaluation to get the next one
         const_poly = self.const_poly # caching for more efficiency since it never changes
         ev_poly, ev = sigma.evaluate_array( p**1 ) # compute the first polynomial evaluation
         # Try for each possible location
-        for l in xrange(1, self.gf2_charac+1): # range 1:256 is important: if you use range 0:255, if the last byte of the ecc symbols is corrupted, it won't be correctable! You need to use the range 1,256 to include this last byte.
+        for l in _range(1, self.gf2_charac+1): # range 1:256 is important: if you use range 0:255, if the last byte of the ecc symbols is corrupted, it won't be correctable! You need to use the range 1,256 to include this last byte.
             #l = (i+self.fcr)
 
             # Check if it's a root for the polynomial
@@ -813,7 +852,7 @@ class RSCoder(object):
             # we simply multiply each term[k] with alpha^k (where here alpha = p = GF2int(generator)).
             # For more info, see the presentation by Andrew Brown, or this one: http://web.ntpu.edu.tw/~yshan/BCH_decoding.pdf
             # TODO: parallelize this loop
-            for i in xrange(1, len(ev_poly)+1): # TODO: maybe the fcr != 1 fix should be put here?
+            for i in _range(1, len(ev_poly)+1): # TODO: maybe the fcr != 1 fix should be put here?
                 ev_poly[-i] *= const_poly[-i]
             # Compute the new evaluation by just summing
             ev = sum(ev_poly)
@@ -829,7 +868,7 @@ class RSCoder(object):
         p = GF2int(self.generator)
         # Normally we should try all 2^8 possible values, but here we optimize to just check the interesting symbols
         # This also allows to accept messages where n > 2^8.
-        for l in xrange(n):
+        for l in _range(n):
             #l = (i+self.fcr)
             # These evaluations could be more efficient, but oh well
             if sigma.evaluate( p**(-l) ) == 0: # If it's 0, then bingo! It's an error location
@@ -861,7 +900,7 @@ class RSCoder(object):
             # Compute the sequence product and multiply its inverse in
             prod = GF2int(1) # just to init the product (1 is the neutral term for multiplication)
             Xl_inv = Xl.inverse()
-            for ji in xrange(t): # do not change to xrange(len(X)) as can be seen in some papers, it won't give the correct result! (sometimes yes, but not always)
+            for ji in _range(t): # do not change to _range(len(X)) as can be seen in some papers, it won't give the correct result! (sometimes yes, but not always)
                 if ji == l:
                     continue
                 if ji < len(X):
@@ -890,8 +929,12 @@ class RSCoder(object):
 
             # Compute the formal derivative of the error locator polynomial (see Blahut, Algebraic codes for data transmission, pp 196-197).
             # the formal derivative of the errata locator is used as the denominator of the Forney Algorithm, which simply says that the ith error value is given by error_evaluator(gf_inverse(Xi)) / error_locator_derivative(gf_inverse(Xi)). See Blahut, Algebraic codes for data transmission, pp 196-197.
-            sigma_prime = [1 - Xl_inv * X[j] for j in xrange(Xlength) if j != l] # TODO? maybe a faster way would be to precompute sigma_prime = sigma[len(sigma) & 1:len(sigma):2] and then just do sigma_prime.evaluate(X[j]) ? (like in reedsolo.py)
-            sigma_prime = reduce(mul, sigma_prime, 1) # compute the product
+            sigma_prime_tmp = [1 - Xl_inv * X[j] for j in _range(Xlength) if j != l] # TODO? maybe a faster way would be to precompute sigma_prime = sigma[len(sigma) & 1:len(sigma):2] and then just do sigma_prime.evaluate(X[j]) ? (like in reedsolo.py)
+            # compute the product
+            sigma_prime = 1
+            for coef in sigma_prime_tmp:
+                sigma_prime = sigma_prime * coef
+            # equivalent to: sigma_prime = functools.reduce(mul, sigma_prime, 1)
 
             # Compute Yl
             # This is a more faithful translation of the theoretical equation contrary to the old forney method. Here it is exactly copy/pasted from the included presentation decoding_rs.pdf: Yl = omega(Xl.inverse()) / prod(1 - Xj*Xl.inverse()) for j in len(X) (in the paper it's for j in s, but it's useless when len(X) < s because we compute neutral terms 1 for nothing, and wrong when correcting more than s erasures or erasures+errors since it prevents computing all required terms).

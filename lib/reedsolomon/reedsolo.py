@@ -93,7 +93,7 @@ try:
     bytearray
 except NameError:
     from array import array
-    def bytearray(obj = 0, encoding = "latin-1"):
+    def bytearray(obj = 0, encoding = "latin-1"): # always use Latin-1 and not UTF8 because Latin-1 maps the first 256 characters to their bytevalue equivalents. UTF8 may mangle your data (particularly at vale 128)
         if isinstance(obj, str):
             obj = [ord(ch) for ch in obj.encode("latin-1")]
         elif isinstance(obj, int):
@@ -503,11 +503,15 @@ def rs_correct_errata(msg_in, synd, err_pos, fcr=0, generator=2): # err_pos is a
 
         # Compute the formal derivative of the error locator polynomial (see Blahut, Algebraic codes for data transmission, pp 196-197).
         # the formal derivative of the errata locator is used as the denominator of the Forney Algorithm, which simply says that the ith error value is given by error_evaluator(gf_inverse(Xi)) / error_locator_derivative(gf_inverse(Xi)). See Blahut, Algebraic codes for data transmission, pp 196-197.
-        err_loc_prime = []
+        err_loc_prime_tmp = []
         for j in xrange(Xlength):
             if j != i:
-                err_loc_prime.append( gf_sub(1, gf_mul(Xi_inv, X[j])) )
-        err_loc_prime = reduce(gf_mul, err_loc_prime, 1) # compute the product, which is the denominator of the Forney algorithm (errata locator derivative)
+                err_loc_prime_tmp.append( gf_sub(1, gf_mul(Xi_inv, X[j])) )
+        # compute the product, which is the denominator of the Forney algorithm (errata locator derivative)
+        err_loc_prime = 1
+        for coef in err_loc_prime_tmp:
+            err_loc_prime = gf_mul(err_loc_prime, coef)
+        # equivalent to: err_loc_prime = functools.reduce(gf_mul, err_loc_prime_tmp, 1)
 
         # Compute y (evaluation of the errata evaluator polynomial)
         # This is a more faithful translation of the theoretical equation contrary to the old forney method. Here it is exactly copy/pasted from the included presentation decoding_rs.pdf: Yl = omega(Xl.inverse()) / prod(1 - Xj*Xl.inverse()) for j in len(X) (in the paper it's for j in s, but it's useless when len(X) < s because we compute neutral terms 1 for nothing, and wrong when correcting more than s erasures or erasures+errors since it prevents computing all required terms).
@@ -647,7 +651,7 @@ def rs_correct_msg(msg_in, nsym, fcr=0, generator=2, erase_pos=None, only_erasur
         raise ValueError("Message is too long (%i when max is %i)" % (len(msg_in), field_charac))
 
     msg_out = bytearray(msg_in)     # copy of message
-    # erasures: set them to null bytes for easier decoding
+    # erasures: set them to null bytes for easier decoding (but this is not necessary, they will be corrected anyway, but debugging will be easier with null bytes because the error locator polynomial values will only depend on the errors locations, not their values)
     if erase_pos is None:
         erase_pos = []
     else:
@@ -691,7 +695,7 @@ def rs_correct_msg_nofsynd(msg_in, nsym, fcr=0, generator=2, erase_pos=None, onl
         raise ValueError("Message is too long (%i when max is %i)" % (len(msg_in), field_charac))
 
     msg_out = bytearray(msg_in)     # copy of message
-    # erasures: set them to null bytes for easier decoding
+    # erasures: set them to null bytes for easier decoding (but this is not necessary, they will be corrected anyway, but debugging will be easier with null bytes because the error locator polynomial values will only depend on the errors locations, not their values)
     if erase_pos is None:
         erase_pos = []
     else:
@@ -766,7 +770,7 @@ class RSCodec(object):
     def __init__(self, nsym=10, nsize=255, fcr=0, prim=0x11d, generator=2, c_exp=8):
         '''Initialize the Reed-Solomon codec. Note that different parameters change the internal values (the ecc symbols, look-up table values, etc) but not the output result (whether your message can be repaired or not, there is no influence of the parameters).'''
         self.nsym = nsym # number of ecc symbols (ie, the repairing rate will be r=(nsym/2)/nsize, so for example if you have nsym=5 and nsize=10, you have a rate r=0.25, so you can correct up to 0.25% errors (or exactly 2 symbols out of 10), and 0.5% erasures (5 symbols out of 10).
-        self.nsize = nsize # maximum length of one chunk
+        self.nsize = nsize # maximum length of one chunk (ie, message + ecc symbols after encoding, for the message alone it's nsize-nsym)
         self.fcr = fcr # first consecutive root, can be any value between 0 and (2**c_exp)-1
         self.prim = prim # prime irreducible polynomial, use find_prime_polys() to find a prime poly
         self.generator = generator # generator integer, must be prime

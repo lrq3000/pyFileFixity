@@ -7,8 +7,7 @@
 import cython
 cimport cython
 
-from cStringIO import StringIO
-from itertools import izip
+from _compat import _range, _StringIO
 
 @cython.freelist(64) # fast instanciation via freelist pool
 @cython.nonecheck(False) # Turn off nonecheck locally for the function
@@ -16,7 +15,7 @@ from itertools import izip
 cdef class Polynomial:
     '''Completely general polynomial class.
 
-    Polynomial objects are immutable.
+    Polynomial objects are mutable.
 
     Implementation note: while this class is mostly agnostic to the type of
     coefficients used (as long as they support the usual mathematical
@@ -66,14 +65,14 @@ cdef class Polynomial:
             self.coefficients = coefficients
         elif sparse:
             # Polynomial(x32=...)
-            powers = sparse.keys()
+            powers = list(sparse.keys())
             powers.sort(reverse=1)
             # Not catching possible exceptions from the following line, let
             # them bubble up.
             highest = int(powers[0][1:])
             coefficients = [0] * (highest+1)
 
-            for power, coeff in sparse.iteritems():
+            for power, coeff in sparse.items():
                 power = int(power[1:])
                 coefficients[highest - power] = coeff
 
@@ -108,10 +107,10 @@ cdef class Polynomial:
         cdef list t1 = [0] * (-diff) + self.coefficients
         cdef list t2 = [0] * diff + other.coefficients
         cdef list tres = [0] * len(t1) # DO NOT try to do the following or it will freeze in ecc mode 1: cdef Polynomial tres = Polynomial()
-        for i in xrange(len(t1)): # faster way in cython, better do it in a loop than in a list comprehension with izip
+        for i in _range(len(t1)): # faster way in cython, better do it in a loop than in a list comprehension with _izip
             tres[i] = t1[i]+t2[i]
         return self.__class__(tres)
-        #return self.__class__([x+y for x,y in izip(t1, t2)]) # slower equivalent way to do polynomial addition with list comprehension
+        #return self.__class__([x+y for x,y in _izip(t1, t2)]) # slower equivalent way to do polynomial addition with list comprehension
 
     def __neg__(Polynomial self):
         cdef list c = []
@@ -148,7 +147,7 @@ cdef class Polynomial:
         if k > (self.degree + other.degree) or k > self.degree: return 0 # optimization: if the required coefficient is above the maximum coefficient of the resulting polynomial, we can already predict that and just return 0
 
         term = 0
-        for i in xrange(min(len(self), len(other))):
+        for i in _range(min(len(self), len(other))):
             coef1 = self.coefficients[-(k-i+1)]
             coef2 = other.coefficients[-(i+1)]
             if coef1 == 0 or coef2 == 0: continue # log(0) is undefined, skip (and in addition it's a nice optimization)
@@ -157,7 +156,7 @@ cdef class Polynomial:
 
     cpdef Polynomial scale(Polynomial self, int scalar):
         '''Multiply a polynomial with a scalar'''
-        return self.__class__([self.coefficients[i] * scalar for i in xrange(len(self))])
+        return self.__class__([self.coefficients[i] * scalar for i in _range(len(self))])
 
     def __floordiv__(Polynomial self, Polynomial other):
         return divmod(self, other)[0]
@@ -183,11 +182,11 @@ cdef class Polynomial:
 
         cdef list msg_out = list(dividend) # Copy the dividend
         cdef object normalizer = divisor[0] # precomputing for performance
-        for i in xrange(len(dividend)-(len(divisor)-1)):
+        for i in _range(len(dividend)-(len(divisor)-1)):
             msg_out[i] /= normalizer # for general polynomial division (when polynomials are non-monic), the usual way of using synthetic division is to divide the divisor g(x) with its leading coefficient (call it a). In this implementation, this means:we need to compute: coef = msg_out[i] / gen[0]. For more infos, see http://en.wikipedia.org/wiki/Synthetic_division
             coef = msg_out[i] # precaching
             if coef != 0: # log(0) is undefined, so we need to avoid that case explicitly (and it's also a good optimization)
-                for j in xrange(1, len(divisor)): # in synthetic division, we always skip the first coefficient of the divisior, because it's only used to normalize the dividend coefficient
+                for j in _range(1, len(divisor)): # in synthetic division, we always skip the first coefficient of the divisior, because it's only used to normalize the dividend coefficient
                     if divisor[j] != 0: # log(0) is undefined so we need to avoid that case
                         msg_out[i + j] += -divisor[j] * coef
 
@@ -205,10 +204,10 @@ cdef class Polynomial:
         cdef object coef
         cdef list msg_out = list(dividend)
 
-        for i in xrange(len(dividend)-(len(divisor)-1)):
+        for i in _range(len(dividend)-(len(divisor)-1)):
             coef = msg_out[i] # precaching
             if coef != 0: # log(0) is undefined, so we need to avoid that case explicitly (and it's also a good optimization)
-                for j in xrange(1, len(divisor)): # in synthetic division, we always skip the first coefficient of the divisior, because it's only used to normalize the dividend coefficient (which is here useless since the divisor, the generator polynomial, is always monic)
+                for j in _range(1, len(divisor)): # in synthetic division, we always skip the first coefficient of the divisior, because it's only used to normalize the dividend coefficient (which is here useless since the divisor, the generator polynomial, is always monic)
                     #if divisor[j] != 0: # log(0) is undefined so we need to check that, but it slow things down in fact and it's useless in our case (reed-solomon encoding) since we know that all coefficients in the generator are not 0
                     msg_out[i + j] ^= divisor[j] * coef # equivalent to the more mathematically correct (but xoring directly is faster): msg_out[i + j] += -divisor[j] * coef
                     # Note: we could speed things up a bit if we could inline the table lookups, but the Polynomial class is generic, it doesn't know anything about the underlying fields and their operators. Good OOP design, bad for performances in Python because of function calls and the optimizations we can't do (such as precomputing gf_exp[divisor]). That's what is done in reedsolo lib, this is one of the reasons it is faster.
@@ -307,7 +306,7 @@ cdef class Polynomial:
         n = self.__class__.__name__
         return "%s(%r)" % (n, self.coefficients)
     def __str__(self):
-        buf = StringIO()
+        buf = _StringIO()
         cdef int l = len(self) - 1
         cdef int power
         for i, c in enumerate(self.coefficients):
@@ -342,29 +341,29 @@ cdef class Polynomial:
         # Faster alternative using Horner's Scheme
         cdef int i
         cdef object y = self[0]
-        for i in xrange(1, len(self)):
+        for i in _range(1, len(self)):
             y = y * x + self.coefficients[i]
         return y
 
     cpdef tuple evaluate_array(Polynomial self, int x):
         '''Simple way of evaluating a polynomial at value x, but here we return both the full array (evaluated at each polynomial position) and the sum'''
         x_gf = self.coefficients[0].__class__(x)
-        cdef list arr = [self.coefficients[-i]*x_gf**(i-1) for i in xrange(len(self), 0, -1)]
+        cdef list arr = [self.coefficients[-i]*x_gf**(i-1) for i in _range(len(self), 0, -1)]
         # if x == 1: arr = sum(self.coefficients)
         return arr, sum(arr)
 
     cpdef Polynomial derive(Polynomial self):
         '''Compute the formal derivative of the polynomial: sum(i*coeff[i] x^(i-1))'''
         #res = [0] * (len(self)-1) # pre-allocate the list, it will be one item shorter because the constant coefficient (x^0) will be removed
-        #for i in xrange(2, len(self)+1): # start at 2 to skip the first coeff which is useless since it's a constant (x^0) so we +1, and because we work in reverse (lower coefficients are on the right) so +1 again
+        #for i in _range(2, len(self)+1): # start at 2 to skip the first coeff which is useless since it's a constant (x^0) so we +1, and because we work in reverse (lower coefficients are on the right) so +1 again
             #res[-(i-1)] = (i-1) * self[-i] # self[-i] == coeff[i] and i-1 is the x exponent (eg: x^1, x^2, x^3, etc.)
         #return Polynomial(res)
 
         # One liner way to do it (also a bit faster too)
-        #return Polynomial( [(i-1) * self[-i] for i in xrange(2, len(self)+1)][::-1] )
+        #return Polynomial( [(i-1) * self[-i] for i in _range(2, len(self)+1)][::-1] )
         # Another faster version
         cdef int L = len(self)-1
-        return Polynomial( [(L-i) * self[i] for i in xrange(0, len(self)-1)] )
+        return Polynomial( [(L-i) * self[i] for i in _range(0, len(self)-1)] )
 
     cpdef int get_coefficient(self, int degree):
         '''Returns the coefficient of the specified term'''

@@ -1,10 +1,16 @@
 # To use this script easily (starting with Python 2.7), just cd to the parent folder and type the following command:
 # python -m unittest discover tests
 
+from __future__ import print_function
+
 import unittest
 import sys
 from random import sample
 import itertools
+try:
+    from itertools import izip
+except ImportError:  #python3.x
+    izip = zip
 
 from creedsolo import *
 
@@ -13,18 +19,23 @@ try:
 except NameError:
     from creedsolo import bytearray
 
+try: # compatibility with Python 3+
+    xrange
+except NameError:
+    xrange = range
+
 
 class cTestReedSolomon(unittest.TestCase):
     def test_simple(self):
         rs = RSCodec(10)
-        msg = bytearray("hello world " * 10, "utf8")
+        msg = bytearray("hello world " * 10, "latin1")
         enc = rs.encode(msg)
         dec = rs.decode(enc)
         self.assertEqual(dec, msg)
     
     def test_correction(self):
         rs = RSCodec(10)
-        msg = bytearray("hello world " * 10, "utf8")
+        msg = bytearray("hello world " * 10, "latin1")
         enc = rs.encode(msg)
         self.assertEqual(rs.decode(enc), msg)
         for i in [27, -3, -9, 7, 0]:
@@ -35,7 +46,7 @@ class cTestReedSolomon(unittest.TestCase):
     
     def test_long(self):
         rs = RSCodec(10)
-        msg = bytearray("a" * 10000, "utf8")
+        msg = bytearray("a" * 10000, "latin1")
         enc = rs.encode(msg)
         dec = rs.decode(enc)
         self.assertEqual(dec, msg)
@@ -188,11 +199,11 @@ class cTestRSCodecUniversalCrossValidation(unittest.TestCase):
 
     def test_main(self):
         def cartesian_product_dict_items(dicts):
-            return (dict(itertools.izip(dicts, x)) for x in itertools.product(*dicts.itervalues()))
+            return (dict(izip(dicts, x)) for x in itertools.product(*dicts.values()))
 
         debugg = False # if one or more tests don't pass, you can enable this flag to True to get verbose output to debug
 
-        orig_mes = bytearray("hello world")
+        orig_mes = bytearray("hello world", "latin1")
         n = len(orig_mes)*2
         k = len(orig_mes)
         nsym = n-k
@@ -229,9 +240,9 @@ class cTestRSCodecUniversalCrossValidation(unittest.TestCase):
                 
                 it += 1
                 if debugg:
-                    print "it ", it
-                    print "param", p
-                    print case
+                    print("it ", it)
+                    print("param", p)
+                    print(case)
 
                 # REEDSOLO
                 # Init the RS codec
@@ -239,7 +250,7 @@ class cTestRSCodecUniversalCrossValidation(unittest.TestCase):
                 g = rs_generator_poly_all(n, fcr=fcr, generator=generator)
                 # Encode the message
                 rmesecc = rs_encode_msg(orig_mes, n-k, gen=g[n-k])
-                rmesecc_orig = bytearray(rmesecc) # make a copy of the original message to check later if fully corrected (because the syndrome may be wrong sometimes)
+                rmesecc_orig = rmesecc[:] # make a copy of the original message to check later if fully corrected (because the syndrome may be wrong sometimes)
                 # Tamper the message
                 if erratanb > 0:
                     if errmode == 1:
@@ -251,15 +262,15 @@ class cTestRSCodecUniversalCrossValidation(unittest.TestCase):
                     elif errmode == 4:
                         sl = slice(-istart-erratanb, None)
                     if debugg:
-                        print "Removed slice:", list(rmesecc[sl]), rmesecc[sl]
-                    rmesecc[sl] = "\x00" * erratanb
+                        print("Removed slice:", list(rmesecc[sl]), rmesecc[sl])
+                    rmesecc[sl] = [0] * erratanb
                 # Generate the erasures positions (if any)
                 erase_pos = [x for x in xrange(len(rmesecc)) if rmesecc[x] == 0]
                 if errnb > 0: erase_pos = erase_pos[:-errnb] # remove the errors positions (must not be known by definition)
                 if debugg:
-                    print "erase_pos", erase_pos
-                    print "coef_pos", [len(rmesecc) - 1 - pos for pos in erase_pos]
-                    print "Errata total: ", erratanb-errnb + errnb*2, " -- Correctable? ", (erratanb-errnb + errnb*2 <= nsym)
+                    print("erase_pos", erase_pos)
+                    print("coef_pos", [len(rmesecc) - 1 - pos for pos in erase_pos])
+                    print("Errata total: ", erratanb-errnb + errnb*2, " -- Correctable? ", (erratanb-errnb + errnb*2 <= nsym))
                 # Decoding the corrupted codeword
                 # -- Forney syndrome method
                 try:
@@ -271,16 +282,16 @@ class cTestRSCodecUniversalCrossValidation(unittest.TestCase):
                     results_br.append(False)
                     results_br.append(False)
                     if debugg:
-                        print "===="
-                        print "ERROR! Details:"
-                        print "param", p
-                        print case
-                        print erase_pos
-                        print "original_msg", rmesecc_orig
-                        print "tampered_msg", rmesecc
-                        print "decoded_msg", rmes+recc
-                        print "checks: ", rs_check(rmes + recc, n-k, fcr=fcr, generator=generator), rmesecc_orig == (rmes+recc)
-                        print "===="
+                        print("====")
+                        print("ERROR! Details:")
+                        print("param", p)
+                        print(case)
+                        print(erase_pos)
+                        print("original_msg", rmesecc_orig)
+                        print("tampered_msg", rmesecc)
+                        print("decoded_msg", rmes+recc)
+                        print("checks: ", rs_check(rmes + recc, n-k, fcr=fcr, generator=generator), rmesecc_orig == (rmes+recc))
+                        print("====")
                         raise exc
                 # -- Without Forney syndrome method
                 try:
@@ -291,7 +302,7 @@ class cTestRSCodecUniversalCrossValidation(unittest.TestCase):
                     results_br.append(False)
                     results_br.append(False)
 
-                if debugg: print "-----"
+                if debugg: print("-----")
 
         self.assertTrue(results_br.count(True) == len(results_br))
 

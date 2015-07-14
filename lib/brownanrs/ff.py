@@ -8,6 +8,8 @@
 # For fast software computation in Finite Fields, see the excellent paper: Huang, Cheng, and Lihao Xu. "Fast software implementation of finite field operations." Washington University in St. Louis, Tech. Rep (2003).
 # to understand the basic mathematical notions behind finite fields, see the excellent tutorial: http://research.swtch.com/field
 
+from _compat import _range
+
 import array
 
 # Galois Field's characteristic, by default, it's GF(2^8) == GF(256)
@@ -59,10 +61,10 @@ def rwh_primes1(n):
     # http://stackoverflow.com/questions/2068372/fastest-way-to-list-all-primes-below-n-in-python/3035188#3035188
     ''' Returns  a list of primes < n '''
     sieve = [True] * (n/2)
-    for i in xrange(3,int(n**0.5)+1,2):
+    for i in _range(3,int(n**0.5)+1,2):
         if sieve[i/2]:
             sieve[i*i/2::i] = [False] * ((n-i*i-1)/(2*i)+1)
-    return [2] + [2*i+1 for i in xrange(1,n/2) if sieve[i]]
+    return [2] + [2*i+1 for i in _range(1,n/2) if sieve[i]]
 
 def find_prime_polynomials(generator=2, c_exp=8, fast_primes=False, single=False):
     '''Compute the list of prime polynomials for the given generator and galois field characteristic exponent.'''
@@ -88,7 +90,7 @@ def find_prime_polynomials(generator=2, c_exp=8, fast_primes=False, single=False
         prim_candidates = rwh_primes1(field_charac_next) # generate maybe prime polynomials and check later if they really are irreducible
         prim_candidates = [x for x in prim_candidates if x > field_charac] # filter out too small primes
     else:
-        prim_candidates = xrange(field_charac+2, field_charac_next, root_charac) # try each possible prime polynomial, but skip even numbers (because divisible by 2 so necessarily not irreducible)
+        prim_candidates = _range(field_charac+2, field_charac_next, root_charac) # try each possible prime polynomial, but skip even numbers (because divisible by 2 so necessarily not irreducible)
 
     # Start of the main loop
     correct_primes = []
@@ -98,7 +100,7 @@ def find_prime_polynomials(generator=2, c_exp=8, fast_primes=False, single=False
 
         # Second loop, build the whole Galois Field
         x = GF2int(1)
-        for i in xrange(field_charac):
+        for i in _range(field_charac):
             # Compute the next value in the field (ie, the next power of alpha/generator)
             x = x.multiply(generator, prim, field_charac+1)
 
@@ -233,9 +235,13 @@ class GF2int(int):
         y = GF2int_logtable[other]
         z = (x - y) % GF2_charac # in logarithms, substraction = division after exponentiation
         return GF2int(GF2int_exptable[z])
+    __floordiv__ = __div__
+    __truediv__ = __div__
 
     def __rdiv__(self, other):
         return self.inverse() * other
+    __rfloordiv__ = __rdiv__
+    __rtruediv__ = __rdiv__
 
     def __repr__(self):
         n = self.__class__.__name__
@@ -310,7 +316,7 @@ class GF2int(int):
             if dl1 < dl2:
                 return dividend
             # Else, align the most significant 1 of the divisor to the most significant 1 of the dividend (by shifting the divisor)
-            for i in xrange(dl1-dl2,-1,-1):
+            for i in _range(dl1-dl2,-1,-1):
                 # Check that the dividend is divisible (useless for the first iteration but important for the next ones)
                 if dividend & (1 << i+dl2-1):
                     # If divisible, then shift the divisor to align the most significant bits and XOR (carry-less substraction)

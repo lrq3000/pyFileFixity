@@ -231,7 +231,7 @@ Note: An ecc structure repair does NOT allow to recover from more errors on your
             idx_corrected = 0
             idx_total = 0
             markers_repaired = [0] * len(markers)
-            bardisp = tqdm.tqdm(total=idx_size, leave=True, desc='IDXREAD', unit='B', unit_format=True) # display progress bar based on reading the database file (since we don't know how many files we will process beforehand nor how many total entries we have)
+            bardisp = tqdm.tqdm(total=idx_size, leave=True, desc='IDXREAD', unit='B', unit_scale=True) # display progress bar based on reading the database file (since we don't know how many files we will process beforehand nor how many total entries we have)
             with open(indexpath, 'rb') as dbidx:
                 buf = 1
                 while buf:
@@ -293,7 +293,7 @@ Note: An ecc structure repair does NOT allow to recover from more errors on your
         markers_pos = [[] for i in xrange(len(markers))] # will contain the list of positions where a corrupted marker has been detected (not valid markers, they will be skipped)
         distance_thresholds = [round(len(x)*distance_threshold, 0) for x in markers] # calculate the number of characters maximum for distance
         skip_until = -1 # when a valid marker (non corrupted) is found, we use this variable to skip to after the marker length (to avoid detecting partial parts of this marker, which will have a hamming distance even if the marker is completely valid because the reading window will be after the beginning of the marker)
-        bardisp = tqdm.tqdm(total=ecc_size, leave=True, desc='DBREAD', unit='B', unit_format=True) # display progress bar based on reading the database file (since we don't know how many files we will process beforehand nor how many total entries we have)
+        bardisp = tqdm.tqdm(total=ecc_size, leave=True, desc='DBREAD', unit='B', unit_scale=True) # display progress bar based on reading the database file (since we don't know how many files we will process beforehand nor how many total entries we have)
         while buf: # until we have walked through the whole ecc file
             # Read a part of the ecc file into a buffer, this allows to process more quickly than just loading the size of a marker
             curpos = db.tell() # keep the current reading position
