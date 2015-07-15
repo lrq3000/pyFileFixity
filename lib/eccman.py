@@ -120,6 +120,7 @@ class ECCMan(object):
         # Pad with null bytes if necessary
         message, pad = self.pad(message, k=k)
         ecc, _ = self.rpad(ecc, k=k) # fill ecc with null bytes if too small (maybe the field delimiters were misdetected and this truncated the ecc? But we maybe still can correct if the truncation is less than the resilience rate)
+
         # If the message was left padded, then we need to update the positions of the erasures
         if erasures_pos and pad:
             len_pad = len(pad)

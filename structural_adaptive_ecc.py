@@ -378,7 +378,8 @@ Note: Folders meta-data is NOT accounted, only the files! Use DVDisaster or a si
     ep = '''
 Note1: this is a pure-python implementation (except for MD5 hash but a pure-python alternative is provided in lib/md5py.py), thus it may be VERY slow to generate an ecc file. To speed-up things considerably, you can use PyPy v2.5.0 or above, there will be a speed-up of at least 100x from our experiments (you can expect an encoding rate of more than 1MB/s). Feel free to profile using easy_profiler.py and try to optimize the encoding parts of the reed-solomon libraries.
 
-Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null bytes), resilience_rate errors (bit-flips, thus a character that changes but not necessarily a null byte) and amount to an additional storage of 2*resilience_rate storage compared to the original files size.'''
+Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null bytes, you know where they are) or resilience_rate errors (an error is a corrupted character but you don't know its position) and amount to an additional storage of 2*resilience_rate storage compared to the original total files size.
+'''
 
     #== Commandline arguments
     #-- Constructing the parser
@@ -718,11 +719,11 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                         fpcorrupted = True
                         # Repair the message block and the ecc
                         try:
-                            repaired_block, repaired_ecc = ecc_manager_intra.decode(e["message"], e["ecc"], enable_erasures, erasure_symbol, only_erasures)
+                            repaired_block, repaired_ecc = ecc_manager_intra.decode(e["message"], e["ecc"], enable_erasures=enable_erasures, erasures_char=erasure_symbol, only_erasures=only_erasures)
                         except (ReedSolomonError, RSCodecError), exc: # the reedsolo lib may raise an exception when it can't decode. We ensure that we can still continue to decode the rest of the file, and the other files.
                             repaired_block = None
                             repaired_ecc = None
-                            print(exc)
+                            print("Error: metadata field at offset %i: %s" % (entry_pos[0], exc))
                         # Check if the block was successfully repaired: if yes then we copy the repaired block...
                         if repaired_block is not None and ecc_manager_intra.check(repaired_block, repaired_ecc):
                             relfilepath_correct.append(repaired_block)
@@ -733,8 +734,8 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                 relfilepath = ''.join(relfilepath_correct)
                 # Report errors
                 if fpcorrupted:
-                    if fpcorrected: ptee.write("\n- Fixed error in filepath %s." % relfilepath)
-                    else: ptee.write("\n- Error in filepath, could not correct completely: %s. Please fix manually by editing the ecc file or at least set the corrupted characters to null bytes." % relfilepath)
+                    if fpcorrected: ptee.write("\n- Fixed error in metadata field at offset %i filepath %s." % (entry_pos[0], relfilepath))
+                    else: ptee.write("\n- Error in filepath, could not correct completely metadata field at offset %i with value: %s. Please fix manually by editing the ecc file or set the corrupted characters to null bytes and --enable_erasures." % (entry_pos[0], relfilepath))
                 # -- End of intra-ecc on filepath
 
                 # Build the absolute file path
@@ -803,7 +804,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                                     except (ReedSolomonError, RSCodecError), exc: # the reedsolo lib may raise an exception when it can't decode. We ensure that we can still continue to decode the rest of the file, and the other files.
                                         repaired_block = None
                                         repaired_ecc = None
-                                        print(exc)
+                                        print("Error: file %s: block %i: %s" % (relfilepath, i, exc))
                                     # Check if the repair was successful. This is an "all" condition: if all checks fail, then the correction failed. Else, we assume that the checks failed because the ecc entry was partially corrupted (it's highly improbable that any one check success by chance, it's a lot more probable that it's simply that the entry was partially corrupted, eg: the hash was corrupted and thus cannot match anymore).
                                     hash_ok = False
                                     ecc_ok = False
