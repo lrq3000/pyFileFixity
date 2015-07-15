@@ -75,14 +75,16 @@ Pros:
 - Open application and open specifications under the MIT license (you can do whatever you want with it and tailor it to your needs if you want to, or add better decoding procedures in the future as science progress so that you can better recover your data from your already generated ecc file).
 - Highly reliable file fixity watcher: rfigc.py will tell you without any ambiguity using several attributes if your files have been corrupted or not, and can even check for images if the header is valid (ie: if the file can still be opened).
 - Readable ecc file format (compared to PAR2 and most other similar specifications).
-- Highly resilient ecc file format against corruption (not only are your data protected by ecc, the ecc file is protected too).
+- Highly resilient ecc file format against corruption (not only are your data protected by ecc, the ecc file is protected too against critical spots, both because there is no header so that each track is independent and if one track is corrupted beyond repair then other ecc tracks can still be read, and a .idx file will be generated to repair the structure of the ecc file to recover all tracks).
 - Very safe and conservative approach: the recovery process checks that the recovery was successful before committing a repaired block.
 - Partial recovery allowed (even if a file cannot be completely recovered, the parts that can will be repaired and then the rest that can't be repaired will be recopied from the corrupted version).
 - Support directory processing: you can encode an ecc file for a whole directory of files (with any number of sub-directories and depth).
-- No limit on the number of files.
-- Variable resiliency rate, ensuring that you can always open your files even if partially corrupted.
+- No limit on the number of files, and it can recursively protect files in a directory tree.
+- Variable resiliency rate and header-only resilience, ensuring that you can always open your files even if partially corrupted (the structure of your files will be saved, so that you can use other softwares to repair beyond if this set of script is not sufficient to totally repair).
+- Support for erasures (null bytes) and even errors-and-erasures, which literally doubles the repair capabilities. To my knowledge, this is the only freely available parity software that supports erasures.
 - Included a prediction of the total file size given your parameters, and the total time it will take to encode/decode.
-- No external library needed, only native Python.
+- No external library needed, only native Python 2.7.x (but with PyPy it will be way faster!).
+- Opensourced under the very permissive MIT licence, do whatever you want!
 
 Cons:
 
@@ -235,6 +237,7 @@ Also, you can try to fix some of your files using specialized repairing tools (b
 
 - for tar files, you can use fixtar: https://github.com/BestSolution-at/fixtar
 - for RAID mounting and recovery, you can use "Raid faster - recover better" (rfrb) tool by Sabine Seufert and Christian Zoubek: https://github.com/lrq3000/rfrb
+- if your unicode strings were mangled, try https://github.com/LuminosoInsight/python-ftfy
 
 Protecting directory tree meta-data
 --------------------------------------------------
@@ -263,6 +266,21 @@ Here are some tools with a similar philosophy to pyFileFixity, which you can use
 - ZFS: a file system which includes ecc correction directly. The whole filesystem, including directory tree meta-data, are protected. If you want ecc protection on your computer for all your files, this is the way to go.
 - Encryption: technically, you can encrypt your files without losing too much redundancy, as long as you use an encryption scheme that is block-based such as DES: if one block gets corrupted, it won't be decryptable, but the rest of the files' encrypted blocks should be decryptable without any problem. So encrypting with such algorithms leads to similar files as non-solid archives such as deflate zip. Of course, for very long term storage, it's better to avoid encryption and compression (because you raise the information contained in a single block of data, thus if you lose one block, you lose more data), but if it's really necessary to you, you can still maintain high chances of recovering your files by using block-based encryption/compression.
 - SnapRAID: http://snapraid.sourceforge.net/
+
+FAQ
+-------
+
+- Can I compress my data files and my ecc file?
+
+As a rule of thumb, you should ALWAYS keep your ecc file in clear text, so under no compression nor encryption. This is because in case the ecc file gets corrupted, if compressed/encrypted, the decompression/decrypting of the corrupted parts may completely flaw the whole structure of the ecc file.
+Your data files, that you want to protect, _should_ remain in clear text, but you may choose to compress them if it drastically reduces the size of your files, and if you raise the resilience rate of your ecc file (so compression may be a good option if you have an opportunity to trade the file size reduction for more ecc file resilience). Also, make sure to choose a non-solid compression algorithm like DEFLATE (zip) so that you can still decode correct parts even if some are corrupted (else with a solid archive, if one byte is corrupted, the whole archive may become unreadable).
+However, in the case that you compress your files, you should generate the ecc file only _after_ compression, so that the ecc file applies to the compressed archive instead of the uncompressed files, else you risk being unable to correct your files because the uncompression of corrupted parts may output gibberish, and length extended corrupted parts (and if the size is different, Reed-Solomon will just freak out).
+
+- Can I encrypt my data files and my ecc file ?
+
+NEVER encrypt your ecc file, this is totally useless and counterproductive.
+You can encrypt your data files, but choose a non-solid algorithm (like AES if I'm not mistaken) so that corrupted parts do not prevent the decoding of subsequent correct parts. Of course, you're lowering a bit your chances of recovering your data files by encrypting them (the best chance to keep data for the long term is to keep them in clear text), but if it's really necessary, using a non-solid encrypting scheme is a good compromise.
+You can generate an ecc file on your encrypted data files, thus _after_ encryption, and keep the ecc file in clear text (never encrypt nor compress it). This is not a security risk at all since the ecc file does not give any information on the content inside your encrypted files, but rather just redundant info to correct corrupted bytes (however if you generate the ecc file on the data files before encryption, then it's clearly a security risk, and someone could recover your data without your permission).
 
 Todo
 -------
@@ -378,3 +396,5 @@ The best bet I think is to implement the Time-Domain decoder, without Syndrome n
 Lin's table interpretation of Berlekamp-Massey can also be very interesting, requiring only 2t additions and 2t multiplications: Lin, S.: An Introduction to Error-Correcting Codes. Prentice-Hall, Englewood Cliffs, New Jersey, 1970. and Lim, Raymond S. "A decoding procedure for the Reed-Solomon codes." (1978).
 
 - regular representation for polynomials over galois fields may be faster than current vectorial representation? http://mathworld.wolfram.com/FiniteField.html
+
+- If you have any question about Reed-Solomon codes, the best place to ask is probably here (with the incredible Dilip Sarwate): http://www.dsprelated.com/groups/comp.dsp/1.php?searchfor=reed%20solomon

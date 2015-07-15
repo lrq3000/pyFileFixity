@@ -80,6 +80,7 @@ import struct # to support indexes backup file
 from lib.eccman import ECCMan, compute_ecc_params
 from lib.hasher import Hasher
 from lib.reedsolomon.reedsolo import ReedSolomonError
+from lib.brownanrs.rs import RSCodecError
 
 
 
@@ -440,6 +441,12 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                         help='On correction, block corruption is only checked with the hash (the ecc will still be checked after correction, but not before). If no_fast_check is enabled, then ecc will also be checked before. This allows to find blocks corrupted by malicious intent (the block is corrupted but the hash has been corrupted as well to match the corrupted block, because it\'s almost impossible that following a hardware or logical fault, the hash match the corrupted block).')
     main_parser.add_argument('--skip_missing', action='store_true', required=False, default=False,
                         help='Skip missing files (no warning).')
+    main_parser.add_argument('--enable_erasures', action='store_true', required=False, default=False,
+                        help='Enable errors-and-erasures correction. Reed-Solomon can correct twice more erasures than errors (eg, if resilience rate is 0.3, then you can correct 30% errors and 60% erasures and any combination of errors and erasures between 30%-60% corruption). An erasure is a corrupted symbol where we know the position, while errors are not known at all. To find erasures, we will find any symbol that is equal to --erasure_symbol and flag it as an erasure. This is particularly useful if the software you use (eg, a disk scraper) can mark bad sectors with a constant character (eg, null byte). Misdetected erasures will just eat one ecc symbol, and won\'t change the decoded message.')
+    main_parser.add_argument('--only_erasures', action='store_true', required=False, default=False,
+                        help='Enable only erasures correction (no errors). Use this only if you are sure that all corrupted symbols have the same value (eg, if your disk scraper replace bad sectors by null bytes). This will ensure that you can correct up to 2*resilience_rate corrupted symbols.')
+    main_parser.add_argument('--erasure_symbol', type=int, default=0, required=False,
+                        help='Symbol that will be flagged as an erasure. Default: null byte 0. (value must be an integer)', **widget_text)
 
     # Generate mode arguments
     main_parser.add_argument('-g', '--generate', action='store_true', required=False, default=False,
@@ -472,6 +479,9 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
     resilience_rate_s3 = args.resilience_rate_stage3
     resilience_rate_intra = args.resilience_rate_intra
     replication_rate = args.replication_rate
+    enable_erasures = args.enable_erasures
+    only_erasures = args.only_erasures
+    erasure_symbol = args.erasure_symbol
     ignore_size = args.ignore_size
     skip_missing = args.skip_missing
     skip_size_below = args.skip_size_below
@@ -572,10 +582,10 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
         total_pred_percentage = sizeecc * 100 / sizetotal
         ptee.write("Total ECC size estimation: %s = %g%% of total files size %s." % (sizeof_fmt(sizeecc), total_pred_percentage, sizeof_fmt(sizetotal)))
         ptee.write("Details per stage:")
-        ptee.write("- Resiliency stage1 of %i%%: For the header (first %i characters) of each file: each block of %i chars will get an ecc of %i chars." % (resilience_rate_s1*100, header_size, ecc_params_header["message_size"], ecc_params_header["ecc_size"]))
-        ptee.write("- Resiliency stage2 of %i%%: for the rest of the file, the parameters will start with: each block of %i chars will get an ecc of %i chars." % (resilience_rate_s2*100, ecc_params_s2["message_size"], ecc_params_s2["ecc_size"]))
-        ptee.write("- Resiliency stage3 of %i%%: progressively towards the end, the parameters will gradually become: each block of %i chars will get an ecc of %i chars." % (resilience_rate_s3*100, ecc_params_s3["message_size"], ecc_params_s3["ecc_size"]))
-        if max_block_size > 100: ptee.write("Note: current max_block_size (size of message+ecc blocks) is %i. Consider using a smaller value to greatly speedup the processing (because Reed-Solomon encoding complexity is about O(max_block_size^2)) at the expense of generating a bigger ecc file." % max_block_size)
+        ptee.write("- Resiliency stage1 of %i%%: For the header (first %i characters) of each file: each block of %i chars will get an ecc of %i chars (%i errors or %i erasures)." % (resilience_rate_s1*100, header_size, ecc_params_header["message_size"], ecc_params_header["ecc_size"], int(ecc_params_header["ecc_size"] / 2), ecc_params_header["ecc_size"]))
+        ptee.write("- Resiliency stage2 of %i%%: for the rest of the file, the parameters will start with: each block of %i chars will get an ecc of %i chars (%i errors or %i erasures)." % (resilience_rate_s2*100, ecc_params_s2["message_size"], ecc_params_s2["ecc_size"], int(ecc_params_s2["ecc_size"] / 2), ecc_params_s2["ecc_size"]))
+        ptee.write("- Resiliency stage3 of %i%%: progressively towards the end, the parameters will gradually become: each block of %i chars will get an ecc of %i chars (%i errors or %i erasures)." % (resilience_rate_s3*100, ecc_params_s3["message_size"], ecc_params_s3["ecc_size"], int(ecc_params_s3["ecc_size"] / 2), ecc_params_s3["ecc_size"]))
+        if max_block_size > 100: ptee.write("Note: current max_block_size (size of message+ecc blocks) is %i. Consider using a smaller value to greatly speedup the processing (because Reed-Solomon encoding complexity is about O(max_block_size^2)) at the expense of generating a bigger ecc file and less burst error resiliency (because the ecc blocks will be smaller)." % max_block_size)
 
     if stats_only: return 0
 
@@ -708,8 +718,8 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                         fpcorrupted = True
                         # Repair the message block and the ecc
                         try:
-                            repaired_block, repaired_ecc = ecc_manager_intra.decode(e["message"], e["ecc"])
-                        except ReedSolomonError, exc: # the reedsolo lib may raise an exception when it can't decode. We ensure that we can still continue to decode the rest of the file, and the other files.
+                            repaired_block, repaired_ecc = ecc_manager_intra.decode(e["message"], e["ecc"], enable_erasures, erasure_symbol, only_erasures)
+                        except (ReedSolomonError, RSCodecError), exc: # the reedsolo lib may raise an exception when it can't decode. We ensure that we can still continue to decode the rest of the file, and the other files.
                             repaired_block = None
                             repaired_ecc = None
                             print(exc)
@@ -789,14 +799,17 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (null byte
                                     # Try to repair the block using ECC
                                     ptee.write("File %s: corruption in block %i. Trying to fix it." % (relfilepath, i))
                                     try:
-                                        repaired_block, repaired_ecc = ecc_manager_variable.decode(e["message"], e["ecc"], k=e["ecc_params"]["message_size"])
-                                    except ReedSolomonError, exc: # the reedsolo lib may raise an exception when it can't decode. We ensure that we can still continue to decode the rest of the file, and the other files.
+                                        repaired_block, repaired_ecc = ecc_manager_variable.decode(e["message"], e["ecc"], k=e["ecc_params"]["message_size"], enable_erasures=enable_erasures, erasures_char=erasure_symbol, only_erasures=only_erasures)
+                                    except (ReedSolomonError, RSCodecError), exc: # the reedsolo lib may raise an exception when it can't decode. We ensure that we can still continue to decode the rest of the file, and the other files.
                                         repaired_block = None
                                         repaired_ecc = None
                                         print(exc)
                                     # Check if the repair was successful. This is an "all" condition: if all checks fail, then the correction failed. Else, we assume that the checks failed because the ecc entry was partially corrupted (it's highly improbable that any one check success by chance, it's a lot more probable that it's simply that the entry was partially corrupted, eg: the hash was corrupted and thus cannot match anymore).
-                                    hash_ok = (hasher.hash(repaired_block) == e["hash"])
-                                    ecc_ok = ecc_manager_variable.check(repaired_block, repaired_ecc, k=e["ecc_params"]["message_size"])
+                                    hash_ok = False
+                                    ecc_ok = False
+                                    if repaired_block is not None:
+                                        hash_ok = (hasher.hash(repaired_block) == e["hash"])
+                                        ecc_ok = ecc_manager_variable.check(repaired_block, repaired_ecc, k=e["ecc_params"]["message_size"])
                                     if repaired_block is not None and (hash_ok or ecc_ok): # If the hash now match the repaired message block, we commit the new block
                                         outfile.write(repaired_block) # save the repaired block
                                         # Show a precise report about the repair

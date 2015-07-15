@@ -24,6 +24,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+# Compatibility with Python 3
+from _compat import _str
+
 # ECC libraries
 try:
     import lib.reedsolomon.creedsolo as reedsolo
@@ -97,23 +100,30 @@ class ECCMan(object):
         if not k: k = self.k
 
         # Optimization, use bytearray
-        message = bytearray(message)
-        ecc = bytearray(ecc)
+        if isinstance(message, _str):
+            message = bytearray([ord(x) for x in message])
+            ecc = bytearray([ord(x) for x in ecc])
 
         # Detect erasures positions and replace with null bytes (replacing erasures with null bytes is necessary for correct syndrome computation)
+        # Note that this must be done before padding, else we risk counting the padded null bytes as erasures!
         erasures_pos = None
         if enable_erasures:
             # Concatenate to find erasures in the whole codeword
             mesecc = message + ecc
+            # Convert char to a int (because we use a bytearray)
+            if isinstance(erasures_char, _str): erasures_char = ord(erasures_char)
             # Find the positions of the erased characters
             erasures_pos = [i for i in xrange(len(mesecc)) if mesecc[i] == erasures_char]
-            # Replace erased characters with 0 (null byte) so that decoding is easier
-            message.replace(erasures_char, "\x00")
-            ecc.replace(erasures_char, "\x00")
+            # Failing case: no erasures could be found and we want to only correct erasures, then we return the message as-is
+            if only_erasures and not erasures_pos: return message, ecc
 
         # Pad with null bytes if necessary
         message, pad = self.pad(message, k=k)
         ecc, _ = self.rpad(ecc, k=k) # fill ecc with null bytes if too small (maybe the field delimiters were misdetected and this truncated the ecc? But we maybe still can correct if the truncation is less than the resilience rate)
+        # If the message was left padded, then we need to update the positions of the erasures
+        if erasures_pos and pad:
+            len_pad = len(pad)
+            erasures_pos = [x+len_pad for x in erasures_pos]
 
         # Decoding
         if self.algo == 1:
