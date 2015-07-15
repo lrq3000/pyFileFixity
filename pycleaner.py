@@ -30,26 +30,26 @@ class GlobDirectoryWalker:
                 if fnmatch.fnmatch(file, self.pattern):
                     return fullname
 
-def pycCleanup(directory,path):
+def pycCleanup(directory,path,filext='pyc'):
     for filename in directory:
-        if     filename[-3:] == 'pyc':
+        if     filename[-3:] == filext:
             print '- ' + filename
             os.remove(path+os.sep+filename)
         elif os.path.isdir(path+os.sep+filename):
             pycCleanup(os.listdir(path+os.sep+filename),path+os.sep+filename)
 
-def cleanup1():
+def cleanup1(filext='pyc'):
     directory = os.listdir('.')
-    print('Deleting pyc files recursively in: '+ str(directory))
-    pycCleanup(directory,'.')
+    print('Deleting .%s files recursively in %s.' % (filext, str(directory)))
+    pycCleanup(directory,'.',filext)
 
-def cleanup2():
-    for file in GlobDirectoryWalker(".", "*.pyc"):
+def cleanup2(filext='pyc'):
+    for file in GlobDirectoryWalker(".", "*."+filext):
         print file
         os.remove(file)
 
     print "After..."
-    for file in GlobDirectoryWalker(".", "*.pyc"):
+    for file in GlobDirectoryWalker(".", "*."+filext):
         print file
 
 if __name__ == '__main__':
