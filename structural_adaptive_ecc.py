@@ -336,13 +336,15 @@ def stream_compute_ecc_hash(ecc_manager, hasher, file, max_block_size, header_si
 # Try to import Gooey for GUI display, but manage exception so that we replace the Gooey decorator by a dummy function that will just return the main function as-is, thus keeping the compatibility with command-line usage
 try:
     import lib.gooey as gooey
-except:
+except ImportError as exc:
     # Define a dummy replacement function for Gooey to stay compatible with command-line usage
     class gooey(object):
         def Gooey(func):
             return func
     # If --gui was specified, then there's a problem
-    if len(sys.argv) > 1 and sys.argv[1] == '--gui': raise ImportError('--gui specified but lib/gooey could not be found, cannot load the GUI (however you can still use in commandline).')
+    if len(sys.argv) > 1 and sys.argv[1] == '--gui':
+        print('ERROR: --gui specified but an error happened with lib/gooey, cannot load the GUI (however you can still use this script in commandline). Check that lib/gooey exists and that you have wxpython installed. Here is the error: ')
+        raise(exc)
 
 def conditional_decorator(flag, dec):
     def decorate(fn):
