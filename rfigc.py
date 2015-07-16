@@ -69,17 +69,24 @@ except ImportError:
 #                   FUNCTIONS
 #***********************************
 
-# Check that an argument is a real directory
 def is_dir(dirname):
-    """Checks if a path is an actual directory"""
+    '''Checks if a path is an actual directory that exists'''
     if not os.path.isdir(dirname):
         msg = "{0} is not a directory".format(dirname)
         raise argparse.ArgumentTypeError(msg)
     else:
         return dirname
 
-# Relative path to absolute
+def is_dir_or_file(dirname):
+    '''Checks if a path is an actual directory that exists or a file'''
+    if not os.path.isdir(dirname) and not os.path.isfile(dirname):
+        msg = "{0} is not a directory nor a file".format(dirname)
+        raise argparse.ArgumentTypeError(msg)
+    else:
+        return dirname
+
 def fullpath(relpath):
+    '''Relative path to absolute'''
     if (type(relpath) is object or type(relpath) is file):
         relpath = relpath.name
     return os.path.abspath(os.path.expanduser(relpath))
@@ -127,11 +134,17 @@ def generate_hashes(filepath, blocksize=65536):
             buf = afile.read(blocksize)
     return (hasher_md5.hexdigest(), hasher_sha1.hexdigest())
 
-def recwalk(folderpath):
+def recwalk(inputpath):
     '''Recursively walk through a folder. This provides a mean to flatten out the files restitution (necessary to show a progress bar). This is a generator.'''
-    for dirpath, dirs, files in os.walk(folderpath):	
-        for filename in files:
-            yield (dirpath, filename)
+    # If it's only a single file, return this single file
+    if os.path.isfile(inputpath):
+        abs_path = fullpath(inputpath)
+        yield os.path.dirname(abs_path), os.path.basename(abs_path)
+    # Else if it's a folder, walk recursively and return every files
+    else:
+        for dirpath, dirs, files in os.walk(inputpath):	
+            for filename in files:
+                yield (dirpath, filename) # return directory (full path) and filename
 
 
 
@@ -228,8 +241,8 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
         widget_file = {}
         widget_text = {}
     # Required arguments
-    main_parser.add_argument('-i', '--input', metavar='/path/to/root/folder', type=is_dir, nargs=1, required=True,
-                        help='Path to the root folder from where the scanning will occur.', **widget_dir)
+    main_parser.add_argument('-i', '--input', metavar='/path/to/root/folder', type=is_dir_or_file, nargs=1, required=True,
+                        help='Path to the root folder (or a single file) from where the scanning will occur.', **widget_dir)
     main_parser.add_argument('-d', '--database', metavar='/some/folder/databasefile.csv', type=str, nargs=1, required=True, #type=argparse.FileType('rt')
                         help='Path to the csv file containing the hash informations.', **widget_filesave)
 
@@ -267,13 +280,14 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
     main_parser.add_argument('--filescraping_recovery', action='store_true', required=False, default=False,
                         help='Given a folder of unorganized files, compare to the database and restore the filename and directory structure into the output folder.')
     main_parser.add_argument('-o', '--output', metavar='/path/to/root/folder', type=is_dir, nargs=1, required=False,
-                        help='Path to the output folder where to output the files reorganized after --recover_from_filescraping.', **widget_dir)
+                        help='Path to the output folder where to output (copy) the files reorganized after --recover_from_filescraping.', **widget_dir)
 
     #== Parsing the arguments
     args = main_parser.parse_args(argv) # Storing all arguments to args
 
     #-- Set variables from arguments
-    folderpath = fullpath(args.input[0])
+    inputpath = fullpath(args.input[0]) # path to the files to protect (either a folder or a single file)
+    rootfolderpath = inputpath # path to the root folder (to compute relative paths)
     #database = os.path.basename(fullpath(args.database[0])) # Take only the filename.
     database = fullpath(args.database[0])
     generate = args.generate
@@ -288,6 +302,9 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
     outputpath = None
     if args.output: outputpath = fullpath(args.output[0])
     filescraping = args.filescraping_recovery
+
+    if os.path.isfile(inputpath): # if inputpath is a single file (instead of a folder), then define the rootfolderpath as the parent directory (for correct relative path generation, else it will also truncate the filename!)
+        rootfolderpath = os.path.dirname(inputpath)
 
     errors_file = None
     if args.errors_file: errors_file = os.path.basename(fullpath(args.errors_file[0]))
@@ -341,7 +358,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
             filescount = 0
             for row in tqdm.tqdm(dbfile, total=filestodocount, leave=True):
                 filescount = filescount + 1
-                filepath = os.path.join(folderpath, row['path'])
+                filepath = os.path.join(rootfolderpath, row['path'])
 
                 errors = []
                 if not os.path.isfile(filepath):
@@ -391,7 +408,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
             # Counting the total number of files that we will have to process
             ptee.write("Counting total number of files to process, please wait...")
             filestodocount = 0
-            for _ in tqdm.tqdm(recwalk(folderpath)):
+            for _ in tqdm.tqdm(recwalk(inputpath)):
                 filestodocount = filestodocount + 1
             ptee.write("Counting done.")
 
@@ -399,12 +416,12 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
             ptee.write("Processing files to compute metadata to store in database, please wait...")
             filescount = 0
             addcount = 0
-            for (dirpath, filename) in tqdm.tqdm(recwalk(folderpath), total=filestodocount, leave=True):
+            for (dirpath, filename) in tqdm.tqdm(recwalk(inputpath), total=filestodocount, leave=True):
                     filescount = filescount + 1
                     # Get full absolute filepath
-                    filepath = os.path.join(dirpath,filename)
+                    filepath = os.path.join(dirpath, filename)
                     # Get database relative path (from scanning root folder)
-                    relfilepath = os.path.relpath(filepath, folderpath) # File relative path from the root (so that we can easily check the files later even if the absolute path is different)
+                    relfilepath = os.path.relpath(filepath, rootfolderpath) # File relative path from the root (so that we can easily check the files later even if the absolute path is different)
 
                     # If update + append mode, then if the file is already in the database we skip it (we continue computing metadata only for new files)
                     if update and append and relfilepath in db_paths:
@@ -465,7 +482,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
         # Counting the total number of files that we will have to process
         ptee.write("Counting total number of files to process, please wait...")
         filestodocount = 0
-        for _ in tqdm.tqdm(recwalk(folderpath)):
+        for _ in tqdm.tqdm(recwalk(inputpath)):
             filestodocount = filestodocount + 1
         ptee.write("Counting done.")
         
@@ -473,12 +490,12 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
         ptee.write("Processing file scraping recovery, walking through all files from input folder...")
         filescount = 0
         copiedcount = 0
-        for (dirpath, filename) in tqdm.tqdm(recwalk(folderpath), total=filestodocount, leave=True):
+        for (dirpath, filename) in tqdm.tqdm(recwalk(inputpath), total=filestodocount, leave=True):
                 filescount = filescount + 1
                 # Get full absolute filepath
                 filepath = os.path.join(dirpath,filename)
                 # Get database relative path (from scanning root folder)
-                relfilepath = os.path.relpath(filepath, folderpath) # File relative path from the root (so that we can easily check the files later even if the absolute path is different)
+                relfilepath = os.path.relpath(filepath, rootfolderpath) # File relative path from the root (we truncate the rootfolderpath so that we can easily check the files later even if the absolute path is different)
 
                 # Generate the hashes from the currently inspected file
                 md5hash, sha1hash = generate_hashes(filepath)
@@ -518,14 +535,14 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
             filestodocount = filestodocount + 1
 
         # Processing the files using the database list
-        ptee.write("Checking for files corruption based on database %s, please wait..." % database)
+        ptee.write("Checking for files corruption based on database %s on input path %s, please wait..." % (database, inputpath))
         dbf = open(database, 'rb')
         dbfile = csv.DictReader(dbf) # we need to reopen the file to put the reading cursor (the generator position) back to the beginning
         errorscount = 0
         filescount = 0
         for row in tqdm.tqdm(dbfile, total=filestodocount, leave=True):
             filescount = filescount + 1
-            filepath = os.path.join(folderpath, row['path'])
+            filepath = os.path.join(rootfolderpath, row['path'])
 
             errors = []
             if not os.path.isfile(filepath):
