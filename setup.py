@@ -32,3 +32,11 @@ setup(
     name = "PyFileFixity",
     ext_modules = extensions
 )
+
+# Use pypandoc to convert the Markdown readme into ReStructuredText for PyPi package generation
+#import pypandoc
+#converts markdown to reStructured
+#z = pypandoc.convert('README','rst',format='markdown')
+#writes converted file
+#with open('README.rst','w') as outfile:
+#    outfile.write(z)
