@@ -270,6 +270,7 @@ Here are some tools with a similar philosophy to pyFileFixity, which you can use
 - [Checkm](https://pypi.python.org/pypi/Checkm/0.4): a tool similar to rfigc.py
 - [BagIt](https://en.wikipedia.org/wiki/BagIt) with two python implementations [here](https://pypi.python.org/pypi/pybagit/) and [here](https://pypi.python.org/pypi/bagit/): this is a file packaging format for sharing and storing archives for long term preservation, it just formalizes a few common procedures and meta data that are usually added to files for long term archival (such as MD5 digest).
 - [RSArmor](https://github.com/jap/rsarm) a tool based on Reed-Solomon to encode binary data files into hexadecimal, so that you can print the characters on paper. May be interesting for small datasets (below 100 MB).
+- [Ent](https://github.com/lsauer/entropy) a tool to analyze the entropy of your files. Can be very interesting to optimize the error correction algorithm, or your compression tools.
 
 FAQ
 -------
