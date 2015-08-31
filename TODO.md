@@ -1,6 +1,8 @@
 PyFileFixity Todo
 =============
 
+- Move from argparse to [docopt](https://github.com/docopt/docopt) to generate a beautiful and more usable command-line interface (with clear modes, because right now the relevant options are not grouped together and it can be quite confusing).
+
 - High priority: Speed optimize the Reed-Solomon library? (using Numpy or Cython? But I want to keep a pure python implementation available just in case, or make a Cython implementation that is also compatible with normal python). Use pprofile to check where to optimize first.
 
 Note: PyPy works great, it really speeds things up a lot!
