@@ -522,6 +522,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
     # == PROCESSING BRANCHING == #
 
     # Precompute some parameters and load up ecc manager objects (big optimization as g_exp and g_log tables calculation is done only once)
+    ptee.write("Initializing the ECC codecs, please wait...")
     hasher = Hasher(hash_algo)
     hasher_intra = Hasher('none') # for intra_ecc we don't use any hash
     ecc_params = compute_ecc_params(max_block_size, resilience_rate, hasher)
@@ -597,7 +598,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
                     continue
 
                 # Opening the input file's to read its header and compute the ecc/hash blocks
-                if verbose: print("\n- Processing file %s" % relfilepath)
+                if verbose: ptee.write("\n- Processing file %s" % relfilepath)
                 with open(os.path.join(rootfolderpath, filepath), 'rb') as file:
                     # -- Intra-ecc generation: Compute an ecc for the filepath, to avoid a critical spot here (so that we don't care that the filepath gets corrupted, we have an ecc to fix it!)
                     relfilepath_ecc = ''.join(compute_ecc_hash(ecc_manager_intra, hasher_intra, relfilepath, max_block_size, resilience_rate_intra, ecc_params_intra["message_size"], True))
@@ -702,7 +703,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
                 filepath = os.path.join(rootfolderpath, relfilepath) # Get full absolute filepath from given input folder (because the files may be specified in any folder, in the ecc file the paths are relative, so that the files can be moved around or burnt on optical discs)
                 if errors_filelist and relfilepath not in errors_filelist: continue # if a list of files with errors was supplied (for example by rfigc.py), then we will check only those files and skip the others
 
-                if verbose: print("\n- Processing file %s" % relfilepath)
+                if verbose: ptee.write("\n- Processing file %s" % relfilepath)
 
                 # -- Check filepath
                 # Check that the filepath isn't corrupted (detectable mainly with replication_rate >= 3, but if a silent error erase a character (not only flip a bit), then it will also be detected this way

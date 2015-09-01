@@ -19,7 +19,7 @@ class Tee(object):
         self.stdout.write(data+"\n")
         if self.file is not None:
             self.file.write(data+"\n")
-            self.file.flush()
+        self.flush()
     def flush(self):
         self.stdout.flush()
         if self.file is not None:

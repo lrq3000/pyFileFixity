@@ -257,6 +257,8 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
                         help='Path to the log file. (Output will be piped to both the stdout and the log file)', **widget_filesave)
     main_parser.add_argument('--skip_hash', action='store_true', required=False, default=False,
                         help='Skip hash computation/checking (checks only the other metadata, this is a lot quicker).')
+    main_parser.add_argument('-v', '--verbose', action='store_true', required=False, default=False,
+                        help='Verbose mode (show more output).')
 
     # Checking mode arguments
     main_parser.add_argument('-s', '--structure_check', action='store_true', required=False, default=False,
@@ -308,6 +310,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
     outputpath = None
     if args.output: outputpath = fullpath(args.output[0])
     filescraping = args.filescraping_recovery
+    verbose = args.verbose
 
     if os.path.isfile(inputpath): # if inputpath is a single file (instead of a folder), then define the rootfolderpath as the parent directory (for correct relative path generation, else it will also truncate the filename!)
         rootfolderpath = os.path.dirname(inputpath)
@@ -364,8 +367,9 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
             filescount = 0
             for row in tqdm.tqdm(dbfile, total=filestodocount, leave=True):
                 filescount = filescount + 1
-                filepath = os.path.join(rootfolderpath, row['path'])
+                filepath = os.path.join(rootfolderpath, row['path']) # Build the absolute file path
 
+                if verbose: ptee.write("\n- Processing file %s" % row['path'])
                 errors = []
                 if not os.path.isfile(filepath):
                     delcount = delcount + 1
@@ -428,9 +432,11 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
                     filepath = os.path.join(dirpath, filename)
                     # Get database relative path (from scanning root folder)
                     relfilepath = os.path.relpath(filepath, rootfolderpath) # File relative path from the root (so that we can easily check the files later even if the absolute path is different)
+                    if verbose: ptee.write("\n- Processing file %s" % relfilepath)
 
                     # If update + append mode, then if the file is already in the database we skip it (we continue computing metadata only for new files)
                     if update and append and relfilepath in db_paths:
+                        if verbose: ptee.write("... skipped")
                         continue
                     else:
                         addcount = addcount + 1
@@ -502,6 +508,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
                 filepath = os.path.join(dirpath,filename)
                 # Get database relative path (from scanning root folder)
                 relfilepath = os.path.relpath(filepath, rootfolderpath) # File relative path from the root (we truncate the rootfolderpath so that we can easily check the files later even if the absolute path is different)
+                if verbose: ptee.write("\n- Processing file %s" % relfilepath)
 
                 # Generate the hashes from the currently inspected file
                 md5hash, sha1hash = generate_hashes(filepath)
@@ -524,7 +531,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
         ptee.write("----------------------------------------------------")
         ptee.write("All files processed: Total: %i - Recovered: %i.\n\n" % (filescount, copiedcount))
 
-    # -- Check the files from a database
+    # -- Check mode: check the files using a database file
     elif not update and not generate and not filescraping:
         ptee.write("====================================")
         ptee.write("RIFGC Check started on %s" % datetime.datetime.now().isoformat())
@@ -550,6 +557,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
             filescount = filescount + 1
             filepath = os.path.join(rootfolderpath, row['path'])
 
+            if verbose: ptee.write("\n- Processing file %s" % row['path'])
             errors = []
             if not os.path.isfile(filepath):
                 if not skip_missing: errors.append('file is missing')
