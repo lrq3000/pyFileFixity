@@ -357,8 +357,8 @@ def conditional_decorator(flag, dec):
 def check_gui_arg():
     '''Check that the --gui argument was passed, and if true, we remove the --gui option and replace by --gui_launched so that Gooey does not loop infinitely'''
     if len(sys.argv) > 1 and sys.argv[1] == '--gui':
-        #del sys.argv[1]
-        sys.argv[1] = '--gui_launched' # CRITICAL: need to remove/replace the --gui argument, else it will stay in memory and when Gooey will call the script again, it will be stuck in an infinite loop calling back and forth between this script and Gooey. Thus, we need to remove this argument, but we also need to be aware that Gooey was called so that we can call gooey.GooeyParser() instead of argparse.ArgumentParser() (for better fields management like checkboxes for boolean arguments). To solve both issues, we replace the argument --gui by another internal argument --gui_launched.
+        # DEPRECATED since Gooey automatically supply a --ignore-gooey argument when calling back the script for processing
+        #sys.argv[1] = '--gui_launched' # CRITICAL: need to remove/replace the --gui argument, else it will stay in memory and when Gooey will call the script again, it will be stuck in an infinite loop calling back and forth between this script and Gooey. Thus, we need to remove this argument, but we also need to be aware that Gooey was called so that we can call gooey.GooeyParser() instead of argparse.ArgumentParser() (for better fields management like checkboxes for boolean arguments). To solve both issues, we replace the argument --gui by another internal argument --gui_launched.
         return True
     else:
         return False
@@ -398,7 +398,8 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
 
     #== Commandline arguments
     #-- Constructing the parser
-    if len(sys.argv) > 1 and sys.argv[1] == '--gui_launched': # Use GooeyParser if we want the GUI because it will provide better widgets
+    if len(argv) > 0 and (argv[0] == '--gui' and not '--ignore-gooey' in argv): # Use GooeyParser if we want the GUI because it will provide better widgets
+        # Initialize the Gooey parser
         main_parser = gooey.GooeyParser(add_help=True, description=desc, epilog=ep, formatter_class=argparse.RawTextHelpFormatter)
         # Define Gooey widget types explicitly (because type auto-detection doesn't work quite well)
         widget_dir = {"widget": "DirChooser"}
@@ -406,6 +407,9 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
         widget_file = {"widget": "FileChooser"}
         widget_text = {"widget": "TextField"}
     else: # Else in command-line usage, use the standard argparse
+        # Delete the special argument to avoid unrecognized argument error in argparse
+        if '--ignore-gooey' in argv[0]: argv.remove('--ignore-gooey') # this argument is automatically fed by Gooey when the user clicks on Start
+        # Initialize the normal argparse parser
         main_parser = argparse.ArgumentParser(add_help=True, description=desc, epilog=ep, formatter_class=argparse.RawTextHelpFormatter)
         # Define dummy dict to keep compatibile with command-line usage
         widget_dir = {}
