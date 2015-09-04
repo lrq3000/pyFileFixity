@@ -221,6 +221,7 @@ Note: An ecc structure repair does NOT allow to recover from more errors on your
     ptee.write("====================================")
     ptee.write("ECC repair, started on %s" % datetime.datetime.now().isoformat())
     ptee.write("====================================")
+    ptee.write("Please note that this tool may not know if it found all the markers, so it may miss too much corrupted markers but it will repair the ones it finds (except if you have a fully valid index file, then you are guaranteed to always find all markers).")
 
     ecc_size = os.stat(inputpath).st_size
     if indexpath: idx_size = os.stat(indexpath).st_size
@@ -278,15 +279,26 @@ Note: An ecc structure repair does NOT allow to recover from more errors on your
                     marker_type = int(marker_str[0]) # marker's type is always stored on the first byte/character
                     marker_pos = struct.unpack('>Q', marker_str[1:]) # marker's position is encoded as a big-endian unsigned long long, in a 8 bytes/chars string
                     db.seek(marker_pos[0]) # move the ecc reading cursor to the beginning of the marker
-                    # Rewrite the marker over the ecc file
-                    db.write(markers[marker_type-1])
-                    markers_repaired[marker_type-1] += 1
+                    current_marker = db.read(len(markers[marker_type-1])) # read the current marker (potentially corrupted)
+                    db.seek(marker_pos[0])
+                    if verbose:
+                        print "- Found marker by index file: type=%i content=" % (marker_type)
+                        print db.read(len(markers[marker_type-1])+4)
+                        db.seek(marker_pos[0]) # replace the reading cursor back in place before the marker
+                    if current_marker != markers[marker_type-1]: # check if we really need to repair this marker
+                        # Rewrite the marker over the ecc file
+                        db.write(markers[marker_type-1])
+                        markers_repaired[marker_type-1] += 1
+                    else:
+                        print "skipped, no need to repair"
             # Done the index backup repair
             if bardisp.n > bardisp.total: bardisp.n = bardisp.total # just a workaround in case there's one byte more than the predicted total
             bardisp.close()
-            ptee.write("Done. The index repaired %i entrymarkers and %i field_delim. Total: %i/%i markers repaired, %i indexes corrupted and %i repaired (%i lost).\n" % (markers_repaired[0], markers_repaired[1], markers_repaired[0]+markers_repaired[1], idx_total, idx_corrupted, idx_corrected, idx_corrupted-idx_corrected) )
+            ptee.write("Done. Total: %i/%i markers repaired (%i entrymarkers and %i field_delim), %i indexes corrupted and %i indexes repaired (%i indexes lost).\n" % (markers_repaired[0]+markers_repaired[1], idx_total, markers_repaired[0], markers_repaired[1], idx_corrupted, idx_corrected, idx_corrupted-idx_corrected) )
 
-        # == Heuristical Hamming distance repair
+        # == Heuristical Greedy Hamming distance repair
+        # This is a heuristical (doesn't need any other file than the ecc file) 2-pass algorithm: the first pass tries to find the markers positions, and then the second pass simply reads the original ecc file and copies it while repairing the found markers.
+        # The first pass is obviously the most interesting, here's a description: we use a kind of greedy algorithm but with backtracking, meaning that we simply read through all the strings sequentially and just compare with the markers and compute the Hamming distance: if the Hamming distance gets below the threshold, we trigger the found marker flag. Then if the Hamming distance decreases, we save this marker position and disable the found marker flag. However, there can be false positives like this (eg, the marker is corrupted in the middle), so we have a backtracking mechanism: if a later string is found to have a Hamming distance that is below the threshold, then we check if the just previously found marker is in the range (ie, the new marker's position is smaller than the previous marker's length) and if the Hamming distance is smaller, then we replace the previous marker with the new marker's position, because the previous one was most likely a false positive.
         # This method doesn't require any other file than the ecc file, but it may not work on ecc markers that are too much tampered, and if the detection threshold is too low or the markers are too small, there may be lots of false positives.
         # So try to use long markers (consisting of many character, preferably an alternating pattern different than the null byte \x00) and a high enough detection threshold.
         ptee.write("Using heuristics (Hamming distance) to fix markers with a threshold of %i%%, please wait..." % (round(distance_threshold*100, 0)) )
@@ -348,7 +360,7 @@ Note: An ecc structure repair does NOT allow to recover from more errors on your
             marker = markers[m]
             if len(markers_pos[m]) > 0: # If there is any detected marker to repair for this type
                 for pos in markers_pos[m]: # for each detected marker to repair, we rewrite it over into the file at the detected position
-                    if verbose: ptee.write("- Detected marker type %i at position %i with difference %i (%i%%): repairing." % (m+1, pos[0], pos[1], (float(pos[1])/len(markers[m]))*100) )
+                    if verbose: ptee.write("- Detected marker type %i at position %i with distance %i (%i%%): repairing." % (m+1, pos[0], pos[1], (float(pos[1])/len(markers[m]))*100) )
                     db.seek(pos[0])
                     db.write(marker)
 
