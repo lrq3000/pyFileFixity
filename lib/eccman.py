@@ -27,6 +27,8 @@
 # Compatibility with Python 3
 from _compat import _str
 
+from lib.distance.distance import hamming
+
 # ECC libraries
 try:
     import lib.reedsolomon.creedsolo as reedsolo
@@ -39,6 +41,10 @@ except ImportError:
 rs_encode_msg = reedsolo.rs_encode_msg # local reference for small speed boost
 #rs_encode_msg_precomp = reedsolo.rs_encode_msg_precomp
 
+
+### Auxiliary ECC functions ###
+
+
 def compute_ecc_params(max_block_size, rate, hasher):
     '''Compute the ecc parameters (size of the message, size of the hash, size of the ecc). This is an helper function to easily compute the parameters from a resilience rate to instanciate an ECCMan object.'''
     #message_size = max_block_size - int(round(max_block_size * rate * 2, 0)) # old way to compute, wasn't really correct because we applied the rate on the total message+ecc size, when we should apply the rate to the message size only (that is not known beforehand, but we want the ecc size (k) = 2*rate*message_size or in other words that k + k * 2 * rate = n)
@@ -47,8 +53,64 @@ def compute_ecc_params(max_block_size, rate, hasher):
     hash_size = len(hasher) # 32 when we use MD5
     return {"message_size": message_size, "ecc_size": ecc_size, "hash_size": hash_size}
 
+def detect_reedsolomon_parameters(message, mesecc_orig, gen_list=[2, 3, 5], c_exp=8):
+    '''Use an exhaustive search to automatically find the correct parameters for the ReedSolomon codec from a sample message and its encoded RS code.
+    Arguments: message is the sample message, eg, "hello world" ; mesecc_orig is the message variable encoded with RS block appended at the end.
+    '''
+    # Description: this is basically an exhaustive search where we will try every possible RS parameter, then try to encode the sample message, and see if the resulting RS code is close to the supplied code.
+    # All variables except the Galois Field's exponent are automatically generated and searched.
+    # To compare with the supplied RS code, we compute the Hamming distance, so that even if the RS code is tampered, we can still find the closest set of RS parameters to decode this message.
+    # The goal is to provide users a function so that they can use the "hello world" sample string in generated ECC files to recover their RS parameters in case they forget them. But users can use any sample message: for example, if they have an untampered file and its relative ecc track, they can use the ecc track as the mesecc_orig and their original file as the sample message.
+
+    import lib.reedsolomon.reedsolo as reedsolop
+
+    # Init the variables
+    n = len(mesecc_orig)
+    k = len(message)
+    c_exp = 8 # detection only works for GF(2^8) for the moment (it's possible to extend to any GF but it will anyway take too much computation time to be practical)
+    field_charac = int((2**c_exp) - 1)
+
+    # Prepare the variable that will store the result
+    best_match = {"hscore": -1, "params": [{"gen_nb": 0, "prim": 0, "fcr": 0}]}
+
+    # Exhaustively search by generating every combination of values for the RS parameters and test the Hamming distance
+    for gen_nb in gen_list:
+        prim_list = reedsolop.find_prime_polys(generator=gen_nb, c_exp=c_exp, fast_primes=False, single=False)
+        for prim in prim_list:
+            reedsolop.init_tables(prim)
+            for fcr in xrange(field_charac):
+                #g = reedsolop.rs_generator_poly_all(n, fcr=fcr, generator=gen_nb)
+                # Generate a RS code from the sample message using the current combination of RS parameters
+                mesecc = reedsolop.rs_encode_msg(message, n-k, fcr=fcr)
+                # Compute the Hamming distance
+                h = hamming(mesecc, mesecc_orig)
+                # If the Hamming distance is lower than the previous best match (or if it's the first try), save this set of parameters
+                if best_match["hscore"] == -1 or h <= best_match["hscore"]:
+                    # If the distance is strictly lower than for the previous match, then we replace the previous match with the current one
+                    if best_match["hscore"] == -1 or h < best_match["hscore"]:
+                        best_match["hscore"] = h
+                        best_match["params"] = [{"gen_nb": gen_nb, "prim": prim, "fcr": fcr}]
+                    # Else there is an ambiguity: the Hamming distance is the same as for the previous best match, so we keep the previous set of parameters but we append the current set
+                    elif h == best_match["hscore"]:
+                        best_match["params"].append({"gen_nb": gen_nb, "prim": prim, "fcr": fcr})
+                    # If Hamming distance is 0, then we have found a perfect match (the current set of parameters allow to generate the exact same RS code from the sample message), so we stop here
+                    if h == 0: break
+
+    # Printing the results to the user
+    if best_match["hscore"] >= 0:
+        perfect_match_str = " (0=perfect match)" if best_match["hscore"]==0 else ""
+        print "Found closest set of parameters, with Hamming distance %i%s:" % (best_match["hscore"], perfect_match_str)
+        for param in best_match["params"]:
+            print "gen_nb=%s prim=%s(%s) fcr=%s" % (param["gen_nb"], param["prim"], hex(param["prim"]), param["fcr"])
+    else:
+        print "Parameters could not be automatically detected..."
+
+
+### Main ECCMan Class to manage ECC codecs ###
+
+
 class ECCMan(object):
-    '''Error correction code manager, which provides a facade API to use different kinds of ecc algorithms or libraries.'''
+    '''Error correction code manager, which provides a facade API to use different kinds of ecc algorithms or libraries/codecs.'''
 
     def __init__(self, n, k, algo=1):
         self.c_exp = 8 # we stay in GF(2^8) for this software
