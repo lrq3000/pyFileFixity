@@ -70,7 +70,7 @@ def detect_reedsolomon_parameters(message, mesecc_orig, gen_list=[2, 3, 5], c_ex
     field_charac = int((2**c_exp) - 1)
     maxval = max(mesecc_orig)
     if (max(mesecc_orig) > field_charac):
-    raise ValueError("The specified field's exponent is wrong, the message contains values (%i) above the field's cardinality (%i)!" % (maxval, field_charac))
+        raise ValueError("The specified field's exponent is wrong, the message contains values (%i) above the field's cardinality (%i)!" % (maxval, field_charac))
 
     # Prepare the variable that will store the result
     best_match = {"hscore": -1, "params": [{"gen_nb": 0, "prim": 0, "fcr": 0}]}
