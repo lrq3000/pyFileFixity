@@ -31,8 +31,8 @@ from lib.distance.distance import hamming
 
 # ECC libraries
 try:
-    import lib.reedsolomon.creedsolo as reedsolo
     import lib.brownanrs.rs as brownanrs
+    import lib.reedsolomon.creedsolo as reedsolo
     #import lib.brownanrs.crs as brownanrs
 except ImportError:
     import lib.brownanrs.rs as brownanrs # Pure python implementation of Reed-Solomon with configurable max_block_size and automatic error detection (you don't have to specify where they are). This is a base 3 implementation that is formally correct and with unit tests.
@@ -67,8 +67,10 @@ def detect_reedsolomon_parameters(message, mesecc_orig, gen_list=[2, 3, 5], c_ex
     # Init the variables
     n = len(mesecc_orig)
     k = len(message)
-    c_exp = 8 # detection only works for GF(2^8) for the moment (it's possible to extend to any GF but it will anyway take too much computation time to be practical)
     field_charac = int((2**c_exp) - 1)
+    maxval = max(mesecc_orig)
+    if (max(mesecc_orig) > field_charac):
+    raise ValueError("The specified field's exponent is wrong, the message contains values (%i) above the field's cardinality (%i)!" % (maxval, field_charac))
 
     # Prepare the variable that will store the result
     best_match = {"hscore": -1, "params": [{"gen_nb": 0, "prim": 0, "fcr": 0}]}
