@@ -54,11 +54,11 @@ Note: this also works for a single file, just replace "your_folder" by "your_fil
 
 - To protect files headers with a file called ``hecc.txt``:
 
-``python header_ecc.py -i "your_folder" -d "hecc.txt" -l "log.txt" -g -f``
+``python header_ecc.py -i "your_folder" -d "hecc.txt" -l "log.txt" -g -f --ecc_algo 3``
 
 - To repair files headers and store the repaired files in ``output_folder``:
 
-``python header_ecc.py -i "your_folder" -d "hecc.txt" -o "output_folder" -l "log.txt" -c -v``
+``python header_ecc.py -i "your_folder" -d "hecc.txt" -o "output_folder" -l "log.txt" -c -v --ecc_algo 3``
 
 - To protect whole files with a file called ``ecc.txt``:
 
