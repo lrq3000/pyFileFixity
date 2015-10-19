@@ -878,47 +878,51 @@ FAQ
 
 -  Can I compress my data files and my ecc file?
 
-| As a rule of thumb, you should ALWAYS keep your ecc file in clear
-  text, so under no compression nor encryption. This is because in case
-  the ecc file gets corrupted, if compressed/encrypted, the
-  decompression/decrypting of the corrupted parts may completely flaw
-  the whole structure of the ecc file.
-| Your data files, that you want to protect, *should* remain in clear
-  text, but you may choose to compress them if it drastically reduces
-  the size of your files, and if you raise the resilience rate of your
-  ecc file (so compression may be a good option if you have an
-  opportunity to trade the file size reduction for more ecc file
-  resilience). Also, make sure to choose a non-solid compression
-  algorithm like DEFLATE (zip) so that you can still decode correct
-  parts even if some are corrupted (else with a solid archive, if one
-  byte is corrupted, the whole archive may become unreadable).
-| However, in the case that you compress your files, you should generate
-  the ecc file only *after* compression, so that the ecc file applies to
-  the compressed archive instead of the uncompressed files, else you
-  risk being unable to correct your files because the uncompression of
-  corrupted parts may output gibberish, and length extended corrupted
-  parts (and if the size is different, Reed-Solomon will just freak
-  out).
+As a rule of thumb, you should ALWAYS keep your ecc file in clear
+text, so under no compression nor encryption. This is because in case
+the ecc file gets corrupted, if compressed/encrypted, the
+decompression/decrypting of the corrupted parts may completely flaw
+the whole structure of the ecc file.
+
+Your data files, that you want to protect, *should* remain in clear
+text, but you may choose to compress them if it drastically reduces
+the size of your files, and if you raise the resilience rate of your
+ecc file (so compression may be a good option if you have an
+opportunity to trade the file size reduction for more ecc file
+resilience). Also, make sure to choose a non-solid compression
+algorithm like DEFLATE (zip) so that you can still decode correct
+parts even if some are corrupted (else with a solid archive, if one
+byte is corrupted, the whole archive may become unreadable).
+
+However, in the case that you compress your files, you should generate
+the ecc file only *after* compression, so that the ecc file applies to
+the compressed archive instead of the uncompressed files, else you
+risk being unable to correct your files because the uncompression of
+corrupted parts may output gibberish, and length extended corrupted
+parts (and if the size is different, Reed-Solomon will just freak
+out).
 
 -  Can I encrypt my data files and my ecc file ?
 
-| NEVER encrypt your ecc file, this is totally useless and
-  counterproductive.
-| You can encrypt your data files, but choose a non-solid algorithm
-  (like AES if I'm not mistaken) so that corrupted parts do not prevent
-  the decoding of subsequent correct parts. Of course, you're lowering a
-  bit your chances of recovering your data files by encrypting them (the
-  best chance to keep data for the long term is to keep them in clear
-  text), but if it's really necessary, using a non-solid encrypting
-  scheme is a good compromise.
-| You can generate an ecc file on your encrypted data files, thus
-  *after* encryption, and keep the ecc file in clear text (never encrypt
-  nor compress it). This is not a security risk at all since the ecc
-  file does not give any information on the content inside your
-  encrypted files, but rather just redundant info to correct corrupted
-  bytes (however if you generate the ecc file on the data files before
-  encryption, then it's clearly a security risk, and someone could
-  recover your data without your permission).
+NEVER encrypt your ecc file, this is totally useless and
+counterproductive.
+
+You can encrypt your data files, but choose a non-solid algorithm
+(like AES if I'm not mistaken) so that corrupted parts do not prevent
+the decoding of subsequent correct parts. Of course, you're lowering a
+bit your chances of recovering your data files by encrypting them (the
+best chance to keep data for the long term is to keep them in clear
+text), but if it's really necessary, using a non-solid encrypting
+scheme is a good compromise.
+
+You can generate an ecc file on your encrypted data files, thus
+*after* encryption, and keep the ecc file in clear text (never encrypt
+nor compress it). This is not a security risk at all since the ecc
+file does not give any information on the content inside your
+encrypted files, but rather just redundant info to correct corrupted
+bytes (however if you generate the ecc file on the data files before
+encryption, then it's clearly a security risk, and someone could
+recover your data without your permission).
 
 - What medium should I use to store my data?
 
@@ -929,6 +933,7 @@ because it decouples the storage medium and the reading hardware
 hardware and the storage medium, so if one fails, you lose both)
 and because it's most likely future-proof (you only need a laser, which
 is universal, the laser's parameters can always be tweaked).
+
 From scientific studies, it seems that, at the time of writing this (2015),
 BluRay HTL disks are the most resilient against environmental degradation.
 To raise the duration, you can also put optical disks in completely opaque boxes
