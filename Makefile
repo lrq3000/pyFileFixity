@@ -23,6 +23,9 @@ installdev:
 install:
 	python setup.py install
 
+build_cython:
+	python setup.py build_ext --inplace
+
 build:
 	python setup.py sdist --formats=gztar,zip bdist_wininst
 	python setup.py sdist bdist_wheel
