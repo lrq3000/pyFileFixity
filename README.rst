@@ -2,8 +2,38 @@ pyFileFixity
 ============
 
 This project aims to provide a set of open source, cross-platform, easy
-to use and easy to maintain (readable code) to manage data for long term
-storage. The project is done in pure-Python to meet those criteria.
+to use and easy to maintain (readable code) to protect and manage data
+for long term storage. The project is done in pure-Python to meet those criteria.
+
+Here is an example of what pyFileFixity can do:
+
+.. image:: tux-example.jpg
+   :scale: 60 %
+   :alt: Image corruption and repair example
+   :align: center
+
+On the left, this is the original image.
+
+At the center, the same image but
+with a few symbols corrupted (only 3 in header and 2 in the rest of the file,
+which equals to 5 bytes corrupted in total, over 19KB which is the total file size).
+Only a few corrupted bytes are enough to make the image looks like totally
+unrecoverable, and yet we are lucky, because the image could be unreadable at all
+if any of the "magic bytes" were to be corrupted!
+
+At the right, the corrupted image was repaired using `header_ecc.py` of pyFileFixity.
+This repaired only the image header (ie, the first part of the file), so only the first
+3 corrupted bytes were repaired, not the 2 bytes in the rest of the file, but we can see
+the image looks like it's totally repaired! And the best thing is that it only costed the generation
+of a "ecc repair file", which size is only 3.3KB (17% of the original file)!
+
+This works because most files will store the most important information to read them at
+their beginning, also called "file's header", so repairing this part will almost always ensure
+the possibility to read the file (even if the rest of the file is still corrupted, if the header is safe,
+you can read it).
+
+Of course, you can also protect the whole file, not only the header, using pyFileFixity's
+`structural_adaptive_ecc.py`. You can also detect any corruption using `rfigc.py`.
 
 The problem of long term storage
 --------------------------------
