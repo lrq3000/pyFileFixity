@@ -25,7 +25,7 @@
 #
 #
 
-__version__ = "0.5"
+from _infos import __version__
 
 # Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
 import sys, os
