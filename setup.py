@@ -189,7 +189,7 @@ setup(
     maintainer=__author__,
     maintainer_email=__email__,
     platforms = ["any"],
-    py_modules = ["__init__", "_infos", "easy_profiler", "filetamper", "header_ecc", "repair_ecc", "rfigc", "structural_adaptive_ecc"],
+    py_modules = [os.path.splitext(f)[0] for f in os.listdir('.') if os.path.isfile(f) and f.endswith('.py')], # list all python files in current folder
     long_description = open("README.rst", "r").read(),
     classifiers=[  # Trove classifiers, see https://pypi.python.org/pypi?%3Aaction=list_classifiers
         'Development Status :: 4 - Beta',
