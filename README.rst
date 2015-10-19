@@ -38,39 +38,49 @@ Of course, you can also protect the whole file, not only the header, using pyFil
 Quickstart
 ---------
 
-To generate a monitoring database (to later check if files were changed, but no possibility of repairing):
+- To generate a monitoring database (to later check if files were changed, but no possibility of repairing):
+
 ``python rfigc.py -i "your_folder" -d "dbhash.csv" -g -f -l "log.txt"``
+
 Note: this also works for a single file, just replace "your_folder" by "your_file.ext".
 
-To check if files were corrupted:
+- To check if files were corrupted:
+
 ``python rfigc.py -i "your_folder" -d "dbhash.csv" -l log.txt -s -e errors.csv``
 
-To use this monitoring database to recover files names and directory layout after filescraping:
+- To use this monitoring database to recover files names and directory layout after filescraping:
+
 ``python rfigc.py -i "your_folder" -d "dbhash.csv" -l "log.txt" -o "output_folder" --filescraping_recovery``
 
-To protect files headers with a file called ``hecc.txt``:
+- To protect files headers with a file called ``hecc.txt``:
+
 ``python header_ecc.py -i "your_folder" -d "hecc.txt" -l "log.txt" -g -f``
 
-To repair files headers and store the repaired files in ``output_folder``:
+- To repair files headers and store the repaired files in ``output_folder``:
+
 ``python header_ecc.py -i "your_folder" -d "hecc.txt" -o "output_folder" -l "log.txt" -c -v``
 
-To protect whole files with a file called ``ecc.txt``:
+- To protect whole files with a file called ``ecc.txt``:
+
 ``python structural_adaptive_ecc.py -i "your_folder" -d "ecc.txt" -l "log.txt" -g -f -v --ecc_algo 3``
 
-To repair whole files:
+- To repair whole files:
+
 ``python structural_adaptive_ecc.py -i "your_folder" -d "ecc.txt" -o "output_folder" -l "log.txt" -c -v --ecc_algo 3``
 
-To repair an ecc file ``ecc.txt`` using an index file ``ecc.txt.idx`` (index file is generated automatically with ecc.txt):
+- To repair an ecc file ``ecc.txt`` using an index file ``ecc.txt.idx`` (index file is generated automatically with ecc.txt):
+
 ``python repair_ecc.py -i "ecc.txt" --index "ecc.txt.idx" -o "ecc_repaired.txt" -l "log.txt" -v -f``
 
-To repair an ecc file ``ecc.txt`` without an index file (you can tweak the ``-t`` parameter from 0.0 to 1.0, 1.0 producing many false positives):
+- To repair an ecc file ``ecc.txt`` without an index file (you can tweak the ``-t`` parameter from 0.0 to 1.0, 1.0 producing many false positives):
+
 ``python repair_ecc.py -i "ecc.txt" -o "ecc_repaired.txt" -l "log.txt" -v -f -t 0.4``
 
-To get more options for any tool, use ``--help``.
+- To get more options for any tool, use ``--help``.
 
-To use the GUI with any tool, use ``--gui`` and do not supply any other argument, eg: ``python rfigc.py --gui``.
+- To use the GUI with any tool, use ``--gui`` and do not supply any other argument, eg: ``python rfigc.py --gui``.
 
-You can also use `PyPy <http://pypy.org/>`_ to hugely speedup the processing time of any tool here.
+- You can also use `PyPy <http://pypy.org/>`_ to hugely speedup the processing time of any tool here.
 
 The problem of long term storage
 --------------------------------
