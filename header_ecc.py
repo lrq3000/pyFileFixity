@@ -169,20 +169,25 @@ def read_next_entry(file, entrymarker="\xFF\xFF\xFF\xFF"):
     return entry
 
 def entry_fields(entry, field_delim="\xFF"):
-    '''From a raw ecc entry (a string), extract the filename, filesize, and the rest being blocks of hash and ecc per blocks of the original file's header'''
+    '''From a raw ecc entry (a string), extract the metadata fields (filename, filesize, ecc for both), and the rest being blocks of hash and ecc per blocks of the original file's header'''
     entry = entry.lstrip(field_delim) # if there was some slight adjustment error (example: the last ecc block of the last file was the field_delim, then we will start with a field_delim, and thus we need to remove the trailing field_delim which is useless and will make the field detection buggy). This is not really a big problem for the previous file's ecc block: the missing ecc characters (which were mistaken for a field_delim), will just be missing (so we will lose a bit of resiliency for the last block of the previous file, but that's not a huge issue, the correction can still rely on the other characters).
 
-    # Find field delimiters positions
+    # Find metadata fields delimiters positions
+    # TODO: automate this part, just give in argument the number of field_delim to find, and the func will find the x field_delims (the number needs to be specified in argument because the field_delim can maybe be found wrongly inside the ecc stream, which we don't want)
     first = entry.find(field_delim)
     second = entry.find(field_delim, first+len(field_delim))
     third = entry.find(field_delim, second+len(field_delim))
+    fourth = entry.find(field_delim, third+len(field_delim))
     # Note: we do not try to find all the field delimiters because we optimize here: we just walk the string to find the exact number of field_delim we are looking for, and after we stop, no need to walk through the whole string.
 
-    # Extract each field
+    # Extract the content of the fields
+    # Metadata fields
     relfilepath = entry[:first]
     filesize = entry[first+len(field_delim):second]
     relfilepath_ecc = entry[second+len(field_delim):third]
-    ecc_field = entry[third+len(field_delim):]
+    filesize_ecc = entry[third+len(field_delim):fourth]
+    # Ecc stream field (aka ecc blocks)
+    ecc_field = entry[fourth+len(field_delim):]
 
     # Try to convert to an int, an error may happen
     try:
@@ -195,7 +200,7 @@ def entry_fields(entry, field_delim="\xFF"):
     # entries = [ {"message":, "ecc":, "hash":}, etc.]
     #print(entry)
     #print(len(entry))
-    return {"relfilepath": relfilepath, "relfilepath_ecc": relfilepath_ecc, "filesize": filesize, "ecc_field": ecc_field}
+    return {"relfilepath": relfilepath, "relfilepath_ecc": relfilepath_ecc, "filesize": filesize, "filesize_ecc": filesize_ecc, "ecc_field": ecc_field}
 
 def entry_assemble(entry_fields, ecc_params, header_size, filepath, fileheader=None):
     '''From an entry with its parameters (filename, filesize), assemble a list of each block from the original file along with the relative hash and ecc for easy processing later.'''
@@ -600,12 +605,18 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
                 # Opening the input file's to read its header and compute the ecc/hash blocks
                 if verbose: ptee.write("\n- Processing file %s" % relfilepath)
                 with open(os.path.join(rootfolderpath, filepath), 'rb') as file:
-                    # -- Intra-ecc generation: Compute an ecc for the filepath, to avoid a critical spot here (so that we don't care that the filepath gets corrupted, we have an ecc to fix it!)
+                    # -- Intra-ecc generation: Compute an ecc for the filepath and filesize, to avoid a critical spot here (so that we don't care that the filepath gets corrupted, we have an ecc to fix it!)
                     relfilepath_ecc = ''.join(compute_ecc_hash(ecc_manager_intra, hasher_intra, relfilepath, max_block_size, resilience_rate_intra, ecc_params_intra["message_size"], True))
-                    ecc_entry = ("%s%s%s%s%s%s%s") % (entrymarker, relfilepath, field_delim, filesize, field_delim, relfilepath_ecc, field_delim) # first save the file's metadata (filename, filesize, filepath ecc, ...)
+                    filesize_ecc = ''.join(compute_ecc_hash(ecc_manager_intra, hasher_intra, str(filesize), max_block_size, resilience_rate_intra, ecc_params_intra["message_size"], True))
                     # -- Hash/Ecc encoding of file's content (everything is managed inside stream_compute_ecc_hash)
                     buf = file.read(header_size) # read the file's header
-                    ecc_entry = ecc_entry + ''.join(compute_ecc_hash(ecc_manager, hasher, buf, max_block_size, resilience_rate, ecc_params["message_size"], True)) # then compute the ecc/hash entry for this file's header (this will be a chain of multiple ecc/hash fields per block of data, because Reed-Solomon is limited to a maximum of 255 bytes, including the original_message+ecc!)
+                    ecc_stream = compute_ecc_hash(ecc_manager, hasher, buf, max_block_size, resilience_rate, ecc_params["message_size"], True) # then compute the ecc/hash entry for this file's header (this will be a chain of multiple ecc/hash fields per block of data, because Reed-Solomon is limited to a maximum of 255 bytes, including the original_message+ecc!)
+                    # -- Build the ecc entry
+                    # First put the ecc metadata
+                    ecc_entry = ("%s%s%s%s%s%s%s%s%s") % (entrymarker, relfilepath, field_delim, filesize, field_delim, relfilepath_ecc, field_delim, filesize_ecc, field_delim) # first save the file's metadata (filename, filesize, filepath ecc, ...)
+                    # Then put the ecc stream (the ecc blocks for the file's data)
+                    ecc_entry += ''.join(ecc_stream)
+                    # -- Commit the ecc entry into the database
                     for i in xrange(replication_rate):
                         entrymarker_pos = db.tell() # backup the position of the start of this ecc entry
                         # -- Committing the hash/ecc encoding of the file's content
@@ -614,9 +625,11 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
                         markers_pos = [entrymarker_pos,
                                                     entrymarker_pos+len(entrymarker)+len(relfilepath),
                                                     entrymarker_pos+len(entrymarker)+len(relfilepath)+len(field_delim)+len(str(filesize)),
-                                                    entrymarker_pos+len(entrymarker)+len(relfilepath)+len(field_delim)+len(str(filesize))+len(field_delim)+len(relfilepath_ecc)] # Make the list of all markers positions for this ecc entry. The first and last indexes are the most important (first is the entrymarker, the last is the field_delim just before the ecc track start)
+                                                    entrymarker_pos+len(entrymarker)+len(relfilepath)+len(field_delim)+len(str(filesize))+len(field_delim)+len(relfilepath_ecc),
+                                                    entrymarker_pos+len(entrymarker)+len(relfilepath)+len(field_delim)+len(str(filesize))+len(field_delim)+len(relfilepath_ecc)+len(field_delim)+len(filesize_ecc),
+                                                    ] # Make the list of all markers positions for this ecc entry. The first and last indexes are the most important (first is the entrymarker, the last is the field_delim just before the ecc track start)
                         markers_pos = [struct.pack('>Q', x) for x in markers_pos] # Convert to a binary representation in 8 bytes using unsigned long long (up to 16 EB, this should be more than sufficient)
-                        markers_types = ["1", "2", "2", "2"]
+                        markers_types = ["1", "2", "2", "2", "2"]
                         markers_pos_ecc = [ecc_manager_idx.encode(x+y) for x,y in zip(markers_types,markers_pos)] # compute the ecc for each number
                         dbidx.write(''.join([str(x) for items in zip(markers_types,markers_pos,markers_pos_ecc) for x in items])) # couple each marker's position with its ecc, and write them all consecutively into the index backup file
                 files_done += 1

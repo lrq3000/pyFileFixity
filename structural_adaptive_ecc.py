@@ -181,7 +181,7 @@ def find_next_entry(file, entrymarker="\xFF\xFF\xFF\xFF"):
     return entry_pos
 
 def entry_fields(file, entry_pos, field_delim="\xFF"):
-    '''From an ecc entry position (a list with starting and ending positions), extract the filename, filesize, and the starting/ending positions of the rest of the ecc entry (containing variably encoded blocks of hash and ecc per blocks of the original file's header)'''
+    '''From an ecc entry position (a list with starting and ending positions), extract the metadata fields (filename, filesize, ecc for both), and the starting/ending positions of the ecc stream (containing variably encoded blocks of hash and ecc per blocks of the original file's header)'''
     # Read the the beginning of the ecc entry
     blocksize = 65535
     file.seek(entry_pos[0])
@@ -189,17 +189,22 @@ def entry_fields(file, entry_pos, field_delim="\xFF"):
     entry = entry.lstrip(field_delim) # if there was some slight adjustment error (example: the last ecc block of the last file was the field_delim, then we will start with a field_delim, and thus we need to remove the trailing field_delim which is useless and will make the field detection buggy). This is not really a big problem for the previous file's ecc block: the missing ecc characters (which were mistaken for a field_delim), will just be missing (so we will lose a bit of resiliency for the last block of the previous file, but that's not a huge issue, the correction can still rely on the other characters).
     # TODO: do in a while loop in case the filename is really big (bigger than blocksize) - or in case we add intra-ecc for filename
 
-    # Find field delimiters positions
+    # Find metadata fields delimiters positions
+    # TODO: automate this part, just give in argument the number of field_delim to find, and the func will find the x field_delims (the number needs to be specified in argument because the field_delim can maybe be found wrongly inside the ecc stream, which we don't want)
     first = entry.find(field_delim)
     second = entry.find(field_delim, first+len(field_delim))
     third = entry.find(field_delim, second+len(field_delim))
+    fourth = entry.find(field_delim, third+len(field_delim))
     # Note: we do not try to find all the field delimiters because we optimize here: we just walk the string to find the exact number of field_delim we are looking for, and after we stop, no need to walk through the whole string.
 
-    # Extract each field
+    # Extract the content of the fields
+    # Metadata fields
     relfilepath = entry[:first]
     filesize = entry[first+len(field_delim):second]
     relfilepath_ecc = entry[second+len(field_delim):third]
-    ecc_field_pos = [entry_pos[0]+third+len(field_delim), entry_pos[1]] # return the starting and ending position of the rest of the ecc track, which contains blocks of hash/ecc of the original file's content.
+    filesize_ecc = entry[third+len(field_delim):fourth]
+    # Ecc stream field (aka ecc blocks)
+    ecc_field_pos = [entry_pos[0]+fourth+len(field_delim), entry_pos[1]] # return the starting and ending position of the rest of the ecc track, which contains blocks of hash/ecc of the original file's content.
 
     # Place the cursor at the beginning of the ecc_field
     file.seek(ecc_field_pos[0])
@@ -213,7 +218,7 @@ def entry_fields(file, entry_pos, field_delim="\xFF"):
         filesize = 0
 
     # entries = [ {"message":, "ecc":, "hash":}, etc.]
-    return {"relfilepath": relfilepath, "relfilepath_ecc": relfilepath_ecc, "filesize": filesize, "ecc_field_pos": ecc_field_pos}
+    return {"relfilepath": relfilepath, "relfilepath_ecc": relfilepath_ecc, "filesize": filesize, "filesize_ecc": filesize_ecc, "ecc_field_pos": ecc_field_pos}
 
 def stream_entry_assemble(hasher, file, eccfile, entry_fields, max_block_size, header_size, resilience_rates, constantmode=False):
     '''From an entry with its parameters (filename, filesize), assemble a list of each block from the original file along with the relative hash and ecc for easy processing later.'''
@@ -326,6 +331,12 @@ def stream_compute_ecc_hash(ecc_manager, hasher, file, max_block_size, header_si
         yield [hash, ecc, ecc_params]
         # Prepare for next iteration
         curpos = file.tell()
+
+def compute_ecc_hash_from_string(string, ecc_manager, hasher, max_block_size, resilience_rate):
+    '''Generate a concatenated string of ecc stream of hash/ecc blocks, of constant encoding rate, given a string.'''
+    fpfile = StringIO(string)
+    ecc_stream = ''.join( [str(x[1]) for x in stream_compute_ecc_hash(ecc_manager, hasher, fpfile, max_block_size, len(string), [resilience_rate])] ) # "hack" the function by tricking it to always use a constant rate, by setting the header_size=len(relfilepath), and supplying the resilience_rate_intra instead of resilience_rate_s1 (the one for header)
+    return ecc_stream
 
 
 
@@ -658,12 +669,19 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
                         entrymarker_pos = db.tell() # backup the position of the start of this ecc entry
                         # -- Intra-ecc generation: Compute an ecc for the filepath, to avoid a critical spot here (so that we don't care that the filepath gets corrupted, we have an ecc to fix it!)
                         fpfile = StringIO(relfilepath)
-                        intra_ecc = ''.join( [str(x[1]) for x in stream_compute_ecc_hash(ecc_manager_intra, hasher_intra, fpfile, max_block_size, len(relfilepath), [resilience_rate_intra])] ) # "hack" the function by tricking it to always use a constant rate, by setting the header_size=len(relfilepath), and supplying the resilience_rate_intra instead of resilience_rate_s1 (the one for header)
-                        db.write(("%s%s%s%s%s%s%s") % (entrymarker, relfilepath, field_delim, filesize, field_delim, intra_ecc, field_delim)) # first save the file's metadata (filename, filesize, ecc for filename, ...), separated with field_delim
+                        relfilepath_ecc = compute_ecc_hash_from_string(relfilepath, ecc_manager_intra, hasher_intra, max_block_size, resilience_rate_intra)
+                        filesize_ecc = compute_ecc_hash_from_string(str(filesize), ecc_manager_intra, hasher_intra, max_block_size, resilience_rate_intra)
+                        db.write(("%s%s%s%s%s%s%s%s%s") % (entrymarker, relfilepath, field_delim, filesize, field_delim, relfilepath_ecc, field_delim, filesize_ecc, field_delim)) # first save the file's metadata (filename, filesize, ecc for filename, ...), separated with field_delim
                         # -- External indexes backup: calculate the position of the entrymarker and of each field delimiter, and compute their ecc, and save into the index backup file. This will allow later to retrieve the position of each marker in the ecc file, and repair them if necessary, while just incurring a very cheap storage cost.
-                        markers_pos = [entrymarker_pos, entrymarker_pos+len(entrymarker)+len(relfilepath), entrymarker_pos+len(entrymarker)+len(relfilepath)+len(field_delim)+len(str(filesize)), db.tell()-len(field_delim)] # Make the list of all markers positions for this ecc entry. The first and last indexes are the most important (first is the entrymarker, the last is the field_delim just before the ecc track start)
+                        markers_pos = [
+                                                        entrymarker_pos,
+                                                        entrymarker_pos+len(entrymarker)+len(relfilepath),
+                                                        entrymarker_pos+len(entrymarker)+len(relfilepath)+len(field_delim)+len(str(filesize)),
+                                                        entrymarker_pos+len(entrymarker)+len(relfilepath)+len(field_delim)+len(str(filesize))+len(field_delim)+len(relfilepath_ecc),
+                                                        db.tell()-len(field_delim)
+                                                        ] # Make the list of all markers positions for this ecc entry. The first and last indexes are the most important (first is the entrymarker, the last is the field_delim just before the ecc track start)
                         markers_pos = [struct.pack('>Q', x) for x in markers_pos] # Convert to a binary representation in 8 bytes using unsigned long long (up to 16 EB, this should be more than sufficient)
-                        markers_types = ["1", "2", "2", "2"]
+                        markers_types = ["1", "2", "2", "2", "2"]
                         markers_pos_ecc = [ecc_manager_idx.encode(x+y) for x,y in zip(markers_types,markers_pos)] # compute the ecc for each number
                         dbidx.write(''.join([str(x) for items in zip(markers_types,markers_pos,markers_pos_ecc) for x in items])) # couple each marker's position with its ecc, and write them all consecutively into the index backup file
                         # -- Hash/Ecc encoding of file's content (everything is managed inside stream_compute_ecc_hash)
