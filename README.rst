@@ -720,9 +720,9 @@ recovering capacity as an error correction code - and in addition, error
 correction code can tell you when it has recovered successfully). For
 example:
 
--  for tar files, you can use ``fixtar <https://github.com/BestSolution-at/fixtar>``_.
-   Similar tools (but older): ``tarfix <http://www.dmst.aueb.gr/dds/sw/unix/tarfix/>``_
-   and ``tar-repair <https://www.datanumen.com/tar-repair/>``_.
+-  for tar files, you can use `fixtar <https://github.com/BestSolution-at/fixtar>`_.
+   Similar tools (but older): `tarfix <http://www.dmst.aueb.gr/dds/sw/unix/tarfix/>`_
+   and `tar-repair <https://www.datanumen.com/tar-repair/>`_.
 -  for RAID mounting and recovery, you can use "Raid faster - recover
    better" (rfrb) tool by Sabine Seufert and Christian Zoubek:
    https://github.com/lrq3000/rfrb
