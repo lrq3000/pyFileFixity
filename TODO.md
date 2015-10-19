@@ -36,11 +36,8 @@ sauver dans un fichier csv pour chaque fichier: relfilepath, X, X, -, , erreur m
 USE COUNTER (or just dict like before, but counter should be more efficient, and can always try and except failsafe to dict if not available): https://docs.python.org/2/library/collections.html#collections.Counter
 6. resiliency tester script (avec la totale: header resiliency qui va appeler header_ecc.py, structural etc et meme replication qui va auto repliquer le nombre choisi et tamperer chacun).
 Don't forget to delete files in result folders before restarting the test!
-7. README add:
-https://www.datanumen.com/tar-repair/
-http://www.dmst.aueb.gr/dds/sw/unix/tarfix/
-8. Pack for Pypi: brownanrs and pyfilefixity, and post on reddit and https://groups.google.com/forum/#!forum/digital-curation
-9. multi-file support (with file recreation, even if can only be partially recovered, missing file will be replaced by null bytes on-the-fly)
+7. Pack for Pypi: brownanrs and pyfilefixity, and post on reddit and https://groups.google.com/forum/#!forum/digital-curation
+8. multi-file support (with file recreation, even if can only be partially recovered, missing file will be replaced by null bytes on-the-fly)
 if multi supplied, intra-fields will be encoded in compact json, else only one string.
 Two modes: simple and normal. Simple will just group together files (order by size) without trying to fill the gaps.
 Normal: to-fill = dict toujours sorté descendant (highest first) et la key est la taille à remplir pour tel couple (cluster, groupe).
@@ -56,11 +53,11 @@ Normal: to-fill = dict toujours sorté descendant (highest first) et la key est l
       * if nsize > 0:
         * to-fill[nsize].append([c, g])
         * sort to-fill if not an automatic ordering structure
-10. unit test? coverage?
+9. unit test? coverage?
 
-11. (maybe) cauchy RS using Cython to interface with LongHair lib.
-12. (maybe) hash with principle of locality (polynomial division remainder?)
-13. (maybe) bruteforce decoding from locality hash (try every possible polynomials using chinese remainder theorem?)
+10. (maybe) cauchy RS using Cython to interface with LongHair lib.
+11. (maybe) hash with principle of locality (polynomial division remainder?)
+12. (maybe) bruteforce decoding from locality hash (try every possible polynomials using chinese remainder theorem?)
 simply generate all big ints that corresponds to the given remainder up to 2^8 poly and then check the one that corresponds to the md5 hash. Thus the ecc code will consists of: md5 hash + remainder + ecc for these to correct them in case of bug.
 http://mathematica.stackexchange.com/questions/32586/implementation-of-the-polynomial-chinese-remainder-theorem
 http://www.mathworks.com/matlabcentral/fileexchange/5841-chinese-remainder-theorem-for-polynomials

@@ -571,11 +571,14 @@ greater towards the end of the contents of your files.
 
 Furthermore, the currently designed format of the ecc file would allow
 two things that are not available in all current file ecc generators
-such as PAR2: 1- it allows to partially repair a file, even if not all
+such as PAR2:
+
+1. it allows to partially repair a file, even if not all
 the blocks can be corrected (in PAR2, a file is repaired only if all
 blocks can be repaired, which is a shame because there are still other
 blocks that could be repaired and thus produce a less corrupted file) ;
-2- the ecc file format is quite simple and readable, easy to process by
+
+2. the ecc file format is quite simple and readable, easy to process by
 any script, which would allow other softwares to also work on it (and it
 was also done in this way to be more resilient against error
 corruptions, so that even if an entry is corrupted, other entries are
@@ -597,33 +600,23 @@ feedback about this would be greatly appreciated!).
 ECC Algorithms
 --------------
 
-You can specify different ecc algorithms using the --ecc\_algo switch.
-Here is a list:
+You can specify different ecc algorithms using the ``--ecc\_algo`` switch.
 
--  --ecc\_algo 1: standard Reed-Solomon in galois field 2^8 of root 3.
-   This is the most mathematically correct implementation, it was
-   extensively unit tested and tested in practice, and the code is a
-   near carbon copy of the mathematical algorithms, so if you want to
-   study and understand how Reed-Solomon works, this is the best
-   implementation.
--  --ecc\_algo 2: a faster implementation of Reed-Solomon in GF256 and
-   root 3. It's in fact the same algorithms used in --ecc\_algo 3, but
-   object-oriented, so that the operations are more similar to the
-   mathematical notation (eg: a \* b instead of gf\_mul(a,b)). This
-   implementation should also be safe for production, it should always
-   give the same results as --ecc\_algo 1, but a lot faster.
--  --ecc\_algo 3: the fastest implementation of Reed-Solomon in GF256
-   and root 3. The object-oriented layout is absent, so that the
-   function calls are cheaper. Use PyPy to get the full speed. This
-   implementation should be safe, but for your real applications, you
-   should first generate an ecc file with --ecc\_algo 1 or 2, and then
-   check that the generated ecc file is the same with --ecc\_algo 3.
--  --ecc\_algo 4: a general Reed-Solomon in GF256 with configurable
-   root. This is a very fast implementation too, but the generated ecc
-   files will be totally uncompatible with the other implementations
-   (and I don't guarantee the generated ecc is correct). Use with
-   caution. However, the bright side is that you can configure the root,
-   so that you can generate ecc blocks compatible with other RS systems.
+For the moment, only Reed-Solomon is implemented, but it's universal
+so you can modify its parameters in lib/eccman.py.
+
+Two Reed-Solomon codecs are available, they are functionally equivalent
+and thoroughly unit tested.
+
+-  --ecc\_algo 1: use the first Reed-Solomon codec in galois field 2^8 of root 3 with fcr=1.
+   This is the slowest implementation (but also the most easy code to understand).
+-  --ecc\_algo 2: same as algo 1 but with a faster functions.
+-  --ecc\_algo 3: use the second codec, which is the fastest.
+   The generated ECC will be compatible with algo 1 and 2.
+-  --ecc\_algo 4: also use the second, fastest RS codec, but
+   with different parameters (US FAA ADSB UAT RS FEC norm),
+   thus the generated ECC won't be compatible with algo 1 to 3.
+   But do not be scared, the ECC will work just the same.
 
 Cython implementation
 ---------------------
@@ -727,12 +720,14 @@ recovering capacity as an error correction code - and in addition, error
 correction code can tell you when it has recovered successfully). For
 example:
 
--  for tar files, you can use fixtar:
-   https://github.com/BestSolution-at/fixtar
+-  for tar files, you can use ``fixtar <https://github.com/BestSolution-at/fixtar>``_.
+   Similar tools (but older): ``tarfix <http://www.dmst.aueb.gr/dds/sw/unix/tarfix/>``_
+   and ``tar-repair <https://www.datanumen.com/tar-repair/>``_.
 -  for RAID mounting and recovery, you can use "Raid faster - recover
    better" (rfrb) tool by Sabine Seufert and Christian Zoubek:
    https://github.com/lrq3000/rfrb
--  if your unicode strings were mangled, try
+-  if your unicode strings were mangled (ie, you see weird symbols),
+   try this script that will automatically demangle them:
    https://github.com/LuminosoInsight/python-ftfy
 
 Protecting directory tree meta-data
