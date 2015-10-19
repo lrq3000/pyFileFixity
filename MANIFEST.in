@@ -1,0 +1,12 @@
+# Misc
+include LICENSE
+include Makefile
+include README.md
+include README.rst
+include TODO.md
+
+# Libraries
+recursive-include lib *.py
+
+# Test suite
+#recursive-include tests *.py
