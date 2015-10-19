@@ -1,4 +1,4 @@
-pyFileFixity
+ï»¿pyFileFixity
 =========
 
 This project aims to provide a set of open source, cross-platform, easy to use and easy to maintain (readable code) to manage data for long term storage. The project is done in pure-Python to meet those criteria.
@@ -18,7 +18,7 @@ Error correction can seem a bit magical, but for a reasonable intuition, it can 
 
 The problem is that most theoretical and pratical works on error correcting codes has been done almost exclusively on channel transmission (such as 4G, internet, etc.), but not on data storage, which is very different for one reason: whereas in a channel we are in a spatial scheme (both the sender and the receiver are different entities in space but working at the same timescale), in data storage this is a temporal scheme: the sender was you storing the data on your medium at time t, and the receiver is again you but now retrieving the data at time t+x. Thus, the sender does not exist anymore, thus you cannot ask again some data if it's too much corrupted: in data storage, if a data is corrupted, it's lost for good, whereas in channel theory, a data can be submitted again if necessary.
 
-Some attempts were made to translate channel theory and error correcting codes theory to data storage, the first being Reed-Solomon which spawned the RAID schema. Then CIRC (Cross-interleaved Reed–Solomon coding) was devised for use on optical discs to recover from scratches, which was necessary for the technology to be usable for consumers. Since then, new less-optimal but a lot faster algorithms such as LDPC, turbo-codes and fountain codes such as RaptorQ were invented (or rediscovered), but they are still marginally researched for data storage.
+Some attempts were made to translate channel theory and error correcting codes theory to data storage, the first being Reed-Solomon which spawned the RAID schema. Then CIRC (Cross-interleaved Reed-Solomon coding) was devised for use on optical discs to recover from scratches, which was necessary for the technology to be usable for consumers. Since then, new less-optimal but a lot faster algorithms such as LDPC, turbo-codes and fountain codes such as RaptorQ were invented (or rediscovered), but they are still marginally researched for data storage.
 
 This project aims to, first, implement easy tools to evaluate strategies (filetamper.py) and file fixity (ie, detect if there are corruptions), and then the goal is to provide an open and easy framework to use different kinds of error correction codes to protect and repair files.
 
