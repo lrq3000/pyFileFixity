@@ -85,7 +85,12 @@ Note: this also works for a single file, just replace "your_folder" by "your_fil
 The problem of long term storage
 --------------------------------
 
-Long term storage is a very difficult topic: it's like fighting with
+Why are data corrupted with time? Entropy, my friend, entropy.
+The Universe *hates your data*. Entropy refers to the universal
+tendency for systems to become less ordered over time.
+Corruption is exactly that: a disorder in bits order.
+
+Long term storage is thus a very difficult topic: it's like fighting with
 death (in this case, the death of data). Indeed, because of entropy,
 data will eventually fade away because of various silent errors such as
 bit rot. pyFileFixity aims to provide tools to detect any data
@@ -920,6 +925,44 @@ FAQ
   bytes (however if you generate the ecc file on the data files before
   encryption, then it's clearly a security risk, and someone could
   recover your data without your permission).
+
+- What medium should I use to store my data?
+
+The details are long and a bit complicated (I may write a complete article
+about it in the future), but the tl;dr answer is that you should use *optical disks*,
+because it decouples the storage medium and the reading hardware
+(eg, at the opposite we have hard drives, which contains both the reading
+hardware and the storage medium, so if one fails, you lose both)
+and because it's most likely future-proof (you only need a laser, which
+is universal, the laser's parameters can always be tweaked).
+From scientific studies, it seems that, at the time of writing this (2015),
+BluRay HTL disks are the most resilient against environmental degradation.
+To raise the duration, you can also put optical disks in completely opaque boxes
+(to avoid light degradation) and in addition you can put any storage medium
+(not only optical disks, but also hard drives and anything really) in
+*completely* air-tight and water-tight bags or box and put in a fridge or a freezer.
+This is a law of nature: lower the temperature, lower will be the entropy, in other
+words lower will be the degradation over time. It works the same with digital data.
+
+- What file formats are the most recoverable?
+
+It's difficult to advise a specific format. What we can do is advise the characteristics
+of a good file format:
+
+  * future-proof (should be readable in the future).
+  * non-solid (ie, divised into indepedent blocks, so that a corruption to one block
+  doesn't cause a problem to the decoding of other blocks).
+  * open source implementation available.
+  * minimize corruption impact (ie, how much of the file becomes unreadable with
+  a partial corruption? Only the partially corrupted area, or other valid parts too?).
+  * No magic bytes or header importance (ie, corrupting the header won't prevent
+  opening the file).
+
+There are a few studies about the most resilient file formats, such as:
+
+  * `"Just one bit in a million: On the effects of data corruption in files" by Volker Heydegger <http://lekythos.library.ucy.ac.cy/bitstream/handle/10797/13919/ECDL038.pdf?sequence=1>`_.
+  * `"Analysing the impact of file formats on data integrity" by Volker Heydegger <http://old.hki.uni-koeln.de/people/herrmann/forschung/heydegger_archiving2008_40.pdf>`_.
+  * `"A guide to formats", by The UK national archives <http://www.nationalarchives.gov.uk/documents/information-management/guide-to-formats.pdf>`_ (you want to look at the Recoverability entry in each table).
 
 -  If you have any question about Reed-Solomon codes, the best place to
    ask is probably here (with the incredible Dilip Sarwate):
