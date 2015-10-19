@@ -179,7 +179,7 @@ if sys.argv[1].lower().strip() == 'make':
 
 # Python module configuration
 setup(
-    name = "PyFileFixity",
+    name = "pyFileFixity",
     version=__version__,
     description='Helping file fixity (long term storage of data) via redundant error correcting codes and hash auditing.',
     license='MIT License',

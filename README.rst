@@ -1,16 +1,15 @@
 pyFileFixity
 ============
 
+|PyPi Status| |PyPi Downloads|
+
 This project aims to provide a set of open source, cross-platform, easy
 to use and easy to maintain (readable code) to protect and manage data
 for long term storage. The project is done in pure-Python to meet those criteria.
 
 Here is an example of what pyFileFixity can do:
 
-.. image:: tux-example.jpg
-   :scale: 60 %
-   :alt: Image corruption and repair example
-   :align: center
+|Example|
 
 On the left, this is the original image.
 
@@ -964,3 +963,12 @@ There are a few studies about the most resilient file formats, such as:
 -  If you have any question about Reed-Solomon codes, the best place to
    ask is probably here (with the incredible Dilip Sarwate):
    http://www.dsprelated.com/groups/comp.dsp/1.php?searchfor=reed%20solomon
+
+.. |Example| image:: https://raw.githubusercontent.com/lrq3000/pyFileFixity/master/tux-example.jpg
+   :scale: 60 %
+   :alt: Image corruption and repair example
+   :align: center
+.. |PyPi Status| image:: https://img.shields.io/pypi/v/pyFileFixity.svg
+   :target: https://pypi.python.org/pypi/pyFileFixity
+.. |PyPi Downloads| image:: https://img.shields.io/pypi/dm/pyFileFixity.svg
+   :target: https://pypi.python.org/pypi/pyFileFixity
