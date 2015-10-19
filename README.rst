@@ -701,9 +701,11 @@ won't crash on your suddenly at half the process).
 filesystem informations.
 
 3- If you could not recover your files, you can try file scraping using
-photorec or other similar tools as a last resort to extract data based
-only from files content (no filename, often uncorrect filetype, file
-boundaries may be wrong so some data may be cut off, etc.).
+`photorec <http://www.cgsecurity.org/wiki/PhotoRec>`_ or
+`plaso  <http://plaso.kiddaland.net/>`_ other similar tools as
+a last resort to extract data based only from files content (no filename,
+often uncorrect filetype, file boundaries may be wrong so some data
+may be cut off, etc.).
 
 4- If you used pyFileFixity before the failure of your storage media,
 you can then use your pre-computed databases to check that files are
@@ -750,7 +752,8 @@ but of course we could implement specific instructions for each main
 platform, so this point is not really a problem.
 
 To workaround this issue (directory meta-data are critical spots), other
-softwares use a one-time storage medium. This way, they can access at
+softwares use a one-time storage medium (ie, writing your data along
+with generating and writing the ecc). This way, they can access at
 the bit level the inode info, and they are guaranted that the inodes
 won't ever change. This is the approach taken by DVDisaster: by using
 optical mediums, it can compute inodes that will be permanent, and thus
@@ -758,7 +761,8 @@ also encode that info in the ecc file. Another approach is to create a
 virtual filesystem specifically to store just your files, so that you
 manage the inode yourself, and you can then copy the whole filesystem
 around (which is really just a file, just like a zip file - which can
-also be considered as a mini virtual file system in fact).
+also be considered as a mini virtual file system in fact) like
+`rsbep <http://users.softlab.ntua.gr/~ttsiod/rsbep.html>`_.
 
 Here the portability principle of pyFileFixity prevents this approach.
 But you can mimic this workaround on your hard drive for pyFileFixity to
@@ -872,6 +876,20 @@ generate an ecc file):
 -  `Ent <https://github.com/lsauer/entropy>`__ a tool to analyze the
    entropy of your files. Can be very interesting to optimize the error
    correction algorithm, or your compression tools.
+- Paper as a storage medium: paper is not a great storage medium,
+   because it has low storage density (ie, you can only store at most 
+   about 100 KB) and it can also degrade just like other storage mediums,
+   but you cannot check that automatically since it's not digital. However,
+   if you are interested, here are a few softwares that do that:
+   `QR Backup <http://blog.liw.fi/posts/qr-backup/>`_,
+   `Paper key <http://en.wikipedia.org/wiki/Paper_key>`_,
+   `Paperbak <http://www.ollydbg.de/Paperbak/index.html>`_,
+   `Optar <http://ronja.twibright.com/optar/>`_,
+   `QR Backup (another) <http://blog.shuningbian.net/2009/10/qrbackup.php>`_,
+   `QR Backup (again another) <http://git.pictorii.com/index.php?p=qrbackup.git&a=summary>`_,
+   `QR Backup (again) <http://hansmi.ch/software/qrbackup>`_,
+   `dpaper <https://github.com/penma/dpaper>`_
+   `A related paper <http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.303.3101&rep=rep1&type=pdf>`_.
 
 FAQ
 ---
