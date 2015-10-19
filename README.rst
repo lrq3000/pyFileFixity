@@ -967,7 +967,6 @@ There are a few studies about the most resilient file formats, such as:
 .. |Example| image:: https://raw.githubusercontent.com/lrq3000/pyFileFixity/master/tux-example.jpg
    :scale: 60 %
    :alt: Image corruption and repair example
-   :align: center
 .. |PyPi Status| image:: https://img.shields.io/pypi/v/pyFileFixity.svg
    :target: https://pypi.python.org/pypi/pyFileFixity
 .. |PyPi Downloads| image:: https://img.shields.io/pypi/dm/pyFileFixity.svg
