@@ -34,6 +34,9 @@ you can read it).
 Of course, you can also protect the whole file, not only the header, using pyFileFixity's
 `structural_adaptive_ecc.py`. You can also detect any corruption using `rfigc.py`.
 
+.. contents:: Table of Contents
+   :backlinks: top
+
 Quickstart
 ----------
 
