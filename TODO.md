@@ -1,6 +1,62 @@
 PyFileFixity Todo
 =============
 
+TODO
+--------
+
+1. intra-ecc for size and use this size instead of real size of file at decoding.
+compute_ecc_from_string(string, *args, **kwargs) qui va juste transformer string en StringIO
+decode_ecc_from_string(string, ptee=ptee, et tous les args necessaires)
+2. hello world en en tete commentaire, pour que les gens puissent s'entrainer avec les paramètres Reed Solomon donnés (avec rate de moitié comme ca ils savent k et n, et le mettre juste avant).
+3. compute redundancy rate(n, k) et inverse
+http://stackoverflow.com/questions/24421305/overhead-of-error-correcting-codes-as-the-error-rate-increases?rq=1
+4. eccman if decoding fails and k <= floor(n/2) then try to decode with erasures considering input as all erasures (useful for index backup, path strings, etc.).
+put that as a new method in eccman which will call self.decode() and if self.check not ok and k <= n//2 then try erasures only!
+5. replication_repair.py : --input "folder1" "folder2" "folder3" or --input_files "file1", "file2", "file3" and --output "folder" or "file". Will streamingly read a buffer of bytes from files, and then major vote, and write to output. At the beginning, assign a number to each input, and say for each block which was chosen. If ambiguity, choose the original (but print). If one file size is lesser than replications, continue to the biggest one by default. Can be applicable to both ecc files and to just any file. The goal is to use this script to take advantage of the storage of your archived files into multiple locations: you will necessarily make replications, so why just not use them for repair?
+* replication can repair r-2 errors because of vote (you need at least 2 blocks for majority vote to work), where r is the number of replications: if r=3, you get a redundancy rate of 1/3, if r=4, rate is 2/4, etc.
+* difference between resiliency rate and redundancy rate: resiliency rate is the number of errors you can correct in the original message (ie: 0.3% means that you can correct 30% of your original message), while redundancy rate is the number of errors you can correct in the whole codeword (ie: 30% means that you can correct 30% over the original message + ecc symbols, thus if you just want to correct errors in the original message, it's a lot less than 30%). That's why resiliency rate can easily attain 100% (which means that you can correct errors in every symbols of the original message) and even beyond, while 100% is the unachievable limit of redundancy rate (because 100% means that you can correct errors in every symbols of the whole codeword, which would mean that you use only ecc symbols and no symbols from the original message at all, which is impossible since you need at least one original message's symbol to compute an ecc code, thus you can only attain 99.9...% at maximum).
+* Algo:
+  . copy header_ecc.py for gui
+  . walk through ALL dirs and merge lists of all files
+  . for each file, open it from each dir. If one dir miss the file, show a warning.
+  . streaming repair each symbol.
+  . check if the dir with the file with the last modif repair is significantly different. If true, then warning (the folder may contain a newer version of the file but it was not the majority!).
+stats fin nombre de fichiers mergés différents, par défaut car tous différents, nombre de fichiers pris du folder A, B, C, etc.
+sauver dans un fichier csv pour chaque fichier: relfilepath, X, X, -, , erreur message s'il y a. Code: X = choisi, - = pas choisi, vide = n'existe pas.
+USE COUNTER (or just dict like before, but counter should be more efficient, and can always try and except failsafe to dict if not available): https://docs.python.org/2/library/collections.html#collections.Counter
+6. resiliency tester script (avec la totale: header resiliency qui va appeler header_ecc.py, structural etc et meme replication qui va auto repliquer le nombre choisi et tamperer chacun).
+7. README add:
+https://www.datanumen.com/tar-repair/
+http://www.dmst.aueb.gr/dds/sw/unix/tarfix/
+8. Pack for Pypi: brownanrs and pyfilefixity, and post on reddit and https://groups.google.com/forum/#!forum/digital-curation
+9. multi-file support (with file recreation, even if can only be partially recovered, missing file will be replaced by null bytes on-the-fly)
+if multi supplied, intra-fields will be encoded in compact json, else only one string.
+Two modes: simple and normal. Simple will just group together files (order by size) without trying to fill the gaps.
+Normal: to-fill = dict toujours sorté descendant (highest first) et la key est la taille à remplir pour tel couple (cluster, groupe).
+  * For each file:
+    * If to-fill list is empty or file.size > first-key(to-fill):
+      * Create cluster c with file in first group g1
+      * Add to-fill[file.size].append([c, g2], [c, g3], ..., [c, gn])
+    * Else:
+      * ksize = first-key(to-fill)
+      * c, g = to-fill[ksize].popitem(0)
+      * Add file to cluster c in group g
+      * nsize = ksize - file.size
+      * if nsize > 0:
+        * to-fill[nsize].append([c, g])
+        * sort to-fill if not an automatic ordering structure
+10. unit test? coverage?
+
+11. (maybe) cauchy RS using Cython to interface with LongHair lib.
+12. (maybe) hash with principle of locality (polynomial division remainder?)
+13. (maybe) bruteforce decoding from locality hash (try every possible polynomials using chinese remainder theorem?)
+simply generate all big ints that corresponds to the given remainder up to 2^8 poly and then check the one that corresponds to the md5 hash. Thus the ecc code will consists of: md5 hash + remainder + ecc for these to correct them in case of bug.
+http://mathematica.stackexchange.com/questions/32586/implementation-of-the-polynomial-chinese-remainder-theorem
+http://www.mathworks.com/matlabcentral/fileexchange/5841-chinese-remainder-theorem-for-polynomials
+
+MAYBE
+----------
+
 - Move from argparse to [docopt](https://github.com/docopt/docopt) to generate a beautiful and more usable command-line interface (with clear modes, because right now the relevant options are not grouped together and it can be quite confusing).
 
 - High priority: Speed optimize the Reed-Solomon library? (using Numpy or Cython? But I want to keep a pure python implementation available just in case, or make a Cython implementation that is also compatible with normal python). Use pprofile to check where to optimize first.
