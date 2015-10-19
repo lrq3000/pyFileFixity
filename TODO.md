@@ -25,6 +25,7 @@ stats fin nombre de fichiers mergés différents, par défaut car tous différents, 
 sauver dans un fichier csv pour chaque fichier: relfilepath, X, X, -, , erreur message s'il y a. Code: X = choisi, - = pas choisi, vide = n'existe pas.
 USE COUNTER (or just dict like before, but counter should be more efficient, and can always try and except failsafe to dict if not available): https://docs.python.org/2/library/collections.html#collections.Counter
 6. resiliency tester script (avec la totale: header resiliency qui va appeler header_ecc.py, structural etc et meme replication qui va auto repliquer le nombre choisi et tamperer chacun).
+Don't forget to delete files in result folders before restarting the test!
 7. README add:
 https://www.datanumen.com/tar-repair/
 http://www.dmst.aueb.gr/dds/sw/unix/tarfix/
