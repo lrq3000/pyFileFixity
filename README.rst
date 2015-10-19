@@ -36,7 +36,7 @@ Of course, you can also protect the whole file, not only the header, using pyFil
 `structural_adaptive_ecc.py`. You can also detect any corruption using `rfigc.py`.
 
 Quickstart
----------
+----------
 
 - To generate a monitoring database (to later check if files were changed, but no possibility of repairing):
 
@@ -517,7 +517,7 @@ files, whatever their size is: for example, if we have a set of 40k
 files for a total size of 60 GB, with a resiliency\_rate of 30% and
 header\_size of 1KB (we limit to the first 1K bytes/characters = our
 file header), then, without counting the hash per block and other
-meta-data, the final ECC file will be about 2\ *resiliency\_rate *
+meta-data, the final ECC file will be about 2 \* resiliency\_rate \*
 number\_of\_files \* header\_size = 24.5 MB. This size can be lower if
 there are many files smaller than 1KB. This is a pretty low storage
 overhead to backup the headers of such a big number of files.
