@@ -950,13 +950,10 @@ It's difficult to advise a specific format. What we can do is advise the charact
 of a good file format:
 
   * future-proof (should be readable in the future).
-  * non-solid (ie, divised into indepedent blocks, so that a corruption to one block
-  doesn't cause a problem to the decoding of other blocks).
+  * non-solid (ie, divised into indepedent blocks, so that a corruption to one block doesn't cause a problem to the decoding of other blocks).
   * open source implementation available.
-  * minimize corruption impact (ie, how much of the file becomes unreadable with
-  a partial corruption? Only the partially corrupted area, or other valid parts too?).
-  * No magic bytes or header importance (ie, corrupting the header won't prevent
-  opening the file).
+  * minimize corruption impact (ie, how much of the file becomes unreadable with a partial corruption? Only the partially corrupted area, or other valid parts too?).
+  * No magic bytes or header importance (ie, corrupting the header won't prevent opening the file).
 
 There are a few studies about the most resilient file formats, such as:
 
