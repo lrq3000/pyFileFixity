@@ -383,7 +383,7 @@ Pros:
 -  Support for erasures (null bytes) and even errors-and-erasures, which
    literally doubles the repair capabilities. To my knowledge, this is
    the only freely available parity software that supports erasures.
--  Included a prediction of the total file size given your parameters,
+-  Display the predicted total ecc file size given your parameters,
    and the total time it will take to encode/decode.
 -  No external library needed, only native Python 2.7.x (but with PyPy
    it will be way faster!).
@@ -401,7 +401,7 @@ Cons:
    files even if the directory tree is lost, and then use RFIGC.py to
    reorganize your files correctly. There are alternatives, see the
    chapters below: you can either package all your files in a single
-   archive using DAR (thus the ecc will also protect meta-data), or see
+   archive using DAR or ZIP (thus the ecc will also protect meta-data), or see
    DVDisaster as an alternative solution, which is an ecc generator with
    support for directory trees meta-data (but only on optical disks).
 -  Can only repair errors and erasures (characters that are replaced by
@@ -416,7 +416,7 @@ Cons:
    have set a resilience\_rate at least 0.5), contrary to Parchives
    (PAR1/PAR2). Thus, you can only repair a file if you still have it on
    your filesystem. If it's missing, pyFileFixity cannot do anything
-   (yet, this may be implemented in the future).
+   (yet, this will be implemented in the future).
 
 Note that the tools were meant for data archival (protect files that you
 won't modify anymore), not for system's files watching nor to protect
@@ -446,20 +446,20 @@ Example usage
 
 -  To generate the database (only needed once):
 
-``python rfigc.py -i "folderimages" -d "dbhash.csv" -g``
+``python rfigc.py -i "your_folder" -d "dbhash.csv" -g``
 
 -  To check:
 
-``python rfigc.py -i "folderimages" -d "dbhash.csv" -l log.txt -s``
+``python rfigc.py -i "your_folder" -d "dbhash.csv" -l log.txt -s``
 
 -  To update your database by appending new files:
 
-``python rfigc.py -i "folderimages" -d "dbhash.csv" -u -a``
+``python rfigc.py -i "your_folder" -d "dbhash.csv" -u -a``
 
 -  To update your database by appending new files AND removing
    inexistent files:
 
-``python rfigc.py -i "folderimages" -d "dbhash.csv" -u -a -r``
+``python rfigc.py -i "your_folder" -d "dbhash.csv" -u -a -r``
 
 Note that by default, the script is by default in check mode, to avoid
 wrong manipulations. It will also alert you if you generate over an
