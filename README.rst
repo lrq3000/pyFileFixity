@@ -736,7 +736,7 @@ example:
 -  if your unicode strings were mangled (ie, you see weird symbols),
    try this script that will automatically demangle them:
    https://github.com/LuminosoInsight/python-ftfy
-- to repair tabular (2D) data such as .csv, try
+-  to repair tabular (2D) data such as .csv, try
    `Carpenter <https://pypi.python.org/pypi/Carpenter/>`_.
 
 Protecting directory tree meta-data
@@ -883,18 +883,18 @@ generate an ecc file):
 -  `Ent <https://github.com/lsauer/entropy>`__ a tool to analyze the
    entropy of your files. Can be very interesting to optimize the error
    correction algorithm, or your compression tools.
-- `HashFS <https://pypi.python.org/pypi/hashfs/>`_ is a non-redundant,
+-  `HashFS <https://pypi.python.org/pypi/hashfs/>`_ is a non-redundant,
    duplication free filesystem, in Python. **Data deduplication** is very
    important for large scale long term storage: since you want your data
    to be redundant, this means you will use an additional storage space
    for your redundant copies that will be proportional to your original data.
    Having duplicated data will consume more storage and more processing
    time, for no benefit. That's why it's a good idea to deduplicate your data
-   prior to create redundant copies: this will be faster and you will save money.
+   prior to create redundant copies: this will be faster and save you money.
    Deduplication can either be done manually (by using duplicates removers)
    or systematically and automatically using specific filesystems such as
    zfs (with deduplication enabled) or hashfs.
-- Paper as a storage medium: paper is not a great storage medium,
+-  Paper as a storage medium: paper is not a great storage medium,
    because it has low storage density (ie, you can only store at most 
    about 100 KB) and it can also degrade just like other storage mediums,
    but you cannot check that automatically since it's not digital. However,
