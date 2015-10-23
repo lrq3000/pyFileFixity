@@ -899,15 +899,15 @@ generate an ecc file):
    about 100 KB) and it can also degrade just like other storage mediums,
    but you cannot check that automatically since it's not digital. However,
    if you are interested, here are a few softwares that do that:
-   `QR Backup <http://blog.liw.fi/posts/qr-backup/>`_,
    `Paper key <http://en.wikipedia.org/wiki/Paper_key>`_,
    `Paperbak <http://www.ollydbg.de/Paperbak/index.html>`_,
    `Optar <http://ronja.twibright.com/optar/>`_,
+   `dpaper <https://github.com/penma/dpaper>`_,
+   `QR Backup <http://blog.liw.fi/posts/qr-backup/>`_,
    `QR Backup (another) <http://blog.shuningbian.net/2009/10/qrbackup.php>`_,
    `QR Backup (again another) <http://git.pictorii.com/index.php?p=qrbackup.git&a=summary>`_,
    `QR Backup (again) <http://hansmi.ch/software/qrbackup>`_,
-   `dpaper <https://github.com/penma/dpaper>`_
-   `A related paper <http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.303.3101&rep=rep1&type=pdf>`_.
+   `and finally a related paper <http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.303.3101&rep=rep1&type=pdf>`_.
 
 FAQ
 ---
