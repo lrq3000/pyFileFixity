@@ -10,13 +10,14 @@ decode_ecc_from_string(string, ptee=ptee, et tous les args necessaires)
 2. hello world en en tete commentaire, pour que les gens puissent s'entrainer avec les paramètres Reed Solomon donnés (avec rate de moitié comme ca ils savent k et n, et le mettre juste avant).
 Canonic format:
 
-::
+    ```
     ** Script name and version
     ** my-script.py --arg1 --arg2 --arg3
     ** Parameters of the ecc here.
     ** Hello world <ecc-here>
     <entry_marker>/path/to/my-first-file.txt<field_delim>231<field_delim><ecc-of-filepath><field_delim><ecc-of-size><field_delim><hash-of-chunk1><ecc-of-chunk1><hash-of-chunk2><ecc-of-chunk2> etc...
     <entry_marker>/path/to/my-first-file.txt<field_delim>231<field_delim><ecc-of-filepath><field_delim><ecc-of-size><field_delim><hash-of-chunk1><ecc-of-chunk1><hash-of-chunk2><ecc-of-chunk2> etc...
+    ```
 
 3. compute redundancy rate(n, k) et inverse
 http://stackoverflow.com/questions/24421305/overhead-of-error-correcting-codes-as-the-error-rate-increases?rq=1
@@ -31,7 +32,7 @@ put that as a new method in eccman which will call self.decode() and if self.che
         * for each file, open it from each dir. If one dir miss the file, show a warning.
         * streaming repair each symbol.
         * check if the dir with the file with the last modif repair is significantly different. If true, then warning (the folder may contain a newer version of the file but it was not the majority!).
-    * end of scripts: display stats of the merge, and from which folder A, B, C, etc if not merged by vote.
+    * end of script: display stats of the merge, and from which folder A, B, C, etc if not merged by vote.
         * total nb of files
         * total different (1 = one or more copies of a specific file were different)
         * total merged by vote
