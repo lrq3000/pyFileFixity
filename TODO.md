@@ -39,6 +39,7 @@ put that as a new method in eccman which will call self.decode() and if self.che
     * Byte-by-byte stats + files stats:
         * At the end, a byte-by-byte comparison between the input and the tampered files will display the ratio of corruption, and then another comparison between input and repaired output will tell the difference ratio, and finally a comparison between file tampered and output will tell the repairing ratio. So we would have 3 ratio of how many bytes were damaged/repaired/unchanged over the total bytes for all files.
         * For the file stats, we simply compute the total number of fully repaired files, partially repaired files, and non repaired files.
+        * Compute stats after each repair command? (compare what was enhanced by the current command, so the input would be the output of each previous command) + 1 final stat against the input and final output (ie, computing the total repair after all repair commands)?
     * Use a system similar to the Makefile for the configuration of commandline arguments?
     * Don't forget to delete files in result folders before restarting the test!
     * crossvalidation? (run several times the same test with randomization in filetamper stage, and compute the averaged stats + variance?).
