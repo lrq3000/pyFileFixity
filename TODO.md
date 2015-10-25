@@ -59,11 +59,13 @@ put that as a new method in eccman which will call self.decode() and if self.che
     * Algo:
         * User places files in a folder, and give the folder's name as argument.
         * For i in crossvalidation:
+            * Delete all files in previously created folders
             * Walk each file and filetamper.py it (tampering parameters configurable by user). Store the tampered copies in a folder created by script.
             * Repair and stats loop:
                 * Run each repair command specified by user (JSON file? Makefile type file?).
                 * Compute stats compared to the input at this stage.
         * Compute average of stats and display them.
+        * (Note: at the end, the latest generated files will be kept on disk on purpose, so that the user can try to open the files for himself and see if they work.)
 7. Pack for Pypi: brownanrs and pyfilefixity, and post on reddit and https://groups.google.com/forum/#!forum/digital-curation
 8. multi-file support (with file recreation, even if can only be partially recovered, missing file will be replaced by null bytes on-the-fly)
 if multi supplied, intra-fields will be encoded in compact json, else only one string.
