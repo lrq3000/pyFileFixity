@@ -32,7 +32,18 @@ put that as a new method in eccman which will call self.decode() and if self.che
         * streaming repair each symbol.
         * check if the dir with the file with the last modif repair is significantly different. If true, then warning (the folder may contain a newer version of the file but it was not the majority!).
     * stats fin nombre de fichiers mergés différents, par défaut car tous différents, nombre de fichiers pris du folder A, B, C, etc.
-    * sauver dans un fichier csv pour chaque fichier: relfilepath, X, X, -, , erreur message s'il y a. Code: X = choisi, - = pas choisi, vide = n'existe pas.
+        * total nb of files
+        * total different (1 = one or more copies of a specific file were different)
+        * total merged by vote
+        * total non merged by vote (vote inconclusive) but selected from main folder
+        * total nb of files taken as-is (no difference)
+        * for each folder: number of files selected from each folder.
+    * option to save stats in a csv file for details of the choice for each file:
+    ```
+    relfilepath, X, X, -, , error message (if any)
+    Legend: X = chosen, - = not chosen, empty = does not exist.
+    ```
+    Having the detailed stats for each file will allow users to later postprocess the files, if in any case the selected files for output were not the best ones (in this case, the user can look through the log and try other versions of the file, or retry the merging process using a different order of folders).
     * USE COUNTER (or just dict like before, but counter should be more efficient, and can always try and except failsafe to dict if not available): https://docs.python.org/2/library/collections.html#collections.Counter
 6. resiliency tester script:
     * from an input folder, randomly filetamper the files and then try to repair, using the provided commandline tools and argument.
@@ -44,6 +55,14 @@ put that as a new method in eccman which will call self.decode() and if self.che
     * Don't forget to delete files in result folders before restarting the test!
     * crossvalidation? (run several times the same test with randomization in filetamper stage, and compute the averaged stats + variance?).
     * Call flow: always call filetamper.py to generate tampered copies of the input, then the user commands to repair.
+    * Algo:
+        * User places files in a folder, and give the folder's name as argument.
+        * For i in crossvalidation:
+            * Walk each file and filetamper.py it (tampering parameters configurable by user). Store the tampered copies in a folder created by script.
+            * Repair and stats loop:
+                * Run each repair command specified by user (JSON file? Makefile type file?).
+                * Compute stats compared to the input at this stage.
+        * Compute average of stats and display them.
 7. Pack for Pypi: brownanrs and pyfilefixity, and post on reddit and https://groups.google.com/forum/#!forum/digital-curation
 8. multi-file support (with file recreation, even if can only be partially recovered, missing file will be replaced by null bytes on-the-fly)
 if multi supplied, intra-fields will be encoded in compact json, else only one string.
@@ -80,6 +99,8 @@ MAYBE
 - High priority: parallelize eccman.py to encode faster in a generic fashion (ie, using any codec). It would call n parallel instances of the ecc codec, to compute n ecc blocks in parallel. This should give us at least a 10x speedup (if compatible with PyPy, this would make us reach 10MB/s!).
 
 - Extend pyFileFixity to encode multiple characters into one, and then use higher galois fields like 2^16, 2^32 or even 2^128 (allows to be more resilient against huge, adversarial bursts): for example, instead of having one character ranging from value [0,255], we would have two characters encoded in one in range [0,65535] and then we could use GF(2^16) and encode blocks of 65535 characters instead of 255. This may also help us encode faster (since we would process bigger ecc blocks at once, but we'd have to see if the computational complexity of RS doesn't cancel this benefit...). We could also maybe use optimization tricks in: Luo, Jianqiang, et al. "Efficient software implementations of large finite fields GF (2 n) for secure storage applications." ACM Transactions on Storage (TOS) 8.1 (2012): 2.
+
+- structure check for zip files? (Just check if we can open without any error. What kind of error if partially corrupted?).
 
 - structure check for movies/video files using moviepy https://github.com/Zulko/moviepy ?
 
