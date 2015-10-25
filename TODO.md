@@ -34,8 +34,15 @@ put that as a new method in eccman which will call self.decode() and if self.che
     * stats fin nombre de fichiers mergés différents, par défaut car tous différents, nombre de fichiers pris du folder A, B, C, etc.
     * sauver dans un fichier csv pour chaque fichier: relfilepath, X, X, -, , erreur message s'il y a. Code: X = choisi, - = pas choisi, vide = n'existe pas.
     * USE COUNTER (or just dict like before, but counter should be more efficient, and can always try and except failsafe to dict if not available): https://docs.python.org/2/library/collections.html#collections.Counter
-6. resiliency tester script (avec la totale: header resiliency qui va appeler header_ecc.py, structural etc et meme replication qui va auto repliquer le nombre choisi et tamperer chacun).
-Don't forget to delete files in result folders before restarting the test!
+6. resiliency tester script:
+    * from an input folder, randomly filetamper the files and then try to repair, using the provided commandline tools and argument.
+    * Byte-by-byte stats + files stats:
+        * At the end, a byte-by-byte comparison between the input and the tampered files will display the ratio of corruption, and then another comparison between input and repaired output will tell the difference ratio, and finally a comparison between file tampered and output will tell the repairing ratio. So we would have 3 ratio of how many bytes were damaged/repaired/unchanged over the total bytes for all files.
+        * For the file stats, we simply compute the total number of fully repaired files, partially repaired files, and non repaired files.
+    * Use a system similar to the Makefile for the configuration of commandline arguments?
+    * Don't forget to delete files in result folders before restarting the test!
+    * crossvalidation? (run several times the same test with randomization in filetamper stage, and compute the averaged stats + variance?).
+    * Call flow: always call filetamper.py to generate tampered copies of the input, then the user commands to repair.
 7. Pack for Pypi: brownanrs and pyfilefixity, and post on reddit and https://groups.google.com/forum/#!forum/digital-curation
 8. multi-file support (with file recreation, even if can only be partially recovered, missing file will be replaced by null bytes on-the-fly)
 if multi supplied, intra-fields will be encoded in compact json, else only one string.
