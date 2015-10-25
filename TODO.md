@@ -55,9 +55,10 @@ Normal: to-fill = dict toujours sorté descendant (highest first) et la key est l
         * sort to-fill if not an automatic ordering structure
 9. unit test? coverage?
 
-10. (maybe) cauchy RS using Cython to interface with LongHair lib.
-11. (maybe) hash with principle of locality (polynomial division remainder?)
-12. (maybe) bruteforce decoding from locality hash (try every possible polynomials using chinese remainder theorem?)
+10. (maybe) implement file_scraping option in header_ecc.py and structural_adaptive_ecc.py: at repair, walk through each files (instead of walking from the database entries), and check each database entry to see if the file corresponds to an ecc track: we try to decode each ecc block against the file, and if there's some number of ecc blocks that perfectly match the file, or can be repaired without any error, then we will know this is the correct ecc entry and we can even rename the file. The threshold could be the ratio of matching/repairable ecc blocks over the total number of ecc blocks. Could also check by filesize. See: https://github.com/Parchive/par2cmdline#misnamed-and-incomplete-data-files
+11. (maybe) cauchy RS using Cython to interface with LongHair lib.
+12. (maybe) hash with principle of locality (polynomial division remainder?)
+13. (maybe) bruteforce decoding from locality hash (try every possible polynomials using chinese remainder theorem?)
 simply generate all big ints that corresponds to the given remainder up to 2^8 poly and then check the one that corresponds to the md5 hash. Thus the ecc code will consists of: md5 hash + remainder + ecc for these to correct them in case of bug.
 http://mathematica.stackexchange.com/questions/32586/implementation-of-the-polynomial-chinese-remainder-theorem
 http://www.mathworks.com/matlabcentral/fileexchange/5841-chinese-remainder-theorem-for-polynomials
