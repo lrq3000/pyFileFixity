@@ -31,7 +31,7 @@ put that as a new method in eccman which will call self.decode() and if self.che
         * for each file, open it from each dir. If one dir miss the file, show a warning.
         * streaming repair each symbol.
         * check if the dir with the file with the last modif repair is significantly different. If true, then warning (the folder may contain a newer version of the file but it was not the majority!).
-    * stats fin nombre de fichiers mergés différents, par défaut car tous différents, nombre de fichiers pris du folder A, B, C, etc.
+    * end of scripts: display stats of the merge, and from which folder A, B, C, etc if not merged by vote.
         * total nb of files
         * total different (1 = one or more copies of a specific file were different)
         * total merged by vote
