@@ -23,17 +23,17 @@ http://stackoverflow.com/questions/24421305/overhead-of-error-correcting-codes-a
 4. eccman if decoding fails and k <= floor(n/2) then try to decode with erasures considering input as all erasures (useful for index backup, path strings, etc.).
 put that as a new method in eccman which will call self.decode() and if self.check not ok and k <= n//2 then try erasures only!
 5. replication_repair.py : --input "folder1" "folder2" "folder3" or --input_files "file1", "file2", "file3" and --output "folder" or "file". Will streamingly read a buffer of bytes from files, and then major vote, and write to output. At the beginning, assign a number to each input, and say for each block which was chosen. If ambiguity, choose the original (but print). If one file size is lesser than replications, continue to the biggest one by default. Can be applicable to both ecc files and to just any file. The goal is to use this script to take advantage of the storage of your archived files into multiple locations: you will necessarily make replications, so why just not use them for repair?
-* replication can repair r-2 errors because of vote (you need at least 2 blocks for majority vote to work), where r is the number of replications: if r=3, you get a redundancy rate of 1/3, if r=4, rate is 2/4, etc.
-* difference between resiliency rate and redundancy rate: resiliency rate is the number of errors you can correct in the original message (ie: 0.3% means that you can correct 30% of your original message), while redundancy rate is the number of errors you can correct in the whole codeword (ie: 30% means that you can correct 30% over the original message + ecc symbols, thus if you just want to correct errors in the original message, it's a lot less than 30%). That's why resiliency rate can easily attain 100% (which means that you can correct errors in every symbols of the original message) and even beyond, while 100% is the unachievable limit of redundancy rate (because 100% means that you can correct errors in every symbols of the whole codeword, which would mean that you use only ecc symbols and no symbols from the original message at all, which is impossible since you need at least one original message's symbol to compute an ecc code, thus you can only attain 99.9...% at maximum).
-* Algo:
-  . copy header_ecc.py for gui
-  . walk through ALL dirs and merge lists of all files
-  . for each file, open it from each dir. If one dir miss the file, show a warning.
-  . streaming repair each symbol.
-  . check if the dir with the file with the last modif repair is significantly different. If true, then warning (the folder may contain a newer version of the file but it was not the majority!).
-stats fin nombre de fichiers mergés différents, par défaut car tous différents, nombre de fichiers pris du folder A, B, C, etc.
-sauver dans un fichier csv pour chaque fichier: relfilepath, X, X, -, , erreur message s'il y a. Code: X = choisi, - = pas choisi, vide = n'existe pas.
-USE COUNTER (or just dict like before, but counter should be more efficient, and can always try and except failsafe to dict if not available): https://docs.python.org/2/library/collections.html#collections.Counter
+    * replication can repair r-2 errors because of vote (you need at least 2 blocks for majority vote to work), where r is the number of replications: if r=3, you get a redundancy rate of 1/3, if r=4, rate is 2/4, etc.
+    * difference between resiliency rate and redundancy rate: resiliency rate is the number of errors you can correct in the original message (ie: 0.3% means that you can correct 30% of your original message), while redundancy rate is the number of errors you can correct in the whole codeword (ie: 30% means that you can correct 30% over the original message + ecc symbols, thus if you just want to correct errors in the original message, it's a lot less than 30%). That's why resiliency rate can easily attain 100% (which means that you can correct errors in every symbols of the original message) and even beyond, while 100% is the unachievable limit of redundancy rate (because 100% means that you can correct errors in every symbols of the whole codeword, which would mean that you use only ecc symbols and no symbols from the original message at all, which is impossible since you need at least one original message's symbol to compute an ecc code, thus you can only attain 99.9...% at maximum).
+    * Algo:
+        * copy header_ecc.py for gui
+        * walk through ALL dirs and merge lists of all files
+        * for each file, open it from each dir. If one dir miss the file, show a warning.
+        * streaming repair each symbol.
+        * check if the dir with the file with the last modif repair is significantly different. If true, then warning (the folder may contain a newer version of the file but it was not the majority!).
+    * stats fin nombre de fichiers mergés différents, par défaut car tous différents, nombre de fichiers pris du folder A, B, C, etc.
+    * sauver dans un fichier csv pour chaque fichier: relfilepath, X, X, -, , erreur message s'il y a. Code: X = choisi, - = pas choisi, vide = n'existe pas.
+    * USE COUNTER (or just dict like before, but counter should be more efficient, and can always try and except failsafe to dict if not available): https://docs.python.org/2/library/collections.html#collections.Counter
 6. resiliency tester script (avec la totale: header resiliency qui va appeler header_ecc.py, structural etc et meme replication qui va auto repliquer le nombre choisi et tamperer chacun).
 Don't forget to delete files in result folders before restarting the test!
 7. Pack for Pypi: brownanrs and pyfilefixity, and post on reddit and https://groups.google.com/forum/#!forum/digital-curation
@@ -69,13 +69,15 @@ MAYBE
 
 - Move from argparse to [docopt](https://github.com/docopt/docopt) to generate a beautiful and more usable command-line interface (with clear modes, because right now the relevant options are not grouped together and it can be quite confusing).
 
+- High priority: parallelize eccman.py to encode faster in a generic fashion (ie, using any codec). It would call n parallel instances of the ecc codec, to compute n ecc blocks in parallel. This should give us at least a 10x speedup (if compatible with PyPy, this would make us reach 10MB/s!).
+
+- Extend pyFileFixity to encode multiple characters into one, and then use higher galois fields like 2^16, 2^32 or even 2^128 (allows to be more resilient against huge, adversarial bursts): for example, instead of having one character ranging from value [0,255], we would have two characters encoded in one in range [0,65535] and then we could use GF(2^16) and encode blocks of 65535 characters instead of 255. This may also help us encode faster (since we would process bigger ecc blocks at once, but we'd have to see if the computational complexity of RS doesn't cancel this benefit...). We could also maybe use optimization tricks in: Luo, Jianqiang, et al. "Efficient software implementations of large finite fields GF (2 n) for secure storage applications." ACM Transactions on Storage (TOS) 8.1 (2012): 2.
+
 - structure check for movies/video files using moviepy https://github.com/Zulko/moviepy ?
 
 - structural_adaptive_ecc.py: --update "change/remove/add" (change will update ecc entries if changed, remove will remove if file is not present anymore, add will encode new files not already in ecc file). For all, use another ecc file: must be different from input ecc file (from which we will streamline read and output to the target ecc file only if meet conditions).
 
 - Implement safety checks from Reed-Solomon Codes by Bernard Sklar : http://ptgmedia.pearsoncmg.com/images/art_sklar7_reed-solomon/elementLinks/art_sklar7_reed-solomon.pdf
-
-- Extend pyFileFixity to encode multiple characters into one, and then use higher galois fields like 2^16, 2^32 or even 2^128 (allows to be more resilient against huge, adversarial bursts): for example, instead of having one character ranging from value [0,255], we would have two characters encoded in one in range [0,65535] and then we could use GF(2^16) and encode blocks of 65535 characters instead of 255. We could also maybe use optimization tricks in: Luo, Jianqiang, et al. "Efficient software implementations of large finite fields GF (2 n) for secure storage applications." ACM Transactions on Storage (TOS) 8.1 (2012): 2.
 
 - reed-solomon extension supporting insertions and deletions of characters in a message block (but it may not be very useful in our case, since mediums usually cannot insert nor delete characters... Should first see if storage mediums can be phase distortion channels or not.).
 
