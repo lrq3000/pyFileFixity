@@ -90,9 +90,9 @@ The problem of long term storage
 --------------------------------
 
 Why are data corrupted with time? Entropy, my friend, entropy.
-The Universe *hates your data*. Entropy refers to the universal
-tendency for systems to become less ordered over time.
-Corruption is exactly that: a disorder in bits order.
+Entropy refers to the universal tendency for systems to become
+less ordered over time. Corruption is exactly that: a disorder
+in bits order. In other words: *the Universe hates your data*.
 
 Long term storage is thus a very difficult topic: it's like fighting with
 death (in this case, the death of data). Indeed, because of entropy,
@@ -105,8 +105,9 @@ known and which makes bridges safe: add some **redundancy**.
 
 There are only 2 ways to add redundancy:
 
--  the simple way to add redundancy is to **duplicate** the object, but
-   for data storage, this eats up a lot of storage and is not optimal.
+-  the simple way to add redundancy is to **duplicate** the object (also
+   called replication), but for data storage, this eats up a lot of storage
+   and is not optimal.
 -  the second way, and the best, optimal tools ever invented to recover
    from data corruption, are the **error correction codes** (forward
    error correction), which are a way to smartly produce redundant codes
@@ -134,13 +135,13 @@ in space but working at the same timescale), in data storage this is a
 temporal scheme: the sender was you storing the data on your medium at
 time t, and the receiver is again you but now retrieving the data at
 time t+x. Thus, the sender does not exist anymore, thus you cannot ask
-again some data if it's too much corrupted: in data storage, if a data
-is corrupted, it's lost for good, whereas in channel theory, a data can
-be submitted again if necessary.
+the sender to send again some data if it's too much corrupted: in data
+storage, if a data is corrupted, it's lost for good, whereas in channel theory,
+parts of the data can be submitted again if necessary.
 
 Some attempts were made to translate channel theory and error correcting
 codes theory to data storage, the first being Reed-Solomon which spawned
-the RAID schema. Then CIRC (Cross-interleaved Reed?olomon coding) was
+the RAID schema. Then CIRC (Cross-interleaved Reed-Solomon coding) was
 devised for use on optical discs to recover from scratches, which was
 necessary for the technology to be usable for consumers. Since then, new
 less-optimal but a lot faster algorithms such as LDPC, turbo-codes and
@@ -194,7 +195,7 @@ means that you can recover all your files from only half of them! (once
 they are encoded with an ecc file of course).
 
 There also are new generation RAID solutions, mainly software based,
-such as SnapRAID or ZFS, which allows you to configure a virtual RAID
+such as SnapRAID or ZFS, which allow you to configure a virtual RAID
 with the value n-k that you want. This is just like an ecc file (but a
 bit less flexible, since it's not a file but a disk mapping, so that you
 can't just copy it around or upload it to a cloud backup hosting). In
