@@ -46,6 +46,7 @@ Put that as a new method in eccman which will call self.decode() and if self.che
     ```
     Having the detailed stats for each file will allow users to later postprocess the files, if in any case the selected files for output were not the best ones (in this case, the user can look through the log and try other versions of the file, or retry the merging process using a different order of folders).
     * USE COUNTER (or just dict like before, but counter should be more efficient, and can always try and except failsafe to dict if not available): https://docs.python.org/2/library/collections.html#collections.Counter
+    * option to use rfigc database if available: would automatically call rfigc.py and read the database, and will check each file if exist in database, this would allow to find one version of the file that is guaranteed to be correct, in this case no need to replication_repair, we would just copy the correct version of the file.
 6. resiliency tester script:
     * from an input folder, randomly filetamper the files and then try to repair, using the provided commandline tools and argument.
     * Byte-by-byte stats + files stats:
