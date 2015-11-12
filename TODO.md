@@ -86,11 +86,12 @@ Normal: to-fill = dict toujours sorté descendant (highest first) et la key est l
     * (Original note: Implement multi-files ecc, which would be a generalization of PAR2: set a new configurable parameter split_stream which would fetch the stream of characters from the specified number of files. We could for example set 3 to use 1/3 of characters from each 3 files, 10 to compose the message block from 10 different files, etc. This would allow to make an ecc file that could recreate lost files from files that are still available (this also fix a bit the issue of directory tree meta-data truncation).
 8. unit test? coverage?
 9. Post stable release, and post on reddit and https://groups.google.com/forum/#!forum/digital-curation
+10. Use six for Python 3 compatibility? (And in the future, try to avoid six and make really compatible code).
 
-10. (maybe) implement file_scraping option in header_ecc.py and structural_adaptive_ecc.py: at repair, walk through each files (instead of walking from the database entries), and check each database entry to see if the file corresponds to an ecc track: we try to decode each ecc block against the file, and if there's some number of ecc blocks that perfectly match the file, or can be repaired without any error, then we will know this is the correct ecc entry and we can even rename the file. The threshold could be the ratio of matching/repairable ecc blocks over the total number of ecc blocks. Could also check by filesize. See: https://github.com/Parchive/par2cmdline#misnamed-and-incomplete-data-files
-11. (maybe) cauchy RS using Cython to interface with LongHair lib.
-12. (maybe) hash with principle of locality (polynomial division remainder?)
-13. (maybe) bruteforce decoding from locality hash (try every possible polynomials using chinese remainder theorem?)
+11. (maybe) implement file_scraping option in header_ecc.py and structural_adaptive_ecc.py: at repair, walk through each files (instead of walking from the database entries), and check each database entry to see if the file corresponds to an ecc track: we try to decode each ecc block against the file, and if there's some number of ecc blocks that perfectly match the file, or can be repaired without any error, then we will know this is the correct ecc entry and we can even rename the file. The threshold could be the ratio of matching/repairable ecc blocks over the total number of ecc blocks. Could also check by filesize. See: https://github.com/Parchive/par2cmdline#misnamed-and-incomplete-data-files
+12. (maybe) cauchy RS using Cython to interface with LongHair lib.
+13. (maybe) hash with principle of locality (polynomial division remainder?)
+14. (maybe) bruteforce decoding from locality hash (try every possible polynomials using chinese remainder theorem?)
 simply generate all big ints that corresponds to the given remainder up to 2^8 poly and then check the one that corresponds to the md5 hash. Thus the ecc code will consists of: md5 hash + remainder + ecc for these to correct them in case of bug.
 http://mathematica.stackexchange.com/questions/32586/implementation-of-the-polynomial-chinese-remainder-theorem
 http://www.mathworks.com/matlabcentral/fileexchange/5841-chinese-remainder-theorem-for-polynomials

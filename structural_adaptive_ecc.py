@@ -63,7 +63,7 @@ thispathname = os.path.dirname(sys.argv[0])
 sys.path.append(os.path.join(thispathname, 'lib'))
 
 # Import necessary libraries
-from lib.aux_funcs import is_dir, is_dir_or_file, fullpath, recwalk, sizeof_fmt
+from lib.aux_funcs import is_dir, is_dir_or_file, fullpath, recwalk, sizeof_fmt, path2unix
 import lib.argparse as argparse
 import datetime, time
 import lib.tqdm as tqdm
@@ -557,7 +557,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
         filescount = filescount + 1 # counting the total number of files we will process (so that we can show a progress bar with ETA)
         # Get full absolute filepath
         filepath = os.path.join(dirpath, filename)
-        relfilepath = os.path.relpath(filepath, rootfolderpath) # File relative path from the root (we truncate the rootfolderpath so that we can easily check the files later even if the absolute path is different)
+        relfilepath = path2unix(os.path.relpath(filepath, rootfolderpath)) # File relative path from the root (we truncate the rootfolderpath so that we can easily check the files later even if the absolute path is different)
         # Get the current file's size
         size = os.stat(filepath).st_size
         # Check if we must skip this file because size is too small, and then if we still keep it because it's extension is always to be included
@@ -616,7 +616,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
                 # Get full absolute filepath
                 filepath = os.path.join(dirpath,filename)
                 # Get database relative path (from scanning root folder)
-                relfilepath = os.path.relpath(filepath, rootfolderpath) # File relative path from the root (we truncate the rootfolderpath so that we can easily check the files later even if the absolute path is different)
+                relfilepath = path2unix(os.path.relpath(filepath, rootfolderpath)) # File relative path from the root (we truncate the rootfolderpath so that we can easily check the files later even if the absolute path is different)
                 # Get file size
                 filesize = os.stat(filepath).st_size
                 # If skip size is enabled and size is below the skip size, we skip UNLESS the file extension is in the always include list

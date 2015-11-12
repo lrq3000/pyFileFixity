@@ -50,3 +50,7 @@ def sizeof_fmt(num, suffix='B', mod=1024.0):
             return "%3.1f%s%s" % (num, unit, suffix)
         num /= mod
     return "%.1f%s%s" % (num, 'Y', suffix)
+
+def path2unix(path):
+    '''From a path given in any format, converts to posix path format'''
+    return posixpath.join(*list(PurePath(path).parts))

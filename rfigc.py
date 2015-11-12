@@ -51,7 +51,7 @@ thispathname = os.path.dirname(sys.argv[0])
 sys.path.append(os.path.join(thispathname, 'lib'))
 
 # Import necessary libraries
-from lib.aux_funcs import is_dir, is_dir_or_file, fullpath, recwalk
+from lib.aux_funcs import is_dir, is_dir_or_file, fullpath, recwalk, path2unix
 import lib.argparse as argparse
 import os, datetime, time, sys
 import hashlib
@@ -346,7 +346,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
                     delcount = delcount + 1
                     ptee.write("\n- File %s is missing, removed from database." % row['path'])
                 else:
-                    csv_writer.writerow( [ row['path'], row['md5'], row['sha1'], row['last_modification_timestamp'], row['last_modification_date'], row['size'], row['ext'] ] )
+                    csv_writer.writerow( [ path2unix(row['path']), row['md5'], row['sha1'], row['last_modification_timestamp'], row['last_modification_date'], row['size'], row['ext'] ] )
         # REMOVE UPDATE DONE, we remove the old database file and replace it with the new
         dbf.close()
         os.remove(database) # delete old database
@@ -402,7 +402,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
                     # Get full absolute filepath
                     filepath = os.path.join(dirpath, filename)
                     # Get database relative path (from scanning root folder)
-                    relfilepath = os.path.relpath(filepath, rootfolderpath) # File relative path from the root (so that we can easily check the files later even if the absolute path is different)
+                    relfilepath = path2unix(os.path.relpath(filepath, rootfolderpath)) # File relative path from the root (so that we can easily check the files later even if the absolute path is different)
                     if verbose: ptee.write("\n- Processing file %s" % relfilepath)
 
                     # If update + append mode, then if the file is already in the database we skip it (we continue computing metadata only for new files)
@@ -431,7 +431,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
                         lastmodif = statinfos.st_mtime # File last modified date (as a timestamp)
                         lastmodif_readable = datetime.datetime.fromtimestamp(lastmodif).strftime("%Y-%m-%d %H:%M:%S") # File last modified date as a human readable date (ISO universal time)
 
-                        csv_row = [relfilepath, md5hash, sha1hash, lastmodif, lastmodif_readable, size, ext] # Prepare the CSV row
+                        csv_row = [path2unix(relfilepath), md5hash, sha1hash, lastmodif, lastmodif_readable, size, ext] # Prepare the CSV row
                         csv_writer.writerow(csv_row) # Save to the file
         ptee.write("----------------------------------------------------")
         ptee.write("All files processed: Total: %i - Added: %i.\n\n" % (filescount, addcount))
@@ -478,7 +478,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
                 # Get full absolute filepath
                 filepath = os.path.join(dirpath,filename)
                 # Get database relative path (from scanning root folder)
-                relfilepath = os.path.relpath(filepath, rootfolderpath) # File relative path from the root (we truncate the rootfolderpath so that we can easily check the files later even if the absolute path is different)
+                relfilepath = path2unix(os.path.relpath(filepath, rootfolderpath)) # File relative path from the root (we truncate the rootfolderpath so that we can easily check the files later even if the absolute path is different)
                 if verbose: ptee.write("\n- Processing file %s" % relfilepath)
 
                 # Generate the hashes from the currently inspected file
