@@ -16,9 +16,9 @@ def test_one_file():
     rfigc.main('-i "%s" -d "%s" -g -f --silent' % (filein, fileout))
     rfigc.main('-i "%s" -d "%s" -f --silent' % (filein, fileout))
     with open(fileout, 'rb') as a:
-        print(a.read())
+        print(repr(a.read()))
     with open(fileres, 'rb') as a:
-        print(a.read())
+        print(repr(a.read()))
     assert check_eq_files(fileout, fileres)
 
 def test_dir():
