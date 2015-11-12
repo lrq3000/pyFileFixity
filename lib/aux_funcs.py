@@ -5,8 +5,8 @@
 #
 
 import os
-import lib.argparse as argparse
-from lib.pathlib2 import PurePath # opposite operation of os.path.join (split a path into parts)
+import argparse
+from pathlib2 import PurePath # opposite operation of os.path.join (split a path into parts)
 import posixpath # to generate unix paths
 
 def is_dir(dirname):
