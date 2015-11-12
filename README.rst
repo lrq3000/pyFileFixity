@@ -1,7 +1,7 @@
 pyFileFixity
 ============
 
-|PyPi Status| |PyPi Downloads|
+|Build Status| |Coverage Status| |PyPi Status| |PyPi Downloads|
 
 This project aims to provide a set of open source, cross-platform, easy
 to use and easy to maintain (readable code) to protect and manage data
@@ -1004,6 +1004,10 @@ There are a few studies about the most resilient file formats, such as:
 .. |Example| image:: https://raw.githubusercontent.com/lrq3000/pyFileFixity/master/tux-example.jpg
    :scale: 60 %
    :alt: Image corruption and repair example
+.. |Build Status| image:: https://travis-ci.org/lrq3000/pyFileFixity.svg?branch=master
+   :target: https://travis-ci.org/lrq3000/pyFileFixity
+.. |Coverage Status| image:: https://coveralls.io/repos/lrq3000/pyFileFixity/badge.svg
+   :target: https://coveralls.io/r/lrq3000/pyFileFixity
 .. |PyPi Status| image:: https://img.shields.io/pypi/v/pyFileFixity.svg
    :target: https://pypi.python.org/pypi/pyFileFixity
 .. |PyPi Downloads| image:: https://img.shields.io/pypi/dm/pyFileFixity.svg
