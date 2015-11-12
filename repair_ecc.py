@@ -165,6 +165,8 @@ Note: An ecc structure repair does NOT allow to recover from more errors on your
                         help='Path to the log file. (Output will be piped to both the stdout and the log file)', **widget_filesave)
     main_parser.add_argument('-v', '--verbose', action='store_true', required=False, default=False,
                         help='Verbose mode (show more output).')
+    main_parser.add_argument('--silent', action='store_true', required=False, default=False,
+                        help='No console output (but if --log specified, the log will still be saved in the specified file).')
 
     main_parser.add_argument('-f', '--force', action='store_true', required=False, default=False,
                         help='Force overwriting the ecc file even if it already exists (if --generate).')
@@ -189,6 +191,7 @@ Note: An ecc structure repair does NOT allow to recover from more errors on your
     force = args.force
     ecc_algo = args.ecc_algo
     verbose = args.verbose
+    silent = args.silent
 
     # -- Checking arguments
     if not os.path.isfile(inputpath):
@@ -203,7 +206,7 @@ Note: An ecc structure repair does NOT allow to recover from more errors on your
 
     # -- Configure the log file if enabled (ptee.write() will write to both stdout/console and to the log file)
     if args.log:
-        ptee = Tee(args.log, 'a')
+        ptee = Tee(args.log, 'a', nostdout=silent)
         #sys.stdout = Tee(args.log, 'a')
         sys.stderr = Tee(args.log, 'a')
     else:
@@ -238,7 +241,7 @@ Note: An ecc structure repair does NOT allow to recover from more errors on your
             idx_corrected = 0
             idx_total = 0
             markers_repaired = [0] * len(markers)
-            bardisp = tqdm.tqdm(total=idx_size, leave=True, desc='IDXREAD', unit='B', unit_scale=True) # display progress bar based on reading the database file (since we don't know how many files we will process beforehand nor how many total entries we have)
+            bardisp = tqdm.tqdm(total=idx_size, file=ptee, leave=True, desc='IDXREAD', unit='B', unit_scale=True) # display progress bar based on reading the database file (since we don't know how many files we will process beforehand nor how many total entries we have)
             with open(indexpath, 'rb') as dbidx:
                 buf = 1
                 while buf:
@@ -311,7 +314,7 @@ Note: An ecc structure repair does NOT allow to recover from more errors on your
         markers_pos = [[] for i in xrange(len(markers))] # will contain the list of positions where a corrupted marker has been detected (not valid markers, they will be skipped)
         distance_thresholds = [round(len(x)*distance_threshold, 0) for x in markers] # calculate the number of characters maximum for distance
         skip_until = -1 # when a valid marker (non corrupted) is found, we use this variable to skip to after the marker length (to avoid detecting partial parts of this marker, which will have a hamming distance even if the marker is completely valid because the reading window will be after the beginning of the marker)
-        bardisp = tqdm.tqdm(total=ecc_size, leave=True, desc='DBREAD', unit='B', unit_scale=True) # display progress bar based on reading the database file (since we don't know how many files we will process beforehand nor how many total entries we have)
+        bardisp = tqdm.tqdm(total=ecc_size, file=ptee, leave=True, desc='DBREAD', unit='B', unit_scale=True) # display progress bar based on reading the database file (since we don't know how many files we will process beforehand nor how many total entries we have)
         while buf: # until we have walked through the whole ecc file
             # Read a part of the ecc file into a buffer, this allows to process more quickly than just loading the size of a marker
             curpos = db.tell() # keep the current reading position

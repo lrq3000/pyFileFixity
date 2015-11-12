@@ -458,6 +458,8 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
                         help='Hash algorithm to use. Choose between: md5, shortmd5, shortsha256, minimd5, minisha256.', **widget_text)
     main_parser.add_argument('-v', '--verbose', action='store_true', required=False, default=False,
                         help='Verbose mode (show more output).')
+    main_parser.add_argument('--silent', action='store_true', required=False, default=False,
+                        help='No console output (but if --log specified, the log will still be saved in the specified file).')
 
     # Correction mode arguments
     main_parser.add_argument('-c', '--correct', action='store_true', required=False, default=False,
@@ -524,6 +526,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
     ecc_algo = args.ecc_algo
     fast_check = not args.no_fast_check
     verbose = args.verbose
+    silent = args.silent
 
     if os.path.isfile(inputpath): # if inputpath is a single file (instead of a folder), then define the rootfolderpath as the parent directory (for correct relative path generation, else it will also truncate the filename!)
         rootfolderpath = os.path.dirname(inputpath)
@@ -559,7 +562,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
 
     # -- Configure the log file if enabled (ptee.write() will write to both stdout/console and to the log file)
     if args.log:
-        ptee = Tee(args.log[0], 'a')
+        ptee = Tee(args.log[0], 'a', nostdout=silent)
         #sys.stdout = Tee(args.log[0], 'a')
         sys.stderr = Tee(args.log[0], 'a')
     else:
@@ -591,7 +594,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
     sizetotal = 0
     sizeecc = 0
     ptee.write("Precomputing list of files and predicted statistics...")
-    for (dirpath, filename) in tqdm.tqdm(recwalk(inputpath)):
+    for (dirpath, filename) in tqdm.tqdm(recwalk(inputpath), file=ptee):
         filescount = filescount + 1 # counting the total number of files we will process (so that we can show a progress bar with ETA)
         # Get full absolute filepath
         filepath = os.path.join(dirpath, filename)
@@ -649,7 +652,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
             # Processing ecc on files
             files_done = 0
             files_skipped = 0
-            bardisp = tqdm.tqdm(total=sizetotal, leave=True, unit='B', unit_scale=True, mininterval=1)
+            bardisp = tqdm.tqdm(total=sizetotal, file=ptee, leave=True, unit='B', unit_scale=True, mininterval=1)
             for (dirpath, filename) in recwalk(inputpath):
                 # Get full absolute filepath
                 filepath = os.path.join(dirpath,filename)
@@ -720,7 +723,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
 
             # Main loop: process each ecc entry
             entry = 1 # to start the while loop
-            bardisp = tqdm.tqdm(total=dbsize, leave=True, desc='DBREAD', unit='B', unit_scale=True) # display progress bar based on reading the database file (since we don't know how many files we will process beforehand nor how many total entries we have)
+            bardisp = tqdm.tqdm(total=dbsize, file=ptee, leave=True, desc='DBREAD', unit='B', unit_scale=True) # display progress bar based on reading the database file (since we don't know how many files we will process beforehand nor how many total entries we have)
             while entry:
 
                 # -- Read the next ecc entry (extract the raw string from the ecc file)

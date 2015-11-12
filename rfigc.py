@@ -259,6 +259,8 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
                         help='Skip hash computation/checking (checks only the other metadata, this is a lot quicker).')
     main_parser.add_argument('-v', '--verbose', action='store_true', required=False, default=False,
                         help='Verbose mode (show more output).')
+    main_parser.add_argument('--silent', action='store_true', required=False, default=False,
+                        help='No console output (but if --log specified, the log will still be saved in the specified file).')
 
     # Checking mode arguments
     main_parser.add_argument('-s', '--structure_check', action='store_true', required=False, default=False,
@@ -311,6 +313,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
     if args.output: outputpath = fullpath(args.output[0])
     filescraping = args.filescraping_recovery
     verbose = args.verbose
+    silent = args.silent
 
     if os.path.isfile(inputpath): # if inputpath is a single file (instead of a folder), then define the rootfolderpath as the parent directory (for correct relative path generation, else it will also truncate the filename!)
         rootfolderpath = os.path.dirname(inputpath)
@@ -330,9 +333,9 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
 
     # -- Configure the log file if enabled (ptee.write() will write to both stdout/console and to the log file)
     if args.log:
-        ptee = Tee(args.log[0], 'a')
+        ptee = Tee(args.log[0], 'a', nostdout=silent)
         #sys.stdout = Tee(args.log[0], 'a')
-        sys.stderr = Tee(args.log[0], 'a')
+        sys.stderr = Tee(args.log[0], 'a', nostdout=silent)
     else:
         ptee = Tee()
 
@@ -365,7 +368,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
             dbfile = csv.DictReader(dbf) # we need to reopen the file to put the reading cursor (the generator position) back to the beginning
             delcount = 0
             filescount = 0
-            for row in tqdm.tqdm(dbfile, total=filestodocount, leave=True):
+            for row in tqdm.tqdm(dbfile, file=ptee, total=filestodocount, leave=True):
                 filescount = filescount + 1
                 filepath = os.path.join(rootfolderpath, row['path']) # Build the absolute file path
 
@@ -418,7 +421,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
             # Counting the total number of files that we will have to process
             ptee.write("Counting total number of files to process, please wait...")
             filestodocount = 0
-            for _ in tqdm.tqdm(recwalk(inputpath)):
+            for _ in tqdm.tqdm(recwalk(inputpath), file=ptee):
                 filestodocount = filestodocount + 1
             ptee.write("Counting done.")
 
@@ -426,7 +429,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
             ptee.write("Processing files to compute metadata to store in database, please wait...")
             filescount = 0
             addcount = 0
-            for (dirpath, filename) in tqdm.tqdm(recwalk(inputpath), total=filestodocount, leave=True):
+            for (dirpath, filename) in tqdm.tqdm(recwalk(inputpath), file=ptee, total=filestodocount, leave=True):
                     filescount = filescount + 1
                     # Get full absolute filepath
                     filepath = os.path.join(dirpath, filename)
@@ -494,7 +497,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
         # Counting the total number of files that we will have to process
         ptee.write("Counting total number of files to process, please wait...")
         filestodocount = 0
-        for _ in tqdm.tqdm(recwalk(inputpath)):
+        for _ in tqdm.tqdm(recwalk(inputpath), file=ptee):
             filestodocount = filestodocount + 1
         ptee.write("Counting done.")
         
@@ -502,7 +505,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
         ptee.write("Processing file scraping recovery, walking through all files from input folder...")
         filescount = 0
         copiedcount = 0
-        for (dirpath, filename) in tqdm.tqdm(recwalk(inputpath), total=filestodocount, leave=True):
+        for (dirpath, filename) in tqdm.tqdm(recwalk(inputpath), file=ptee, total=filestodocount, leave=True):
                 filescount = filescount + 1
                 # Get full absolute filepath
                 filepath = os.path.join(dirpath,filename)
@@ -553,7 +556,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
         dbfile = csv.DictReader(dbf) # we need to reopen the file to put the reading cursor (the generator position) back to the beginning
         errorscount = 0
         filescount = 0
-        for row in tqdm.tqdm(dbfile, total=filestodocount, leave=True):
+        for row in tqdm.tqdm(dbfile, file=ptee, total=filestodocount, leave=True):
             filescount = filescount + 1
             filepath = os.path.join(rootfolderpath, row['path'])
 
