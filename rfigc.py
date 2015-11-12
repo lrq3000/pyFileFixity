@@ -353,19 +353,19 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
 
         # Precompute the total number of lines to process (this should be fairly quick)
         filestodocount = 0
-        for row in csv.DictReader(open(database, 'rb')):
+        for row in csv.DictReader(open(database, 'rb'), lineterminator='\n', delimiter='|', quotechar='"'):
             filestodocount = filestodocount + 1
 
         # Preparing CSV writer for the temporary file that will have the lines removed
         with open(database+'.rem', 'wb') as dbfilerem:
-            csv_writer = csv.writer(dbfilerem, lineterminator='\n')
+            csv_writer = csv.writer(dbfilerem, lineterminator='\n', delimiter='|', quotechar='"')
 
             # Printing CSV headers
             csv_headers = ['path', 'md5', 'sha1', 'last_modification_timestamp', 'last_modification_date', 'size', 'ext']
             csv_writer.writerow(csv_headers)
 
             dbf = open(database, 'rb')
-            dbfile = csv.DictReader(dbf) # we need to reopen the file to put the reading cursor (the generator position) back to the beginning
+            dbfile = csv.DictReader(dbf, lineterminator='\n', delimiter='|', quotechar='"') # we need to reopen the file to put the reading cursor (the generator position) back to the beginning
             delcount = 0
             filescount = 0
             for row in tqdm.tqdm(dbfile, file=ptee, total=filestodocount, leave=True):
@@ -405,7 +405,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
             ptee.write("====================================")
 
             # Preparing CSV writer
-            csv_writer = csv.writer(dbfile, lineterminator='\n')
+            csv_writer = csv.writer(dbfile, lineterminator='\n', delimiter='|', quotechar='"')
 
             if generate:
                 # Printing CSV headers
@@ -415,7 +415,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
             if (update and append):
                 # Extract all paths already stored in database to avoid readding them
                 db_paths = {}
-                for row in csv.DictReader(open(database, 'rb')):
+                for row in csv.DictReader(open(database, 'rb'), lineterminator='\n', delimiter='|', quotechar='"'):
                     db_paths[row['path']] = True
 
             # Counting the total number of files that we will have to process
@@ -482,7 +482,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
         dbrows = {} # TODO: instead of memorizing everything in memory, store just the reading cursor position at the beginning of the line with the size and then just read when necessary from the db file directly
         id = 0
         with open(database, 'rb') as db:
-            for row in csv.DictReader(db):
+            for row in csv.DictReader(db, lineterminator='\n', delimiter='|', quotechar='"'):
                 id += 1
                 if (len(row['md5']) > 0 and len(row['sha1']) > 0):
                     md5list[row['md5']] = id
@@ -543,17 +543,17 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
         # Open errors file if supplied (where we will store every errors in a formatted csv so that it can later be easily processed by other softwares, such as repair softwares)
         if errors_file is not None:
             efile = open(errors_file, 'wb')
-            e_writer = csv.writer(efile, delimiter='|', lineterminator='\n')
+            e_writer = csv.writer(efile, delimiter='|', lineterminator='\n', quotechar='"')
 
         # Precompute the total number of lines to process (this should be fairly quick)
         filestodocount = 0
-        for row in csv.DictReader(open(database, 'rb')):
+        for row in csv.DictReader(open(database, 'rb'), lineterminator='\n', delimiter='|', quotechar='"'):
             filestodocount = filestodocount + 1
 
         # Processing the files using the database list
         ptee.write("Checking for files corruption based on database %s on input path %s, please wait..." % (database, inputpath))
         dbf = open(database, 'rb')
-        dbfile = csv.DictReader(dbf) # we need to reopen the file to put the reading cursor (the generator position) back to the beginning
+        dbfile = csv.DictReader(dbf, lineterminator='\n', delimiter='|', quotechar='"') # we need to reopen the file to put the reading cursor (the generator position) back to the beginning
         errorscount = 0
         filescount = 0
         for row in tqdm.tqdm(dbfile, file=ptee, total=filestodocount, leave=True):

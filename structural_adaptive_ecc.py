@@ -707,7 +707,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
         # Prepare the list of files with errors to reduce the scan (only if provided)
         errors_filelist = []
         if errors_file:
-            for row in csv.DictReader(open(errors_file, 'rb'), delimiter='|', fieldnames=['filepath', 'error']): # need to specify the fieldnames, else the first row in the csv file will be skipped (it will be used as the columns names)
+            for row in csv.DictReader(open(errors_file, 'rb'), lineterminator='\n', delimiter='|', quotechar='"', fieldnames=['filepath', 'error']): # need to specify the fieldnames, else the first row in the csv file will be skipped (it will be used as the columns names)
                 errors_filelist.append(row['filepath'])
 
         # Read the ecc file
