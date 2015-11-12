@@ -358,7 +358,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
 
         # Preparing CSV writer for the temporary file that will have the lines removed
         with open(database+'.rem', 'wb') as dbfilerem:
-            csv_writer = csv.writer(dbfilerem)
+            csv_writer = csv.writer(dbfilerem, lineterminator='\n')
 
             # Printing CSV headers
             csv_headers = ['path', 'md5', 'sha1', 'last_modification_timestamp', 'last_modification_date', 'size', 'ext']
@@ -405,7 +405,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
             ptee.write("====================================")
 
             # Preparing CSV writer
-            csv_writer = csv.writer(dbfile)
+            csv_writer = csv.writer(dbfile, lineterminator='\n')
 
             if generate:
                 # Printing CSV headers
@@ -543,7 +543,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
         # Open errors file if supplied (where we will store every errors in a formatted csv so that it can later be easily processed by other softwares, such as repair softwares)
         if errors_file is not None:
             efile = open(errors_file, 'wb')
-            e_writer = csv.writer(efile, delimiter='|')
+            e_writer = csv.writer(efile, delimiter='|', lineterminator='\n')
 
         # Precompute the total number of lines to process (this should be fairly quick)
         filestodocount = 0
