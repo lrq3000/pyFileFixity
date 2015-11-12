@@ -32,7 +32,7 @@ testsetup:
 
 testcoverage:
 	rm -f .coverage  # coverage erase
-	nosetests tests/ --with-coverage -d -v
+	nosetests tests/ --with-coverage --cover-package=pyFileFixity -d -v
 
 installdev:
 	python setup.py develop --uninstall
