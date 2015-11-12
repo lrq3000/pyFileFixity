@@ -337,7 +337,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
         #sys.stdout = Tee(args.log[0], 'a')
         sys.stderr = Tee(args.log[0], 'a', nostdout=silent)
     else:
-        ptee = Tee()
+        ptee = Tee(nostdout=silent)
 
 
     # == PROCESSING BRANCHING == #

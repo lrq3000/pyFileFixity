@@ -564,9 +564,9 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
     if args.log:
         ptee = Tee(args.log[0], 'a', nostdout=silent)
         #sys.stdout = Tee(args.log[0], 'a')
-        sys.stderr = Tee(args.log[0], 'a')
+        sys.stderr = Tee(args.log[0], 'a', nostdout=silent)
     else:
-        ptee = Tee()
+        ptee = Tee(nostdout=silent)
 
 
     # == PROCESSING BRANCHING == #

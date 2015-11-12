@@ -208,9 +208,9 @@ Note: An ecc structure repair does NOT allow to recover from more errors on your
     if args.log:
         ptee = Tee(args.log, 'a', nostdout=silent)
         #sys.stdout = Tee(args.log, 'a')
-        sys.stderr = Tee(args.log, 'a')
+        sys.stderr = Tee(args.log, 'a', nostdout=silent)
     else:
-        ptee = Tee()
+        ptee = Tee(nostdout=silent)
 
 
     # == PROCESSING BRANCHING == #
