@@ -15,6 +15,10 @@ def test_one_file():
     fileres = path_results('test_rfigc_test_one_file1.csv')
     rfigc.main('-i "%s" -d "%s" -g -f --silent' % (filein, fileout))
     rfigc.main('-i "%s" -d "%s" -f --silent' % (filein, fileout))
+    with open(fileout, 'rb') as a:
+        print(a.read())
+    with open(fileres, 'rb') as a:
+        print(a.read())
     assert check_eq_files(fileout, fileres)
 
 def test_dir():
