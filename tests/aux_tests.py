@@ -1,3 +1,5 @@
+""" Auxiliary functions for unit tests """
+
 import os
 
 def check_eq_files(path1, path2, blocksize=65535):

@@ -33,6 +33,7 @@ thispathname = os.path.dirname(sys.argv[0])
 sys.path.append(os.path.join(thispathname, 'lib'))
 
 # ECC and hashing facade libraries
+from lib.aux_funcs import sizeof_fmt
 from lib.eccman import ECCMan, compute_ecc_params
 from lib.hasher import Hasher
 from lib.reedsolomon.reedsolo import ReedSolomonError
@@ -55,12 +56,7 @@ def gen_random_string(n, size):
         yield hexstr % random.randrange(16**size) # Generate a random bigint of the size we require, and convert to a string
 
 def format_sizeof(num, suffix='bytes'):
-    '''Readable size format, courtesy of Sridhar Ratnakumar'''
-    for unit in ['','K','M','G','T','P','E','Z']:
-        if abs(num) < 1000.0:
-            return "%3.1f%s%s" % (num, unit, suffix)
-        num /= 1000.0
-    return "%.1f%s%s" % (num, 'Y', suffix)
+    return sizeof_fmt(num, suffix, 1000)
 
 
 #***********************************

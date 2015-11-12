@@ -32,15 +32,10 @@
 #
 
 # Import necessary libraries
+from lib.aux_funcs import fullpath
 import lib.argparse as argparse
 import os, sys, random
 import shlex # for string parsing as argv argument to main(), unnecessary otherwise
-
-# Relative path to absolute
-def fullpath(relpath):
-    if (type(relpath) is object or type(relpath) is file):
-        relpath = relpath.name
-    return os.path.abspath(os.path.expanduser(relpath))
 
 
 def main(argv=None):

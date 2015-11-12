@@ -33,6 +33,7 @@ thispathname = os.path.dirname(sys.argv[0])
 sys.path.append(os.path.join(thispathname, 'lib'))
 
 # Import necessary libraries
+from lib.aux_funcs import fullpath
 import lib.argparse as argparse
 import datetime, time
 import lib.tqdm as tqdm
@@ -50,18 +51,6 @@ from lib.distance.distance import hamming
 from lib.eccman import ECCMan, compute_ecc_params
 from lib.hasher import Hasher
 from lib.reedsolomon.reedsolo import ReedSolomonError
-
-
-
-#***********************************
-#     AUXILIARY FUNCTIONS
-#***********************************
-
-# Relative path to absolute
-def fullpath(relpath):
-    if (type(relpath) is object or type(relpath) is file):
-        relpath = relpath.name
-    return os.path.abspath(os.path.expanduser(relpath))
 
 
 
