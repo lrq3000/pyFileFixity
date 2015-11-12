@@ -6,7 +6,6 @@ branches:  # remove travis double-check on pull requests in main repo
     - master
     - /^\d\.\d+$/
 env:
-  - TOXENV=py26
   - TOXENV=py27
   - TOXENV=pypy
 before_install:
