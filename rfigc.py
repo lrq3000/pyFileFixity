@@ -341,6 +341,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
 
 
     # == PROCESSING BRANCHING == #
+    retval = 0 # Returned value: 0 OK, 1 KO (files in error), -1 Error
 
     # -- Update the database file by removing missing files
     if update and remove:
@@ -610,8 +611,9 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
         dbf.close()
         ptee.write("----------------------------------------------------")
         ptee.write("All files checked: Total: %i - Files with errors: %i.\n\n" % (filescount, errorscount))
+        retval = (errorscount > 0)
 
-    return 0 # return with no error
+    return retval # return error code if any
 
 # Calling main function if the script is directly called (not imported as a library in another program)
 if __name__ == "__main__":
