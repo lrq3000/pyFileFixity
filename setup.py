@@ -11,6 +11,7 @@ except ImportError:
     from distutils.extension import Extension
 
 import os
+import shlex  # For Makefile parsing
 
 # For Makefile parsing
 try:    # pragma: no cover
@@ -23,34 +24,24 @@ except ImportError:    # pragma: no cover
 import sys, subprocess
 
 
-### Makefile auxiliary functions ###
+""" Makefile auxiliary functions """
 
 
 def parse_makefile_aliases(filepath):
-    '''Parse a makefile to find commands and substitute variables.
-    Note that this function is not a total replacement of make, it only
-    parse aliases.
-    Expects a makefile with only aliases and ALWAYS a line return between
-    each command, eg:
-
-    ```
-    all:
-        test
-        install
-    test:
-        nosetest
-    install:
-        python setup.py install
-    ```
+    '''
+    Parse a makefile to find commands and substitute variables. Expects a
+    makefile with only aliases and a line return between each command.
 
     Returns a dict, with a list of commands for each alias.
     '''
 
     # -- Parsing the Makefile using ConfigParser
     # Adding a fake section to make the Makefile a valid Ini file
-    ini_str = '[root]\n' + open(filepath, 'r').read()
+    ini_str = '[root]\n'
+    with open(filepath, 'r') as fd:
+        ini_str = ini_str + fd.read().replace('@make ', '')
     ini_fp = StringIO.StringIO(ini_str)
-    # Parse it using ConfigParser
+    # Parse using ConfigParser
     config = ConfigParser.RawConfigParser()
     config.readfp(ini_fp)
     # Fetch the list of aliases
@@ -63,18 +54,15 @@ def parse_makefile_aliases(filepath):
         commands[alias] = config.get('root', alias).lstrip('\n').split('\n')
 
     # -- Commands substitution
-    # We loop until we can substitute all aliases by their commands
-    # What we do is that we check each command of each alias, and
-    # if there is one command that is to be substituted by an alias,
-    # we try to do it right away, but if it's not possible because
-    # this alias himself points to other aliases, then we stop
-    # and put the current alias back in the queue, which we
-    # will process again later when we have substituted the
-    # other aliases.
+    # Loop until all aliases are substituted by their commands:
+    # Check each command of each alias, and if there is one command that is to
+    # be substituted by an alias, try to do it right away. If this is not
+    # possible because this alias itself points to other aliases , then stop
+    # and put the current alias back in the queue to be processed again later.
 
     # Create the queue of aliases to process
     aliases_todo = commands.keys()
-    # Create the dict that will hold the substituted aliases by their full commands
+    # Create the dict that will hold the full commands
     commands_new = {}
     # Loop until we have processed all aliases
     while aliases_todo:
@@ -84,43 +72,50 @@ def parse_makefile_aliases(filepath):
         commands_new[alias] = []
         # For each command of this alias
         for cmd in commands[alias]:
-            # If the alias points to itself, we pass
+            # Ignore self-referencing (alias points to itself)
             if cmd == alias:
                 pass
-            # If the alias points to a full command, we substitute
+            # Substitute full command
             elif cmd in aliases and cmd in commands_new:
                 # Append all the commands referenced by the alias
                 commands_new[alias].extend(commands_new[cmd])
-            # If the alias points to another alias, we delay,
-            # waiting for the other alias to be substituted first
+            # Delay substituting another alias, waiting for the other alias to
+            # be substituted first
             elif cmd in aliases and cmd not in commands_new:
                 # Delete the current entry to avoid other aliases
                 # to reference this one wrongly (as it is empty)
                 del commands_new[alias]
-                # Put back into the queue
                 aliases_todo.append(alias)
-                # Break the loop for the current alias
                 break
-            # Else this is just a full command (no reference to an alias)
-            # so we just append it
+            # Full command (no aliases)
             else:
                 commands_new[alias].append(cmd)
     commands = commands_new
     del commands_new
+
     # -- Prepending prefix to avoid conflicts with standard setup.py commands
-    #for alias in commands.keys():
-        #commands['make_'+alias] = commands[alias]
-        #del commands[alias]
+    # for alias in commands.keys():
+    #     commands['make_'+alias] = commands[alias]
+    #     del commands[alias]
+
     return commands
+
 
 def execute_makefile_commands(commands, alias, verbose=False):
     cmds = commands[alias]
     for cmd in cmds:
-        if verbose: print("Running command: %s" % cmd)
-        subprocess.check_call(cmd.split())
+        # Parse string in a shell-like fashion
+        # (incl quoted strings and comments)
+        parsed_cmd = shlex.split(cmd, comments=True)
+        # Execute command if not empty (ie, not just a comment)
+        if parsed_cmd:
+            if verbose:
+                print("Running command: " + cmd)
+            # Launch the command and wait to finish (synchronized call)
+            subprocess.check_call(parsed_cmd)
 
 
-### Cython extensions ###
+""" Cython extensions """
 
 
 try:
@@ -140,7 +135,7 @@ extensions = [
 if USE_CYTHON: extensions = cythonize(extensions)
 
 
-### Main setup.py config ###
+""" Main setup.py config """
 
 
 # Get version from __init__.py
@@ -162,19 +157,27 @@ if sys.argv[1].lower().strip() == 'make':
     if len(sys.argv) < 3 or sys.argv[-1] == '--help':
         print("Shortcut to use commands via aliases. List of aliases:")
         for alias in sorted(commands.keys()):
-            print("- "+alias)
+            print("- " + alias)
 
     # Else process the commands for this alias
     else:
         arg = sys.argv[-1]
-        if arg == 'none': # unit testing, we do nothing (we just checked the makefile parsing)
+        # if unit testing, we do nothing (we just checked the makefile parsing)
+        if arg == 'none':
             sys.exit(0)
-        elif arg in commands.keys(): # else if the alias exists, we execute its commands
+        # else if the alias exists, we execute its commands
+        elif arg in commands.keys():
             execute_makefile_commands(commands, arg, verbose=True)
-        else: # else the alias cannot be found
-            raise Exception("Provided alias cannot be found: make %s" % (arg))
-    # Stop the processing of setup.py here
-    sys.exit(0) # Important to avoid setup.py to spit an error because of the command not being standard
+        # else the alias cannot be found
+        else:
+            raise Exception("Provided alias cannot be found: make " + arg)
+    # Stop the processing of setup.py here:
+    # It's important to avoid setup.py raising an error because of the command
+    # not being standard
+    sys.exit(0)
+
+
+""" Python package config """
 
 
 # Python module configuration

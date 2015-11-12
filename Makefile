@@ -12,9 +12,27 @@
 #	python setup.py install
 #    ```
 
+alltests:
+	@make testcoverage
+	@make testsetup
+
+all:
+	@make alltests
+	@make build
+
+test:
+	tox --skip-missing-interpreters
+
+testnose:
+	nosetests tests/ -d -v
+
 testsetup:
 	python setup.py check --restructuredtext --strict
 	python setup.py make none
+
+testcoverage:
+	rm -f .coverage  # coverage erase
+	nosetests tests/ --with-coverage -d -v
 
 installdev:
 	python setup.py develop --uninstall
@@ -37,4 +55,4 @@ pypi:
 	twine upload dist/*
 
 none:
-	none # used for unit testing
+	# used for unit testing

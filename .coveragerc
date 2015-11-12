@@ -1,0 +1,14 @@
+[run]
+branch = True
+omit =
+    tests/*
+    lib/argparse.py
+    lib/md5py.py
+    lib/tee.py
+    lib/tqdm/*
+    lib/reedsolomon/*
+    lib/brownanrs/*
+    lib/distance/*
+    lib/docs/*
+    lib/gooey/*
+    lib/profilers/*
