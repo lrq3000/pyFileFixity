@@ -7,7 +7,13 @@ import sys
 import shutil
 
 from .. import rfigc
-from .aux_tests import check_eq_files, check_eq_dir, path_input, path_results, path_output, tamper_file
+from .aux_tests import check_eq_files, check_eq_dir, path_input, path_results, path_output, tamper_file, create_dir_if_not_exist
+
+def setup_module():
+    """ Initialize the tests by emptying the out directory """
+    outfolder = path_output()
+    shutil.rmtree(outfolder, ignore_errors=True)
+    create_dir_if_not_exist(outfolder)
 
 def test_one_file():
     """ rfigc: test creation and verification of rfigc database for one file """

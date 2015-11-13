@@ -139,6 +139,8 @@ class ECCMan(object):
 
             reedsolo.init_tables(self.prim) # parameters for US FAA ADSB UAT RS FEC
             self.g = reedsolo.rs_generator_poly_all(n, fcr=self.fcr, generator=self.gen_nb)
+        else:
+            raise Exception("Specified algorithm %i is not supported!" % algo)
 
         self.algo = algo
         self.n = n
@@ -242,7 +244,7 @@ class ECCMan(object):
 
     def description(self):
         '''Provide a description for each algorithm available, useful to print in ecc file'''
-        if self.algo <= 3:
+        if 0 < self.algo <= 3:
             return "Reed-Solomon with polynomials in Galois field of characteristic %i (2^%i) with generator=%s, prime poly=%s and first consecutive root=%s." % (self.field_charac, self.c_exp, self.gen_nb, hex(self.prim), self.fcr)
         elif self.algo == 4:
             return "Reed-Solomon with polynomials in Galois field of characteristic %i (2^%i) under US FAA ADSB UAT RS FEC standard with generator=%s, prime poly=%s and first consecutive root=%s." % (self.field_charac, self.c_exp, self.gen_nb, hex(self.prim), self.fcr)

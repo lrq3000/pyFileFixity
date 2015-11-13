@@ -83,6 +83,9 @@ def tamper_file(path, pos=0, replace_str=None):
         replace_str = "\x00"
     try:
         with open(path, "r+b") as fh:
+            if pos < 0: # if negative, we calculate the position backward from the end of file
+                fsize = os.fstat(fh.fileno()).st_size
+                pos = fsize + pos
             fh.seek(pos)
             fh.write(replace_str)
     except IOError:

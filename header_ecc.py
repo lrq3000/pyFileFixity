@@ -762,7 +762,11 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
                     if not os.path.isdir(outfiledir): os.makedirs(outfiledir) # if the target directory does not exist, create it (and create recursively all parent directories too)
                     with open(outfilepath, 'wb') as out:
                         # Reconstruct the header using repaired blocks (and the other non corrupted blocks)
-                        out.write(''.join([e["message_repaired"] if "message_repaired" in e else e["message"] for e in entry_asm]))
+                        for e in entry_asm:
+                            if "message_repaired" in e:
+                                out.write(e["message_repaired"])
+                            else:
+                                out.write(e["message"])
                         # Append the rest of the file by copying from the original
                         with open(filepath, 'rb') as originalfile:
                             blocksize = 65535
