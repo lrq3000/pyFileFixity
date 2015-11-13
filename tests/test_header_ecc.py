@@ -7,7 +7,7 @@ import sys
 
 import shutil
 
-from .. import header_ecc
+from pyFileFixity import header_ecc
 from .aux_tests import check_eq_files, check_eq_dir, path_input, path_results, path_output, tamper_file, find_next_entry, create_dir_if_not_exist
 
 def test_one_file():
