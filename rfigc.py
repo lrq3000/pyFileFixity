@@ -286,7 +286,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
         rootfolderpath = os.path.dirname(inputpath)
 
     errors_file = None
-    if args.errors_file: errors_file = os.path.basename(fullpath(args.errors_file[0]))
+    if args.errors_file: errors_file = fullpath(args.errors_file[0])
 
     # -- Checking arguments
     if structure_check and not structure_check_import:
