@@ -9,6 +9,11 @@ import argparse
 from pathlib2 import PurePath # opposite operation of os.path.join (split a path into parts)
 import posixpath # to generate unix paths
 
+try:
+    from scandir import walk # use the faster scandir module if available (Python >= 3.5), see https://github.com/benhoyt/scandir
+except ImportError:
+    from os import walk # else, default to os.walk()
+
 def is_dir(dirname):
     '''Checks if a path is an actual directory that exists'''
     if not os.path.isdir(dirname):
@@ -39,7 +44,7 @@ def recwalk(inputpath, sorting=True):
         yield os.path.dirname(abs_path), os.path.basename(abs_path)
     # Else if it's a folder, walk recursively and return every files
     else:
-        for dirpath, dirs, files in os.walk(inputpath):	
+        for dirpath, dirs, files in walk(inputpath):	
             if sorting: files.sort()
             for filename in files:
                 yield (dirpath, filename) # return directory (full path) and filename
