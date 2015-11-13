@@ -18,9 +18,9 @@ def setup_module():
 
 def test_one_file():
     """ hecc: test creation and verification of database for one file """
-    filein = path_input('tux.jpg')
-    filedb = path_output('hecc.db')
-    fileout = path_output('tux.jpg')
+    filein = path_input('tuxsmall.jpg')
+    filedb = path_output('hecc_file.db')
+    fileout = path_output('tuxsmall.jpg')
     fileres = path_results('test_header_ecc_test_one_file.db')
     # Generate an ecc file
     assert hecc.main('-i "%s" -d "%s" --ecc_algo=3 -g -f --silent' % (filein, filedb)) == 0
@@ -31,10 +31,10 @@ def test_one_file():
 
 def test_one_file_tamper():
     """ hecc: test file repair """
-    filein = path_input('tux.jpg')
-    filedb = path_output('hecc3.db')
-    fileout = path_output('tux.jpg')
-    fileout2 = path_output('repaired/tux.jpg')
+    filein = path_input('tuxsmall.jpg')
+    filedb = path_output('hecc_tamper.db')
+    fileout = path_output('tuxsmall.jpg')
+    fileout2 = path_output('repaired/tuxsmall.jpg')
     fileout2_dir = path_output('repaired')
     fileres = path_results('test_header_ecc_test_one_file_tamper.db')
     create_dir_if_not_exist(fileout2_dir)
@@ -51,7 +51,7 @@ def test_one_file_tamper():
 def test_dir():
     """ hecc: test creation and verification of database for a full directory """
     filein = path_input()
-    filedb = path_output('hecc2.db')
+    filedb = path_output('hecc_dir.db')
     fileout = path_output()
     fileres = path_results('test_header_ecc_test_dir.db')
     # Generate an ecc file
@@ -63,7 +63,7 @@ def test_dir():
 
 def test_algo():
     """ hecc: test algorithms equivalence """
-    filein = path_input('tux.jpg')
+    filein = path_input('tuxsmall.jpg')
     filedb = [path_output('hecc_algo1.db'),
                 path_output('hecc_algo2.db'),
                 path_output('hecc_algo3.db'),

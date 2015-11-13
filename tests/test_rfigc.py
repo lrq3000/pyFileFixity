@@ -17,8 +17,8 @@ def setup_module():
 
 def test_one_file():
     """ rfigc: test creation and verification of rfigc database for one file """
-    filein = path_input('tux.jpg')
-    filedb = path_output('d.csv')
+    filein = path_input('tuxsmall.jpg')
+    filedb = path_output('d_file.csv')
     fileres = path_results('test_rfigc_test_one_file.csv')
     assert rfigc.main('-i "%s" -d "%s" -g -f --silent' % (filein, filedb)) == 0
     assert rfigc.main('-i "%s" -d "%s" --silent' % (filein, filedb)) == 0
@@ -30,7 +30,7 @@ def test_one_file():
 def test_dir():
     """ rfigc: test creation and verification of database for a full directory """
     filein = path_input()
-    filedb = path_output('d2.csv')
+    filedb = path_output('d_dir.csv')
     fileres = path_results('test_rfigc_test_dir.csv')
     assert rfigc.main('-i "%s" -d "%s" -g -f --silent' % (filein, filedb)) == 0
     assert rfigc.main('-i "%s" -d "%s" --silent' % (filein, filedb)) == 0
@@ -46,9 +46,9 @@ def test_dir():
 
 def test_error_file():
     """ rfigc: test tamper file and error file generate """
-    filein = path_input('tux.jpg')
+    filein = path_input('tuxsmall.jpg')
     filedb = path_output('d.csv')
-    fileout = path_output('tux.jpg')
+    fileout = path_output('tuxsmall.jpg')
     fileout2 = path_output('errors.log')
     fileres = path_results('test_rfigc_test_error_file.log')
     assert rfigc.main('-i "%s" -d "%s" -g -f --silent' % (filein, filedb)) == 0
