@@ -45,7 +45,9 @@ def recwalk(inputpath, sorting=True):
     # Else if it's a folder, walk recursively and return every files
     else:
         for dirpath, dirs, files in walk(inputpath):	
-            if sorting: files.sort()
+            if sorting:
+                files.sort()
+                dirs.sort() # sort directories in-place for ordered recursive walking
             for filename in files:
                 yield (dirpath, filename) # return directory (full path) and filename
 
