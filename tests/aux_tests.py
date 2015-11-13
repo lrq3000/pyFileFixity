@@ -2,12 +2,14 @@
 
 import os
 
-def check_eq_files(path1, path2, blocksize=65535):
+def check_eq_files(path1, path2, blocksize=65535, startpos1=0, startpos2=0):
     """ Return True if both files are identical, False otherwise """
     flag = True
     with open(path1, 'rb') as f1, open(path2, 'rb') as f2:
         buf1 = 1
         buf2 = 1
+        f1.seek(startpos1)
+        f2.seek(startpos2)
         while 1:
             buf1 = f1.read(blocksize)
             buf2 = f2.read(blocksize)
@@ -72,3 +74,37 @@ def path_output(path=None):
         return fullpath(os.path.join('tests', 'out', path))
     else:
         return fullpath(os.path.join('tests', 'out'))
+
+def tamper_file(path, pos=0, replace_str=None):
+    """Tamper a file at the given position and using the given string"""
+    if not replace_str:
+        replace_str = "\x00"
+    try:
+        with open(path, "r+b") as fh:
+            fh.seek(pos)
+            fh.write(replace_str)
+    except IOError:
+        return False
+    return True
+
+def find_next_entry(path, marker="\xFF\xFF\xFF\xFF"):
+    '''Find the next position of a marker in a file'''
+    blocksize = 65535
+    start = None # start is the relative position of the marker in the current buffer
+    startcursor = None # startcursor is the absolute position of the starting position of the marker in the file
+    buf = 1
+    with open(path, 'rb') as infile:
+        # Enumerate all markers in a generator
+        while (buf):
+            # Read a long block at once, we will readjust the file cursor after
+            buf = infile.read(blocksize)
+            # Find the start marker
+            start = buf.find(marker); # relative position of the starting marker in the currently read string
+            if start >= 0: # assign startcursor only if it's empty (meaning that we did not find the starting entrymarker, else if found we are only looking for 
+                startcursor = infile.tell() - len(buf) + start # absolute position of the starting marker in the file
+                yield startcursor
+                infile.seek(startcursor+len(marker)) # place reading cursor just after the current marker to avoid repeatedly detecting the same marker
+
+def create_dir_if_not_exist(path):
+    if not os.path.exists(path):
+        os.makedirs(path)

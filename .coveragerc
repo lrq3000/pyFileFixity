@@ -3,3 +3,9 @@ branch = True
 omit =
     tests/*
     lib/*
+    __init__.py
+    easy_profiler.py
+    ecc_speedtest.py
+    filetamper.py
+    pycleaner.py
+    setup.py

@@ -775,7 +775,10 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
         # All ecc entries processed for checking and potentally repairing, we're done correcting!
         bardisp.close() # at the end, the bar may not be 100% because of the headers that are skipped by read_next_entry() and are not accounted in bardisp.
         ptee.write("All done! Stats:\n- Total files processed: %i\n- Total files corrupted: %i\n- Total files repaired completely: %i\n- Total files repaired partially: %i\n- Total files corrupted but not repaired at all: %i\n- Total files skipped: %i" % (files_count, files_corrupted, files_repaired_completely, files_repaired_partially, files_corrupted - (files_repaired_partially + files_repaired_completely), files_skipped) )
-        return 0
+        if files_corrupted == 0 or files_repaired_completely == files_corrupted:
+            return 0
+        else:
+            return 1
 
 # Calling main function if the script is directly called (not imported as a library in another program)
 if __name__ == "__main__":
