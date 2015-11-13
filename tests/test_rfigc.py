@@ -23,8 +23,8 @@ def test_one_file():
     assert rfigc.main('-i "%s" -d "%s" -g -f --silent' % (filein, filedb)) == 0
     assert rfigc.main('-i "%s" -d "%s" --silent' % (filein, filedb)) == 0
     with open(filedb, 'rb') as outf, open(fileres, 'rb') as expectedf:
-        expected = expectedf.read()
-        out = outf.read()
+        expected = expectedf.read().strip("\n")
+        out = outf.read().strip("\n")
         assert expected in out
 
 def test_dir():
