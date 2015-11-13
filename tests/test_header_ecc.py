@@ -55,7 +55,7 @@ def test_dir():
     startpos2 = find_next_entry(fileres, "\xFE\xFF\xFE\xFF\xFE\xFF\xFE\xFF\xFE\xFF").next()
     with open(filedb, 'rb') as f1, open(fileres, 'rb') as f2:
         print("First file:\n")
-        print(filedb.read())
+        print(f1.read())
         print("Second file:\n")
-        print(fileres.read())
+        print(f2.read())
     assert check_eq_files(filedb, fileres, startpos1=startpos1, startpos2=startpos2)
