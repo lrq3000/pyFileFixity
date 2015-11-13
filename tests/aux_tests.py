@@ -30,10 +30,10 @@ def check_eq_dir(path1, path2):
     # List files in both directories
     files1 = []
     files2 = []
-    for root, dirs, files in os.walk(path1):
-        files1.extend(files)
-    for root, dirs, files in os.walk(path2):
-        files2.extend(files)
+    for dirpath, dirs, files in os.walk(path1):
+        files1.extend([os.path.relpath(os.path.join(dirpath, file), path1) for file in files])
+    for dirpath, dirs, files in os.walk(path2):
+        files2.extend([os.path.relpath(os.path.join(dirpath, file), path2) for file in files])
     # Ensure the same order for both lists (filesystem can spit the files in whatever order it wants)
     files1.sort()
     files2.sort()
