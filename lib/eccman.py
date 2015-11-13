@@ -27,16 +27,16 @@
 # Compatibility with Python 3
 from _compat import _str
 
-from lib.distance.distance import hamming
+from .distance.distance import hamming
 
 # ECC libraries
-try:
-    import lib.brownanrs.rs as brownanrs
-    import lib.reedsolomon.creedsolo as reedsolo
-    #import lib.brownanrs.crs as brownanrs
+try: # Try to automatically load Cython implementations if compiled
+    from .brownanrs import rs as brownanrs
+    from .reedsolomon import creedsolo as reedsolo
+    #from .brownanrs import crs as brownanrs
 except ImportError:
-    import lib.brownanrs.rs as brownanrs # Pure python implementation of Reed-Solomon with configurable max_block_size and automatic error detection (you don't have to specify where they are). This is a base 3 implementation that is formally correct and with unit tests.
-    import lib.reedsolomon.reedsolo as reedsolo # Faster pure python implementation of Reed-Solomon, with a base 3 compatible encoder (but not yet decoder! But you can use brownanrs to decode).
+    from .brownanrs import rs as brownanrs # Pure python implementation of Reed-Solomon with configurable max_block_size and automatic error detection (you don't have to specify where they are). This is a base 3 implementation that is formally correct and with unit tests.
+    from .reedsolomon import reedsolo as reedsolo # Faster pure python implementation of Reed-Solomon, with a base 3 compatible encoder (but not yet decoder! But you can use brownanrs to decode).
 
 rs_encode_msg = reedsolo.rs_encode_msg # local reference for small speed boost
 #rs_encode_msg_precomp = reedsolo.rs_encode_msg_precomp
