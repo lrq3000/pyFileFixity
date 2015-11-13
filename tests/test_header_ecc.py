@@ -53,9 +53,4 @@ def test_dir():
     # Check that generated ecc file is correct
     startpos1 = find_next_entry(filedb, "\xFE\xFF\xFE\xFF\xFE\xFF\xFE\xFF\xFE\xFF").next() # need to skip the comments, so we detect where the first entrymarker begins
     startpos2 = find_next_entry(fileres, "\xFE\xFF\xFE\xFF\xFE\xFF\xFE\xFF\xFE\xFF").next()
-    with open(filedb, 'rb') as f1, open(fileres, 'rb') as f2:
-        print("First file:\n")
-        print(f1.read())
-        print("Second file:\n")
-        print(f2.read())
     assert check_eq_files(filedb, fileres, startpos1=startpos1, startpos2=startpos2)

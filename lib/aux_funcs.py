@@ -31,7 +31,7 @@ def fullpath(relpath):
         relpath = relpath.name
     return os.path.abspath(os.path.expanduser(relpath))
 
-def recwalk(inputpath):
+def recwalk(inputpath, sorting=True):
     '''Recursively walk through a folder. This provides a mean to flatten out the files restitution (necessary to show a progress bar). This is a generator.'''
     # If it's only a single file, return this single file
     if os.path.isfile(inputpath):
@@ -40,6 +40,7 @@ def recwalk(inputpath):
     # Else if it's a folder, walk recursively and return every files
     else:
         for dirpath, dirs, files in os.walk(inputpath):	
+            if sorting: files.sort()
             for filename in files:
                 yield (dirpath, filename) # return directory (full path) and filename
 
