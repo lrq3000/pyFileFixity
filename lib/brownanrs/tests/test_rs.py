@@ -1,12 +1,16 @@
 from __future__ import print_function
 
-from _compat import _range, _izip
-
-import unittest
 import itertools
 import hashlib
 
-import rs
+import sys
+if sys.version_info < (2, 7):
+    import unittest2 as unittest # to get unittest.skip() in Python < 2.7 we need to use unittest2
+else:
+    import unittest
+
+from .._compat import _range, _izip
+from .. import rs
 
 class TestRSencoding(unittest.TestCase):
     def test_small_k(self):
@@ -14,7 +18,11 @@ class TestRSencoding(unittest.TestCase):
         mes = [140, 128]
         ecc_good = [182, 242, 0]
         messtr = bytearray(mes)
-        self.assertEqual(hashlib.md5(messtr).hexdigest(), "8052809d008df30342a22e7910d05600")
+        if sys.version_info < (2, 7):
+            messtr_md5 = hashlib.md5(str(messtr))
+        else:
+            messtr_md5 = hashlib.md5(messtr)
+        self.assertEqual(messtr_md5.hexdigest(), "8052809d008df30342a22e7910d05600")
 
         mesandecc = coder.encode(messtr)
         mesandeccstr = [ord(x) for x in mesandecc]

@@ -1,9 +1,8 @@
-from _compat import _range
-
 import unittest
 import itertools
 
-from ff import GF2int, init_lut, find_prime_polynomials
+from .._compat import _range
+from ..ff import GF2int, init_lut, find_prime_polynomials
 
 class TestGF2int(unittest.TestCase):
     def setUp(self):
@@ -65,7 +64,7 @@ class TestGF2int(unittest.TestCase):
         # Multiplications in GF(2^7)
         self.assertEqual( GF2int(3).multiply(GF2int(125), prim=0xfd, field_charac_full=128) , 122 )
         # Multiplications outside of the finite field (we revert to standard integer multiplications just to see if it works)
-        self.assertEqual( GF2int(3).multiply(125, prim=0) , 375 )
+        self.assertEqual( GF2int(3).multiply(125, prim=0, carryless=False) , 375 )
         self.assertEqual( GF2int(4).multiply_slow(125, prim=0) , 500 ) # the second method, just to check that everything's alright
 
     def test_prime_poly_build(self):

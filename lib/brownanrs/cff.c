@@ -257,8 +257,8 @@ class __Pyx_FakeReference {
 #define _USE_MATH_DEFINES
 #endif
 #include <math.h>
-#define __PYX_HAVE__cff
-#define __PYX_HAVE_API__cff
+#define __PYX_HAVE__unireedsolomon__cff
+#define __PYX_HAVE_API__unireedsolomon__cff
 #include "string.h"
 #include "stdio.h"
 #include "pythread.h"
@@ -453,7 +453,7 @@ static const char *__pyx_filename;
 
 
 static const char *__pyx_f[] = {
-  "cff.pyx",
+  "unireedsolomon\\cff.pyx",
   "array.pxd",
   "stringsource",
   "type.pxd",
@@ -557,49 +557,50 @@ typedef volatile __pyx_atomic_int_type __pyx_atomic_int;
 struct arrayobject;
 typedef struct arrayobject arrayobject;
 #endif
-struct __pyx_obj_3cff_GF2int;
-struct __pyx_obj_3cff___pyx_scope_struct__multiply_slow;
+struct __pyx_obj_14unireedsolomon_3cff_GF2int;
+struct __pyx_obj_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow;
 struct __pyx_array_obj;
 struct __pyx_MemviewEnum_obj;
 struct __pyx_memoryview_obj;
 struct __pyx_memoryviewslice_obj;
-struct __pyx_opt_args_3cff_6GF2int_multiply;
+struct __pyx_opt_args_14unireedsolomon_3cff_6GF2int_multiply;
 
-/* "cff.pyx":279
+/* "unireedsolomon\cff.pyx":279
  *         return " + ".join(["x^%i" % y for y in c[::-1]]) # print a nice binary polynomial
  * 
- *     cpdef multiply(GF2int x, int y, int prim=0x11b, int field_charac_full=256):             # <<<<<<<<<<<<<<
+ *     cpdef multiply(GF2int x, int y, int prim=0x11b, int field_charac_full=256, int carryless=True):             # <<<<<<<<<<<<<<
  *         '''A slow multiply method. This method gives the same results as the
  *         other __mul__ method but without needing precomputed tables,
  */
-struct __pyx_opt_args_3cff_6GF2int_multiply {
+struct __pyx_opt_args_14unireedsolomon_3cff_6GF2int_multiply {
   int __pyx_n;
   int prim;
   int field_charac_full;
+  int carryless;
 };
 
-/* "cff.pyx":169
+/* "unireedsolomon\cff.pyx":169
  * @cython.nonecheck(False) # Turn off nonecheck locally for the function
  * @cython.boundscheck(False) # turn off boundscheck for this function
  * cdef class GF2int(object): # with (int) it works, else it doesn't... # DO NOT try to inherit from int, else it will cause a MemoryError if you generate too many GF2int (because they aren't freed, they stay in memory. This is an issue with the current Cython v0.22).             # <<<<<<<<<<<<<<
  *     '''Instances of this object are elements of the field GF(2^p)
  *     Instances are integers in the range 0 to p-1
  */
-struct __pyx_obj_3cff_GF2int {
+struct __pyx_obj_14unireedsolomon_3cff_GF2int {
   PyObject_HEAD
-  struct __pyx_vtabstruct_3cff_GF2int *__pyx_vtab;
+  struct __pyx_vtabstruct_14unireedsolomon_3cff_GF2int *__pyx_vtab;
   int value;
 };
 
 
-/* "cff.pyx":303
+/* "unireedsolomon\cff.pyx":303
  *         return GF2int(r)
  * 
  *     def multiply_slow(x, y, prim=0x11b):             # <<<<<<<<<<<<<<
  *         '''Another equivalent (but even slower) way to compute multiplication in Galois Fields without using a precomputed look-up table.
  *         This is the form you will most often see in academic literature, by using the standard carry-less multiplication + modular reduction using an irreducible prime polynomial.'''
  */
-struct __pyx_obj_3cff___pyx_scope_struct__multiply_slow {
+struct __pyx_obj_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow {
   PyObject_HEAD
   PyObject *__pyx_v_bit_length;
 };
@@ -682,7 +683,7 @@ struct __pyx_memoryviewslice_obj {
 
 
 
-/* "cff.pyx":169
+/* "unireedsolomon\cff.pyx":169
  * @cython.nonecheck(False) # Turn off nonecheck locally for the function
  * @cython.boundscheck(False) # turn off boundscheck for this function
  * cdef class GF2int(object): # with (int) it works, else it doesn't... # DO NOT try to inherit from int, else it will cause a MemoryError if you generate too many GF2int (because they aren't freed, they stay in memory. This is an issue with the current Cython v0.22).             # <<<<<<<<<<<<<<
@@ -690,12 +691,12 @@ struct __pyx_memoryviewslice_obj {
  *     Instances are integers in the range 0 to p-1
  */
 
-struct __pyx_vtabstruct_3cff_GF2int {
-  PyObject *(*inverse)(struct __pyx_obj_3cff_GF2int *, int __pyx_skip_dispatch);
-  PyObject *(*_to_binpoly)(struct __pyx_obj_3cff_GF2int *, int __pyx_skip_dispatch);
-  PyObject *(*multiply)(struct __pyx_obj_3cff_GF2int *, int, int __pyx_skip_dispatch, struct __pyx_opt_args_3cff_6GF2int_multiply *__pyx_optional_args);
+struct __pyx_vtabstruct_14unireedsolomon_3cff_GF2int {
+  PyObject *(*inverse)(struct __pyx_obj_14unireedsolomon_3cff_GF2int *, int __pyx_skip_dispatch);
+  PyObject *(*_to_binpoly)(struct __pyx_obj_14unireedsolomon_3cff_GF2int *, int __pyx_skip_dispatch);
+  PyObject *(*multiply)(struct __pyx_obj_14unireedsolomon_3cff_GF2int *, int, int __pyx_skip_dispatch, struct __pyx_opt_args_14unireedsolomon_3cff_6GF2int_multiply *__pyx_optional_args);
 };
-static struct __pyx_vtabstruct_3cff_GF2int *__pyx_vtabptr_3cff_GF2int;
+static struct __pyx_vtabstruct_14unireedsolomon_3cff_GF2int *__pyx_vtabptr_14unireedsolomon_3cff_GF2int;
 
 
 /* "View.MemoryView":302
@@ -1309,9 +1310,9 @@ static PyTypeObject *__Pyx_ImportType(const char *module_name, const char *class
 
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
-static PyObject *__pyx_f_3cff_6GF2int_inverse(struct __pyx_obj_3cff_GF2int *__pyx_v_self, int __pyx_skip_dispatch); /* proto*/
-static PyObject *__pyx_f_3cff_6GF2int__to_binpoly(struct __pyx_obj_3cff_GF2int *__pyx_v_x, int __pyx_skip_dispatch); /* proto*/
-static PyObject *__pyx_f_3cff_6GF2int_multiply(struct __pyx_obj_3cff_GF2int *__pyx_v_x, int __pyx_v_y, int __pyx_skip_dispatch, struct __pyx_opt_args_3cff_6GF2int_multiply *__pyx_optional_args); /* proto*/
+static PyObject *__pyx_f_14unireedsolomon_3cff_6GF2int_inverse(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_self, int __pyx_skip_dispatch); /* proto*/
+static PyObject *__pyx_f_14unireedsolomon_3cff_6GF2int__to_binpoly(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_x, int __pyx_skip_dispatch); /* proto*/
+static PyObject *__pyx_f_14unireedsolomon_3cff_6GF2int_multiply(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_x, int __pyx_v_y, int __pyx_skip_dispatch, struct __pyx_opt_args_14unireedsolomon_3cff_6GF2int_multiply *__pyx_optional_args); /* proto*/
 static char *__pyx_memoryview_get_item_pointer(struct __pyx_memoryview_obj *__pyx_v_self, PyObject *__pyx_v_index); /* proto*/
 static PyObject *__pyx_memoryview_is_slice(struct __pyx_memoryview_obj *__pyx_v_self, PyObject *__pyx_v_obj); /* proto*/
 static PyObject *__pyx_memoryview_setitem_slice_assignment(struct __pyx_memoryview_obj *__pyx_v_self, PyObject *__pyx_v_dst, PyObject *__pyx_v_src); /* proto*/
@@ -1415,19 +1416,19 @@ static PyTypeObject *__pyx_ptype_7cpython_7complex_complex = 0;
 static PyTypeObject *__pyx_ptype_7cpython_5array_array = 0;
 static CYTHON_INLINE int __pyx_f_7cpython_5array_extend_buffer(arrayobject *, char *, Py_ssize_t); /*proto*/
 
-/* Module declarations from 'cff' */
-static PyTypeObject *__pyx_ptype_3cff_GF2int = 0;
-static PyTypeObject *__pyx_ptype_3cff___pyx_scope_struct__multiply_slow = 0;
+/* Module declarations from 'unireedsolomon.cff' */
+static PyTypeObject *__pyx_ptype_14unireedsolomon_3cff_GF2int = 0;
+static PyTypeObject *__pyx_ptype_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow = 0;
 static PyTypeObject *__pyx_array_type = 0;
 static PyTypeObject *__pyx_MemviewEnum_type = 0;
 static PyTypeObject *__pyx_memoryview_type = 0;
 static PyTypeObject *__pyx_memoryviewslice_type = 0;
-static int __pyx_v_3cff_GF2_charac;
-static int __pyx_v_3cff_GF2_c_exp;
-static arrayobject *__pyx_v_3cff_GF2int_exptable_a = 0;
-static __Pyx_memviewslice __pyx_v_3cff_GF2int_exptable = { 0, 0, { 0 }, { 0 }, { 0 } };
-static arrayobject *__pyx_v_3cff_GF2int_logtable_a = 0;
-static __Pyx_memviewslice __pyx_v_3cff_GF2int_logtable = { 0, 0, { 0 }, { 0 }, { 0 } };
+static int __pyx_v_14unireedsolomon_3cff_GF2_charac;
+static int __pyx_v_14unireedsolomon_3cff_GF2_c_exp;
+static arrayobject *__pyx_v_14unireedsolomon_3cff_GF2int_exptable_a = 0;
+static __Pyx_memviewslice __pyx_v_14unireedsolomon_3cff_GF2int_exptable = { 0, 0, { 0 }, { 0 }, { 0 } };
+static arrayobject *__pyx_v_14unireedsolomon_3cff_GF2int_logtable_a = 0;
+static __Pyx_memviewslice __pyx_v_14unireedsolomon_3cff_GF2int_logtable = { 0, 0, { 0 }, { 0 }, { 0 } };
 static PyObject *generic = 0;
 static PyObject *strided = 0;
 static PyObject *indirect = 0;
@@ -1466,10 +1467,10 @@ static void __pyx_memoryview_refcount_objects_in_slice(char *, Py_ssize_t *, Py_
 static void __pyx_memoryview_slice_assign_scalar(__Pyx_memviewslice *, int, size_t, void *, int); /*proto*/
 static void __pyx_memoryview__slice_assign_scalar(char *, Py_ssize_t *, Py_ssize_t *, int, size_t, void *); /*proto*/
 static __Pyx_TypeInfo __Pyx_TypeInfo_int = { "int", NULL, sizeof(int), { 0 }, 0, IS_UNSIGNED(int) ? 'U' : 'I', IS_UNSIGNED(int), 0 };
-#define __Pyx_MODULE_NAME "cff"
-int __pyx_module_is_main_cff = 0;
+#define __Pyx_MODULE_NAME "unireedsolomon.cff"
+int __pyx_module_is_main_unireedsolomon__cff = 0;
 
-/* Implementation of 'cff' */
+/* Implementation of 'unireedsolomon.cff' */
 static PyObject *__pyx_builtin_range;
 static PyObject *__pyx_builtin_enumerate;
 static PyObject *__pyx_builtin_MemoryError;
@@ -1478,41 +1479,41 @@ static PyObject *__pyx_builtin_Ellipsis;
 static PyObject *__pyx_builtin_TypeError;
 static PyObject *__pyx_builtin_id;
 static PyObject *__pyx_builtin_IndexError;
-static PyObject *__pyx_pf_3cff_rwh_primes1(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_n); /* proto */
-static PyObject *__pyx_pf_3cff_2find_prime_polynomials(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_generator, PyObject *__pyx_v_c_exp, PyObject *__pyx_v_fast_primes, PyObject *__pyx_v_single); /* proto */
-static PyObject *__pyx_pf_3cff_4init_lut(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_generator, PyObject *__pyx_v_prim, PyObject *__pyx_v_c_exp); /* proto */
-static int __pyx_pf_3cff_6GF2int___init__(struct __pyx_obj_3cff_GF2int *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
-static PyObject *__pyx_pf_3cff_6GF2int_2__add__(int __pyx_v_a, int __pyx_v_b); /* proto */
-static PyObject *__pyx_pf_3cff_6GF2int_4__sub__(PyObject *__pyx_v_a, PyObject *__pyx_v_b); /* proto */
-static PyObject *__pyx_pf_3cff_6GF2int_6__radd__(struct __pyx_obj_3cff_GF2int *__pyx_v_a, PyObject *__pyx_v_b); /* proto */
-static PyObject *__pyx_pf_3cff_6GF2int_8__rsub__(struct __pyx_obj_3cff_GF2int *__pyx_v_a, PyObject *__pyx_v_b); /* proto */
-static PyObject *__pyx_pf_3cff_6GF2int_10__xor__(int __pyx_v_a, int __pyx_v_b); /* proto */
-static PyObject *__pyx_pf_3cff_6GF2int_12__neg__(struct __pyx_obj_3cff_GF2int *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_3cff_6GF2int_14__mul__(int __pyx_v_a, int __pyx_v_b); /* proto */
-static PyObject *__pyx_pf_3cff_6GF2int_16__rmul__(struct __pyx_obj_3cff_GF2int *__pyx_v_a, PyObject *__pyx_v_b); /* proto */
-static PyObject *__pyx_pf_3cff_6GF2int_18__pow__(int __pyx_v_self, int __pyx_v_power, CYTHON_UNUSED PyObject *__pyx_v_modulo); /* proto */
-static PyObject *__pyx_pf_3cff_6GF2int_20inverse(struct __pyx_obj_3cff_GF2int *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_3cff_6GF2int_22__truediv__(int __pyx_v_self, int __pyx_v_other); /* proto */
-static PyObject *__pyx_pf_3cff_6GF2int_24__floordiv__(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_3cff_rwh_primes1(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_n); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_3cff_2find_prime_polynomials(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_generator, PyObject *__pyx_v_c_exp, PyObject *__pyx_v_fast_primes, PyObject *__pyx_v_single); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_3cff_4init_lut(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_generator, PyObject *__pyx_v_prim, PyObject *__pyx_v_c_exp); /* proto */
+static int __pyx_pf_14unireedsolomon_3cff_6GF2int___init__(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_2__add__(int __pyx_v_a, int __pyx_v_b); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_4__sub__(PyObject *__pyx_v_a, PyObject *__pyx_v_b); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_6__radd__(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_a, PyObject *__pyx_v_b); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_8__rsub__(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_a, PyObject *__pyx_v_b); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_10__xor__(int __pyx_v_a, int __pyx_v_b); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_12__neg__(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_14__mul__(int __pyx_v_a, int __pyx_v_b); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_16__rmul__(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_a, PyObject *__pyx_v_b); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_18__pow__(int __pyx_v_self, int __pyx_v_power, CYTHON_UNUSED PyObject *__pyx_v_modulo); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_20inverse(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_22__truediv__(int __pyx_v_self, int __pyx_v_other); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_24__floordiv__(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /* proto */
 #if PY_MAJOR_VERSION < 3 || CYTHON_COMPILING_IN_PYPY
-static PyObject *__pyx_pf_3cff_6GF2int_26__div__(int __pyx_v_self, int __pyx_v_other); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_26__div__(int __pyx_v_self, int __pyx_v_other); /* proto */
 #endif
-static PyObject *__pyx_pf_3cff_6GF2int_28__rtruediv__(struct __pyx_obj_3cff_GF2int *__pyx_v_self, int __pyx_v_other); /* proto */
-static PyObject *__pyx_pf_3cff_6GF2int_30__rfloordiv__(struct __pyx_obj_3cff_GF2int *__pyx_v_self, PyObject *__pyx_v_other); /* proto */
-static PyObject *__pyx_pf_3cff_6GF2int_32__rdiv__(struct __pyx_obj_3cff_GF2int *__pyx_v_self, PyObject *__pyx_v_other); /* proto */
-static PyObject *__pyx_pf_3cff_6GF2int_34__repr__(struct __pyx_obj_3cff_GF2int *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_3cff_6GF2int_36__str__(struct __pyx_obj_3cff_GF2int *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_3cff_6GF2int_38_to_binpoly(struct __pyx_obj_3cff_GF2int *__pyx_v_x); /* proto */
-static PyObject *__pyx_pf_3cff_6GF2int_40multiply(struct __pyx_obj_3cff_GF2int *__pyx_v_x, int __pyx_v_y, int __pyx_v_prim, int __pyx_v_field_charac_full); /* proto */
-static PyObject *__pyx_pf_3cff_6GF2int_13multiply_slow_cl_mult(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_x, PyObject *__pyx_v_y); /* proto */
-static PyObject *__pyx_pf_3cff_6GF2int_13multiply_slow_2bit_length(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_n); /* proto */
-static PyObject *__pyx_pf_3cff_6GF2int_13multiply_slow_4cl_div(PyObject *__pyx_self, PyObject *__pyx_v_dividend, PyObject *__pyx_v_divisor); /* proto */
-static PyObject *__pyx_pf_3cff_6GF2int_42multiply_slow(struct __pyx_obj_3cff_GF2int *__pyx_v_x, PyObject *__pyx_v_y, PyObject *__pyx_v_prim); /* proto */
-static PyObject *__pyx_pf_3cff_6GF2int_44__index__(struct __pyx_obj_3cff_GF2int *__pyx_v_self); /* proto */
-static Py_hash_t __pyx_pf_3cff_6GF2int_46__hash__(struct __pyx_obj_3cff_GF2int *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_3cff_6GF2int_48__int__(struct __pyx_obj_3cff_GF2int *__pyx_v_self); /* proto */
-static int __pyx_pf_3cff_6GF2int_50__nonzero__(struct __pyx_obj_3cff_GF2int *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_3cff_6GF2int_52__richcmp__(struct __pyx_obj_3cff_GF2int *__pyx_v_self, PyObject *__pyx_v_other, int __pyx_v_op); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_28__rtruediv__(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_self, int __pyx_v_other); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_30__rfloordiv__(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_self, PyObject *__pyx_v_other); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_32__rdiv__(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_self, PyObject *__pyx_v_other); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_34__repr__(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_36__str__(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_38_to_binpoly(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_x); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_40multiply(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_x, int __pyx_v_y, int __pyx_v_prim, int __pyx_v_field_charac_full, int __pyx_v_carryless); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_13multiply_slow_cl_mult(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_x, PyObject *__pyx_v_y); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_13multiply_slow_2bit_length(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_n); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_13multiply_slow_4cl_div(PyObject *__pyx_self, PyObject *__pyx_v_dividend, PyObject *__pyx_v_divisor); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_42multiply_slow(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_x, PyObject *__pyx_v_y, PyObject *__pyx_v_prim); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_44__index__(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_self); /* proto */
+static Py_hash_t __pyx_pf_14unireedsolomon_3cff_6GF2int_46__hash__(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_48__int__(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_self); /* proto */
+static int __pyx_pf_14unireedsolomon_3cff_6GF2int_50__nonzero__(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_52__richcmp__(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_self, PyObject *__pyx_v_other, int __pyx_v_op); /* proto */
 static int __pyx_pf_7cpython_5array_5array___getbuffer__(arrayobject *__pyx_v_self, Py_buffer *__pyx_v_info, CYTHON_UNUSED int __pyx_v_flags); /* proto */
 static void __pyx_pf_7cpython_5array_5array_2__releasebuffer__(CYTHON_UNUSED arrayobject *__pyx_v_self, Py_buffer *__pyx_v_info); /* proto */
 static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __pyx_array_obj *__pyx_v_self, PyObject *__pyx_v_shape, Py_ssize_t __pyx_v_itemsize, PyObject *__pyx_v_format, PyObject *__pyx_v_mode, int __pyx_v_allocate_buffer); /* proto */
@@ -1547,8 +1548,8 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_20
 static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_22copy_fortran(struct __pyx_memoryview_obj *__pyx_v_self); /* proto */
 static void __pyx_memoryviewslice___pyx_pf_15View_dot_MemoryView_16_memoryviewslice___dealloc__(struct __pyx_memoryviewslice_obj *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_15View_dot_MemoryView_16_memoryviewslice_4base___get__(struct __pyx_memoryviewslice_obj *__pyx_v_self); /* proto */
-static PyObject *__pyx_tp_new_3cff_GF2int(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
-static PyObject *__pyx_tp_new_3cff___pyx_scope_struct__multiply_slow(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_tp_new_14unireedsolomon_3cff_GF2int(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_tp_new_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_array(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_Enum(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_memoryview(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
@@ -1564,7 +1565,6 @@ static char __pyx_k_y[] = "y";
 static char __pyx_k_z[] = "z";
 static char __pyx_k__6[] = " + ";
 static char __pyx_k_id[] = "id";
-static char __pyx_k_cff[] = "cff";
 static char __pyx_k_dl1[] = "dl1";
 static char __pyx_k_dl2[] = "dl2";
 static char __pyx_k_i_2[] = "%i";
@@ -1618,6 +1618,7 @@ static char __pyx_k_itemsize[] = "itemsize";
 static char __pyx_k_logtable[] = "logtable";
 static char __pyx_k_multiply[] = "multiply";
 static char __pyx_k_TypeError[] = "TypeError";
+static char __pyx_k_carryless[] = "carryless";
 static char __pyx_k_enumerate[] = "enumerate";
 static char __pyx_k_generator[] = "generator";
 static char __pyx_k_IndexError[] = "IndexError";
@@ -1638,6 +1639,7 @@ static char __pyx_k_prim_candidates[] = "prim_candidates";
 static char __pyx_k_field_charac_full[] = "field_charac_full";
 static char __pyx_k_field_charac_next[] = "field_charac_next";
 static char __pyx_k_strided_and_direct[] = "<strided and direct>";
+static char __pyx_k_unireedsolomon_cff[] = "unireedsolomon.cff";
 static char __pyx_k_strided_and_indirect[] = "<strided and indirect>";
 static char __pyx_k_contiguous_and_direct[] = "<contiguous and direct>";
 static char __pyx_k_MemoryView_of_r_object[] = "<MemoryView of %r object>";
@@ -1655,10 +1657,10 @@ static char __pyx_k_multiply_slow_locals_cl_div[] = "multiply_slow.<locals>.cl_d
 static char __pyx_k_multiply_slow_locals_cl_mult[] = "multiply_slow.<locals>.cl_mult";
 static char __pyx_k_unable_to_allocate_array_data[] = "unable to allocate array data.";
 static char __pyx_k_strided_and_direct_or_indirect[] = "<strided and direct or indirect>";
-static char __pyx_k_C_git_rfigc_ReedSolomon_cff_pyx[] = "C:\\git\\rfigc\\ReedSolomon\\cff.pyx";
 static char __pyx_k_multiply_slow_locals_bit_length[] = "multiply_slow.<locals>.bit_length";
 static char __pyx_k_All_dimensions_preceding_dimensi[] = "All dimensions preceding dimension %d must be indexed and not sliced";
 static char __pyx_k_Buffer_view_does_not_expose_stri[] = "Buffer view does not expose strides";
+static char __pyx_k_C_git_rfigc_ReedSolomon_unireeds[] = "C:\\git\\rfigc\\ReedSolomon\\unireedsolomon\\cff.pyx";
 static char __pyx_k_Can_only_create_a_buffer_that_is[] = "Can only create a buffer that is contiguous in memory.";
 static char __pyx_k_Cannot_transpose_memoryview_with[] = "Cannot transpose memoryview with indirect dimensions";
 static char __pyx_k_Empty_shape_tuple_for_cython_arr[] = "Empty shape tuple for cython.array";
@@ -1670,7 +1672,7 @@ static char __pyx_k_got_differing_extents_in_dimensi[] = "got differing extents 
 static char __pyx_k_unable_to_allocate_shape_and_str[] = "unable to allocate shape and strides.";
 static PyObject *__pyx_kp_s_0;
 static PyObject *__pyx_kp_s_Buffer_view_does_not_expose_stri;
-static PyObject *__pyx_kp_s_C_git_rfigc_ReedSolomon_cff_pyx;
+static PyObject *__pyx_kp_s_C_git_rfigc_ReedSolomon_unireeds;
 static PyObject *__pyx_kp_s_Can_only_create_a_buffer_that_is;
 static PyObject *__pyx_kp_s_Cannot_index_with_type_s;
 static PyObject *__pyx_n_s_Ellipsis;
@@ -1695,7 +1697,7 @@ static PyObject *__pyx_n_s_bits;
 static PyObject *__pyx_n_s_c;
 static PyObject *__pyx_n_u_c;
 static PyObject *__pyx_n_s_c_exp;
-static PyObject *__pyx_n_s_cff;
+static PyObject *__pyx_n_s_carryless;
 static PyObject *__pyx_n_s_cl_div;
 static PyObject *__pyx_n_s_cl_mult;
 static PyObject *__pyx_n_s_class;
@@ -1773,6 +1775,7 @@ static PyObject *__pyx_n_s_to_binpoly;
 static PyObject *__pyx_n_s_truediv;
 static PyObject *__pyx_kp_s_unable_to_allocate_array_data;
 static PyObject *__pyx_kp_s_unable_to_allocate_shape_and_str;
+static PyObject *__pyx_n_s_unireedsolomon_cff;
 static PyObject *__pyx_n_s_unpack;
 static PyObject *__pyx_n_s_value;
 static PyObject *__pyx_n_s_x;
@@ -2075,7 +2078,7 @@ static PyObject *__pyx_codeobj__28;
 static PyObject *__pyx_codeobj__30;
 static PyObject *__pyx_codeobj__32;
 
-/* "cff.pyx":65
+/* "unireedsolomon\cff.pyx":65
  * cdef int[::1] GF2int_logtable = GF2int_logtable_a
  * 
  * def rwh_primes1(n):             # <<<<<<<<<<<<<<
@@ -2084,21 +2087,21 @@ static PyObject *__pyx_codeobj__32;
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cff_1rwh_primes1(PyObject *__pyx_self, PyObject *__pyx_v_n); /*proto*/
-static char __pyx_doc_3cff_rwh_primes1[] = " Returns  a list of primes < n ";
-static PyMethodDef __pyx_mdef_3cff_1rwh_primes1 = {"rwh_primes1", (PyCFunction)__pyx_pw_3cff_1rwh_primes1, METH_O, __pyx_doc_3cff_rwh_primes1};
-static PyObject *__pyx_pw_3cff_1rwh_primes1(PyObject *__pyx_self, PyObject *__pyx_v_n) {
+static PyObject *__pyx_pw_14unireedsolomon_3cff_1rwh_primes1(PyObject *__pyx_self, PyObject *__pyx_v_n); /*proto*/
+static char __pyx_doc_14unireedsolomon_3cff_rwh_primes1[] = " Returns  a list of primes < n ";
+static PyMethodDef __pyx_mdef_14unireedsolomon_3cff_1rwh_primes1 = {"rwh_primes1", (PyCFunction)__pyx_pw_14unireedsolomon_3cff_1rwh_primes1, METH_O, __pyx_doc_14unireedsolomon_3cff_rwh_primes1};
+static PyObject *__pyx_pw_14unireedsolomon_3cff_1rwh_primes1(PyObject *__pyx_self, PyObject *__pyx_v_n) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("rwh_primes1 (wrapper)", 0);
-  __pyx_r = __pyx_pf_3cff_rwh_primes1(__pyx_self, ((PyObject *)__pyx_v_n));
+  __pyx_r = __pyx_pf_14unireedsolomon_3cff_rwh_primes1(__pyx_self, ((PyObject *)__pyx_v_n));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cff_rwh_primes1(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_n) {
+static PyObject *__pyx_pf_14unireedsolomon_3cff_rwh_primes1(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_n) {
   PyObject *__pyx_v_sieve = NULL;
   PyObject *__pyx_v_i = NULL;
   PyObject *__pyx_r = NULL;
@@ -2118,7 +2121,7 @@ static PyObject *__pyx_pf_3cff_rwh_primes1(CYTHON_UNUSED PyObject *__pyx_self, P
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("rwh_primes1", 0);
 
-  /* "cff.pyx":68
+  /* "unireedsolomon\cff.pyx":68
  *     # http://stackoverflow.com/questions/2068372/fastest-way-to-list-all-primes-below-n-in-python/3035188#3035188
  *     ''' Returns  a list of primes < n '''
  *     sieve = [True] * (n/2)             # <<<<<<<<<<<<<<
@@ -2141,7 +2144,7 @@ static PyObject *__pyx_pf_3cff_rwh_primes1(CYTHON_UNUSED PyObject *__pyx_self, P
   __pyx_v_sieve = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "cff.pyx":69
+  /* "unireedsolomon\cff.pyx":69
  *     ''' Returns  a list of primes < n '''
  *     sieve = [True] * (n/2)
  *     for i in _range(3,int(n**0.5)+1,2):             # <<<<<<<<<<<<<<
@@ -2231,7 +2234,7 @@ static PyObject *__pyx_pf_3cff_rwh_primes1(CYTHON_UNUSED PyObject *__pyx_self, P
     __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "cff.pyx":70
+    /* "unireedsolomon\cff.pyx":70
  *     sieve = [True] * (n/2)
  *     for i in _range(3,int(n**0.5)+1,2):
  *         if sieve[i/2]:             # <<<<<<<<<<<<<<
@@ -2247,7 +2250,7 @@ static PyObject *__pyx_pf_3cff_rwh_primes1(CYTHON_UNUSED PyObject *__pyx_self, P
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     if (__pyx_t_8) {
 
-      /* "cff.pyx":71
+      /* "unireedsolomon\cff.pyx":71
  *     for i in _range(3,int(n**0.5)+1,2):
  *         if sieve[i/2]:
  *             sieve[i*i/2::i] = [False] * ((n-i*i-1)/(2*i)+1)             # <<<<<<<<<<<<<<
@@ -2297,7 +2300,7 @@ static PyObject *__pyx_pf_3cff_rwh_primes1(CYTHON_UNUSED PyObject *__pyx_self, P
     }
     __pyx_L5:;
 
-    /* "cff.pyx":69
+    /* "unireedsolomon\cff.pyx":69
  *     ''' Returns  a list of primes < n '''
  *     sieve = [True] * (n/2)
  *     for i in _range(3,int(n**0.5)+1,2):             # <<<<<<<<<<<<<<
@@ -2307,7 +2310,7 @@ static PyObject *__pyx_pf_3cff_rwh_primes1(CYTHON_UNUSED PyObject *__pyx_self, P
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "cff.pyx":72
+  /* "unireedsolomon\cff.pyx":72
  *         if sieve[i/2]:
  *             sieve[i*i/2::i] = [False] * ((n-i*i-1)/(2*i)+1)
  *     return [2] + [2*i+1 for i in _range(1,n/2) if sieve[i]]             # <<<<<<<<<<<<<<
@@ -2420,7 +2423,7 @@ static PyObject *__pyx_pf_3cff_rwh_primes1(CYTHON_UNUSED PyObject *__pyx_self, P
   __pyx_t_6 = 0;
   goto __pyx_L0;
 
-  /* "cff.pyx":65
+  /* "unireedsolomon\cff.pyx":65
  * cdef int[::1] GF2int_logtable = GF2int_logtable_a
  * 
  * def rwh_primes1(n):             # <<<<<<<<<<<<<<
@@ -2437,7 +2440,7 @@ static PyObject *__pyx_pf_3cff_rwh_primes1(CYTHON_UNUSED PyObject *__pyx_self, P
   __Pyx_XDECREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_9);
   __Pyx_XDECREF(__pyx_t_10);
-  __Pyx_AddTraceback("cff.rwh_primes1", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.rwh_primes1", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_sieve);
@@ -2447,7 +2450,7 @@ static PyObject *__pyx_pf_3cff_rwh_primes1(CYTHON_UNUSED PyObject *__pyx_self, P
   return __pyx_r;
 }
 
-/* "cff.pyx":74
+/* "unireedsolomon\cff.pyx":74
  *     return [2] + [2*i+1 for i in _range(1,n/2) if sieve[i]]
  * 
  * def find_prime_polynomials(generator=2, c_exp=8, fast_primes=False, single=False):             # <<<<<<<<<<<<<<
@@ -2456,10 +2459,10 @@ static PyObject *__pyx_pf_3cff_rwh_primes1(CYTHON_UNUSED PyObject *__pyx_self, P
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cff_3find_prime_polynomials(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_3cff_2find_prime_polynomials[] = "Compute the list of prime polynomials for the given generator and galois field characteristic exponent.";
-static PyMethodDef __pyx_mdef_3cff_3find_prime_polynomials = {"find_prime_polynomials", (PyCFunction)__pyx_pw_3cff_3find_prime_polynomials, METH_VARARGS|METH_KEYWORDS, __pyx_doc_3cff_2find_prime_polynomials};
-static PyObject *__pyx_pw_3cff_3find_prime_polynomials(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_14unireedsolomon_3cff_3find_prime_polynomials(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_14unireedsolomon_3cff_2find_prime_polynomials[] = "Compute the list of prime polynomials for the given generator and galois field characteristic exponent.";
+static PyMethodDef __pyx_mdef_14unireedsolomon_3cff_3find_prime_polynomials = {"find_prime_polynomials", (PyCFunction)__pyx_pw_14unireedsolomon_3cff_3find_prime_polynomials, METH_VARARGS|METH_KEYWORDS, __pyx_doc_14unireedsolomon_3cff_2find_prime_polynomials};
+static PyObject *__pyx_pw_14unireedsolomon_3cff_3find_prime_polynomials(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_generator = 0;
   PyObject *__pyx_v_c_exp = 0;
   PyObject *__pyx_v_fast_primes = 0;
@@ -2533,18 +2536,18 @@ static PyObject *__pyx_pw_3cff_3find_prime_polynomials(PyObject *__pyx_self, PyO
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("find_prime_polynomials", 0, 0, 4, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cff.find_prime_polynomials", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.find_prime_polynomials", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_3cff_2find_prime_polynomials(__pyx_self, __pyx_v_generator, __pyx_v_c_exp, __pyx_v_fast_primes, __pyx_v_single);
+  __pyx_r = __pyx_pf_14unireedsolomon_3cff_2find_prime_polynomials(__pyx_self, __pyx_v_generator, __pyx_v_c_exp, __pyx_v_fast_primes, __pyx_v_single);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cff_2find_prime_polynomials(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_generator, PyObject *__pyx_v_c_exp, PyObject *__pyx_v_fast_primes, PyObject *__pyx_v_single) {
+static PyObject *__pyx_pf_14unireedsolomon_3cff_2find_prime_polynomials(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_generator, PyObject *__pyx_v_c_exp, PyObject *__pyx_v_fast_primes, PyObject *__pyx_v_single) {
   PyObject *__pyx_v_root_charac = NULL;
   PyObject *__pyx_v_field_charac = NULL;
   PyObject *__pyx_v_field_charac_next = NULL;
@@ -2577,7 +2580,7 @@ static PyObject *__pyx_pf_3cff_2find_prime_polynomials(CYTHON_UNUSED PyObject *_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("find_prime_polynomials", 0);
 
-  /* "cff.pyx":89
+  /* "unireedsolomon\cff.pyx":89
  * 
  *     # Prepare the finite field characteristic (2^p - 1), this also represent the maximum possible value in this field
  *     root_charac = 2 # we're in GF(2)             # <<<<<<<<<<<<<<
@@ -2587,7 +2590,7 @@ static PyObject *__pyx_pf_3cff_2find_prime_polynomials(CYTHON_UNUSED PyObject *_
   __Pyx_INCREF(__pyx_int_2);
   __pyx_v_root_charac = __pyx_int_2;
 
-  /* "cff.pyx":90
+  /* "unireedsolomon\cff.pyx":90
  *     # Prepare the finite field characteristic (2^p - 1), this also represent the maximum possible value in this field
  *     root_charac = 2 # we're in GF(2)
  *     field_charac = int(root_charac**c_exp - 1)             # <<<<<<<<<<<<<<
@@ -2605,7 +2608,7 @@ static PyObject *__pyx_pf_3cff_2find_prime_polynomials(CYTHON_UNUSED PyObject *_
   __pyx_v_field_charac = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "cff.pyx":91
+  /* "unireedsolomon\cff.pyx":91
  *     root_charac = 2 # we're in GF(2)
  *     field_charac = int(root_charac**c_exp - 1)
  *     field_charac_next = int(root_charac**(c_exp+1) - 1)             # <<<<<<<<<<<<<<
@@ -2626,7 +2629,7 @@ static PyObject *__pyx_pf_3cff_2find_prime_polynomials(CYTHON_UNUSED PyObject *_
   __pyx_v_field_charac_next = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "cff.pyx":93
+  /* "unireedsolomon\cff.pyx":93
  *     field_charac_next = int(root_charac**(c_exp+1) - 1)
  * 
  *     prim_candidates = []             # <<<<<<<<<<<<<<
@@ -2638,7 +2641,7 @@ static PyObject *__pyx_pf_3cff_2find_prime_polynomials(CYTHON_UNUSED PyObject *_
   __pyx_v_prim_candidates = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "cff.pyx":94
+  /* "unireedsolomon\cff.pyx":94
  * 
  *     prim_candidates = []
  *     if fast_primes:             # <<<<<<<<<<<<<<
@@ -2648,7 +2651,7 @@ static PyObject *__pyx_pf_3cff_2find_prime_polynomials(CYTHON_UNUSED PyObject *_
   __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_v_fast_primes); if (unlikely(__pyx_t_3 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 94; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (__pyx_t_3) {
 
-    /* "cff.pyx":95
+    /* "unireedsolomon\cff.pyx":95
  *     prim_candidates = []
  *     if fast_primes:
  *         prim_candidates = rwh_primes1(field_charac_next) # generate maybe prime polynomials and check later if they really are irreducible             # <<<<<<<<<<<<<<
@@ -2685,7 +2688,7 @@ static PyObject *__pyx_pf_3cff_2find_prime_polynomials(CYTHON_UNUSED PyObject *_
     __Pyx_DECREF_SET(__pyx_v_prim_candidates, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "cff.pyx":96
+    /* "unireedsolomon\cff.pyx":96
  *     if fast_primes:
  *         prim_candidates = rwh_primes1(field_charac_next) # generate maybe prime polynomials and check later if they really are irreducible
  *         prim_candidates = [x for x in prim_candidates if x > field_charac] # filter out too small primes             # <<<<<<<<<<<<<<
@@ -2751,7 +2754,7 @@ static PyObject *__pyx_pf_3cff_2find_prime_polynomials(CYTHON_UNUSED PyObject *_
   }
   /*else*/ {
 
-    /* "cff.pyx":98
+    /* "unireedsolomon\cff.pyx":98
  *         prim_candidates = [x for x in prim_candidates if x > field_charac] # filter out too small primes
  *     else:
  *         prim_candidates = _range(field_charac+2, field_charac_next, root_charac) # try each possible prime polynomial, but skip even numbers (because divisible by 2 so necessarily not irreducible)             # <<<<<<<<<<<<<<
@@ -2797,7 +2800,7 @@ static PyObject *__pyx_pf_3cff_2find_prime_polynomials(CYTHON_UNUSED PyObject *_
   }
   __pyx_L3:;
 
-  /* "cff.pyx":101
+  /* "unireedsolomon\cff.pyx":101
  * 
  *     # Start of the main loop
  *     correct_primes = []             # <<<<<<<<<<<<<<
@@ -2809,7 +2812,7 @@ static PyObject *__pyx_pf_3cff_2find_prime_polynomials(CYTHON_UNUSED PyObject *_
   __pyx_v_correct_primes = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "cff.pyx":102
+  /* "unireedsolomon\cff.pyx":102
  *     # Start of the main loop
  *     correct_primes = []
  *     for prim in prim_candidates: # try potential candidates primitive irreducible polys             # <<<<<<<<<<<<<<
@@ -2858,7 +2861,7 @@ static PyObject *__pyx_pf_3cff_2find_prime_polynomials(CYTHON_UNUSED PyObject *_
     __Pyx_XDECREF_SET(__pyx_v_prim, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "cff.pyx":103
+    /* "unireedsolomon\cff.pyx":103
  *     correct_primes = []
  *     for prim in prim_candidates: # try potential candidates primitive irreducible polys
  *         seen = bytearray(field_charac+1) # memory variable to indicate if a value was already generated in the field (value at index x is set to 1) or not (set to 0 by default)             # <<<<<<<<<<<<<<
@@ -2878,7 +2881,7 @@ static PyObject *__pyx_pf_3cff_2find_prime_polynomials(CYTHON_UNUSED PyObject *_
     __Pyx_XDECREF_SET(__pyx_v_seen, ((PyObject*)__pyx_t_1));
     __pyx_t_1 = 0;
 
-    /* "cff.pyx":104
+    /* "unireedsolomon\cff.pyx":104
  *     for prim in prim_candidates: # try potential candidates primitive irreducible polys
  *         seen = bytearray(field_charac+1) # memory variable to indicate if a value was already generated in the field (value at index x is set to 1) or not (set to 0 by default)
  *         conflict = False # flag to know if there was at least one conflict             # <<<<<<<<<<<<<<
@@ -2887,19 +2890,19 @@ static PyObject *__pyx_pf_3cff_2find_prime_polynomials(CYTHON_UNUSED PyObject *_
  */
     __pyx_v_conflict = 0;
 
-    /* "cff.pyx":107
+    /* "unireedsolomon\cff.pyx":107
  * 
  *         # Second loop, build the whole Galois Field
  *         x = GF2int(1)             # <<<<<<<<<<<<<<
  *         for i in _range(field_charac):
  *             # Compute the next value in the field (ie, the next power of alpha/generator)
  */
-    __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)((PyObject*)__pyx_ptype_3cff_GF2int)), __pyx_tuple_, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 107; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)((PyObject*)__pyx_ptype_14unireedsolomon_3cff_GF2int)), __pyx_tuple_, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 107; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_XDECREF_SET(__pyx_v_x, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "cff.pyx":108
+    /* "unireedsolomon\cff.pyx":108
  *         # Second loop, build the whole Galois Field
  *         x = GF2int(1)
  *         for i in _range(field_charac):             # <<<<<<<<<<<<<<
@@ -2976,7 +2979,7 @@ static PyObject *__pyx_pf_3cff_2find_prime_polynomials(CYTHON_UNUSED PyObject *_
       __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_1);
       __pyx_t_1 = 0;
 
-      /* "cff.pyx":110
+      /* "unireedsolomon\cff.pyx":110
  *         for i in _range(field_charac):
  *             # Compute the next value in the field (ie, the next power of alpha/generator)
  *             x = x.multiply(generator, prim, field_charac+1)             # <<<<<<<<<<<<<<
@@ -3020,7 +3023,7 @@ static PyObject *__pyx_pf_3cff_2find_prime_polynomials(CYTHON_UNUSED PyObject *_
       __Pyx_DECREF_SET(__pyx_v_x, __pyx_t_1);
       __pyx_t_1 = 0;
 
-      /* "cff.pyx":113
+      /* "unireedsolomon\cff.pyx":113
  * 
  *             # Rejection criterion: if the value overflowed (above field_charac) or is a duplicate of a previously generated power of alpha, then we reject this polynomial (not prime)
  *             if x > field_charac or seen[x] == 1:             # <<<<<<<<<<<<<<
@@ -3045,7 +3048,7 @@ static PyObject *__pyx_pf_3cff_2find_prime_polynomials(CYTHON_UNUSED PyObject *_
       __pyx_L12_bool_binop_done:;
       if (__pyx_t_3) {
 
-        /* "cff.pyx":114
+        /* "unireedsolomon\cff.pyx":114
  *             # Rejection criterion: if the value overflowed (above field_charac) or is a duplicate of a previously generated power of alpha, then we reject this polynomial (not prime)
  *             if x > field_charac or seen[x] == 1:
  *                 conflict = True             # <<<<<<<<<<<<<<
@@ -3054,7 +3057,7 @@ static PyObject *__pyx_pf_3cff_2find_prime_polynomials(CYTHON_UNUSED PyObject *_
  */
         __pyx_v_conflict = 1;
 
-        /* "cff.pyx":115
+        /* "unireedsolomon\cff.pyx":115
  *             if x > field_charac or seen[x] == 1:
  *                 conflict = True
  *                 break             # <<<<<<<<<<<<<<
@@ -3065,7 +3068,7 @@ static PyObject *__pyx_pf_3cff_2find_prime_polynomials(CYTHON_UNUSED PyObject *_
       }
       /*else*/ {
 
-        /* "cff.pyx":118
+        /* "unireedsolomon\cff.pyx":118
  *             # Else we flag this value as seen (to maybe detect future duplicates), and we continue onto the next power of alpha
  *             else:
  *                 seen[x] = 1             # <<<<<<<<<<<<<<
@@ -3075,7 +3078,7 @@ static PyObject *__pyx_pf_3cff_2find_prime_polynomials(CYTHON_UNUSED PyObject *_
         if (unlikely(PyObject_SetItem(__pyx_v_seen, __pyx_v_x, __pyx_int_1) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 118; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
 
-      /* "cff.pyx":108
+      /* "unireedsolomon\cff.pyx":108
  *         # Second loop, build the whole Galois Field
  *         x = GF2int(1)
  *         for i in _range(field_charac):             # <<<<<<<<<<<<<<
@@ -3086,7 +3089,7 @@ static PyObject *__pyx_pf_3cff_2find_prime_polynomials(CYTHON_UNUSED PyObject *_
     __pyx_L10_break:;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-    /* "cff.pyx":121
+    /* "unireedsolomon\cff.pyx":121
  * 
  *         # End of the second loop: if there's no conflict (no overflow nor duplicated value), this is a prime polynomial!
  *         if not conflict:             # <<<<<<<<<<<<<<
@@ -3096,7 +3099,7 @@ static PyObject *__pyx_pf_3cff_2find_prime_polynomials(CYTHON_UNUSED PyObject *_
     __pyx_t_3 = ((!(__pyx_v_conflict != 0)) != 0);
     if (__pyx_t_3) {
 
-      /* "cff.pyx":122
+      /* "unireedsolomon\cff.pyx":122
  *         # End of the second loop: if there's no conflict (no overflow nor duplicated value), this is a prime polynomial!
  *         if not conflict:
  *             correct_primes.append(prim)             # <<<<<<<<<<<<<<
@@ -3105,7 +3108,7 @@ static PyObject *__pyx_pf_3cff_2find_prime_polynomials(CYTHON_UNUSED PyObject *_
  */
       __pyx_t_15 = __Pyx_PyList_Append(__pyx_v_correct_primes, __pyx_v_prim); if (unlikely(__pyx_t_15 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 122; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-      /* "cff.pyx":123
+      /* "unireedsolomon\cff.pyx":123
  *         if not conflict:
  *             correct_primes.append(prim)
  *             if single: return prim             # <<<<<<<<<<<<<<
@@ -3124,7 +3127,7 @@ static PyObject *__pyx_pf_3cff_2find_prime_polynomials(CYTHON_UNUSED PyObject *_
     }
     __pyx_L14:;
 
-    /* "cff.pyx":102
+    /* "unireedsolomon\cff.pyx":102
  *     # Start of the main loop
  *     correct_primes = []
  *     for prim in prim_candidates: # try potential candidates primitive irreducible polys             # <<<<<<<<<<<<<<
@@ -3134,7 +3137,7 @@ static PyObject *__pyx_pf_3cff_2find_prime_polynomials(CYTHON_UNUSED PyObject *_
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "cff.pyx":126
+  /* "unireedsolomon\cff.pyx":126
  * 
  *     # Return the list of all prime polynomials
  *     return correct_primes # you can use the following to print the hexadecimal representation of each prime polynomial: print [hex(i) for i in correct_primes]             # <<<<<<<<<<<<<<
@@ -3146,7 +3149,7 @@ static PyObject *__pyx_pf_3cff_2find_prime_polynomials(CYTHON_UNUSED PyObject *_
   __pyx_r = __pyx_v_correct_primes;
   goto __pyx_L0;
 
-  /* "cff.pyx":74
+  /* "unireedsolomon\cff.pyx":74
  *     return [2] + [2*i+1 for i in _range(1,n/2) if sieve[i]]
  * 
  * def find_prime_polynomials(generator=2, c_exp=8, fast_primes=False, single=False):             # <<<<<<<<<<<<<<
@@ -3163,7 +3166,7 @@ static PyObject *__pyx_pf_3cff_2find_prime_polynomials(CYTHON_UNUSED PyObject *_
   __Pyx_XDECREF(__pyx_t_8);
   __Pyx_XDECREF(__pyx_t_11);
   __Pyx_XDECREF(__pyx_t_13);
-  __Pyx_AddTraceback("cff.find_prime_polynomials", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.find_prime_polynomials", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_root_charac);
@@ -3180,7 +3183,7 @@ static PyObject *__pyx_pf_3cff_2find_prime_polynomials(CYTHON_UNUSED PyObject *_
   return __pyx_r;
 }
 
-/* "cff.pyx":128
+/* "unireedsolomon\cff.pyx":128
  *     return correct_primes # you can use the following to print the hexadecimal representation of each prime polynomial: print [hex(i) for i in correct_primes]
  * 
  * def init_lut(generator=3, prim=0x11b, c_exp=8):             # <<<<<<<<<<<<<<
@@ -3189,10 +3192,10 @@ static PyObject *__pyx_pf_3cff_2find_prime_polynomials(CYTHON_UNUSED PyObject *_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cff_5init_lut(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_3cff_4init_lut[] = "Precompute the logarithm and anti-log (look-up) tables for faster computation later, using the provided primitive polynomial.\n    These tables are used for multiplication/division since addition/substraction are simple XOR operations inside GF of characteristic 2.\n    The basic idea is quite simple: since b**(log_b(x), log_b(y)) == x * y given any number b (the base or generator of the logarithm), then we can use any number b to precompute logarithm and anti-log (exponentiation) tables to use for multiplying two numbers x and y.\n    That's why when we use a different base/generator number, the log and anti-log tables are drastically different, but the resulting computations are the same given any such tables.\n    For more infos, see https://en.wikipedia.org/wiki/Finite_field_arithmetic#Implementation_tricks\n    ";
-static PyMethodDef __pyx_mdef_3cff_5init_lut = {"init_lut", (PyCFunction)__pyx_pw_3cff_5init_lut, METH_VARARGS|METH_KEYWORDS, __pyx_doc_3cff_4init_lut};
-static PyObject *__pyx_pw_3cff_5init_lut(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_14unireedsolomon_3cff_5init_lut(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_14unireedsolomon_3cff_4init_lut[] = "Precompute the logarithm and anti-log (look-up) tables for faster computation later, using the provided primitive polynomial.\n    These tables are used for multiplication/division since addition/substraction are simple XOR operations inside GF of characteristic 2.\n    The basic idea is quite simple: since b**(log_b(x), log_b(y)) == x * y given any number b (the base or generator of the logarithm), then we can use any number b to precompute logarithm and anti-log (exponentiation) tables to use for multiplying two numbers x and y.\n    That's why when we use a different base/generator number, the log and anti-log tables are drastically different, but the resulting computations are the same given any such tables.\n    For more infos, see https://en.wikipedia.org/wiki/Finite_field_arithmetic#Implementation_tricks\n    ";
+static PyMethodDef __pyx_mdef_14unireedsolomon_3cff_5init_lut = {"init_lut", (PyCFunction)__pyx_pw_14unireedsolomon_3cff_5init_lut, METH_VARARGS|METH_KEYWORDS, __pyx_doc_14unireedsolomon_3cff_4init_lut};
+static PyObject *__pyx_pw_14unireedsolomon_3cff_5init_lut(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_generator = 0;
   PyObject *__pyx_v_prim = 0;
   PyObject *__pyx_v_c_exp = 0;
@@ -3256,18 +3259,18 @@ static PyObject *__pyx_pw_3cff_5init_lut(PyObject *__pyx_self, PyObject *__pyx_a
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("init_lut", 0, 0, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 128; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cff.init_lut", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.init_lut", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_3cff_4init_lut(__pyx_self, __pyx_v_generator, __pyx_v_prim, __pyx_v_c_exp);
+  __pyx_r = __pyx_pf_14unireedsolomon_3cff_4init_lut(__pyx_self, __pyx_v_generator, __pyx_v_prim, __pyx_v_c_exp);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cff_4init_lut(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_generator, PyObject *__pyx_v_prim, PyObject *__pyx_v_c_exp) {
+static PyObject *__pyx_pf_14unireedsolomon_3cff_4init_lut(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_generator, PyObject *__pyx_v_prim, PyObject *__pyx_v_c_exp) {
   PyObject *__pyx_v_exptable = NULL;
   PyObject *__pyx_v_logtable = NULL;
   PyObject *__pyx_v_g = NULL;
@@ -3291,7 +3294,7 @@ static PyObject *__pyx_pf_3cff_4init_lut(CYTHON_UNUSED PyObject *__pyx_self, PyO
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("init_lut", 0);
 
-  /* "cff.pyx":140
+  /* "unireedsolomon\cff.pyx":140
  * 
  *     global GF2int_exptable, GF2int_logtable, GF2_charac, GF2_c_exp
  *     GF2_charac = int(2**c_exp - 1)             # <<<<<<<<<<<<<<
@@ -3308,9 +3311,9 @@ static PyObject *__pyx_pf_3cff_4init_lut(CYTHON_UNUSED PyObject *__pyx_self, PyO
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 140; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_v_3cff_GF2_charac = __pyx_t_3;
+  __pyx_v_14unireedsolomon_3cff_GF2_charac = __pyx_t_3;
 
-  /* "cff.pyx":141
+  /* "unireedsolomon\cff.pyx":141
  *     global GF2int_exptable, GF2int_logtable, GF2_charac, GF2_c_exp
  *     GF2_charac = int(2**c_exp - 1)
  *     GF2_c_exp = int(c_exp)             # <<<<<<<<<<<<<<
@@ -3321,19 +3324,19 @@ static PyObject *__pyx_pf_3cff_4init_lut(CYTHON_UNUSED PyObject *__pyx_self, PyO
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 141; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_v_3cff_GF2_c_exp = __pyx_t_3;
+  __pyx_v_14unireedsolomon_3cff_GF2_c_exp = __pyx_t_3;
 
-  /* "cff.pyx":142
+  /* "unireedsolomon\cff.pyx":142
  *     GF2_charac = int(2**c_exp - 1)
  *     GF2_c_exp = int(c_exp)
  *     exptable = [-1] * (GF2_charac+1) # anti-log (exponential) table. The first two elements will always be [GF2int(1), generator]             # <<<<<<<<<<<<<<
  *     logtable = [-1] * (GF2_charac+1) # log table, log[0] is impossible and thus unused
  * 
  */
-  __pyx_t_1 = PyList_New(1 * (((__pyx_v_3cff_GF2_charac + 1)<0) ? 0:(__pyx_v_3cff_GF2_charac + 1))); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 142; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyList_New(1 * (((__pyx_v_14unireedsolomon_3cff_GF2_charac + 1)<0) ? 0:(__pyx_v_14unireedsolomon_3cff_GF2_charac + 1))); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 142; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   { Py_ssize_t __pyx_temp;
-    for (__pyx_temp=0; __pyx_temp < (__pyx_v_3cff_GF2_charac + 1); __pyx_temp++) {
+    for (__pyx_temp=0; __pyx_temp < (__pyx_v_14unireedsolomon_3cff_GF2_charac + 1); __pyx_temp++) {
       __Pyx_INCREF(__pyx_int_neg_1);
       __Pyx_GIVEREF(__pyx_int_neg_1);
       PyList_SET_ITEM(__pyx_t_1, __pyx_temp, __pyx_int_neg_1);
@@ -3342,17 +3345,17 @@ static PyObject *__pyx_pf_3cff_4init_lut(CYTHON_UNUSED PyObject *__pyx_self, PyO
   __pyx_v_exptable = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "cff.pyx":143
+  /* "unireedsolomon\cff.pyx":143
  *     GF2_c_exp = int(c_exp)
  *     exptable = [-1] * (GF2_charac+1) # anti-log (exponential) table. The first two elements will always be [GF2int(1), generator]
  *     logtable = [-1] * (GF2_charac+1) # log table, log[0] is impossible and thus unused             # <<<<<<<<<<<<<<
  * 
  *     # Construct the anti-log table
  */
-  __pyx_t_1 = PyList_New(1 * (((__pyx_v_3cff_GF2_charac + 1)<0) ? 0:(__pyx_v_3cff_GF2_charac + 1))); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyList_New(1 * (((__pyx_v_14unireedsolomon_3cff_GF2_charac + 1)<0) ? 0:(__pyx_v_14unireedsolomon_3cff_GF2_charac + 1))); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   { Py_ssize_t __pyx_temp;
-    for (__pyx_temp=0; __pyx_temp < (__pyx_v_3cff_GF2_charac + 1); __pyx_temp++) {
+    for (__pyx_temp=0; __pyx_temp < (__pyx_v_14unireedsolomon_3cff_GF2_charac + 1); __pyx_temp++) {
       __Pyx_INCREF(__pyx_int_neg_1);
       __Pyx_GIVEREF(__pyx_int_neg_1);
       PyList_SET_ITEM(__pyx_t_1, __pyx_temp, __pyx_int_neg_1);
@@ -3361,26 +3364,26 @@ static PyObject *__pyx_pf_3cff_4init_lut(CYTHON_UNUSED PyObject *__pyx_self, PyO
   __pyx_v_logtable = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "cff.pyx":148
+  /* "unireedsolomon\cff.pyx":148
  *     # It's basically the cumulative product of 1 by the generator number, on and on and on until you have walked through the whole field.
  *     # That's why exptable is always dense (all entries are filled), but logtable may be sparse (lots of empty values, because multiple logtable's entries point to the same exptable's entry).
  *     g = GF2int(1)             # <<<<<<<<<<<<<<
  *     for i in range(GF2_charac+1): # note that the last item of exptable will always be equal to the first item in the table, because g^p==g^0 because of the modulo p (we're in a finite field!).
  *         exptable[i] = g # compute anti-log for this value and store it in a table
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)((PyObject*)__pyx_ptype_3cff_GF2int)), __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 148; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)((PyObject*)__pyx_ptype_14unireedsolomon_3cff_GF2int)), __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 148; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_g = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "cff.pyx":149
+  /* "unireedsolomon\cff.pyx":149
  *     # That's why exptable is always dense (all entries are filled), but logtable may be sparse (lots of empty values, because multiple logtable's entries point to the same exptable's entry).
  *     g = GF2int(1)
  *     for i in range(GF2_charac+1): # note that the last item of exptable will always be equal to the first item in the table, because g^p==g^0 because of the modulo p (we're in a finite field!).             # <<<<<<<<<<<<<<
  *         exptable[i] = g # compute anti-log for this value and store it in a table
  *         #logtable[g] = i # compute logtable at the same time as exptable (but log[1] will always be equal to g^255, which may be weird when compared to lists of logtables online but this is equivalent)
  */
-  __pyx_t_1 = __Pyx_PyInt_From_long((__pyx_v_3cff_GF2_charac + 1)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyInt_From_long((__pyx_v_14unireedsolomon_3cff_GF2_charac + 1)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
@@ -3433,7 +3436,7 @@ static PyObject *__pyx_pf_3cff_4init_lut(CYTHON_UNUSED PyObject *__pyx_self, PyO
     __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "cff.pyx":150
+    /* "unireedsolomon\cff.pyx":150
  *     g = GF2int(1)
  *     for i in range(GF2_charac+1): # note that the last item of exptable will always be equal to the first item in the table, because g^p==g^0 because of the modulo p (we're in a finite field!).
  *         exptable[i] = g # compute anti-log for this value and store it in a table             # <<<<<<<<<<<<<<
@@ -3442,7 +3445,7 @@ static PyObject *__pyx_pf_3cff_4init_lut(CYTHON_UNUSED PyObject *__pyx_self, PyO
  */
     if (unlikely(PyObject_SetItem(__pyx_v_exptable, __pyx_v_i, __pyx_v_g) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 150; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-    /* "cff.pyx":152
+    /* "unireedsolomon\cff.pyx":152
  *         exptable[i] = g # compute anti-log for this value and store it in a table
  *         #logtable[g] = i # compute logtable at the same time as exptable (but log[1] will always be equal to g^255, which may be weird when compared to lists of logtables online but this is equivalent)
  *         g = g.multiply(generator, prim, GF2_charac+1) # equivalent to: g = generator**(i+1)             # <<<<<<<<<<<<<<
@@ -3451,7 +3454,7 @@ static PyObject *__pyx_pf_3cff_4init_lut(CYTHON_UNUSED PyObject *__pyx_self, PyO
  */
     __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_g, __pyx_n_s_multiply); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 152; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_7 = __Pyx_PyInt_From_long((__pyx_v_3cff_GF2_charac + 1)); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 152; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_7 = __Pyx_PyInt_From_long((__pyx_v_14unireedsolomon_3cff_GF2_charac + 1)); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 152; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_7);
     __pyx_t_8 = NULL;
     __pyx_t_9 = 0;
@@ -3486,7 +3489,7 @@ static PyObject *__pyx_pf_3cff_4init_lut(CYTHON_UNUSED PyObject *__pyx_self, PyO
     __Pyx_DECREF_SET(__pyx_v_g, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "cff.pyx":149
+    /* "unireedsolomon\cff.pyx":149
  *     # That's why exptable is always dense (all entries are filled), but logtable may be sparse (lots of empty values, because multiple logtable's entries point to the same exptable's entry).
  *     g = GF2int(1)
  *     for i in range(GF2_charac+1): # note that the last item of exptable will always be equal to the first item in the table, because g^p==g^0 because of the modulo p (we're in a finite field!).             # <<<<<<<<<<<<<<
@@ -3496,7 +3499,7 @@ static PyObject *__pyx_pf_3cff_4init_lut(CYTHON_UNUSED PyObject *__pyx_self, PyO
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "cff.pyx":157
+  /* "unireedsolomon\cff.pyx":157
  *     # Ignore the last element of the field because fields wrap back around.
  *     # The log of 1 can have two values: either g^0 (the exact value change depending on parameters) or it could be 255 (g^255=1) because of the wraparound
  *     for i, x in enumerate(exptable[:-1]):             # <<<<<<<<<<<<<<
@@ -3527,7 +3530,7 @@ static PyObject *__pyx_pf_3cff_4init_lut(CYTHON_UNUSED PyObject *__pyx_self, PyO
     __pyx_t_2 = __pyx_t_1;
     __pyx_t_1 = 0;
 
-    /* "cff.pyx":158
+    /* "unireedsolomon\cff.pyx":158
  *     # The log of 1 can have two values: either g^0 (the exact value change depending on parameters) or it could be 255 (g^255=1) because of the wraparound
  *     for i, x in enumerate(exptable[:-1]):
  *         logtable[x] = i             # <<<<<<<<<<<<<<
@@ -3536,7 +3539,7 @@ static PyObject *__pyx_pf_3cff_4init_lut(CYTHON_UNUSED PyObject *__pyx_self, PyO
  */
     if (unlikely(PyObject_SetItem(__pyx_v_logtable, __pyx_v_x, __pyx_v_i) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 158; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-    /* "cff.pyx":157
+    /* "unireedsolomon\cff.pyx":157
  *     # Ignore the last element of the field because fields wrap back around.
  *     # The log of 1 can have two values: either g^0 (the exact value change depending on parameters) or it could be 255 (g^255=1) because of the wraparound
  *     for i, x in enumerate(exptable[:-1]):             # <<<<<<<<<<<<<<
@@ -3547,7 +3550,7 @@ static PyObject *__pyx_pf_3cff_4init_lut(CYTHON_UNUSED PyObject *__pyx_self, PyO
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "cff.pyx":161
+  /* "unireedsolomon\cff.pyx":161
  * 
  *     # Optimization: convert to integer arrays (and use contiguous memory views)
  *     GF2int_exptable = array.array('i', exptable)             # <<<<<<<<<<<<<<
@@ -3568,12 +3571,12 @@ static PyObject *__pyx_pf_3cff_4init_lut(CYTHON_UNUSED PyObject *__pyx_self, PyO
   __pyx_t_11 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_t_6);
   if (unlikely(!__pyx_t_11.memview)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __PYX_XDEC_MEMVIEW(&__pyx_v_3cff_GF2int_exptable, 1);
-  __pyx_v_3cff_GF2int_exptable = __pyx_t_11;
+  __PYX_XDEC_MEMVIEW(&__pyx_v_14unireedsolomon_3cff_GF2int_exptable, 1);
+  __pyx_v_14unireedsolomon_3cff_GF2int_exptable = __pyx_t_11;
   __pyx_t_11.memview = NULL;
   __pyx_t_11.data = NULL;
 
-  /* "cff.pyx":162
+  /* "unireedsolomon\cff.pyx":162
  *     # Optimization: convert to integer arrays (and use contiguous memory views)
  *     GF2int_exptable = array.array('i', exptable)
  *     GF2int_logtable = array.array('i', logtable)             # <<<<<<<<<<<<<<
@@ -3594,12 +3597,12 @@ static PyObject *__pyx_pf_3cff_4init_lut(CYTHON_UNUSED PyObject *__pyx_self, PyO
   __pyx_t_11 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_t_2);
   if (unlikely(!__pyx_t_11.memview)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 162; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __PYX_XDEC_MEMVIEW(&__pyx_v_3cff_GF2int_logtable, 1);
-  __pyx_v_3cff_GF2int_logtable = __pyx_t_11;
+  __PYX_XDEC_MEMVIEW(&__pyx_v_14unireedsolomon_3cff_GF2int_logtable, 1);
+  __pyx_v_14unireedsolomon_3cff_GF2int_logtable = __pyx_t_11;
   __pyx_t_11.memview = NULL;
   __pyx_t_11.data = NULL;
 
-  /* "cff.pyx":163
+  /* "unireedsolomon\cff.pyx":163
  *     GF2int_exptable = array.array('i', exptable)
  *     GF2int_logtable = array.array('i', logtable)
  *     return GF2int_exptable, GF2int_logtable             # <<<<<<<<<<<<<<
@@ -3607,11 +3610,11 @@ static PyObject *__pyx_pf_3cff_4init_lut(CYTHON_UNUSED PyObject *__pyx_self, PyO
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  if (unlikely(!__pyx_v_3cff_GF2int_exptable.memview)) { __Pyx_RaiseUnboundLocalError("GF2int_exptable"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
-  __pyx_t_2 = __pyx_memoryview_fromslice(__pyx_v_3cff_GF2int_exptable, 1, (PyObject *(*)(char *)) __pyx_memview_get_int, (int (*)(char *, PyObject *)) __pyx_memview_set_int, 0);; if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__pyx_v_14unireedsolomon_3cff_GF2int_exptable.memview)) { __Pyx_RaiseUnboundLocalError("GF2int_exptable"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
+  __pyx_t_2 = __pyx_memoryview_fromslice(__pyx_v_14unireedsolomon_3cff_GF2int_exptable, 1, (PyObject *(*)(char *)) __pyx_memview_get_int, (int (*)(char *, PyObject *)) __pyx_memview_set_int, 0);; if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
-  if (unlikely(!__pyx_v_3cff_GF2int_logtable.memview)) { __Pyx_RaiseUnboundLocalError("GF2int_logtable"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
-  __pyx_t_6 = __pyx_memoryview_fromslice(__pyx_v_3cff_GF2int_logtable, 1, (PyObject *(*)(char *)) __pyx_memview_get_int, (int (*)(char *, PyObject *)) __pyx_memview_set_int, 0);; if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__pyx_v_14unireedsolomon_3cff_GF2int_logtable.memview)) { __Pyx_RaiseUnboundLocalError("GF2int_logtable"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
+  __pyx_t_6 = __pyx_memoryview_fromslice(__pyx_v_14unireedsolomon_3cff_GF2int_logtable, 1, (PyObject *(*)(char *)) __pyx_memview_get_int, (int (*)(char *, PyObject *)) __pyx_memview_set_int, 0);; if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_6);
   __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
@@ -3625,7 +3628,7 @@ static PyObject *__pyx_pf_3cff_4init_lut(CYTHON_UNUSED PyObject *__pyx_self, PyO
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "cff.pyx":128
+  /* "unireedsolomon\cff.pyx":128
  *     return correct_primes # you can use the following to print the hexadecimal representation of each prime polynomial: print [hex(i) for i in correct_primes]
  * 
  * def init_lut(generator=3, prim=0x11b, c_exp=8):             # <<<<<<<<<<<<<<
@@ -3642,7 +3645,7 @@ static PyObject *__pyx_pf_3cff_4init_lut(CYTHON_UNUSED PyObject *__pyx_self, PyO
   __Pyx_XDECREF(__pyx_t_8);
   __Pyx_XDECREF(__pyx_t_10);
   __PYX_XDEC_MEMVIEW(&__pyx_t_11, 1);
-  __Pyx_AddTraceback("cff.init_lut", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.init_lut", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_exptable);
@@ -3655,7 +3658,7 @@ static PyObject *__pyx_pf_3cff_4init_lut(CYTHON_UNUSED PyObject *__pyx_self, PyO
   return __pyx_r;
 }
 
-/* "cff.pyx":199
+/* "unireedsolomon\cff.pyx":199
  * 
  *     # store the int value, this is not necessary when inheriting from int
  *     def __init__(GF2int self, value): # CAUTION: do not use __cinit__ because it will make the Python interpreter crash on decoding (but on encoding it's ok, dunno why).             # <<<<<<<<<<<<<<
@@ -3664,8 +3667,8 @@ static PyObject *__pyx_pf_3cff_4init_lut(CYTHON_UNUSED PyObject *__pyx_self, PyO
  */
 
 /* Python wrapper */
-static int __pyx_pw_3cff_6GF2int_1__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static int __pyx_pw_3cff_6GF2int_1__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static int __pyx_pw_14unireedsolomon_3cff_6GF2int_1__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static int __pyx_pw_14unireedsolomon_3cff_6GF2int_1__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_value = 0;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
@@ -3704,18 +3707,18 @@ static int __pyx_pw_3cff_6GF2int_1__init__(PyObject *__pyx_v_self, PyObject *__p
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("__init__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 199; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cff.GF2int.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_3cff_6GF2int___init__(((struct __pyx_obj_3cff_GF2int *)__pyx_v_self), __pyx_v_value);
+  __pyx_r = __pyx_pf_14unireedsolomon_3cff_6GF2int___init__(((struct __pyx_obj_14unireedsolomon_3cff_GF2int *)__pyx_v_self), __pyx_v_value);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static int __pyx_pf_3cff_6GF2int___init__(struct __pyx_obj_3cff_GF2int *__pyx_v_self, PyObject *__pyx_v_value) {
+static int __pyx_pf_14unireedsolomon_3cff_6GF2int___init__(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_self, PyObject *__pyx_v_value) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
@@ -3724,7 +3727,7 @@ static int __pyx_pf_3cff_6GF2int___init__(struct __pyx_obj_3cff_GF2int *__pyx_v_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "cff.pyx":200
+  /* "unireedsolomon\cff.pyx":200
  *     # store the int value, this is not necessary when inheriting from int
  *     def __init__(GF2int self, value): # CAUTION: do not use __cinit__ because it will make the Python interpreter crash on decoding (but on encoding it's ok, dunno why).
  *         self.value = value             # <<<<<<<<<<<<<<
@@ -3734,7 +3737,7 @@ static int __pyx_pf_3cff_6GF2int___init__(struct __pyx_obj_3cff_GF2int *__pyx_v_
   __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_value); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 200; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_self->value = __pyx_t_1;
 
-  /* "cff.pyx":199
+  /* "unireedsolomon\cff.pyx":199
  * 
  *     # store the int value, this is not necessary when inheriting from int
  *     def __init__(GF2int self, value): # CAUTION: do not use __cinit__ because it will make the Python interpreter crash on decoding (but on encoding it's ok, dunno why).             # <<<<<<<<<<<<<<
@@ -3746,14 +3749,14 @@ static int __pyx_pf_3cff_6GF2int___init__(struct __pyx_obj_3cff_GF2int *__pyx_v_
   __pyx_r = 0;
   goto __pyx_L0;
   __pyx_L1_error:;
-  __Pyx_AddTraceback("cff.GF2int.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "cff.pyx":202
+/* "unireedsolomon\cff.pyx":202
  *         self.value = value
  * 
  *     def __add__(int a, int b):             # <<<<<<<<<<<<<<
@@ -3762,12 +3765,12 @@ static int __pyx_pf_3cff_6GF2int___init__(struct __pyx_obj_3cff_GF2int *__pyx_v_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cff_6GF2int_3__add__(PyObject *__pyx_arg_a, PyObject *__pyx_arg_b); /*proto*/
-static char __pyx_doc_3cff_6GF2int_2__add__[] = "Addition in GF(2^8) is the xor of the two";
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_3__add__(PyObject *__pyx_arg_a, PyObject *__pyx_arg_b); /*proto*/
+static char __pyx_doc_14unireedsolomon_3cff_6GF2int_2__add__[] = "Addition in GF(2^8) is the xor of the two";
 #if CYTHON_COMPILING_IN_CPYTHON
-struct wrapperbase __pyx_wrapperbase_3cff_6GF2int_2__add__;
+struct wrapperbase __pyx_wrapperbase_14unireedsolomon_3cff_6GF2int_2__add__;
 #endif
-static PyObject *__pyx_pw_3cff_6GF2int_3__add__(PyObject *__pyx_arg_a, PyObject *__pyx_arg_b) {
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_3__add__(PyObject *__pyx_arg_a, PyObject *__pyx_arg_b) {
   int __pyx_v_a;
   int __pyx_v_b;
   int __pyx_lineno = 0;
@@ -3784,18 +3787,18 @@ static PyObject *__pyx_pw_3cff_6GF2int_3__add__(PyObject *__pyx_arg_a, PyObject 
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cff.GF2int.__add__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int.__add__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_3cff_6GF2int_2__add__(((int)__pyx_v_a), ((int)__pyx_v_b));
+  __pyx_r = __pyx_pf_14unireedsolomon_3cff_6GF2int_2__add__(((int)__pyx_v_a), ((int)__pyx_v_b));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cff_6GF2int_2__add__(int __pyx_v_a, int __pyx_v_b) {
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_2__add__(int __pyx_v_a, int __pyx_v_b) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3805,7 +3808,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_2__add__(int __pyx_v_a, int __pyx_v_b) {
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__add__", 0);
 
-  /* "cff.pyx":204
+  /* "unireedsolomon\cff.pyx":204
  *     def __add__(int a, int b):
  *         "Addition in GF(2^8) is the xor of the two"
  *         return GF2int(a ^ b) # Do NOT do int(a).__xor__(int(b)), even if it is indeed safer, it sacrifices speed too much (/3 slowdown!)             # <<<<<<<<<<<<<<
@@ -3820,14 +3823,14 @@ static PyObject *__pyx_pf_3cff_6GF2int_2__add__(int __pyx_v_a, int __pyx_v_b) {
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)((PyObject*)__pyx_ptype_3cff_GF2int)), __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 204; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)((PyObject*)__pyx_ptype_14unireedsolomon_3cff_GF2int)), __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 204; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "cff.pyx":202
+  /* "unireedsolomon\cff.pyx":202
  *         self.value = value
  * 
  *     def __add__(int a, int b):             # <<<<<<<<<<<<<<
@@ -3839,7 +3842,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_2__add__(int __pyx_v_a, int __pyx_v_b) {
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_AddTraceback("cff.GF2int.__add__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int.__add__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -3847,7 +3850,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_2__add__(int __pyx_v_a, int __pyx_v_b) {
   return __pyx_r;
 }
 
-/* "cff.pyx":205
+/* "unireedsolomon\cff.pyx":205
  *         "Addition in GF(2^8) is the xor of the two"
  *         return GF2int(a ^ b) # Do NOT do int(a).__xor__(int(b)), even if it is indeed safer, it sacrifices speed too much (/3 slowdown!)
  *     def __sub__(a, b): return a + b             # <<<<<<<<<<<<<<
@@ -3856,19 +3859,19 @@ static PyObject *__pyx_pf_3cff_6GF2int_2__add__(int __pyx_v_a, int __pyx_v_b) {
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cff_6GF2int_5__sub__(PyObject *__pyx_v_a, PyObject *__pyx_v_b); /*proto*/
-static PyObject *__pyx_pw_3cff_6GF2int_5__sub__(PyObject *__pyx_v_a, PyObject *__pyx_v_b) {
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_5__sub__(PyObject *__pyx_v_a, PyObject *__pyx_v_b); /*proto*/
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_5__sub__(PyObject *__pyx_v_a, PyObject *__pyx_v_b) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__sub__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3cff_6GF2int_4__sub__(((PyObject *)__pyx_v_a), ((PyObject *)__pyx_v_b));
+  __pyx_r = __pyx_pf_14unireedsolomon_3cff_6GF2int_4__sub__(((PyObject *)__pyx_v_a), ((PyObject *)__pyx_v_b));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cff_6GF2int_4__sub__(PyObject *__pyx_v_a, PyObject *__pyx_v_b) {
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_4__sub__(PyObject *__pyx_v_a, PyObject *__pyx_v_b) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3886,7 +3889,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_4__sub__(PyObject *__pyx_v_a, PyObject *_
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cff.GF2int.__sub__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int.__sub__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -3894,7 +3897,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_4__sub__(PyObject *__pyx_v_a, PyObject *_
   return __pyx_r;
 }
 
-/* "cff.pyx":206
+/* "unireedsolomon\cff.pyx":206
  *         return GF2int(a ^ b) # Do NOT do int(a).__xor__(int(b)), even if it is indeed safer, it sacrifices speed too much (/3 slowdown!)
  *     def __sub__(a, b): return a + b
  *     def __radd__(a, b): return a + b             # <<<<<<<<<<<<<<
@@ -3903,19 +3906,19 @@ static PyObject *__pyx_pf_3cff_6GF2int_4__sub__(PyObject *__pyx_v_a, PyObject *_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cff_6GF2int_7__radd__(PyObject *__pyx_v_a, PyObject *__pyx_v_b); /*proto*/
-static PyObject *__pyx_pw_3cff_6GF2int_7__radd__(PyObject *__pyx_v_a, PyObject *__pyx_v_b) {
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_7__radd__(PyObject *__pyx_v_a, PyObject *__pyx_v_b); /*proto*/
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_7__radd__(PyObject *__pyx_v_a, PyObject *__pyx_v_b) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__radd__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3cff_6GF2int_6__radd__(((struct __pyx_obj_3cff_GF2int *)__pyx_v_a), ((PyObject *)__pyx_v_b));
+  __pyx_r = __pyx_pf_14unireedsolomon_3cff_6GF2int_6__radd__(((struct __pyx_obj_14unireedsolomon_3cff_GF2int *)__pyx_v_a), ((PyObject *)__pyx_v_b));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cff_6GF2int_6__radd__(struct __pyx_obj_3cff_GF2int *__pyx_v_a, PyObject *__pyx_v_b) {
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_6__radd__(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_a, PyObject *__pyx_v_b) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3933,7 +3936,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_6__radd__(struct __pyx_obj_3cff_GF2int *_
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cff.GF2int.__radd__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int.__radd__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -3941,7 +3944,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_6__radd__(struct __pyx_obj_3cff_GF2int *_
   return __pyx_r;
 }
 
-/* "cff.pyx":207
+/* "unireedsolomon\cff.pyx":207
  *     def __sub__(a, b): return a + b
  *     def __radd__(a, b): return a + b
  *     def __rsub__(a, b): return a + b             # <<<<<<<<<<<<<<
@@ -3950,19 +3953,19 @@ static PyObject *__pyx_pf_3cff_6GF2int_6__radd__(struct __pyx_obj_3cff_GF2int *_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cff_6GF2int_9__rsub__(PyObject *__pyx_v_a, PyObject *__pyx_v_b); /*proto*/
-static PyObject *__pyx_pw_3cff_6GF2int_9__rsub__(PyObject *__pyx_v_a, PyObject *__pyx_v_b) {
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_9__rsub__(PyObject *__pyx_v_a, PyObject *__pyx_v_b); /*proto*/
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_9__rsub__(PyObject *__pyx_v_a, PyObject *__pyx_v_b) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__rsub__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3cff_6GF2int_8__rsub__(((struct __pyx_obj_3cff_GF2int *)__pyx_v_a), ((PyObject *)__pyx_v_b));
+  __pyx_r = __pyx_pf_14unireedsolomon_3cff_6GF2int_8__rsub__(((struct __pyx_obj_14unireedsolomon_3cff_GF2int *)__pyx_v_a), ((PyObject *)__pyx_v_b));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cff_6GF2int_8__rsub__(struct __pyx_obj_3cff_GF2int *__pyx_v_a, PyObject *__pyx_v_b) {
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_8__rsub__(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_a, PyObject *__pyx_v_b) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3980,7 +3983,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_8__rsub__(struct __pyx_obj_3cff_GF2int *_
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cff.GF2int.__rsub__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int.__rsub__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -3988,7 +3991,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_8__rsub__(struct __pyx_obj_3cff_GF2int *_
   return __pyx_r;
 }
 
-/* "cff.pyx":208
+/* "unireedsolomon\cff.pyx":208
  *     def __radd__(a, b): return a + b
  *     def __rsub__(a, b): return a + b
  *     def __xor__(int a, int b): return GF2int(a ^ b) # important to define directly the xoring on casted ints, as to avoid infinite recursion             # <<<<<<<<<<<<<<
@@ -3997,8 +4000,8 @@ static PyObject *__pyx_pf_3cff_6GF2int_8__rsub__(struct __pyx_obj_3cff_GF2int *_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cff_6GF2int_11__xor__(PyObject *__pyx_arg_a, PyObject *__pyx_arg_b); /*proto*/
-static PyObject *__pyx_pw_3cff_6GF2int_11__xor__(PyObject *__pyx_arg_a, PyObject *__pyx_arg_b) {
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_11__xor__(PyObject *__pyx_arg_a, PyObject *__pyx_arg_b); /*proto*/
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_11__xor__(PyObject *__pyx_arg_a, PyObject *__pyx_arg_b) {
   int __pyx_v_a;
   int __pyx_v_b;
   int __pyx_lineno = 0;
@@ -4015,18 +4018,18 @@ static PyObject *__pyx_pw_3cff_6GF2int_11__xor__(PyObject *__pyx_arg_a, PyObject
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cff.GF2int.__xor__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int.__xor__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_3cff_6GF2int_10__xor__(((int)__pyx_v_a), ((int)__pyx_v_b));
+  __pyx_r = __pyx_pf_14unireedsolomon_3cff_6GF2int_10__xor__(((int)__pyx_v_a), ((int)__pyx_v_b));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cff_6GF2int_10__xor__(int __pyx_v_a, int __pyx_v_b) {
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_10__xor__(int __pyx_v_a, int __pyx_v_b) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -4043,7 +4046,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_10__xor__(int __pyx_v_a, int __pyx_v_b) {
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)((PyObject*)__pyx_ptype_3cff_GF2int)), __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 208; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)((PyObject*)__pyx_ptype_14unireedsolomon_3cff_GF2int)), __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 208; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_r = __pyx_t_1;
@@ -4054,7 +4057,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_10__xor__(int __pyx_v_a, int __pyx_v_b) {
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_AddTraceback("cff.GF2int.__xor__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int.__xor__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -4062,7 +4065,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_10__xor__(int __pyx_v_a, int __pyx_v_b) {
   return __pyx_r;
 }
 
-/* "cff.pyx":210
+/* "unireedsolomon\cff.pyx":210
  *     def __xor__(int a, int b): return GF2int(a ^ b) # important to define directly the xoring on casted ints, as to avoid infinite recursion
  * 
  *     def __neg__(GF2int self):             # <<<<<<<<<<<<<<
@@ -4071,24 +4074,24 @@ static PyObject *__pyx_pf_3cff_6GF2int_10__xor__(int __pyx_v_a, int __pyx_v_b) {
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cff_6GF2int_13__neg__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_3cff_6GF2int_13__neg__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_13__neg__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_13__neg__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__neg__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3cff_6GF2int_12__neg__(((struct __pyx_obj_3cff_GF2int *)__pyx_v_self));
+  __pyx_r = __pyx_pf_14unireedsolomon_3cff_6GF2int_12__neg__(((struct __pyx_obj_14unireedsolomon_3cff_GF2int *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cff_6GF2int_12__neg__(struct __pyx_obj_3cff_GF2int *__pyx_v_self) {
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_12__neg__(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__neg__", 0);
 
-  /* "cff.pyx":211
+  /* "unireedsolomon\cff.pyx":211
  * 
  *     def __neg__(GF2int self):
  *         return self             # <<<<<<<<<<<<<<
@@ -4100,7 +4103,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_12__neg__(struct __pyx_obj_3cff_GF2int *_
   __pyx_r = ((PyObject *)__pyx_v_self);
   goto __pyx_L0;
 
-  /* "cff.pyx":210
+  /* "unireedsolomon\cff.pyx":210
  *     def __xor__(int a, int b): return GF2int(a ^ b) # important to define directly the xoring on casted ints, as to avoid infinite recursion
  * 
  *     def __neg__(GF2int self):             # <<<<<<<<<<<<<<
@@ -4115,7 +4118,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_12__neg__(struct __pyx_obj_3cff_GF2int *_
   return __pyx_r;
 }
 
-/* "cff.pyx":213
+/* "unireedsolomon\cff.pyx":213
  *         return self
  * 
  *     def __mul__(int a, int b):             # <<<<<<<<<<<<<<
@@ -4124,12 +4127,12 @@ static PyObject *__pyx_pf_3cff_6GF2int_12__neg__(struct __pyx_obj_3cff_GF2int *_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cff_6GF2int_15__mul__(PyObject *__pyx_arg_a, PyObject *__pyx_arg_b); /*proto*/
-static char __pyx_doc_3cff_6GF2int_14__mul__[] = "Multiplication in GF(2^8)";
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_15__mul__(PyObject *__pyx_arg_a, PyObject *__pyx_arg_b); /*proto*/
+static char __pyx_doc_14unireedsolomon_3cff_6GF2int_14__mul__[] = "Multiplication in GF(2^8)";
 #if CYTHON_COMPILING_IN_CPYTHON
-struct wrapperbase __pyx_wrapperbase_3cff_6GF2int_14__mul__;
+struct wrapperbase __pyx_wrapperbase_14unireedsolomon_3cff_6GF2int_14__mul__;
 #endif
-static PyObject *__pyx_pw_3cff_6GF2int_15__mul__(PyObject *__pyx_arg_a, PyObject *__pyx_arg_b) {
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_15__mul__(PyObject *__pyx_arg_a, PyObject *__pyx_arg_b) {
   int __pyx_v_a;
   int __pyx_v_b;
   int __pyx_lineno = 0;
@@ -4146,18 +4149,18 @@ static PyObject *__pyx_pw_3cff_6GF2int_15__mul__(PyObject *__pyx_arg_a, PyObject
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cff.GF2int.__mul__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int.__mul__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_3cff_6GF2int_14__mul__(((int)__pyx_v_a), ((int)__pyx_v_b));
+  __pyx_r = __pyx_pf_14unireedsolomon_3cff_6GF2int_14__mul__(((int)__pyx_v_a), ((int)__pyx_v_b));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cff_6GF2int_14__mul__(int __pyx_v_a, int __pyx_v_b) {
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_14__mul__(int __pyx_v_a, int __pyx_v_b) {
   int __pyx_v_x;
   int __pyx_v_y;
   int __pyx_v_z;
@@ -4175,7 +4178,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_14__mul__(int __pyx_v_a, int __pyx_v_b) {
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__mul__", 0);
 
-  /* "cff.pyx":215
+  /* "unireedsolomon\cff.pyx":215
  *     def __mul__(int a, int b):
  *         "Multiplication in GF(2^8)"
  *         if a == 0 or b == 0:             # <<<<<<<<<<<<<<
@@ -4193,7 +4196,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_14__mul__(int __pyx_v_a, int __pyx_v_b) {
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_1) {
 
-    /* "cff.pyx":216
+    /* "unireedsolomon\cff.pyx":216
  *         "Multiplication in GF(2^8)"
  *         if a == 0 or b == 0:
  *             return GF2int(0)             # <<<<<<<<<<<<<<
@@ -4201,38 +4204,38 @@ static PyObject *__pyx_pf_3cff_6GF2int_14__mul__(int __pyx_v_a, int __pyx_v_b) {
  *         cdef int y = GF2int_logtable[b]
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)((PyObject*)__pyx_ptype_3cff_GF2int)), __pyx_tuple__3, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 216; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)((PyObject*)__pyx_ptype_14unireedsolomon_3cff_GF2int)), __pyx_tuple__3, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 216; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_r = __pyx_t_3;
     __pyx_t_3 = 0;
     goto __pyx_L0;
   }
 
-  /* "cff.pyx":217
+  /* "unireedsolomon\cff.pyx":217
  *         if a == 0 or b == 0:
  *             return GF2int(0)
  *         cdef int x = GF2int_logtable[a]             # <<<<<<<<<<<<<<
  *         cdef int y = GF2int_logtable[b]
  *         cdef int z = (x + y) % GF2_charac
  */
-  if (unlikely(!__pyx_v_3cff_GF2int_logtable.memview)) { __Pyx_RaiseUnboundLocalError("GF2int_logtable"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 217; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
+  if (unlikely(!__pyx_v_14unireedsolomon_3cff_GF2int_logtable.memview)) { __Pyx_RaiseUnboundLocalError("GF2int_logtable"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 217; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
   __pyx_t_4 = __pyx_v_a;
-  if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_3cff_GF2int_logtable.shape[0];
-  __pyx_v_x = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_3cff_GF2int_logtable.data) + __pyx_t_4)) )));
+  if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_14unireedsolomon_3cff_GF2int_logtable.shape[0];
+  __pyx_v_x = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_14unireedsolomon_3cff_GF2int_logtable.data) + __pyx_t_4)) )));
 
-  /* "cff.pyx":218
+  /* "unireedsolomon\cff.pyx":218
  *             return GF2int(0)
  *         cdef int x = GF2int_logtable[a]
  *         cdef int y = GF2int_logtable[b]             # <<<<<<<<<<<<<<
  *         cdef int z = (x + y) % GF2_charac
  *         return GF2int(GF2int_exptable[z])
  */
-  if (unlikely(!__pyx_v_3cff_GF2int_logtable.memview)) { __Pyx_RaiseUnboundLocalError("GF2int_logtable"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 218; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
+  if (unlikely(!__pyx_v_14unireedsolomon_3cff_GF2int_logtable.memview)) { __Pyx_RaiseUnboundLocalError("GF2int_logtable"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 218; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
   __pyx_t_5 = __pyx_v_b;
-  if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_3cff_GF2int_logtable.shape[0];
-  __pyx_v_y = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_3cff_GF2int_logtable.data) + __pyx_t_5)) )));
+  if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_14unireedsolomon_3cff_GF2int_logtable.shape[0];
+  __pyx_v_y = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_14unireedsolomon_3cff_GF2int_logtable.data) + __pyx_t_5)) )));
 
-  /* "cff.pyx":219
+  /* "unireedsolomon\cff.pyx":219
  *         cdef int x = GF2int_logtable[a]
  *         cdef int y = GF2int_logtable[b]
  *         cdef int z = (x + y) % GF2_charac             # <<<<<<<<<<<<<<
@@ -4240,7 +4243,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_14__mul__(int __pyx_v_a, int __pyx_v_b) {
  *     def __rmul__(a, b): return a * b
  */
   __pyx_t_6 = (__pyx_v_x + __pyx_v_y);
-  if (unlikely(__pyx_v_3cff_GF2_charac == 0)) {
+  if (unlikely(__pyx_v_14unireedsolomon_3cff_GF2_charac == 0)) {
     #ifdef WITH_THREAD
     PyGILState_STATE __pyx_gilstate_save = PyGILState_Ensure();
     #endif
@@ -4250,9 +4253,9 @@ static PyObject *__pyx_pf_3cff_6GF2int_14__mul__(int __pyx_v_a, int __pyx_v_b) {
     #endif
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 219; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
-  __pyx_v_z = __Pyx_mod_int(__pyx_t_6, __pyx_v_3cff_GF2_charac);
+  __pyx_v_z = __Pyx_mod_int(__pyx_t_6, __pyx_v_14unireedsolomon_3cff_GF2_charac);
 
-  /* "cff.pyx":220
+  /* "unireedsolomon\cff.pyx":220
  *         cdef int y = GF2int_logtable[b]
  *         cdef int z = (x + y) % GF2_charac
  *         return GF2int(GF2int_exptable[z])             # <<<<<<<<<<<<<<
@@ -4260,24 +4263,24 @@ static PyObject *__pyx_pf_3cff_6GF2int_14__mul__(int __pyx_v_a, int __pyx_v_b) {
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  if (unlikely(!__pyx_v_3cff_GF2int_exptable.memview)) { __Pyx_RaiseUnboundLocalError("GF2int_exptable"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 220; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
+  if (unlikely(!__pyx_v_14unireedsolomon_3cff_GF2int_exptable.memview)) { __Pyx_RaiseUnboundLocalError("GF2int_exptable"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 220; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
   __pyx_t_6 = __pyx_v_z;
-  if (__pyx_t_6 < 0) __pyx_t_6 += __pyx_v_3cff_GF2int_exptable.shape[0];
-  __pyx_t_3 = __Pyx_PyInt_From_int((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_3cff_GF2int_exptable.data) + __pyx_t_6)) )))); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 220; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__pyx_t_6 < 0) __pyx_t_6 += __pyx_v_14unireedsolomon_3cff_GF2int_exptable.shape[0];
+  __pyx_t_3 = __Pyx_PyInt_From_int((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_14unireedsolomon_3cff_GF2int_exptable.data) + __pyx_t_6)) )))); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 220; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_7 = PyTuple_New(1); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 220; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_GIVEREF(__pyx_t_3);
   PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_3);
   __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)((PyObject*)__pyx_ptype_3cff_GF2int)), __pyx_t_7, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 220; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)((PyObject*)__pyx_ptype_14unireedsolomon_3cff_GF2int)), __pyx_t_7, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 220; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __pyx_r = __pyx_t_3;
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "cff.pyx":213
+  /* "unireedsolomon\cff.pyx":213
  *         return self
  * 
  *     def __mul__(int a, int b):             # <<<<<<<<<<<<<<
@@ -4289,7 +4292,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_14__mul__(int __pyx_v_a, int __pyx_v_b) {
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_7);
-  __Pyx_AddTraceback("cff.GF2int.__mul__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int.__mul__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -4297,7 +4300,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_14__mul__(int __pyx_v_a, int __pyx_v_b) {
   return __pyx_r;
 }
 
-/* "cff.pyx":221
+/* "unireedsolomon\cff.pyx":221
  *         cdef int z = (x + y) % GF2_charac
  *         return GF2int(GF2int_exptable[z])
  *     def __rmul__(a, b): return a * b             # <<<<<<<<<<<<<<
@@ -4306,19 +4309,19 @@ static PyObject *__pyx_pf_3cff_6GF2int_14__mul__(int __pyx_v_a, int __pyx_v_b) {
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cff_6GF2int_17__rmul__(PyObject *__pyx_v_a, PyObject *__pyx_v_b); /*proto*/
-static PyObject *__pyx_pw_3cff_6GF2int_17__rmul__(PyObject *__pyx_v_a, PyObject *__pyx_v_b) {
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_17__rmul__(PyObject *__pyx_v_a, PyObject *__pyx_v_b); /*proto*/
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_17__rmul__(PyObject *__pyx_v_a, PyObject *__pyx_v_b) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__rmul__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3cff_6GF2int_16__rmul__(((struct __pyx_obj_3cff_GF2int *)__pyx_v_a), ((PyObject *)__pyx_v_b));
+  __pyx_r = __pyx_pf_14unireedsolomon_3cff_6GF2int_16__rmul__(((struct __pyx_obj_14unireedsolomon_3cff_GF2int *)__pyx_v_a), ((PyObject *)__pyx_v_b));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cff_6GF2int_16__rmul__(struct __pyx_obj_3cff_GF2int *__pyx_v_a, PyObject *__pyx_v_b) {
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_16__rmul__(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_a, PyObject *__pyx_v_b) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -4336,7 +4339,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_16__rmul__(struct __pyx_obj_3cff_GF2int *
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cff.GF2int.__rmul__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int.__rmul__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -4344,7 +4347,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_16__rmul__(struct __pyx_obj_3cff_GF2int *
   return __pyx_r;
 }
 
-/* "cff.pyx":223
+/* "unireedsolomon\cff.pyx":223
  *     def __rmul__(a, b): return a * b
  * 
  *     def __pow__(int self, int power, modulo):             # <<<<<<<<<<<<<<
@@ -4353,8 +4356,8 @@ static PyObject *__pyx_pf_3cff_6GF2int_16__rmul__(struct __pyx_obj_3cff_GF2int *
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cff_6GF2int_19__pow__(PyObject *__pyx_arg_self, PyObject *__pyx_arg_power, PyObject *__pyx_v_modulo); /*proto*/
-static PyObject *__pyx_pw_3cff_6GF2int_19__pow__(PyObject *__pyx_arg_self, PyObject *__pyx_arg_power, PyObject *__pyx_v_modulo) {
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_19__pow__(PyObject *__pyx_arg_self, PyObject *__pyx_arg_power, PyObject *__pyx_v_modulo); /*proto*/
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_19__pow__(PyObject *__pyx_arg_self, PyObject *__pyx_arg_power, PyObject *__pyx_v_modulo) {
   int __pyx_v_self;
   int __pyx_v_power;
   int __pyx_lineno = 0;
@@ -4371,18 +4374,18 @@ static PyObject *__pyx_pw_3cff_6GF2int_19__pow__(PyObject *__pyx_arg_self, PyObj
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cff.GF2int.__pow__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int.__pow__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_3cff_6GF2int_18__pow__(((int)__pyx_v_self), ((int)__pyx_v_power), ((PyObject *)__pyx_v_modulo));
+  __pyx_r = __pyx_pf_14unireedsolomon_3cff_6GF2int_18__pow__(((int)__pyx_v_self), ((int)__pyx_v_power), ((PyObject *)__pyx_v_modulo));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cff_6GF2int_18__pow__(int __pyx_v_self, int __pyx_v_power, CYTHON_UNUSED PyObject *__pyx_v_modulo) {
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_18__pow__(int __pyx_v_self, int __pyx_v_power, CYTHON_UNUSED PyObject *__pyx_v_modulo) {
   int __pyx_v_x;
   int __pyx_v_z;
   PyObject *__pyx_r = NULL;
@@ -4396,19 +4399,19 @@ static PyObject *__pyx_pf_3cff_6GF2int_18__pow__(int __pyx_v_self, int __pyx_v_p
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__pow__", 0);
 
-  /* "cff.pyx":226
+  /* "unireedsolomon\cff.pyx":226
  *         #if isinstance(power, GF2int): # no need anymore because int power types correctly power so that it's always a regular integer.
  *             #raise TypeError("Raising a Field element to another Field element is not defined. power must be a regular integer")
  *         cdef int x = GF2int_logtable[self]             # <<<<<<<<<<<<<<
  *         cdef int z = (x * power) % GF2_charac
  *         return GF2int(GF2int_exptable[z])
  */
-  if (unlikely(!__pyx_v_3cff_GF2int_logtable.memview)) { __Pyx_RaiseUnboundLocalError("GF2int_logtable"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 226; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
+  if (unlikely(!__pyx_v_14unireedsolomon_3cff_GF2int_logtable.memview)) { __Pyx_RaiseUnboundLocalError("GF2int_logtable"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 226; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
   __pyx_t_1 = __pyx_v_self;
-  if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_3cff_GF2int_logtable.shape[0];
-  __pyx_v_x = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_3cff_GF2int_logtable.data) + __pyx_t_1)) )));
+  if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_14unireedsolomon_3cff_GF2int_logtable.shape[0];
+  __pyx_v_x = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_14unireedsolomon_3cff_GF2int_logtable.data) + __pyx_t_1)) )));
 
-  /* "cff.pyx":227
+  /* "unireedsolomon\cff.pyx":227
  *             #raise TypeError("Raising a Field element to another Field element is not defined. power must be a regular integer")
  *         cdef int x = GF2int_logtable[self]
  *         cdef int z = (x * power) % GF2_charac             # <<<<<<<<<<<<<<
@@ -4416,7 +4419,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_18__pow__(int __pyx_v_self, int __pyx_v_p
  * 
  */
   __pyx_t_2 = (__pyx_v_x * __pyx_v_power);
-  if (unlikely(__pyx_v_3cff_GF2_charac == 0)) {
+  if (unlikely(__pyx_v_14unireedsolomon_3cff_GF2_charac == 0)) {
     #ifdef WITH_THREAD
     PyGILState_STATE __pyx_gilstate_save = PyGILState_Ensure();
     #endif
@@ -4426,9 +4429,9 @@ static PyObject *__pyx_pf_3cff_6GF2int_18__pow__(int __pyx_v_self, int __pyx_v_p
     #endif
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 227; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
-  __pyx_v_z = __Pyx_mod_int(__pyx_t_2, __pyx_v_3cff_GF2_charac);
+  __pyx_v_z = __Pyx_mod_int(__pyx_t_2, __pyx_v_14unireedsolomon_3cff_GF2_charac);
 
-  /* "cff.pyx":228
+  /* "unireedsolomon\cff.pyx":228
  *         cdef int x = GF2int_logtable[self]
  *         cdef int z = (x * power) % GF2_charac
  *         return GF2int(GF2int_exptable[z])             # <<<<<<<<<<<<<<
@@ -4436,24 +4439,24 @@ static PyObject *__pyx_pf_3cff_6GF2int_18__pow__(int __pyx_v_self, int __pyx_v_p
  *     cpdef inverse(GF2int self):
  */
   __Pyx_XDECREF(__pyx_r);
-  if (unlikely(!__pyx_v_3cff_GF2int_exptable.memview)) { __Pyx_RaiseUnboundLocalError("GF2int_exptable"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 228; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
+  if (unlikely(!__pyx_v_14unireedsolomon_3cff_GF2int_exptable.memview)) { __Pyx_RaiseUnboundLocalError("GF2int_exptable"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 228; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
   __pyx_t_2 = __pyx_v_z;
-  if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_3cff_GF2int_exptable.shape[0];
-  __pyx_t_3 = __Pyx_PyInt_From_int((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_3cff_GF2int_exptable.data) + __pyx_t_2)) )))); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 228; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_14unireedsolomon_3cff_GF2int_exptable.shape[0];
+  __pyx_t_3 = __Pyx_PyInt_From_int((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_14unireedsolomon_3cff_GF2int_exptable.data) + __pyx_t_2)) )))); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 228; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 228; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_GIVEREF(__pyx_t_3);
   PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3);
   __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)((PyObject*)__pyx_ptype_3cff_GF2int)), __pyx_t_4, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 228; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)((PyObject*)__pyx_ptype_14unireedsolomon_3cff_GF2int)), __pyx_t_4, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 228; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_r = __pyx_t_3;
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "cff.pyx":223
+  /* "unireedsolomon\cff.pyx":223
  *     def __rmul__(a, b): return a * b
  * 
  *     def __pow__(int self, int power, modulo):             # <<<<<<<<<<<<<<
@@ -4465,7 +4468,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_18__pow__(int __pyx_v_self, int __pyx_v_p
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_AddTraceback("cff.GF2int.__pow__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int.__pow__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -4473,7 +4476,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_18__pow__(int __pyx_v_self, int __pyx_v_p
   return __pyx_r;
 }
 
-/* "cff.pyx":230
+/* "unireedsolomon\cff.pyx":230
  *         return GF2int(GF2int_exptable[z])
  * 
  *     cpdef inverse(GF2int self):             # <<<<<<<<<<<<<<
@@ -4481,8 +4484,8 @@ static PyObject *__pyx_pf_3cff_6GF2int_18__pow__(int __pyx_v_self, int __pyx_v_p
  *         return GF2int(GF2int_exptable[GF2_charac - e])
  */
 
-static PyObject *__pyx_pw_3cff_6GF2int_21inverse(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_f_3cff_6GF2int_inverse(struct __pyx_obj_3cff_GF2int *__pyx_v_self, int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_21inverse(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_f_14unireedsolomon_3cff_6GF2int_inverse(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_self, int __pyx_skip_dispatch) {
   int __pyx_v_e;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -4502,7 +4505,7 @@ static PyObject *__pyx_f_3cff_6GF2int_inverse(struct __pyx_obj_3cff_GF2int *__py
   else if (unlikely(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dictoffset != 0)) {
     __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_inverse); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 230; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_3cff_6GF2int_21inverse)) {
+    if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_14unireedsolomon_3cff_6GF2int_21inverse)) {
       __Pyx_XDECREF(__pyx_r);
       __Pyx_INCREF(__pyx_t_1);
       __pyx_t_3 = __pyx_t_1; __pyx_t_4 = NULL;
@@ -4531,20 +4534,20 @@ static PyObject *__pyx_f_3cff_6GF2int_inverse(struct __pyx_obj_3cff_GF2int *__py
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   }
 
-  /* "cff.pyx":231
+  /* "unireedsolomon\cff.pyx":231
  * 
  *     cpdef inverse(GF2int self):
  *         cdef int e = GF2int_logtable[<int>self]             # <<<<<<<<<<<<<<
  *         return GF2int(GF2int_exptable[GF2_charac - e])
  * 
  */
-  if (unlikely(!__pyx_v_3cff_GF2int_logtable.memview)) { __Pyx_RaiseUnboundLocalError("GF2int_logtable"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 231; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
+  if (unlikely(!__pyx_v_14unireedsolomon_3cff_GF2int_logtable.memview)) { __Pyx_RaiseUnboundLocalError("GF2int_logtable"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 231; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
   __pyx_t_5 = __Pyx_PyInt_As_int(((PyObject *)__pyx_v_self)); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 231; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_t_6 = ((int)__pyx_t_5);
-  if (__pyx_t_6 < 0) __pyx_t_6 += __pyx_v_3cff_GF2int_logtable.shape[0];
-  __pyx_v_e = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_3cff_GF2int_logtable.data) + __pyx_t_6)) )));
+  if (__pyx_t_6 < 0) __pyx_t_6 += __pyx_v_14unireedsolomon_3cff_GF2int_logtable.shape[0];
+  __pyx_v_e = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_14unireedsolomon_3cff_GF2int_logtable.data) + __pyx_t_6)) )));
 
-  /* "cff.pyx":232
+  /* "unireedsolomon\cff.pyx":232
  *     cpdef inverse(GF2int self):
  *         cdef int e = GF2int_logtable[<int>self]
  *         return GF2int(GF2int_exptable[GF2_charac - e])             # <<<<<<<<<<<<<<
@@ -4552,24 +4555,24 @@ static PyObject *__pyx_f_3cff_6GF2int_inverse(struct __pyx_obj_3cff_GF2int *__py
  *     def __truediv__(int self, int other): # for Python 3.x
  */
   __Pyx_XDECREF(__pyx_r);
-  if (unlikely(!__pyx_v_3cff_GF2int_exptable.memview)) { __Pyx_RaiseUnboundLocalError("GF2int_exptable"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 232; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
-  __pyx_t_5 = (__pyx_v_3cff_GF2_charac - __pyx_v_e);
-  if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_3cff_GF2int_exptable.shape[0];
-  __pyx_t_1 = __Pyx_PyInt_From_int((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_3cff_GF2int_exptable.data) + __pyx_t_5)) )))); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 232; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__pyx_v_14unireedsolomon_3cff_GF2int_exptable.memview)) { __Pyx_RaiseUnboundLocalError("GF2int_exptable"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 232; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
+  __pyx_t_5 = (__pyx_v_14unireedsolomon_3cff_GF2_charac - __pyx_v_e);
+  if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_14unireedsolomon_3cff_GF2int_exptable.shape[0];
+  __pyx_t_1 = __Pyx_PyInt_From_int((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_14unireedsolomon_3cff_GF2int_exptable.data) + __pyx_t_5)) )))); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 232; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 232; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)((PyObject*)__pyx_ptype_3cff_GF2int)), __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 232; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)((PyObject*)__pyx_ptype_14unireedsolomon_3cff_GF2int)), __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 232; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "cff.pyx":230
+  /* "unireedsolomon\cff.pyx":230
  *         return GF2int(GF2int_exptable[z])
  * 
  *     cpdef inverse(GF2int self):             # <<<<<<<<<<<<<<
@@ -4583,7 +4586,7 @@ static PyObject *__pyx_f_3cff_6GF2int_inverse(struct __pyx_obj_3cff_GF2int *__py
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_AddTraceback("cff.GF2int.inverse", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int.inverse", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -4592,19 +4595,19 @@ static PyObject *__pyx_f_3cff_6GF2int_inverse(struct __pyx_obj_3cff_GF2int *__py
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cff_6GF2int_21inverse(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_3cff_6GF2int_21inverse(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_21inverse(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_21inverse(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("inverse (wrapper)", 0);
-  __pyx_r = __pyx_pf_3cff_6GF2int_20inverse(((struct __pyx_obj_3cff_GF2int *)__pyx_v_self));
+  __pyx_r = __pyx_pf_14unireedsolomon_3cff_6GF2int_20inverse(((struct __pyx_obj_14unireedsolomon_3cff_GF2int *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cff_6GF2int_20inverse(struct __pyx_obj_3cff_GF2int *__pyx_v_self) {
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_20inverse(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -4613,7 +4616,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_20inverse(struct __pyx_obj_3cff_GF2int *_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("inverse", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_3cff_6GF2int_inverse(__pyx_v_self, 1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 230; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_f_14unireedsolomon_3cff_6GF2int_inverse(__pyx_v_self, 1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 230; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -4622,7 +4625,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_20inverse(struct __pyx_obj_3cff_GF2int *_
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cff.GF2int.inverse", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int.inverse", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -4630,7 +4633,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_20inverse(struct __pyx_obj_3cff_GF2int *_
   return __pyx_r;
 }
 
-/* "cff.pyx":234
+/* "unireedsolomon\cff.pyx":234
  *         return GF2int(GF2int_exptable[GF2_charac - e])
  * 
  *     def __truediv__(int self, int other): # for Python 3.x             # <<<<<<<<<<<<<<
@@ -4639,8 +4642,8 @@ static PyObject *__pyx_pf_3cff_6GF2int_20inverse(struct __pyx_obj_3cff_GF2int *_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cff_6GF2int_23__truediv__(PyObject *__pyx_arg_self, PyObject *__pyx_arg_other); /*proto*/
-static PyObject *__pyx_pw_3cff_6GF2int_23__truediv__(PyObject *__pyx_arg_self, PyObject *__pyx_arg_other) {
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_23__truediv__(PyObject *__pyx_arg_self, PyObject *__pyx_arg_other); /*proto*/
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_23__truediv__(PyObject *__pyx_arg_self, PyObject *__pyx_arg_other) {
   int __pyx_v_self;
   int __pyx_v_other;
   int __pyx_lineno = 0;
@@ -4657,18 +4660,18 @@ static PyObject *__pyx_pw_3cff_6GF2int_23__truediv__(PyObject *__pyx_arg_self, P
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cff.GF2int.__truediv__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int.__truediv__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_3cff_6GF2int_22__truediv__(((int)__pyx_v_self), ((int)__pyx_v_other));
+  __pyx_r = __pyx_pf_14unireedsolomon_3cff_6GF2int_22__truediv__(((int)__pyx_v_self), ((int)__pyx_v_other));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cff_6GF2int_22__truediv__(int __pyx_v_self, int __pyx_v_other) {
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_22__truediv__(int __pyx_v_self, int __pyx_v_other) {
   int __pyx_v_x;
   int __pyx_v_y;
   int __pyx_v_z;
@@ -4686,7 +4689,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_22__truediv__(int __pyx_v_self, int __pyx
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__truediv__", 0);
 
-  /* "cff.pyx":236
+  /* "unireedsolomon\cff.pyx":236
  *     def __truediv__(int self, int other): # for Python 3.x
  *         #return self * GF2int(other).inverse() # self / other = self * inv(other) . This is equivalent to what is below, but 2x slower.
  *         if self == 0 or other == 0:             # <<<<<<<<<<<<<<
@@ -4704,7 +4707,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_22__truediv__(int __pyx_v_self, int __pyx
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_1) {
 
-    /* "cff.pyx":237
+    /* "unireedsolomon\cff.pyx":237
  *         #return self * GF2int(other).inverse() # self / other = self * inv(other) . This is equivalent to what is below, but 2x slower.
  *         if self == 0 or other == 0:
  *             return GF2int(0)             # <<<<<<<<<<<<<<
@@ -4712,38 +4715,38 @@ static PyObject *__pyx_pf_3cff_6GF2int_22__truediv__(int __pyx_v_self, int __pyx
  *         cdef int y = GF2int_logtable[other]
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)((PyObject*)__pyx_ptype_3cff_GF2int)), __pyx_tuple__4, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 237; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)((PyObject*)__pyx_ptype_14unireedsolomon_3cff_GF2int)), __pyx_tuple__4, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 237; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_r = __pyx_t_3;
     __pyx_t_3 = 0;
     goto __pyx_L0;
   }
 
-  /* "cff.pyx":238
+  /* "unireedsolomon\cff.pyx":238
  *         if self == 0 or other == 0:
  *             return GF2int(0)
  *         cdef int x = GF2int_logtable[self]             # <<<<<<<<<<<<<<
  *         cdef int y = GF2int_logtable[other]
  *         cdef int z = (x - y) % GF2_charac # in logarithms, substraction = division after exponentiation
  */
-  if (unlikely(!__pyx_v_3cff_GF2int_logtable.memview)) { __Pyx_RaiseUnboundLocalError("GF2int_logtable"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 238; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
+  if (unlikely(!__pyx_v_14unireedsolomon_3cff_GF2int_logtable.memview)) { __Pyx_RaiseUnboundLocalError("GF2int_logtable"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 238; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
   __pyx_t_4 = __pyx_v_self;
-  if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_3cff_GF2int_logtable.shape[0];
-  __pyx_v_x = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_3cff_GF2int_logtable.data) + __pyx_t_4)) )));
+  if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_14unireedsolomon_3cff_GF2int_logtable.shape[0];
+  __pyx_v_x = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_14unireedsolomon_3cff_GF2int_logtable.data) + __pyx_t_4)) )));
 
-  /* "cff.pyx":239
+  /* "unireedsolomon\cff.pyx":239
  *             return GF2int(0)
  *         cdef int x = GF2int_logtable[self]
  *         cdef int y = GF2int_logtable[other]             # <<<<<<<<<<<<<<
  *         cdef int z = (x - y) % GF2_charac # in logarithms, substraction = division after exponentiation
  *         return GF2int(GF2int_exptable[z])
  */
-  if (unlikely(!__pyx_v_3cff_GF2int_logtable.memview)) { __Pyx_RaiseUnboundLocalError("GF2int_logtable"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 239; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
+  if (unlikely(!__pyx_v_14unireedsolomon_3cff_GF2int_logtable.memview)) { __Pyx_RaiseUnboundLocalError("GF2int_logtable"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 239; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
   __pyx_t_5 = __pyx_v_other;
-  if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_3cff_GF2int_logtable.shape[0];
-  __pyx_v_y = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_3cff_GF2int_logtable.data) + __pyx_t_5)) )));
+  if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_14unireedsolomon_3cff_GF2int_logtable.shape[0];
+  __pyx_v_y = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_14unireedsolomon_3cff_GF2int_logtable.data) + __pyx_t_5)) )));
 
-  /* "cff.pyx":240
+  /* "unireedsolomon\cff.pyx":240
  *         cdef int x = GF2int_logtable[self]
  *         cdef int y = GF2int_logtable[other]
  *         cdef int z = (x - y) % GF2_charac # in logarithms, substraction = division after exponentiation             # <<<<<<<<<<<<<<
@@ -4751,7 +4754,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_22__truediv__(int __pyx_v_self, int __pyx
  *     def __floordiv__(self, other): return self.__truediv__(other)
  */
   __pyx_t_6 = (__pyx_v_x - __pyx_v_y);
-  if (unlikely(__pyx_v_3cff_GF2_charac == 0)) {
+  if (unlikely(__pyx_v_14unireedsolomon_3cff_GF2_charac == 0)) {
     #ifdef WITH_THREAD
     PyGILState_STATE __pyx_gilstate_save = PyGILState_Ensure();
     #endif
@@ -4761,9 +4764,9 @@ static PyObject *__pyx_pf_3cff_6GF2int_22__truediv__(int __pyx_v_self, int __pyx
     #endif
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 240; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
-  __pyx_v_z = __Pyx_mod_int(__pyx_t_6, __pyx_v_3cff_GF2_charac);
+  __pyx_v_z = __Pyx_mod_int(__pyx_t_6, __pyx_v_14unireedsolomon_3cff_GF2_charac);
 
-  /* "cff.pyx":241
+  /* "unireedsolomon\cff.pyx":241
  *         cdef int y = GF2int_logtable[other]
  *         cdef int z = (x - y) % GF2_charac # in logarithms, substraction = division after exponentiation
  *         return GF2int(GF2int_exptable[z])             # <<<<<<<<<<<<<<
@@ -4771,24 +4774,24 @@ static PyObject *__pyx_pf_3cff_6GF2int_22__truediv__(int __pyx_v_self, int __pyx
  *     def __div__(int self, int other): # for Python 2.x
  */
   __Pyx_XDECREF(__pyx_r);
-  if (unlikely(!__pyx_v_3cff_GF2int_exptable.memview)) { __Pyx_RaiseUnboundLocalError("GF2int_exptable"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 241; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
+  if (unlikely(!__pyx_v_14unireedsolomon_3cff_GF2int_exptable.memview)) { __Pyx_RaiseUnboundLocalError("GF2int_exptable"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 241; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
   __pyx_t_6 = __pyx_v_z;
-  if (__pyx_t_6 < 0) __pyx_t_6 += __pyx_v_3cff_GF2int_exptable.shape[0];
-  __pyx_t_3 = __Pyx_PyInt_From_int((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_3cff_GF2int_exptable.data) + __pyx_t_6)) )))); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 241; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__pyx_t_6 < 0) __pyx_t_6 += __pyx_v_14unireedsolomon_3cff_GF2int_exptable.shape[0];
+  __pyx_t_3 = __Pyx_PyInt_From_int((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_14unireedsolomon_3cff_GF2int_exptable.data) + __pyx_t_6)) )))); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 241; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_7 = PyTuple_New(1); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 241; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_GIVEREF(__pyx_t_3);
   PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_3);
   __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)((PyObject*)__pyx_ptype_3cff_GF2int)), __pyx_t_7, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 241; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)((PyObject*)__pyx_ptype_14unireedsolomon_3cff_GF2int)), __pyx_t_7, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 241; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __pyx_r = __pyx_t_3;
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "cff.pyx":234
+  /* "unireedsolomon\cff.pyx":234
  *         return GF2int(GF2int_exptable[GF2_charac - e])
  * 
  *     def __truediv__(int self, int other): # for Python 3.x             # <<<<<<<<<<<<<<
@@ -4800,7 +4803,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_22__truediv__(int __pyx_v_self, int __pyx
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_7);
-  __Pyx_AddTraceback("cff.GF2int.__truediv__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int.__truediv__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -4808,7 +4811,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_22__truediv__(int __pyx_v_self, int __pyx
   return __pyx_r;
 }
 
-/* "cff.pyx":242
+/* "unireedsolomon\cff.pyx":242
  *         cdef int z = (x - y) % GF2_charac # in logarithms, substraction = division after exponentiation
  *         return GF2int(GF2int_exptable[z])
  *     def __floordiv__(self, other): return self.__truediv__(other)             # <<<<<<<<<<<<<<
@@ -4817,19 +4820,19 @@ static PyObject *__pyx_pf_3cff_6GF2int_22__truediv__(int __pyx_v_self, int __pyx
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cff_6GF2int_25__floordiv__(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /*proto*/
-static PyObject *__pyx_pw_3cff_6GF2int_25__floordiv__(PyObject *__pyx_v_self, PyObject *__pyx_v_other) {
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_25__floordiv__(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /*proto*/
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_25__floordiv__(PyObject *__pyx_v_self, PyObject *__pyx_v_other) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__floordiv__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3cff_6GF2int_24__floordiv__(((PyObject *)__pyx_v_self), ((PyObject *)__pyx_v_other));
+  __pyx_r = __pyx_pf_14unireedsolomon_3cff_6GF2int_24__floordiv__(((PyObject *)__pyx_v_self), ((PyObject *)__pyx_v_other));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cff_6GF2int_24__floordiv__(PyObject *__pyx_v_self, PyObject *__pyx_v_other) {
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_24__floordiv__(PyObject *__pyx_v_self, PyObject *__pyx_v_other) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -4878,7 +4881,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_24__floordiv__(PyObject *__pyx_v_self, Py
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_AddTraceback("cff.GF2int.__floordiv__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int.__floordiv__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -4886,7 +4889,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_24__floordiv__(PyObject *__pyx_v_self, Py
   return __pyx_r;
 }
 
-/* "cff.pyx":243
+/* "unireedsolomon\cff.pyx":243
  *         return GF2int(GF2int_exptable[z])
  *     def __floordiv__(self, other): return self.__truediv__(other)
  *     def __div__(int self, int other): # for Python 2.x             # <<<<<<<<<<<<<<
@@ -4896,8 +4899,8 @@ static PyObject *__pyx_pf_3cff_6GF2int_24__floordiv__(PyObject *__pyx_v_self, Py
 
 /* Python wrapper */
 #if PY_MAJOR_VERSION < 3 || CYTHON_COMPILING_IN_PYPY
-static PyObject *__pyx_pw_3cff_6GF2int_27__div__(PyObject *__pyx_arg_self, PyObject *__pyx_arg_other); /*proto*/
-static PyObject *__pyx_pw_3cff_6GF2int_27__div__(PyObject *__pyx_arg_self, PyObject *__pyx_arg_other) {
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_27__div__(PyObject *__pyx_arg_self, PyObject *__pyx_arg_other); /*proto*/
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_27__div__(PyObject *__pyx_arg_self, PyObject *__pyx_arg_other) {
   int __pyx_v_self;
   int __pyx_v_other;
   int __pyx_lineno = 0;
@@ -4914,11 +4917,11 @@ static PyObject *__pyx_pw_3cff_6GF2int_27__div__(PyObject *__pyx_arg_self, PyObj
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cff.GF2int.__div__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int.__div__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_3cff_6GF2int_26__div__(((int)__pyx_v_self), ((int)__pyx_v_other));
+  __pyx_r = __pyx_pf_14unireedsolomon_3cff_6GF2int_26__div__(((int)__pyx_v_self), ((int)__pyx_v_other));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
@@ -4927,7 +4930,7 @@ static PyObject *__pyx_pw_3cff_6GF2int_27__div__(PyObject *__pyx_arg_self, PyObj
 #endif /*!(#if PY_MAJOR_VERSION < 3 || CYTHON_COMPILING_IN_PYPY)*/
 
 #if PY_MAJOR_VERSION < 3 || CYTHON_COMPILING_IN_PYPY
-static PyObject *__pyx_pf_3cff_6GF2int_26__div__(int __pyx_v_self, int __pyx_v_other) {
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_26__div__(int __pyx_v_self, int __pyx_v_other) {
   int __pyx_v_x;
   int __pyx_v_y;
   int __pyx_v_z;
@@ -4945,7 +4948,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_26__div__(int __pyx_v_self, int __pyx_v_o
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__div__", 0);
 
-  /* "cff.pyx":244
+  /* "unireedsolomon\cff.pyx":244
  *     def __floordiv__(self, other): return self.__truediv__(other)
  *     def __div__(int self, int other): # for Python 2.x
  *         if self == 0 or other == 0:             # <<<<<<<<<<<<<<
@@ -4963,7 +4966,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_26__div__(int __pyx_v_self, int __pyx_v_o
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_1) {
 
-    /* "cff.pyx":245
+    /* "unireedsolomon\cff.pyx":245
  *     def __div__(int self, int other): # for Python 2.x
  *         if self == 0 or other == 0:
  *             return GF2int(0)             # <<<<<<<<<<<<<<
@@ -4971,38 +4974,38 @@ static PyObject *__pyx_pf_3cff_6GF2int_26__div__(int __pyx_v_self, int __pyx_v_o
  *         cdef int y = GF2int_logtable[other]
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)((PyObject*)__pyx_ptype_3cff_GF2int)), __pyx_tuple__5, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 245; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)((PyObject*)__pyx_ptype_14unireedsolomon_3cff_GF2int)), __pyx_tuple__5, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 245; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_r = __pyx_t_3;
     __pyx_t_3 = 0;
     goto __pyx_L0;
   }
 
-  /* "cff.pyx":246
+  /* "unireedsolomon\cff.pyx":246
  *         if self == 0 or other == 0:
  *             return GF2int(0)
  *         cdef int x = GF2int_logtable[self]             # <<<<<<<<<<<<<<
  *         cdef int y = GF2int_logtable[other]
  *         cdef int z = (x - y) % GF2_charac # in logarithms, substraction = division after exponentiation
  */
-  if (unlikely(!__pyx_v_3cff_GF2int_logtable.memview)) { __Pyx_RaiseUnboundLocalError("GF2int_logtable"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 246; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
+  if (unlikely(!__pyx_v_14unireedsolomon_3cff_GF2int_logtable.memview)) { __Pyx_RaiseUnboundLocalError("GF2int_logtable"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 246; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
   __pyx_t_4 = __pyx_v_self;
-  if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_3cff_GF2int_logtable.shape[0];
-  __pyx_v_x = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_3cff_GF2int_logtable.data) + __pyx_t_4)) )));
+  if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_14unireedsolomon_3cff_GF2int_logtable.shape[0];
+  __pyx_v_x = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_14unireedsolomon_3cff_GF2int_logtable.data) + __pyx_t_4)) )));
 
-  /* "cff.pyx":247
+  /* "unireedsolomon\cff.pyx":247
  *             return GF2int(0)
  *         cdef int x = GF2int_logtable[self]
  *         cdef int y = GF2int_logtable[other]             # <<<<<<<<<<<<<<
  *         cdef int z = (x - y) % GF2_charac # in logarithms, substraction = division after exponentiation
  *         return GF2int(GF2int_exptable[z])
  */
-  if (unlikely(!__pyx_v_3cff_GF2int_logtable.memview)) { __Pyx_RaiseUnboundLocalError("GF2int_logtable"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 247; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
+  if (unlikely(!__pyx_v_14unireedsolomon_3cff_GF2int_logtable.memview)) { __Pyx_RaiseUnboundLocalError("GF2int_logtable"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 247; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
   __pyx_t_5 = __pyx_v_other;
-  if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_3cff_GF2int_logtable.shape[0];
-  __pyx_v_y = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_3cff_GF2int_logtable.data) + __pyx_t_5)) )));
+  if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_14unireedsolomon_3cff_GF2int_logtable.shape[0];
+  __pyx_v_y = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_14unireedsolomon_3cff_GF2int_logtable.data) + __pyx_t_5)) )));
 
-  /* "cff.pyx":248
+  /* "unireedsolomon\cff.pyx":248
  *         cdef int x = GF2int_logtable[self]
  *         cdef int y = GF2int_logtable[other]
  *         cdef int z = (x - y) % GF2_charac # in logarithms, substraction = division after exponentiation             # <<<<<<<<<<<<<<
@@ -5010,7 +5013,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_26__div__(int __pyx_v_self, int __pyx_v_o
  * 
  */
   __pyx_t_6 = (__pyx_v_x - __pyx_v_y);
-  if (unlikely(__pyx_v_3cff_GF2_charac == 0)) {
+  if (unlikely(__pyx_v_14unireedsolomon_3cff_GF2_charac == 0)) {
     #ifdef WITH_THREAD
     PyGILState_STATE __pyx_gilstate_save = PyGILState_Ensure();
     #endif
@@ -5020,9 +5023,9 @@ static PyObject *__pyx_pf_3cff_6GF2int_26__div__(int __pyx_v_self, int __pyx_v_o
     #endif
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 248; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
-  __pyx_v_z = __Pyx_mod_int(__pyx_t_6, __pyx_v_3cff_GF2_charac);
+  __pyx_v_z = __Pyx_mod_int(__pyx_t_6, __pyx_v_14unireedsolomon_3cff_GF2_charac);
 
-  /* "cff.pyx":249
+  /* "unireedsolomon\cff.pyx":249
  *         cdef int y = GF2int_logtable[other]
  *         cdef int z = (x - y) % GF2_charac # in logarithms, substraction = division after exponentiation
  *         return GF2int(GF2int_exptable[z])             # <<<<<<<<<<<<<<
@@ -5030,24 +5033,24 @@ static PyObject *__pyx_pf_3cff_6GF2int_26__div__(int __pyx_v_self, int __pyx_v_o
  *     def __rtruediv__(int self, int other):
  */
   __Pyx_XDECREF(__pyx_r);
-  if (unlikely(!__pyx_v_3cff_GF2int_exptable.memview)) { __Pyx_RaiseUnboundLocalError("GF2int_exptable"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 249; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
+  if (unlikely(!__pyx_v_14unireedsolomon_3cff_GF2int_exptable.memview)) { __Pyx_RaiseUnboundLocalError("GF2int_exptable"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 249; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
   __pyx_t_6 = __pyx_v_z;
-  if (__pyx_t_6 < 0) __pyx_t_6 += __pyx_v_3cff_GF2int_exptable.shape[0];
-  __pyx_t_3 = __Pyx_PyInt_From_int((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_3cff_GF2int_exptable.data) + __pyx_t_6)) )))); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 249; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__pyx_t_6 < 0) __pyx_t_6 += __pyx_v_14unireedsolomon_3cff_GF2int_exptable.shape[0];
+  __pyx_t_3 = __Pyx_PyInt_From_int((*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_14unireedsolomon_3cff_GF2int_exptable.data) + __pyx_t_6)) )))); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 249; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_7 = PyTuple_New(1); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 249; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_GIVEREF(__pyx_t_3);
   PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_3);
   __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)((PyObject*)__pyx_ptype_3cff_GF2int)), __pyx_t_7, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 249; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)((PyObject*)__pyx_ptype_14unireedsolomon_3cff_GF2int)), __pyx_t_7, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 249; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __pyx_r = __pyx_t_3;
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "cff.pyx":243
+  /* "unireedsolomon\cff.pyx":243
  *         return GF2int(GF2int_exptable[z])
  *     def __floordiv__(self, other): return self.__truediv__(other)
  *     def __div__(int self, int other): # for Python 2.x             # <<<<<<<<<<<<<<
@@ -5059,7 +5062,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_26__div__(int __pyx_v_self, int __pyx_v_o
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_7);
-  __Pyx_AddTraceback("cff.GF2int.__div__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int.__div__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -5068,7 +5071,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_26__div__(int __pyx_v_self, int __pyx_v_o
 }
 #endif /*!(#if PY_MAJOR_VERSION < 3 || CYTHON_COMPILING_IN_PYPY)*/
 
-/* "cff.pyx":251
+/* "unireedsolomon\cff.pyx":251
  *         return GF2int(GF2int_exptable[z])
  * 
  *     def __rtruediv__(int self, int other):             # <<<<<<<<<<<<<<
@@ -5077,8 +5080,8 @@ static PyObject *__pyx_pf_3cff_6GF2int_26__div__(int __pyx_v_self, int __pyx_v_o
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cff_6GF2int_29__rtruediv__(PyObject *__pyx_v_self, PyObject *__pyx_arg_other); /*proto*/
-static PyObject *__pyx_pw_3cff_6GF2int_29__rtruediv__(PyObject *__pyx_v_self, PyObject *__pyx_arg_other) {
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_29__rtruediv__(PyObject *__pyx_v_self, PyObject *__pyx_arg_other); /*proto*/
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_29__rtruediv__(PyObject *__pyx_v_self, PyObject *__pyx_arg_other) {
   int __pyx_v_other;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
@@ -5091,18 +5094,18 @@ static PyObject *__pyx_pw_3cff_6GF2int_29__rtruediv__(PyObject *__pyx_v_self, Py
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cff.GF2int.__rtruediv__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int.__rtruediv__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_3cff_6GF2int_28__rtruediv__(((struct __pyx_obj_3cff_GF2int *)__pyx_v_self), ((int)__pyx_v_other));
+  __pyx_r = __pyx_pf_14unireedsolomon_3cff_6GF2int_28__rtruediv__(((struct __pyx_obj_14unireedsolomon_3cff_GF2int *)__pyx_v_self), ((int)__pyx_v_other));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cff_6GF2int_28__rtruediv__(struct __pyx_obj_3cff_GF2int *__pyx_v_self, int __pyx_v_other) {
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_28__rtruediv__(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_self, int __pyx_v_other) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -5116,7 +5119,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_28__rtruediv__(struct __pyx_obj_3cff_GF2i
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__rtruediv__", 0);
 
-  /* "cff.pyx":253
+  /* "unireedsolomon\cff.pyx":253
  *     def __rtruediv__(int self, int other):
  *         #return self.inverse() * other
  *         return GF2int.__truediv__(other, self)             # <<<<<<<<<<<<<<
@@ -5124,7 +5127,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_28__rtruediv__(struct __pyx_obj_3cff_GF2i
  *     def __rdiv__(self, other): return GF2int.__truediv__(other, self) # for Python 2.x
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)((PyObject*)__pyx_ptype_3cff_GF2int)), __pyx_n_s_truediv); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 253; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)((PyObject*)__pyx_ptype_14unireedsolomon_3cff_GF2int)), __pyx_n_s_truediv); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 253; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_other); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 253; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
@@ -5159,7 +5162,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_28__rtruediv__(struct __pyx_obj_3cff_GF2i
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "cff.pyx":251
+  /* "unireedsolomon\cff.pyx":251
  *         return GF2int(GF2int_exptable[z])
  * 
  *     def __rtruediv__(int self, int other):             # <<<<<<<<<<<<<<
@@ -5174,7 +5177,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_28__rtruediv__(struct __pyx_obj_3cff_GF2i
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_6);
-  __Pyx_AddTraceback("cff.GF2int.__rtruediv__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int.__rtruediv__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -5182,7 +5185,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_28__rtruediv__(struct __pyx_obj_3cff_GF2i
   return __pyx_r;
 }
 
-/* "cff.pyx":254
+/* "unireedsolomon\cff.pyx":254
  *         #return self.inverse() * other
  *         return GF2int.__truediv__(other, self)
  *     def __rfloordiv__(self, other): return GF2int.__truediv__(other, self)             # <<<<<<<<<<<<<<
@@ -5191,19 +5194,19 @@ static PyObject *__pyx_pf_3cff_6GF2int_28__rtruediv__(struct __pyx_obj_3cff_GF2i
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cff_6GF2int_31__rfloordiv__(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /*proto*/
-static PyObject *__pyx_pw_3cff_6GF2int_31__rfloordiv__(PyObject *__pyx_v_self, PyObject *__pyx_v_other) {
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_31__rfloordiv__(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /*proto*/
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_31__rfloordiv__(PyObject *__pyx_v_self, PyObject *__pyx_v_other) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__rfloordiv__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3cff_6GF2int_30__rfloordiv__(((struct __pyx_obj_3cff_GF2int *)__pyx_v_self), ((PyObject *)__pyx_v_other));
+  __pyx_r = __pyx_pf_14unireedsolomon_3cff_6GF2int_30__rfloordiv__(((struct __pyx_obj_14unireedsolomon_3cff_GF2int *)__pyx_v_self), ((PyObject *)__pyx_v_other));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cff_6GF2int_30__rfloordiv__(struct __pyx_obj_3cff_GF2int *__pyx_v_self, PyObject *__pyx_v_other) {
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_30__rfloordiv__(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_self, PyObject *__pyx_v_other) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -5216,7 +5219,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_30__rfloordiv__(struct __pyx_obj_3cff_GF2
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__rfloordiv__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)((PyObject*)__pyx_ptype_3cff_GF2int)), __pyx_n_s_truediv); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 254; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)((PyObject*)__pyx_ptype_14unireedsolomon_3cff_GF2int)), __pyx_n_s_truediv); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 254; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   __pyx_t_4 = 0;
@@ -5255,7 +5258,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_30__rfloordiv__(struct __pyx_obj_3cff_GF2
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_AddTraceback("cff.GF2int.__rfloordiv__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int.__rfloordiv__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -5263,7 +5266,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_30__rfloordiv__(struct __pyx_obj_3cff_GF2
   return __pyx_r;
 }
 
-/* "cff.pyx":255
+/* "unireedsolomon\cff.pyx":255
  *         return GF2int.__truediv__(other, self)
  *     def __rfloordiv__(self, other): return GF2int.__truediv__(other, self)
  *     def __rdiv__(self, other): return GF2int.__truediv__(other, self) # for Python 2.x             # <<<<<<<<<<<<<<
@@ -5272,19 +5275,19 @@ static PyObject *__pyx_pf_3cff_6GF2int_30__rfloordiv__(struct __pyx_obj_3cff_GF2
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cff_6GF2int_33__rdiv__(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /*proto*/
-static PyObject *__pyx_pw_3cff_6GF2int_33__rdiv__(PyObject *__pyx_v_self, PyObject *__pyx_v_other) {
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_33__rdiv__(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /*proto*/
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_33__rdiv__(PyObject *__pyx_v_self, PyObject *__pyx_v_other) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__rdiv__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3cff_6GF2int_32__rdiv__(((struct __pyx_obj_3cff_GF2int *)__pyx_v_self), ((PyObject *)__pyx_v_other));
+  __pyx_r = __pyx_pf_14unireedsolomon_3cff_6GF2int_32__rdiv__(((struct __pyx_obj_14unireedsolomon_3cff_GF2int *)__pyx_v_self), ((PyObject *)__pyx_v_other));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cff_6GF2int_32__rdiv__(struct __pyx_obj_3cff_GF2int *__pyx_v_self, PyObject *__pyx_v_other) {
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_32__rdiv__(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_self, PyObject *__pyx_v_other) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -5297,7 +5300,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_32__rdiv__(struct __pyx_obj_3cff_GF2int *
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__rdiv__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)((PyObject*)__pyx_ptype_3cff_GF2int)), __pyx_n_s_truediv); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 255; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)((PyObject*)__pyx_ptype_14unireedsolomon_3cff_GF2int)), __pyx_n_s_truediv); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 255; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   __pyx_t_4 = 0;
@@ -5336,7 +5339,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_32__rdiv__(struct __pyx_obj_3cff_GF2int *
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_AddTraceback("cff.GF2int.__rdiv__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int.__rdiv__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -5344,7 +5347,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_32__rdiv__(struct __pyx_obj_3cff_GF2int *
   return __pyx_r;
 }
 
-/* "cff.pyx":257
+/* "unireedsolomon\cff.pyx":257
  *     def __rdiv__(self, other): return GF2int.__truediv__(other, self) # for Python 2.x
  * 
  *     def __repr__(GF2int self):             # <<<<<<<<<<<<<<
@@ -5353,19 +5356,19 @@ static PyObject *__pyx_pf_3cff_6GF2int_32__rdiv__(struct __pyx_obj_3cff_GF2int *
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cff_6GF2int_35__repr__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_3cff_6GF2int_35__repr__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_35__repr__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_35__repr__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__repr__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3cff_6GF2int_34__repr__(((struct __pyx_obj_3cff_GF2int *)__pyx_v_self));
+  __pyx_r = __pyx_pf_14unireedsolomon_3cff_6GF2int_34__repr__(((struct __pyx_obj_14unireedsolomon_3cff_GF2int *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cff_6GF2int_34__repr__(struct __pyx_obj_3cff_GF2int *__pyx_v_self) {
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_34__repr__(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_self) {
   PyObject *__pyx_v_n = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -5376,7 +5379,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_34__repr__(struct __pyx_obj_3cff_GF2int *
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__repr__", 0);
 
-  /* "cff.pyx":258
+  /* "unireedsolomon\cff.pyx":258
  * 
  *     def __repr__(GF2int self):
  *         n = self.__class__.__name__             # <<<<<<<<<<<<<<
@@ -5391,7 +5394,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_34__repr__(struct __pyx_obj_3cff_GF2int *
   __pyx_v_n = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "cff.pyx":259
+  /* "unireedsolomon\cff.pyx":259
  *     def __repr__(GF2int self):
  *         n = self.__class__.__name__
  *         return "%s(%r)" % (n, int(self))             # <<<<<<<<<<<<<<
@@ -5416,7 +5419,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_34__repr__(struct __pyx_obj_3cff_GF2int *
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "cff.pyx":257
+  /* "unireedsolomon\cff.pyx":257
  *     def __rdiv__(self, other): return GF2int.__truediv__(other, self) # for Python 2.x
  * 
  *     def __repr__(GF2int self):             # <<<<<<<<<<<<<<
@@ -5428,7 +5431,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_34__repr__(struct __pyx_obj_3cff_GF2int *
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_AddTraceback("cff.GF2int.__repr__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int.__repr__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_n);
@@ -5437,7 +5440,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_34__repr__(struct __pyx_obj_3cff_GF2int *
   return __pyx_r;
 }
 
-/* "cff.pyx":261
+/* "unireedsolomon\cff.pyx":261
  *         return "%s(%r)" % (n, int(self))
  * 
  *     def __str__(GF2int self):             # <<<<<<<<<<<<<<
@@ -5446,19 +5449,19 @@ static PyObject *__pyx_pf_3cff_6GF2int_34__repr__(struct __pyx_obj_3cff_GF2int *
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cff_6GF2int_37__str__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_3cff_6GF2int_37__str__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_37__str__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_37__str__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__str__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3cff_6GF2int_36__str__(((struct __pyx_obj_3cff_GF2int *)__pyx_v_self));
+  __pyx_r = __pyx_pf_14unireedsolomon_3cff_6GF2int_36__str__(((struct __pyx_obj_14unireedsolomon_3cff_GF2int *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cff_6GF2int_36__str__(struct __pyx_obj_3cff_GF2int *__pyx_v_self) {
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_36__str__(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -5468,7 +5471,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_36__str__(struct __pyx_obj_3cff_GF2int *_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__str__", 0);
 
-  /* "cff.pyx":262
+  /* "unireedsolomon\cff.pyx":262
  * 
  *     def __str__(GF2int self):
  *         return "%i" % int(self)             # <<<<<<<<<<<<<<
@@ -5485,7 +5488,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_36__str__(struct __pyx_obj_3cff_GF2int *_
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "cff.pyx":261
+  /* "unireedsolomon\cff.pyx":261
  *         return "%s(%r)" % (n, int(self))
  * 
  *     def __str__(GF2int self):             # <<<<<<<<<<<<<<
@@ -5497,7 +5500,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_36__str__(struct __pyx_obj_3cff_GF2int *_
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_AddTraceback("cff.GF2int.__str__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int.__str__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -5505,7 +5508,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_36__str__(struct __pyx_obj_3cff_GF2int *_
   return __pyx_r;
 }
 
-/* "cff.pyx":264
+/* "unireedsolomon\cff.pyx":264
  *         return "%i" % int(self)
  * 
  *     cpdef _to_binpoly(GF2int x):             # <<<<<<<<<<<<<<
@@ -5513,8 +5516,8 @@ static PyObject *__pyx_pf_3cff_6GF2int_36__str__(struct __pyx_obj_3cff_GF2int *_
  *         if x <= 0: return "0"
  */
 
-static PyObject *__pyx_pw_3cff_6GF2int_39_to_binpoly(PyObject *__pyx_v_x, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_f_3cff_6GF2int__to_binpoly(struct __pyx_obj_3cff_GF2int *__pyx_v_x, int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_39_to_binpoly(PyObject *__pyx_v_x, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_f_14unireedsolomon_3cff_6GF2int__to_binpoly(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_x, int __pyx_skip_dispatch) {
   PyObject *__pyx_v_b = NULL;
   PyObject *__pyx_v_c = NULL;
   PyObject *__pyx_v_i = NULL;
@@ -5539,7 +5542,7 @@ static PyObject *__pyx_f_3cff_6GF2int__to_binpoly(struct __pyx_obj_3cff_GF2int *
   else if (unlikely(Py_TYPE(((PyObject *)__pyx_v_x))->tp_dictoffset != 0)) {
     __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_x), __pyx_n_s_to_binpoly); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 264; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_3cff_6GF2int_39_to_binpoly)) {
+    if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_14unireedsolomon_3cff_6GF2int_39_to_binpoly)) {
       __Pyx_XDECREF(__pyx_r);
       __Pyx_INCREF(__pyx_t_1);
       __pyx_t_3 = __pyx_t_1; __pyx_t_4 = NULL;
@@ -5568,7 +5571,7 @@ static PyObject *__pyx_f_3cff_6GF2int__to_binpoly(struct __pyx_obj_3cff_GF2int *
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   }
 
-  /* "cff.pyx":266
+  /* "unireedsolomon\cff.pyx":266
  *     cpdef _to_binpoly(GF2int x):
  *         '''Convert a Galois Field's number into a nice polynomial'''
  *         if x <= 0: return "0"             # <<<<<<<<<<<<<<
@@ -5585,7 +5588,7 @@ static PyObject *__pyx_f_3cff_6GF2int__to_binpoly(struct __pyx_obj_3cff_GF2int *
     goto __pyx_L0;
   }
 
-  /* "cff.pyx":267
+  /* "unireedsolomon\cff.pyx":267
  *         '''Convert a Galois Field's number into a nice polynomial'''
  *         if x <= 0: return "0"
  *         b = 1 # init to 2^0 = 1             # <<<<<<<<<<<<<<
@@ -5595,7 +5598,7 @@ static PyObject *__pyx_f_3cff_6GF2int__to_binpoly(struct __pyx_obj_3cff_GF2int *
   __Pyx_INCREF(__pyx_int_1);
   __pyx_v_b = __pyx_int_1;
 
-  /* "cff.pyx":268
+  /* "unireedsolomon\cff.pyx":268
  *         if x <= 0: return "0"
  *         b = 1 # init to 2^0 = 1
  *         c = [] # stores the degrees of each term of the polynomials             # <<<<<<<<<<<<<<
@@ -5607,7 +5610,7 @@ static PyObject *__pyx_f_3cff_6GF2int__to_binpoly(struct __pyx_obj_3cff_GF2int *
   __pyx_v_c = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "cff.pyx":269
+  /* "unireedsolomon\cff.pyx":269
  *         b = 1 # init to 2^0 = 1
  *         c = [] # stores the degrees of each term of the polynomials
  *         i = 0 # counter for b = 2^i             # <<<<<<<<<<<<<<
@@ -5617,7 +5620,7 @@ static PyObject *__pyx_f_3cff_6GF2int__to_binpoly(struct __pyx_obj_3cff_GF2int *
   __Pyx_INCREF(__pyx_int_0);
   __pyx_v_i = __pyx_int_0;
 
-  /* "cff.pyx":270
+  /* "unireedsolomon\cff.pyx":270
  *         c = [] # stores the degrees of each term of the polynomials
  *         i = 0 # counter for b = 2^i
  *         while x > 0:             # <<<<<<<<<<<<<<
@@ -5630,7 +5633,7 @@ static PyObject *__pyx_f_3cff_6GF2int__to_binpoly(struct __pyx_obj_3cff_GF2int *
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     if (!__pyx_t_5) break;
 
-    /* "cff.pyx":271
+    /* "unireedsolomon\cff.pyx":271
  *         i = 0 # counter for b = 2^i
  *         while x > 0:
  *             b = (1 << i) # generate a number power of 2: 2^0, 2^1, 2^2, ..., 2^i. Equivalent to b = 2^i             # <<<<<<<<<<<<<<
@@ -5642,7 +5645,7 @@ static PyObject *__pyx_f_3cff_6GF2int__to_binpoly(struct __pyx_obj_3cff_GF2int *
     __Pyx_DECREF_SET(__pyx_v_b, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "cff.pyx":272
+    /* "unireedsolomon\cff.pyx":272
  *         while x > 0:
  *             b = (1 << i) # generate a number power of 2: 2^0, 2^1, 2^2, ..., 2^i. Equivalent to b = 2^i
  *             if x & b : # then check if x is divisible by the power of 2. Equivalent to x % 2^i == 0             # <<<<<<<<<<<<<<
@@ -5655,7 +5658,7 @@ static PyObject *__pyx_f_3cff_6GF2int__to_binpoly(struct __pyx_obj_3cff_GF2int *
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     if (__pyx_t_5) {
 
-      /* "cff.pyx":274
+      /* "unireedsolomon\cff.pyx":274
  *             if x & b : # then check if x is divisible by the power of 2. Equivalent to x % 2^i == 0
  *                 # If yes, then...
  *                 c.append(i) # append this power (i, the exponent, gives us the coefficient)             # <<<<<<<<<<<<<<
@@ -5664,7 +5667,7 @@ static PyObject *__pyx_f_3cff_6GF2int__to_binpoly(struct __pyx_obj_3cff_GF2int *
  */
       __pyx_t_6 = __Pyx_PyList_Append(__pyx_v_c, __pyx_v_i); if (unlikely(__pyx_t_6 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 274; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-      /* "cff.pyx":275
+      /* "unireedsolomon\cff.pyx":275
  *                 # If yes, then...
  *                 c.append(i) # append this power (i, the exponent, gives us the coefficient)
  *                 x ^= b # and compute the remainder of x / b             # <<<<<<<<<<<<<<
@@ -5673,14 +5676,14 @@ static PyObject *__pyx_f_3cff_6GF2int__to_binpoly(struct __pyx_obj_3cff_GF2int *
  */
       __pyx_t_1 = PyNumber_InPlaceXor(((PyObject *)__pyx_v_x), __pyx_v_b); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 275; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_1);
-      if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_3cff_GF2int))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 275; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      __Pyx_DECREF_SET(__pyx_v_x, ((struct __pyx_obj_3cff_GF2int *)__pyx_t_1));
+      if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_14unireedsolomon_3cff_GF2int))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 275; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_DECREF_SET(__pyx_v_x, ((struct __pyx_obj_14unireedsolomon_3cff_GF2int *)__pyx_t_1));
       __pyx_t_1 = 0;
       goto __pyx_L6;
     }
     __pyx_L6:;
 
-    /* "cff.pyx":276
+    /* "unireedsolomon\cff.pyx":276
  *                 c.append(i) # append this power (i, the exponent, gives us the coefficient)
  *                 x ^= b # and compute the remainder of x / b
  *             i = i+1 # increment to compute the next power of 2             # <<<<<<<<<<<<<<
@@ -5693,12 +5696,12 @@ static PyObject *__pyx_f_3cff_6GF2int__to_binpoly(struct __pyx_obj_3cff_GF2int *
     __pyx_t_1 = 0;
   }
 
-  /* "cff.pyx":277
+  /* "unireedsolomon\cff.pyx":277
  *                 x ^= b # and compute the remainder of x / b
  *             i = i+1 # increment to compute the next power of 2
  *         return " + ".join(["x^%i" % y for y in c[::-1]]) # print a nice binary polynomial             # <<<<<<<<<<<<<<
  * 
- *     cpdef multiply(GF2int x, int y, int prim=0x11b, int field_charac_full=256):
+ *     cpdef multiply(GF2int x, int y, int prim=0x11b, int field_charac_full=256, int carryless=True):
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 277; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -5730,7 +5733,7 @@ static PyObject *__pyx_f_3cff_6GF2int__to_binpoly(struct __pyx_obj_3cff_GF2int *
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "cff.pyx":264
+  /* "unireedsolomon\cff.pyx":264
  *         return "%i" % int(self)
  * 
  *     cpdef _to_binpoly(GF2int x):             # <<<<<<<<<<<<<<
@@ -5744,7 +5747,7 @@ static PyObject *__pyx_f_3cff_6GF2int__to_binpoly(struct __pyx_obj_3cff_GF2int *
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_AddTraceback("cff.GF2int._to_binpoly", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int._to_binpoly", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_b);
@@ -5758,20 +5761,20 @@ static PyObject *__pyx_f_3cff_6GF2int__to_binpoly(struct __pyx_obj_3cff_GF2int *
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cff_6GF2int_39_to_binpoly(PyObject *__pyx_v_x, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_3cff_6GF2int_38_to_binpoly[] = "Convert a Galois Field's number into a nice polynomial";
-static PyObject *__pyx_pw_3cff_6GF2int_39_to_binpoly(PyObject *__pyx_v_x, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_39_to_binpoly(PyObject *__pyx_v_x, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_14unireedsolomon_3cff_6GF2int_38_to_binpoly[] = "Convert a Galois Field's number into a nice polynomial";
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_39_to_binpoly(PyObject *__pyx_v_x, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("_to_binpoly (wrapper)", 0);
-  __pyx_r = __pyx_pf_3cff_6GF2int_38_to_binpoly(((struct __pyx_obj_3cff_GF2int *)__pyx_v_x));
+  __pyx_r = __pyx_pf_14unireedsolomon_3cff_6GF2int_38_to_binpoly(((struct __pyx_obj_14unireedsolomon_3cff_GF2int *)__pyx_v_x));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cff_6GF2int_38_to_binpoly(struct __pyx_obj_3cff_GF2int *__pyx_v_x) {
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_38_to_binpoly(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_x) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -5780,7 +5783,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_38_to_binpoly(struct __pyx_obj_3cff_GF2in
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_to_binpoly", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_3cff_6GF2int__to_binpoly(__pyx_v_x, 1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 264; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_f_14unireedsolomon_3cff_6GF2int__to_binpoly(__pyx_v_x, 1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 264; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -5789,7 +5792,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_38_to_binpoly(struct __pyx_obj_3cff_GF2in
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cff.GF2int._to_binpoly", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int._to_binpoly", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -5797,18 +5800,19 @@ static PyObject *__pyx_pf_3cff_6GF2int_38_to_binpoly(struct __pyx_obj_3cff_GF2in
   return __pyx_r;
 }
 
-/* "cff.pyx":279
+/* "unireedsolomon\cff.pyx":279
  *         return " + ".join(["x^%i" % y for y in c[::-1]]) # print a nice binary polynomial
  * 
- *     cpdef multiply(GF2int x, int y, int prim=0x11b, int field_charac_full=256):             # <<<<<<<<<<<<<<
+ *     cpdef multiply(GF2int x, int y, int prim=0x11b, int field_charac_full=256, int carryless=True):             # <<<<<<<<<<<<<<
  *         '''A slow multiply method. This method gives the same results as the
  *         other __mul__ method but without needing precomputed tables,
  */
 
-static PyObject *__pyx_pw_3cff_6GF2int_41multiply(PyObject *__pyx_v_x, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_f_3cff_6GF2int_multiply(struct __pyx_obj_3cff_GF2int *__pyx_v_x, int __pyx_v_y, int __pyx_skip_dispatch, struct __pyx_opt_args_3cff_6GF2int_multiply *__pyx_optional_args) {
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_41multiply(PyObject *__pyx_v_x, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_f_14unireedsolomon_3cff_6GF2int_multiply(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_x, int __pyx_v_y, int __pyx_skip_dispatch, struct __pyx_opt_args_14unireedsolomon_3cff_6GF2int_multiply *__pyx_optional_args) {
   int __pyx_v_prim = ((int)0x11b);
   int __pyx_v_field_charac_full = ((int)256);
+  int __pyx_v_carryless = ((int)1);
   PyObject *__pyx_v_r = NULL;
   PyObject *__pyx_v_a = NULL;
   PyObject *__pyx_v_b = NULL;
@@ -5821,10 +5825,11 @@ static PyObject *__pyx_f_3cff_6GF2int_multiply(struct __pyx_obj_3cff_GF2int *__p
   PyObject *__pyx_t_5 = NULL;
   PyObject *__pyx_t_6 = NULL;
   PyObject *__pyx_t_7 = NULL;
-  Py_ssize_t __pyx_t_8;
-  PyObject *__pyx_t_9 = NULL;
-  int __pyx_t_10;
+  PyObject *__pyx_t_8 = NULL;
+  Py_ssize_t __pyx_t_9;
+  PyObject *__pyx_t_10 = NULL;
   int __pyx_t_11;
+  int __pyx_t_12;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -5834,6 +5839,9 @@ static PyObject *__pyx_f_3cff_6GF2int_multiply(struct __pyx_obj_3cff_GF2int *__p
       __pyx_v_prim = __pyx_optional_args->prim;
       if (__pyx_optional_args->__pyx_n > 1) {
         __pyx_v_field_charac_full = __pyx_optional_args->field_charac_full;
+        if (__pyx_optional_args->__pyx_n > 2) {
+          __pyx_v_carryless = __pyx_optional_args->carryless;
+        }
       }
     }
   }
@@ -5843,7 +5851,7 @@ static PyObject *__pyx_f_3cff_6GF2int_multiply(struct __pyx_obj_3cff_GF2int *__p
   else if (unlikely(Py_TYPE(((PyObject *)__pyx_v_x))->tp_dictoffset != 0)) {
     __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_x), __pyx_n_s_multiply); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 279; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_3cff_6GF2int_41multiply)) {
+    if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_14unireedsolomon_3cff_6GF2int_41multiply)) {
       __Pyx_XDECREF(__pyx_r);
       __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_y); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 279; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_3);
@@ -5851,37 +5859,42 @@ static PyObject *__pyx_f_3cff_6GF2int_multiply(struct __pyx_obj_3cff_GF2int *__p
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_field_charac_full); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 279; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_5);
+      __pyx_t_6 = __Pyx_PyInt_From_int(__pyx_v_carryless); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 279; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_6);
       __Pyx_INCREF(__pyx_t_1);
-      __pyx_t_6 = __pyx_t_1; __pyx_t_7 = NULL;
-      __pyx_t_8 = 0;
-      if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_6))) {
-        __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_6);
-        if (likely(__pyx_t_7)) {
-          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_6);
-          __Pyx_INCREF(__pyx_t_7);
+      __pyx_t_7 = __pyx_t_1; __pyx_t_8 = NULL;
+      __pyx_t_9 = 0;
+      if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_7))) {
+        __pyx_t_8 = PyMethod_GET_SELF(__pyx_t_7);
+        if (likely(__pyx_t_8)) {
+          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_7);
+          __Pyx_INCREF(__pyx_t_8);
           __Pyx_INCREF(function);
-          __Pyx_DECREF_SET(__pyx_t_6, function);
-          __pyx_t_8 = 1;
+          __Pyx_DECREF_SET(__pyx_t_7, function);
+          __pyx_t_9 = 1;
         }
       }
-      __pyx_t_9 = PyTuple_New(3+__pyx_t_8); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 279; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      __Pyx_GOTREF(__pyx_t_9);
-      if (__pyx_t_7) {
-        __Pyx_GIVEREF(__pyx_t_7); PyTuple_SET_ITEM(__pyx_t_9, 0, __pyx_t_7); __pyx_t_7 = NULL;
+      __pyx_t_10 = PyTuple_New(4+__pyx_t_9); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 279; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_10);
+      if (__pyx_t_8) {
+        __Pyx_GIVEREF(__pyx_t_8); PyTuple_SET_ITEM(__pyx_t_10, 0, __pyx_t_8); __pyx_t_8 = NULL;
       }
       __Pyx_GIVEREF(__pyx_t_3);
-      PyTuple_SET_ITEM(__pyx_t_9, 0+__pyx_t_8, __pyx_t_3);
+      PyTuple_SET_ITEM(__pyx_t_10, 0+__pyx_t_9, __pyx_t_3);
       __Pyx_GIVEREF(__pyx_t_4);
-      PyTuple_SET_ITEM(__pyx_t_9, 1+__pyx_t_8, __pyx_t_4);
+      PyTuple_SET_ITEM(__pyx_t_10, 1+__pyx_t_9, __pyx_t_4);
       __Pyx_GIVEREF(__pyx_t_5);
-      PyTuple_SET_ITEM(__pyx_t_9, 2+__pyx_t_8, __pyx_t_5);
+      PyTuple_SET_ITEM(__pyx_t_10, 2+__pyx_t_9, __pyx_t_5);
+      __Pyx_GIVEREF(__pyx_t_6);
+      PyTuple_SET_ITEM(__pyx_t_10, 3+__pyx_t_9, __pyx_t_6);
       __pyx_t_3 = 0;
       __pyx_t_4 = 0;
       __pyx_t_5 = 0;
-      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_9, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 279; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = 0;
+      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_10, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 279; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_2);
-      __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+      __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __pyx_r = __pyx_t_2;
       __pyx_t_2 = 0;
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -5890,7 +5903,7 @@ static PyObject *__pyx_f_3cff_6GF2int_multiply(struct __pyx_obj_3cff_GF2int *__p
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   }
 
-  /* "cff.pyx":292
+  /* "unireedsolomon\cff.pyx":292
  *         '''
  * 
  *         r = 0             # <<<<<<<<<<<<<<
@@ -5900,7 +5913,7 @@ static PyObject *__pyx_f_3cff_6GF2int_multiply(struct __pyx_obj_3cff_GF2int *__p
   __Pyx_INCREF(__pyx_int_0);
   __pyx_v_r = __pyx_int_0;
 
-  /* "cff.pyx":293
+  /* "unireedsolomon\cff.pyx":293
  * 
  *         r = 0
  *         a = int(x)             # <<<<<<<<<<<<<<
@@ -5912,12 +5925,12 @@ static PyObject *__pyx_f_3cff_6GF2int_multiply(struct __pyx_obj_3cff_GF2int *__p
   __pyx_v_a = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "cff.pyx":294
+  /* "unireedsolomon\cff.pyx":294
  *         r = 0
  *         a = int(x)
  *         b = int(y)             # <<<<<<<<<<<<<<
  *         while b: # while b is not 0
- *             if b & 1: r = r ^ a if prim > 0 else r + a # b is odd, then add the corresponding a to r (the sum of all a's corresponding to odd b's will give the final product). Note that since we're in GF(2), the addition is in fact an XOR (very important because in GF(2) the multiplication and additions are carry-less, thus it changes the result!).
+ *             if b & 1: r = r ^ a if carryless else r + a # b is odd, then add the corresponding a to r (the sum of all a's corresponding to odd b's will give the final product). Note that since we're in GF(2), the addition is in fact an XOR (very important because in GF(2) the multiplication and additions are carry-less, thus it changes the result!).
  */
   __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_y); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
@@ -5932,30 +5945,30 @@ static PyObject *__pyx_f_3cff_6GF2int_multiply(struct __pyx_obj_3cff_GF2int *__p
   __pyx_v_b = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "cff.pyx":295
+  /* "unireedsolomon\cff.pyx":295
  *         a = int(x)
  *         b = int(y)
  *         while b: # while b is not 0             # <<<<<<<<<<<<<<
- *             if b & 1: r = r ^ a if prim > 0 else r + a # b is odd, then add the corresponding a to r (the sum of all a's corresponding to odd b's will give the final product). Note that since we're in GF(2), the addition is in fact an XOR (very important because in GF(2) the multiplication and additions are carry-less, thus it changes the result!).
+ *             if b & 1: r = r ^ a if carryless else r + a # b is odd, then add the corresponding a to r (the sum of all a's corresponding to odd b's will give the final product). Note that since we're in GF(2), the addition is in fact an XOR (very important because in GF(2) the multiplication and additions are carry-less, thus it changes the result!).
  *             b = b >> 1 # equivalent to b // 2
  */
   while (1) {
-    __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_v_b); if (unlikely(__pyx_t_10 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 295; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    if (!__pyx_t_10) break;
+    __pyx_t_11 = __Pyx_PyObject_IsTrue(__pyx_v_b); if (unlikely(__pyx_t_11 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 295; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (!__pyx_t_11) break;
 
-    /* "cff.pyx":296
+    /* "unireedsolomon\cff.pyx":296
  *         b = int(y)
  *         while b: # while b is not 0
- *             if b & 1: r = r ^ a if prim > 0 else r + a # b is odd, then add the corresponding a to r (the sum of all a's corresponding to odd b's will give the final product). Note that since we're in GF(2), the addition is in fact an XOR (very important because in GF(2) the multiplication and additions are carry-less, thus it changes the result!).             # <<<<<<<<<<<<<<
+ *             if b & 1: r = r ^ a if carryless else r + a # b is odd, then add the corresponding a to r (the sum of all a's corresponding to odd b's will give the final product). Note that since we're in GF(2), the addition is in fact an XOR (very important because in GF(2) the multiplication and additions are carry-less, thus it changes the result!).             # <<<<<<<<<<<<<<
  *             b = b >> 1 # equivalent to b // 2
  *             a = a << 1 # equivalent to a*2
  */
     __pyx_t_1 = PyNumber_And(__pyx_v_b, __pyx_int_1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 296; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_10 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 296; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_11 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_11 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 296; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    if (__pyx_t_10) {
-      if (((__pyx_v_prim > 0) != 0)) {
+    if (__pyx_t_11) {
+      if ((__pyx_v_carryless != 0)) {
         __pyx_t_2 = PyNumber_Xor(__pyx_v_r, __pyx_v_a); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 296; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_2);
         __pyx_t_1 = __pyx_t_2;
@@ -5972,23 +5985,23 @@ static PyObject *__pyx_f_3cff_6GF2int_multiply(struct __pyx_obj_3cff_GF2int *__p
     }
     __pyx_L5:;
 
-    /* "cff.pyx":297
+    /* "unireedsolomon\cff.pyx":297
  *         while b: # while b is not 0
- *             if b & 1: r = r ^ a if prim > 0 else r + a # b is odd, then add the corresponding a to r (the sum of all a's corresponding to odd b's will give the final product). Note that since we're in GF(2), the addition is in fact an XOR (very important because in GF(2) the multiplication and additions are carry-less, thus it changes the result!).
+ *             if b & 1: r = r ^ a if carryless else r + a # b is odd, then add the corresponding a to r (the sum of all a's corresponding to odd b's will give the final product). Note that since we're in GF(2), the addition is in fact an XOR (very important because in GF(2) the multiplication and additions are carry-less, thus it changes the result!).
  *             b = b >> 1 # equivalent to b // 2             # <<<<<<<<<<<<<<
  *             a = a << 1 # equivalent to a*2
- *             if prim > 0 and a & field_charac_full: a = a ^ prim # GF modulo: if a >= 256 then apply modular reduction using the primitive polynomial (we just substract, but since the primitive number can be above 256 then we directly XOR). If you comment this line out, you get the same result as standard multiplication on integers.
+ *             if prim > 0 and a & field_charac_full: a = a ^ prim # GF modulo: if a >= 256 then apply modular reduction using the primitive polynomial (we just substract, but since the primitive number can be above 256 then we directly XOR).
  */
     __pyx_t_1 = PyNumber_Rshift(__pyx_v_b, __pyx_int_1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 297; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF_SET(__pyx_v_b, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "cff.pyx":298
- *             if b & 1: r = r ^ a if prim > 0 else r + a # b is odd, then add the corresponding a to r (the sum of all a's corresponding to odd b's will give the final product). Note that since we're in GF(2), the addition is in fact an XOR (very important because in GF(2) the multiplication and additions are carry-less, thus it changes the result!).
+    /* "unireedsolomon\cff.pyx":298
+ *             if b & 1: r = r ^ a if carryless else r + a # b is odd, then add the corresponding a to r (the sum of all a's corresponding to odd b's will give the final product). Note that since we're in GF(2), the addition is in fact an XOR (very important because in GF(2) the multiplication and additions are carry-less, thus it changes the result!).
  *             b = b >> 1 # equivalent to b // 2
  *             a = a << 1 # equivalent to a*2             # <<<<<<<<<<<<<<
- *             if prim > 0 and a & field_charac_full: a = a ^ prim # GF modulo: if a >= 256 then apply modular reduction using the primitive polynomial (we just substract, but since the primitive number can be above 256 then we directly XOR). If you comment this line out, you get the same result as standard multiplication on integers.
+ *             if prim > 0 and a & field_charac_full: a = a ^ prim # GF modulo: if a >= 256 then apply modular reduction using the primitive polynomial (we just substract, but since the primitive number can be above 256 then we directly XOR).
  * 
  */
     __pyx_t_1 = PyNumber_Lshift(__pyx_v_a, __pyx_int_1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 298; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -5996,17 +6009,17 @@ static PyObject *__pyx_f_3cff_6GF2int_multiply(struct __pyx_obj_3cff_GF2int *__p
     __Pyx_DECREF_SET(__pyx_v_a, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "cff.pyx":299
+    /* "unireedsolomon\cff.pyx":299
  *             b = b >> 1 # equivalent to b // 2
  *             a = a << 1 # equivalent to a*2
- *             if prim > 0 and a & field_charac_full: a = a ^ prim # GF modulo: if a >= 256 then apply modular reduction using the primitive polynomial (we just substract, but since the primitive number can be above 256 then we directly XOR). If you comment this line out, you get the same result as standard multiplication on integers.             # <<<<<<<<<<<<<<
+ *             if prim > 0 and a & field_charac_full: a = a ^ prim # GF modulo: if a >= 256 then apply modular reduction using the primitive polynomial (we just substract, but since the primitive number can be above 256 then we directly XOR).             # <<<<<<<<<<<<<<
  * 
  *         return GF2int(r)
  */
-    __pyx_t_11 = ((__pyx_v_prim > 0) != 0);
-    if (__pyx_t_11) {
+    __pyx_t_12 = ((__pyx_v_prim > 0) != 0);
+    if (__pyx_t_12) {
     } else {
-      __pyx_t_10 = __pyx_t_11;
+      __pyx_t_11 = __pyx_t_12;
       goto __pyx_L7_bool_binop_done;
     }
     __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_field_charac_full); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 299; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -6014,11 +6027,11 @@ static PyObject *__pyx_f_3cff_6GF2int_multiply(struct __pyx_obj_3cff_GF2int *__p
     __pyx_t_2 = PyNumber_And(__pyx_v_a, __pyx_t_1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 299; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_11 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_11 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 299; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_12 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_12 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 299; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_10 = __pyx_t_11;
+    __pyx_t_11 = __pyx_t_12;
     __pyx_L7_bool_binop_done:;
-    if (__pyx_t_10) {
+    if (__pyx_t_11) {
       __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_prim); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 299; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_1 = PyNumber_Xor(__pyx_v_a, __pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 299; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -6031,8 +6044,8 @@ static PyObject *__pyx_f_3cff_6GF2int_multiply(struct __pyx_obj_3cff_GF2int *__p
     __pyx_L6:;
   }
 
-  /* "cff.pyx":301
- *             if prim > 0 and a & field_charac_full: a = a ^ prim # GF modulo: if a >= 256 then apply modular reduction using the primitive polynomial (we just substract, but since the primitive number can be above 256 then we directly XOR). If you comment this line out, you get the same result as standard multiplication on integers.
+  /* "unireedsolomon\cff.pyx":301
+ *             if prim > 0 and a & field_charac_full: a = a ^ prim # GF modulo: if a >= 256 then apply modular reduction using the primitive polynomial (we just substract, but since the primitive number can be above 256 then we directly XOR).
  * 
  *         return GF2int(r)             # <<<<<<<<<<<<<<
  * 
@@ -6044,17 +6057,17 @@ static PyObject *__pyx_f_3cff_6GF2int_multiply(struct __pyx_obj_3cff_GF2int *__p
   __Pyx_INCREF(__pyx_v_r);
   __Pyx_GIVEREF(__pyx_v_r);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_v_r);
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)((PyObject*)__pyx_ptype_3cff_GF2int)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 301; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)((PyObject*)__pyx_ptype_14unireedsolomon_3cff_GF2int)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 301; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "cff.pyx":279
+  /* "unireedsolomon\cff.pyx":279
  *         return " + ".join(["x^%i" % y for y in c[::-1]]) # print a nice binary polynomial
  * 
- *     cpdef multiply(GF2int x, int y, int prim=0x11b, int field_charac_full=256):             # <<<<<<<<<<<<<<
+ *     cpdef multiply(GF2int x, int y, int prim=0x11b, int field_charac_full=256, int carryless=True):             # <<<<<<<<<<<<<<
  *         '''A slow multiply method. This method gives the same results as the
  *         other __mul__ method but without needing precomputed tables,
  */
@@ -6068,8 +6081,9 @@ static PyObject *__pyx_f_3cff_6GF2int_multiply(struct __pyx_obj_3cff_GF2int *__p
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_7);
-  __Pyx_XDECREF(__pyx_t_9);
-  __Pyx_AddTraceback("cff.GF2int.multiply", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_XDECREF(__pyx_t_8);
+  __Pyx_XDECREF(__pyx_t_10);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int.multiply", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_r);
@@ -6081,12 +6095,13 @@ static PyObject *__pyx_f_3cff_6GF2int_multiply(struct __pyx_obj_3cff_GF2int *__p
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cff_6GF2int_41multiply(PyObject *__pyx_v_x, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_3cff_6GF2int_40multiply[] = "A slow multiply method. This method gives the same results as the\n        other __mul__ method but without needing precomputed tables,\n        thus it can be used to generate those tables.\n\n        If prim is set to 0, the function produces the result of a standard multiplication of integers (outside of a finite field, ie, no modular reduction and no carry-less operations).\n\n        This procedure is called Russian Peasant Multiplication algorithm, which is just a general algorithm to multiply two integers together.\n        The only two differences that you need to account for when doing multiplication in a finite field (as opposed to just integers) are:\n        1- carry-less addition and substraction (XOR in GF(2^p))\n        2- modular reduction (to avoid duplicate values in the field) using a prime polynomial\n        ";
-static PyObject *__pyx_pw_3cff_6GF2int_41multiply(PyObject *__pyx_v_x, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_41multiply(PyObject *__pyx_v_x, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_14unireedsolomon_3cff_6GF2int_40multiply[] = "A slow multiply method. This method gives the same results as the\n        other __mul__ method but without needing precomputed tables,\n        thus it can be used to generate those tables.\n\n        If prim is set to 0 and carryless=False, the function produces the result of a standard multiplication of integers (outside of a finite field, ie, no modular reduction and no carry-less operations).\n\n        This procedure is called Russian Peasant Multiplication algorithm, which is just a general algorithm to multiply two integers together.\n        The only two differences that you need to account for when doing multiplication in a finite field (as opposed to just integers) are:\n        1- carry-less addition and substraction (XOR in GF(2^p))\n        2- modular reduction (to avoid duplicate values in the field) using a prime polynomial\n        ";
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_41multiply(PyObject *__pyx_v_x, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   int __pyx_v_y;
   int __pyx_v_prim;
   int __pyx_v_field_charac_full;
+  int __pyx_v_carryless;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -6094,12 +6109,13 @@ static PyObject *__pyx_pw_3cff_6GF2int_41multiply(PyObject *__pyx_v_x, PyObject 
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("multiply (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_y,&__pyx_n_s_prim,&__pyx_n_s_field_charac_full,0};
-    PyObject* values[3] = {0,0,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_y,&__pyx_n_s_prim,&__pyx_n_s_field_charac_full,&__pyx_n_s_carryless,0};
+    PyObject* values[4] = {0,0,0,0};
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
       switch (pos_args) {
+        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
         case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
         case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
         case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
@@ -6121,12 +6137,18 @@ static PyObject *__pyx_pw_3cff_6GF2int_41multiply(PyObject *__pyx_v_x, PyObject 
           PyObject* value = PyDict_GetItem(__pyx_kwds, __pyx_n_s_field_charac_full);
           if (value) { values[2] = value; kw_args--; }
         }
+        case  3:
+        if (kw_args > 0) {
+          PyObject* value = PyDict_GetItem(__pyx_kwds, __pyx_n_s_carryless);
+          if (value) { values[3] = value; kw_args--; }
+        }
       }
       if (unlikely(kw_args > 0)) {
         if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "multiply") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 279; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
+        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
         case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
         case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
         case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
@@ -6145,36 +6167,42 @@ static PyObject *__pyx_pw_3cff_6GF2int_41multiply(PyObject *__pyx_v_x, PyObject 
     } else {
       __pyx_v_field_charac_full = ((int)256);
     }
+    if (values[3]) {
+      __pyx_v_carryless = __Pyx_PyInt_As_int(values[3]); if (unlikely((__pyx_v_carryless == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 279; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    } else {
+      __pyx_v_carryless = ((int)1);
+    }
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("multiply", 0, 1, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 279; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("multiply", 0, 1, 4, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 279; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cff.GF2int.multiply", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int.multiply", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_3cff_6GF2int_40multiply(((struct __pyx_obj_3cff_GF2int *)__pyx_v_x), __pyx_v_y, __pyx_v_prim, __pyx_v_field_charac_full);
+  __pyx_r = __pyx_pf_14unireedsolomon_3cff_6GF2int_40multiply(((struct __pyx_obj_14unireedsolomon_3cff_GF2int *)__pyx_v_x), __pyx_v_y, __pyx_v_prim, __pyx_v_field_charac_full, __pyx_v_carryless);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cff_6GF2int_40multiply(struct __pyx_obj_3cff_GF2int *__pyx_v_x, int __pyx_v_y, int __pyx_v_prim, int __pyx_v_field_charac_full) {
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_40multiply(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_x, int __pyx_v_y, int __pyx_v_prim, int __pyx_v_field_charac_full, int __pyx_v_carryless) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
-  struct __pyx_opt_args_3cff_6GF2int_multiply __pyx_t_2;
+  struct __pyx_opt_args_14unireedsolomon_3cff_6GF2int_multiply __pyx_t_2;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("multiply", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2.__pyx_n = 2;
+  __pyx_t_2.__pyx_n = 3;
   __pyx_t_2.prim = __pyx_v_prim;
   __pyx_t_2.field_charac_full = __pyx_v_field_charac_full;
-  __pyx_t_1 = __pyx_vtabptr_3cff_GF2int->multiply(__pyx_v_x, __pyx_v_y, 1, &__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 279; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2.carryless = __pyx_v_carryless;
+  __pyx_t_1 = __pyx_vtabptr_14unireedsolomon_3cff_GF2int->multiply(__pyx_v_x, __pyx_v_y, 1, &__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 279; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -6183,7 +6211,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_40multiply(struct __pyx_obj_3cff_GF2int *
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cff.GF2int.multiply", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int.multiply", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -6191,7 +6219,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_40multiply(struct __pyx_obj_3cff_GF2int *
   return __pyx_r;
 }
 
-/* "cff.pyx":303
+/* "unireedsolomon\cff.pyx":303
  *         return GF2int(r)
  * 
  *     def multiply_slow(x, y, prim=0x11b):             # <<<<<<<<<<<<<<
@@ -6200,9 +6228,9 @@ static PyObject *__pyx_pf_3cff_6GF2int_40multiply(struct __pyx_obj_3cff_GF2int *
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cff_6GF2int_43multiply_slow(PyObject *__pyx_v_x, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_3cff_6GF2int_42multiply_slow[] = "Another equivalent (but even slower) way to compute multiplication in Galois Fields without using a precomputed look-up table.\n        This is the form you will most often see in academic literature, by using the standard carry-less multiplication + modular reduction using an irreducible prime polynomial.";
-static PyObject *__pyx_pw_3cff_6GF2int_43multiply_slow(PyObject *__pyx_v_x, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_43multiply_slow(PyObject *__pyx_v_x, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_14unireedsolomon_3cff_6GF2int_42multiply_slow[] = "Another equivalent (but even slower) way to compute multiplication in Galois Fields without using a precomputed look-up table.\n        This is the form you will most often see in academic literature, by using the standard carry-less multiplication + modular reduction using an irreducible prime polynomial.";
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_43multiply_slow(PyObject *__pyx_v_x, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_y = 0;
   PyObject *__pyx_v_prim = 0;
   int __pyx_lineno = 0;
@@ -6253,18 +6281,18 @@ static PyObject *__pyx_pw_3cff_6GF2int_43multiply_slow(PyObject *__pyx_v_x, PyOb
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("multiply_slow", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 303; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cff.GF2int.multiply_slow", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int.multiply_slow", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_3cff_6GF2int_42multiply_slow(((struct __pyx_obj_3cff_GF2int *)__pyx_v_x), __pyx_v_y, __pyx_v_prim);
+  __pyx_r = __pyx_pf_14unireedsolomon_3cff_6GF2int_42multiply_slow(((struct __pyx_obj_14unireedsolomon_3cff_GF2int *)__pyx_v_x), __pyx_v_y, __pyx_v_prim);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "cff.pyx":308
+/* "unireedsolomon\cff.pyx":308
  * 
  *         ### Define bitwise carry-less operations as inner functions ###
  *         def cl_mult(x, y):             # <<<<<<<<<<<<<<
@@ -6273,10 +6301,10 @@ static PyObject *__pyx_pw_3cff_6GF2int_43multiply_slow(PyObject *__pyx_v_x, PyOb
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cff_6GF2int_13multiply_slow_1cl_mult(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_3cff_6GF2int_13multiply_slow_cl_mult[] = "Bitwise carry-less multiplication on integers";
-static PyMethodDef __pyx_mdef_3cff_6GF2int_13multiply_slow_1cl_mult = {"cl_mult", (PyCFunction)__pyx_pw_3cff_6GF2int_13multiply_slow_1cl_mult, METH_VARARGS|METH_KEYWORDS, __pyx_doc_3cff_6GF2int_13multiply_slow_cl_mult};
-static PyObject *__pyx_pw_3cff_6GF2int_13multiply_slow_1cl_mult(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_13multiply_slow_1cl_mult(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_14unireedsolomon_3cff_6GF2int_13multiply_slow_cl_mult[] = "Bitwise carry-less multiplication on integers";
+static PyMethodDef __pyx_mdef_14unireedsolomon_3cff_6GF2int_13multiply_slow_1cl_mult = {"cl_mult", (PyCFunction)__pyx_pw_14unireedsolomon_3cff_6GF2int_13multiply_slow_1cl_mult, METH_VARARGS|METH_KEYWORDS, __pyx_doc_14unireedsolomon_3cff_6GF2int_13multiply_slow_cl_mult};
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_13multiply_slow_1cl_mult(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_x = 0;
   PyObject *__pyx_v_y = 0;
   int __pyx_lineno = 0;
@@ -6324,18 +6352,18 @@ static PyObject *__pyx_pw_3cff_6GF2int_13multiply_slow_1cl_mult(PyObject *__pyx_
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("cl_mult", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 308; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cff.GF2int.multiply_slow.cl_mult", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int.multiply_slow.cl_mult", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_3cff_6GF2int_13multiply_slow_cl_mult(__pyx_self, __pyx_v_x, __pyx_v_y);
+  __pyx_r = __pyx_pf_14unireedsolomon_3cff_6GF2int_13multiply_slow_cl_mult(__pyx_self, __pyx_v_x, __pyx_v_y);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cff_6GF2int_13multiply_slow_cl_mult(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_x, PyObject *__pyx_v_y) {
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_13multiply_slow_cl_mult(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_x, PyObject *__pyx_v_y) {
   PyObject *__pyx_v_z = NULL;
   PyObject *__pyx_v_i = NULL;
   PyObject *__pyx_r = NULL;
@@ -6348,7 +6376,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_13multiply_slow_cl_mult(CYTHON_UNUSED PyO
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("cl_mult", 0);
 
-  /* "cff.pyx":310
+  /* "unireedsolomon\cff.pyx":310
  *         def cl_mult(x, y):
  *             '''Bitwise carry-less multiplication on integers'''
  *             z = 0             # <<<<<<<<<<<<<<
@@ -6358,7 +6386,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_13multiply_slow_cl_mult(CYTHON_UNUSED PyO
   __Pyx_INCREF(__pyx_int_0);
   __pyx_v_z = __pyx_int_0;
 
-  /* "cff.pyx":311
+  /* "unireedsolomon\cff.pyx":311
  *             '''Bitwise carry-less multiplication on integers'''
  *             z = 0
  *             i = 0             # <<<<<<<<<<<<<<
@@ -6368,7 +6396,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_13multiply_slow_cl_mult(CYTHON_UNUSED PyO
   __Pyx_INCREF(__pyx_int_0);
   __pyx_v_i = __pyx_int_0;
 
-  /* "cff.pyx":312
+  /* "unireedsolomon\cff.pyx":312
  *             z = 0
  *             i = 0
  *             while (y>>i) > 0:             # <<<<<<<<<<<<<<
@@ -6384,7 +6412,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_13multiply_slow_cl_mult(CYTHON_UNUSED PyO
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (!__pyx_t_3) break;
 
-    /* "cff.pyx":313
+    /* "unireedsolomon\cff.pyx":313
  *             i = 0
  *             while (y>>i) > 0:
  *                 if y & (1<<i):             # <<<<<<<<<<<<<<
@@ -6400,7 +6428,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_13multiply_slow_cl_mult(CYTHON_UNUSED PyO
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     if (__pyx_t_3) {
 
-      /* "cff.pyx":314
+      /* "unireedsolomon\cff.pyx":314
  *             while (y>>i) > 0:
  *                 if y & (1<<i):
  *                     z ^= x<<i             # <<<<<<<<<<<<<<
@@ -6418,7 +6446,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_13multiply_slow_cl_mult(CYTHON_UNUSED PyO
     }
     __pyx_L5:;
 
-    /* "cff.pyx":315
+    /* "unireedsolomon\cff.pyx":315
  *                 if y & (1<<i):
  *                     z ^= x<<i
  *                 i += 1             # <<<<<<<<<<<<<<
@@ -6431,7 +6459,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_13multiply_slow_cl_mult(CYTHON_UNUSED PyO
     __pyx_t_2 = 0;
   }
 
-  /* "cff.pyx":316
+  /* "unireedsolomon\cff.pyx":316
  *                     z ^= x<<i
  *                 i += 1
  *             return z             # <<<<<<<<<<<<<<
@@ -6443,7 +6471,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_13multiply_slow_cl_mult(CYTHON_UNUSED PyO
   __pyx_r = __pyx_v_z;
   goto __pyx_L0;
 
-  /* "cff.pyx":308
+  /* "unireedsolomon\cff.pyx":308
  * 
  *         ### Define bitwise carry-less operations as inner functions ###
  *         def cl_mult(x, y):             # <<<<<<<<<<<<<<
@@ -6455,7 +6483,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_13multiply_slow_cl_mult(CYTHON_UNUSED PyO
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_AddTraceback("cff.GF2int.multiply_slow.cl_mult", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int.multiply_slow.cl_mult", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_z);
@@ -6465,7 +6493,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_13multiply_slow_cl_mult(CYTHON_UNUSED PyO
   return __pyx_r;
 }
 
-/* "cff.pyx":318
+/* "unireedsolomon\cff.pyx":318
  *             return z
  * 
  *         def bit_length(n):             # <<<<<<<<<<<<<<
@@ -6474,21 +6502,21 @@ static PyObject *__pyx_pf_3cff_6GF2int_13multiply_slow_cl_mult(CYTHON_UNUSED PyO
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cff_6GF2int_13multiply_slow_3bit_length(PyObject *__pyx_self, PyObject *__pyx_v_n); /*proto*/
-static char __pyx_doc_3cff_6GF2int_13multiply_slow_2bit_length[] = "Compute the position of the most significant bit (1) of an integer. Equivalent to int.bit_length()";
-static PyMethodDef __pyx_mdef_3cff_6GF2int_13multiply_slow_3bit_length = {"bit_length", (PyCFunction)__pyx_pw_3cff_6GF2int_13multiply_slow_3bit_length, METH_O, __pyx_doc_3cff_6GF2int_13multiply_slow_2bit_length};
-static PyObject *__pyx_pw_3cff_6GF2int_13multiply_slow_3bit_length(PyObject *__pyx_self, PyObject *__pyx_v_n) {
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_13multiply_slow_3bit_length(PyObject *__pyx_self, PyObject *__pyx_v_n); /*proto*/
+static char __pyx_doc_14unireedsolomon_3cff_6GF2int_13multiply_slow_2bit_length[] = "Compute the position of the most significant bit (1) of an integer. Equivalent to int.bit_length()";
+static PyMethodDef __pyx_mdef_14unireedsolomon_3cff_6GF2int_13multiply_slow_3bit_length = {"bit_length", (PyCFunction)__pyx_pw_14unireedsolomon_3cff_6GF2int_13multiply_slow_3bit_length, METH_O, __pyx_doc_14unireedsolomon_3cff_6GF2int_13multiply_slow_2bit_length};
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_13multiply_slow_3bit_length(PyObject *__pyx_self, PyObject *__pyx_v_n) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("bit_length (wrapper)", 0);
-  __pyx_r = __pyx_pf_3cff_6GF2int_13multiply_slow_2bit_length(__pyx_self, ((PyObject *)__pyx_v_n));
+  __pyx_r = __pyx_pf_14unireedsolomon_3cff_6GF2int_13multiply_slow_2bit_length(__pyx_self, ((PyObject *)__pyx_v_n));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cff_6GF2int_13multiply_slow_2bit_length(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_n) {
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_13multiply_slow_2bit_length(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_n) {
   PyObject *__pyx_v_bits = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -6499,7 +6527,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_13multiply_slow_2bit_length(CYTHON_UNUSED
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("bit_length", 0);
 
-  /* "cff.pyx":320
+  /* "unireedsolomon\cff.pyx":320
  *         def bit_length(n):
  *             '''Compute the position of the most significant bit (1) of an integer. Equivalent to int.bit_length()'''
  *             bits = 0             # <<<<<<<<<<<<<<
@@ -6509,7 +6537,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_13multiply_slow_2bit_length(CYTHON_UNUSED
   __Pyx_INCREF(__pyx_int_0);
   __pyx_v_bits = __pyx_int_0;
 
-  /* "cff.pyx":321
+  /* "unireedsolomon\cff.pyx":321
  *             '''Compute the position of the most significant bit (1) of an integer. Equivalent to int.bit_length()'''
  *             bits = 0
  *             while n >> bits: bits += 1             # <<<<<<<<<<<<<<
@@ -6528,7 +6556,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_13multiply_slow_2bit_length(CYTHON_UNUSED
     __pyx_t_1 = 0;
   }
 
-  /* "cff.pyx":322
+  /* "unireedsolomon\cff.pyx":322
  *             bits = 0
  *             while n >> bits: bits += 1
  *             return bits             # <<<<<<<<<<<<<<
@@ -6540,7 +6568,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_13multiply_slow_2bit_length(CYTHON_UNUSED
   __pyx_r = __pyx_v_bits;
   goto __pyx_L0;
 
-  /* "cff.pyx":318
+  /* "unireedsolomon\cff.pyx":318
  *             return z
  * 
  *         def bit_length(n):             # <<<<<<<<<<<<<<
@@ -6551,7 +6579,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_13multiply_slow_2bit_length(CYTHON_UNUSED
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cff.GF2int.multiply_slow.bit_length", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int.multiply_slow.bit_length", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_bits);
@@ -6560,7 +6588,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_13multiply_slow_2bit_length(CYTHON_UNUSED
   return __pyx_r;
 }
 
-/* "cff.pyx":324
+/* "unireedsolomon\cff.pyx":324
  *             return bits
  * 
  *         def cl_div(dividend, divisor=None):             # <<<<<<<<<<<<<<
@@ -6569,10 +6597,10 @@ static PyObject *__pyx_pf_3cff_6GF2int_13multiply_slow_2bit_length(CYTHON_UNUSED
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cff_6GF2int_13multiply_slow_5cl_div(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_3cff_6GF2int_13multiply_slow_4cl_div[] = "Bitwise carry-less long division on integers and returns the remainder";
-static PyMethodDef __pyx_mdef_3cff_6GF2int_13multiply_slow_5cl_div = {"cl_div", (PyCFunction)__pyx_pw_3cff_6GF2int_13multiply_slow_5cl_div, METH_VARARGS|METH_KEYWORDS, __pyx_doc_3cff_6GF2int_13multiply_slow_4cl_div};
-static PyObject *__pyx_pw_3cff_6GF2int_13multiply_slow_5cl_div(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_13multiply_slow_5cl_div(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_14unireedsolomon_3cff_6GF2int_13multiply_slow_4cl_div[] = "Bitwise carry-less long division on integers and returns the remainder";
+static PyMethodDef __pyx_mdef_14unireedsolomon_3cff_6GF2int_13multiply_slow_5cl_div = {"cl_div", (PyCFunction)__pyx_pw_14unireedsolomon_3cff_6GF2int_13multiply_slow_5cl_div, METH_VARARGS|METH_KEYWORDS, __pyx_doc_14unireedsolomon_3cff_6GF2int_13multiply_slow_4cl_div};
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_13multiply_slow_5cl_div(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_dividend = 0;
   PyObject *__pyx_v_divisor = 0;
   int __pyx_lineno = 0;
@@ -6623,20 +6651,20 @@ static PyObject *__pyx_pw_3cff_6GF2int_13multiply_slow_5cl_div(PyObject *__pyx_s
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("cl_div", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 324; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cff.GF2int.multiply_slow.cl_div", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int.multiply_slow.cl_div", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_3cff_6GF2int_13multiply_slow_4cl_div(__pyx_self, __pyx_v_dividend, __pyx_v_divisor);
+  __pyx_r = __pyx_pf_14unireedsolomon_3cff_6GF2int_13multiply_slow_4cl_div(__pyx_self, __pyx_v_dividend, __pyx_v_divisor);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cff_6GF2int_13multiply_slow_4cl_div(PyObject *__pyx_self, PyObject *__pyx_v_dividend, PyObject *__pyx_v_divisor) {
-  struct __pyx_obj_3cff___pyx_scope_struct__multiply_slow *__pyx_cur_scope;
-  struct __pyx_obj_3cff___pyx_scope_struct__multiply_slow *__pyx_outer_scope;
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_13multiply_slow_4cl_div(PyObject *__pyx_self, PyObject *__pyx_v_dividend, PyObject *__pyx_v_divisor) {
+  struct __pyx_obj_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow *__pyx_cur_scope;
+  struct __pyx_obj_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow *__pyx_outer_scope;
   PyObject *__pyx_v_dl1 = NULL;
   PyObject *__pyx_v_dl2 = NULL;
   PyObject *__pyx_v_i = NULL;
@@ -6654,11 +6682,11 @@ static PyObject *__pyx_pf_3cff_6GF2int_13multiply_slow_4cl_div(PyObject *__pyx_s
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("cl_div", 0);
-  __pyx_outer_scope = (struct __pyx_obj_3cff___pyx_scope_struct__multiply_slow *) __Pyx_CyFunction_GetClosure(__pyx_self);
+  __pyx_outer_scope = (struct __pyx_obj_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow *) __Pyx_CyFunction_GetClosure(__pyx_self);
   __pyx_cur_scope = __pyx_outer_scope;
   __Pyx_INCREF(__pyx_v_dividend);
 
-  /* "cff.pyx":327
+  /* "unireedsolomon\cff.pyx":327
  *             '''Bitwise carry-less long division on integers and returns the remainder'''
  *             # Compute the position of the most significant bit for each integers
  *             dl1 = bit_length(dividend)             # <<<<<<<<<<<<<<
@@ -6666,12 +6694,12 @@ static PyObject *__pyx_pf_3cff_6GF2int_13multiply_slow_4cl_div(PyObject *__pyx_s
  *             # If the dividend is smaller than the divisor, just exit
  */
   if (unlikely(!__pyx_cur_scope->__pyx_v_bit_length)) { __Pyx_RaiseClosureNameError("bit_length"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 327; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
-  __pyx_t_1 = __pyx_pf_3cff_6GF2int_13multiply_slow_2bit_length(__pyx_cur_scope->__pyx_v_bit_length, __pyx_v_dividend); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 327; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_pf_14unireedsolomon_3cff_6GF2int_13multiply_slow_2bit_length(__pyx_cur_scope->__pyx_v_bit_length, __pyx_v_dividend); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 327; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_dl1 = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "cff.pyx":328
+  /* "unireedsolomon\cff.pyx":328
  *             # Compute the position of the most significant bit for each integers
  *             dl1 = bit_length(dividend)
  *             dl2 = bit_length(divisor)             # <<<<<<<<<<<<<<
@@ -6679,12 +6707,12 @@ static PyObject *__pyx_pf_3cff_6GF2int_13multiply_slow_4cl_div(PyObject *__pyx_s
  *             if dl1 < dl2:
  */
   if (unlikely(!__pyx_cur_scope->__pyx_v_bit_length)) { __Pyx_RaiseClosureNameError("bit_length"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 328; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
-  __pyx_t_1 = __pyx_pf_3cff_6GF2int_13multiply_slow_2bit_length(__pyx_cur_scope->__pyx_v_bit_length, __pyx_v_divisor); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 328; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_pf_14unireedsolomon_3cff_6GF2int_13multiply_slow_2bit_length(__pyx_cur_scope->__pyx_v_bit_length, __pyx_v_divisor); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 328; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_dl2 = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "cff.pyx":330
+  /* "unireedsolomon\cff.pyx":330
  *             dl2 = bit_length(divisor)
  *             # If the dividend is smaller than the divisor, just exit
  *             if dl1 < dl2:             # <<<<<<<<<<<<<<
@@ -6696,7 +6724,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_13multiply_slow_4cl_div(PyObject *__pyx_s
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "cff.pyx":331
+    /* "unireedsolomon\cff.pyx":331
  *             # If the dividend is smaller than the divisor, just exit
  *             if dl1 < dl2:
  *                 return dividend             # <<<<<<<<<<<<<<
@@ -6709,7 +6737,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_13multiply_slow_4cl_div(PyObject *__pyx_s
     goto __pyx_L0;
   }
 
-  /* "cff.pyx":333
+  /* "unireedsolomon\cff.pyx":333
  *                 return dividend
  *             # Else, align the most significant 1 of the divisor to the most significant 1 of the dividend (by shifting the divisor)
  *             for i in _range(dl1-dl2,-1,-1):             # <<<<<<<<<<<<<<
@@ -6793,7 +6821,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_13multiply_slow_4cl_div(PyObject *__pyx_s
     __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "cff.pyx":335
+    /* "unireedsolomon\cff.pyx":335
  *             for i in _range(dl1-dl2,-1,-1):
  *                 # Check that the dividend is divisible (useless for the first iteration but important for the next ones)
  *                 if dividend & (1 << i+dl2-1):             # <<<<<<<<<<<<<<
@@ -6815,7 +6843,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_13multiply_slow_4cl_div(PyObject *__pyx_s
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     if (__pyx_t_2) {
 
-      /* "cff.pyx":337
+      /* "unireedsolomon\cff.pyx":337
  *                 if dividend & (1 << i+dl2-1):
  *                     # If divisible, then shift the divisor to align the most significant bits and XOR (carry-less substraction)
  *                     dividend ^= divisor << i             # <<<<<<<<<<<<<<
@@ -6833,7 +6861,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_13multiply_slow_4cl_div(PyObject *__pyx_s
     }
     __pyx_L6:;
 
-    /* "cff.pyx":333
+    /* "unireedsolomon\cff.pyx":333
  *                 return dividend
  *             # Else, align the most significant 1 of the divisor to the most significant 1 of the dividend (by shifting the divisor)
  *             for i in _range(dl1-dl2,-1,-1):             # <<<<<<<<<<<<<<
@@ -6843,7 +6871,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_13multiply_slow_4cl_div(PyObject *__pyx_s
   }
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "cff.pyx":338
+  /* "unireedsolomon\cff.pyx":338
  *                     # If divisible, then shift the divisor to align the most significant bits and XOR (carry-less substraction)
  *                     dividend ^= divisor << i
  *             return dividend             # <<<<<<<<<<<<<<
@@ -6855,7 +6883,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_13multiply_slow_4cl_div(PyObject *__pyx_s
   __pyx_r = __pyx_v_dividend;
   goto __pyx_L0;
 
-  /* "cff.pyx":324
+  /* "unireedsolomon\cff.pyx":324
  *             return bits
  * 
  *         def cl_div(dividend, divisor=None):             # <<<<<<<<<<<<<<
@@ -6870,7 +6898,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_13multiply_slow_4cl_div(PyObject *__pyx_s
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_7);
-  __Pyx_AddTraceback("cff.GF2int.multiply_slow.cl_div", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int.multiply_slow.cl_div", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_dl1);
@@ -6882,7 +6910,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_13multiply_slow_4cl_div(PyObject *__pyx_s
   return __pyx_r;
 }
 
-/* "cff.pyx":303
+/* "unireedsolomon\cff.pyx":303
  *         return GF2int(r)
  * 
  *     def multiply_slow(x, y, prim=0x11b):             # <<<<<<<<<<<<<<
@@ -6890,8 +6918,8 @@ static PyObject *__pyx_pf_3cff_6GF2int_13multiply_slow_4cl_div(PyObject *__pyx_s
  *         This is the form you will most often see in academic literature, by using the standard carry-less multiplication + modular reduction using an irreducible prime polynomial.'''
  */
 
-static PyObject *__pyx_pf_3cff_6GF2int_42multiply_slow(struct __pyx_obj_3cff_GF2int *__pyx_v_x, PyObject *__pyx_v_y, PyObject *__pyx_v_prim) {
-  struct __pyx_obj_3cff___pyx_scope_struct__multiply_slow *__pyx_cur_scope;
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_42multiply_slow(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_x, PyObject *__pyx_v_y, PyObject *__pyx_v_prim) {
+  struct __pyx_obj_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow *__pyx_cur_scope;
   PyObject *__pyx_v_cl_mult = 0;
   PyObject *__pyx_v_cl_div = 0;
   PyObject *__pyx_v_a = NULL;
@@ -6905,52 +6933,52 @@ static PyObject *__pyx_pf_3cff_6GF2int_42multiply_slow(struct __pyx_obj_3cff_GF2
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("multiply_slow", 0);
-  __pyx_cur_scope = (struct __pyx_obj_3cff___pyx_scope_struct__multiply_slow *)__pyx_tp_new_3cff___pyx_scope_struct__multiply_slow(__pyx_ptype_3cff___pyx_scope_struct__multiply_slow, __pyx_empty_tuple, NULL);
+  __pyx_cur_scope = (struct __pyx_obj_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow *)__pyx_tp_new_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow(__pyx_ptype_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow, __pyx_empty_tuple, NULL);
   if (unlikely(!__pyx_cur_scope)) {
     __Pyx_RefNannyFinishContext();
     return NULL;
   }
   __Pyx_GOTREF(__pyx_cur_scope);
 
-  /* "cff.pyx":308
+  /* "unireedsolomon\cff.pyx":308
  * 
  *         ### Define bitwise carry-less operations as inner functions ###
  *         def cl_mult(x, y):             # <<<<<<<<<<<<<<
  *             '''Bitwise carry-less multiplication on integers'''
  *             z = 0
  */
-  __pyx_t_1 = __Pyx_CyFunction_NewEx(&__pyx_mdef_3cff_6GF2int_13multiply_slow_1cl_mult, 0, __pyx_n_s_multiply_slow_locals_cl_mult, NULL, __pyx_n_s_cff, __pyx_d, ((PyObject *)__pyx_codeobj__9)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 308; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_CyFunction_NewEx(&__pyx_mdef_14unireedsolomon_3cff_6GF2int_13multiply_slow_1cl_mult, 0, __pyx_n_s_multiply_slow_locals_cl_mult, NULL, __pyx_n_s_unireedsolomon_cff, __pyx_d, ((PyObject *)__pyx_codeobj__9)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 308; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_cl_mult = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "cff.pyx":318
+  /* "unireedsolomon\cff.pyx":318
  *             return z
  * 
  *         def bit_length(n):             # <<<<<<<<<<<<<<
  *             '''Compute the position of the most significant bit (1) of an integer. Equivalent to int.bit_length()'''
  *             bits = 0
  */
-  __pyx_t_1 = __Pyx_CyFunction_NewEx(&__pyx_mdef_3cff_6GF2int_13multiply_slow_3bit_length, 0, __pyx_n_s_multiply_slow_locals_bit_length, NULL, __pyx_n_s_cff, __pyx_d, ((PyObject *)__pyx_codeobj__11)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 318; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_CyFunction_NewEx(&__pyx_mdef_14unireedsolomon_3cff_6GF2int_13multiply_slow_3bit_length, 0, __pyx_n_s_multiply_slow_locals_bit_length, NULL, __pyx_n_s_unireedsolomon_cff, __pyx_d, ((PyObject *)__pyx_codeobj__11)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 318; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
   __pyx_cur_scope->__pyx_v_bit_length = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "cff.pyx":324
+  /* "unireedsolomon\cff.pyx":324
  *             return bits
  * 
  *         def cl_div(dividend, divisor=None):             # <<<<<<<<<<<<<<
  *             '''Bitwise carry-less long division on integers and returns the remainder'''
  *             # Compute the position of the most significant bit for each integers
  */
-  __pyx_t_1 = __Pyx_CyFunction_NewEx(&__pyx_mdef_3cff_6GF2int_13multiply_slow_5cl_div, 0, __pyx_n_s_multiply_slow_locals_cl_div, ((PyObject*)__pyx_cur_scope), __pyx_n_s_cff, __pyx_d, ((PyObject *)__pyx_codeobj__13)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 324; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_CyFunction_NewEx(&__pyx_mdef_14unireedsolomon_3cff_6GF2int_13multiply_slow_5cl_div, 0, __pyx_n_s_multiply_slow_locals_cl_div, ((PyObject*)__pyx_cur_scope), __pyx_n_s_unireedsolomon_cff, __pyx_d, ((PyObject *)__pyx_codeobj__13)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 324; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_1, __pyx_tuple__14);
   __pyx_v_cl_div = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "cff.pyx":342
+  /* "unireedsolomon\cff.pyx":342
  *         ### Main GF multiplication routine ###
  * 
  *         a = int(x)             # <<<<<<<<<<<<<<
@@ -6962,7 +6990,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_42multiply_slow(struct __pyx_obj_3cff_GF2
   __pyx_v_a = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "cff.pyx":343
+  /* "unireedsolomon\cff.pyx":343
  * 
  *         a = int(x)
  *         b = int(y)             # <<<<<<<<<<<<<<
@@ -6974,19 +7002,19 @@ static PyObject *__pyx_pf_3cff_6GF2int_42multiply_slow(struct __pyx_obj_3cff_GF2
   __pyx_v_b = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "cff.pyx":345
+  /* "unireedsolomon\cff.pyx":345
  *         b = int(y)
  *         # Multiply the gf numbers
  *         result = cl_mult(a,b)             # <<<<<<<<<<<<<<
  *         # Then do a modular reduction (ie, remainder from the division) with an irreducible primitive polynomial so that it stays inside GF bounds
  *         if prim > 0:
  */
-  __pyx_t_1 = __pyx_pf_3cff_6GF2int_13multiply_slow_cl_mult(__pyx_v_cl_mult, __pyx_v_a, __pyx_v_b); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 345; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_pf_14unireedsolomon_3cff_6GF2int_13multiply_slow_cl_mult(__pyx_v_cl_mult, __pyx_v_a, __pyx_v_b); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 345; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_result = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "cff.pyx":347
+  /* "unireedsolomon\cff.pyx":347
  *         result = cl_mult(a,b)
  *         # Then do a modular reduction (ie, remainder from the division) with an irreducible primitive polynomial so that it stays inside GF bounds
  *         if prim > 0:             # <<<<<<<<<<<<<<
@@ -6998,14 +7026,14 @@ static PyObject *__pyx_pf_3cff_6GF2int_42multiply_slow(struct __pyx_obj_3cff_GF2
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "cff.pyx":348
+    /* "unireedsolomon\cff.pyx":348
  *         # Then do a modular reduction (ie, remainder from the division) with an irreducible primitive polynomial so that it stays inside GF bounds
  *         if prim > 0:
  *             result = cl_div(result, prim)             # <<<<<<<<<<<<<<
  * 
  *         return result
  */
-    __pyx_t_1 = __pyx_pf_3cff_6GF2int_13multiply_slow_4cl_div(__pyx_v_cl_div, __pyx_v_result, __pyx_v_prim); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 348; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __pyx_pf_14unireedsolomon_3cff_6GF2int_13multiply_slow_4cl_div(__pyx_v_cl_div, __pyx_v_result, __pyx_v_prim); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 348; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF_SET(__pyx_v_result, __pyx_t_1);
     __pyx_t_1 = 0;
@@ -7013,7 +7041,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_42multiply_slow(struct __pyx_obj_3cff_GF2
   }
   __pyx_L3:;
 
-  /* "cff.pyx":350
+  /* "unireedsolomon\cff.pyx":350
  *             result = cl_div(result, prim)
  * 
  *         return result             # <<<<<<<<<<<<<<
@@ -7025,7 +7053,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_42multiply_slow(struct __pyx_obj_3cff_GF2
   __pyx_r = __pyx_v_result;
   goto __pyx_L0;
 
-  /* "cff.pyx":303
+  /* "unireedsolomon\cff.pyx":303
  *         return GF2int(r)
  * 
  *     def multiply_slow(x, y, prim=0x11b):             # <<<<<<<<<<<<<<
@@ -7036,7 +7064,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_42multiply_slow(struct __pyx_obj_3cff_GF2
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cff.GF2int.multiply_slow", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int.multiply_slow", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_cl_mult);
@@ -7050,7 +7078,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_42multiply_slow(struct __pyx_obj_3cff_GF2
   return __pyx_r;
 }
 
-/* "cff.pyx":357
+/* "unireedsolomon\cff.pyx":357
  * # The following magic methods definitions are only necessary  because we do not inherit from int. When Cython will fix the issue with Extension Types inheriting from ints, these methods can be removed.
  * 
  *     def __index__(GF2int self):             # <<<<<<<<<<<<<<
@@ -7059,19 +7087,19 @@ static PyObject *__pyx_pf_3cff_6GF2int_42multiply_slow(struct __pyx_obj_3cff_GF2
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cff_6GF2int_45__index__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_3cff_6GF2int_45__index__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_45__index__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_45__index__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__index__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3cff_6GF2int_44__index__(((struct __pyx_obj_3cff_GF2int *)__pyx_v_self));
+  __pyx_r = __pyx_pf_14unireedsolomon_3cff_6GF2int_44__index__(((struct __pyx_obj_14unireedsolomon_3cff_GF2int *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cff_6GF2int_44__index__(struct __pyx_obj_3cff_GF2int *__pyx_v_self) {
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_44__index__(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -7080,7 +7108,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_44__index__(struct __pyx_obj_3cff_GF2int 
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__index__", 0);
 
-  /* "cff.pyx":358
+  /* "unireedsolomon\cff.pyx":358
  * 
  *     def __index__(GF2int self):
  *         return self.value             # <<<<<<<<<<<<<<
@@ -7094,7 +7122,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_44__index__(struct __pyx_obj_3cff_GF2int 
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "cff.pyx":357
+  /* "unireedsolomon\cff.pyx":357
  * # The following magic methods definitions are only necessary  because we do not inherit from int. When Cython will fix the issue with Extension Types inheriting from ints, these methods can be removed.
  * 
  *     def __index__(GF2int self):             # <<<<<<<<<<<<<<
@@ -7105,7 +7133,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_44__index__(struct __pyx_obj_3cff_GF2int 
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cff.GF2int.__index__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int.__index__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -7113,7 +7141,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_44__index__(struct __pyx_obj_3cff_GF2int 
   return __pyx_r;
 }
 
-/* "cff.pyx":360
+/* "unireedsolomon\cff.pyx":360
  *         return self.value
  * 
  *     def __hash__(GF2int self): # used for quick key comparison in dicts             # <<<<<<<<<<<<<<
@@ -7122,24 +7150,24 @@ static PyObject *__pyx_pf_3cff_6GF2int_44__index__(struct __pyx_obj_3cff_GF2int 
  */
 
 /* Python wrapper */
-static Py_hash_t __pyx_pw_3cff_6GF2int_47__hash__(PyObject *__pyx_v_self); /*proto*/
-static Py_hash_t __pyx_pw_3cff_6GF2int_47__hash__(PyObject *__pyx_v_self) {
+static Py_hash_t __pyx_pw_14unireedsolomon_3cff_6GF2int_47__hash__(PyObject *__pyx_v_self); /*proto*/
+static Py_hash_t __pyx_pw_14unireedsolomon_3cff_6GF2int_47__hash__(PyObject *__pyx_v_self) {
   Py_hash_t __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__hash__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3cff_6GF2int_46__hash__(((struct __pyx_obj_3cff_GF2int *)__pyx_v_self));
+  __pyx_r = __pyx_pf_14unireedsolomon_3cff_6GF2int_46__hash__(((struct __pyx_obj_14unireedsolomon_3cff_GF2int *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static Py_hash_t __pyx_pf_3cff_6GF2int_46__hash__(struct __pyx_obj_3cff_GF2int *__pyx_v_self) {
+static Py_hash_t __pyx_pf_14unireedsolomon_3cff_6GF2int_46__hash__(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_self) {
   Py_hash_t __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__hash__", 0);
 
-  /* "cff.pyx":361
+  /* "unireedsolomon\cff.pyx":361
  * 
  *     def __hash__(GF2int self): # used for quick key comparison in dicts
  *         return self.value             # <<<<<<<<<<<<<<
@@ -7149,7 +7177,7 @@ static Py_hash_t __pyx_pf_3cff_6GF2int_46__hash__(struct __pyx_obj_3cff_GF2int *
   __pyx_r = __pyx_v_self->value;
   goto __pyx_L0;
 
-  /* "cff.pyx":360
+  /* "unireedsolomon\cff.pyx":360
  *         return self.value
  * 
  *     def __hash__(GF2int self): # used for quick key comparison in dicts             # <<<<<<<<<<<<<<
@@ -7164,7 +7192,7 @@ static Py_hash_t __pyx_pf_3cff_6GF2int_46__hash__(struct __pyx_obj_3cff_GF2int *
   return __pyx_r;
 }
 
-/* "cff.pyx":363
+/* "unireedsolomon\cff.pyx":363
  *         return self.value
  * 
  *     def __int__(GF2int self):             # <<<<<<<<<<<<<<
@@ -7173,19 +7201,19 @@ static Py_hash_t __pyx_pf_3cff_6GF2int_46__hash__(struct __pyx_obj_3cff_GF2int *
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cff_6GF2int_49__int__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_3cff_6GF2int_49__int__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_49__int__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_49__int__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__int__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3cff_6GF2int_48__int__(((struct __pyx_obj_3cff_GF2int *)__pyx_v_self));
+  __pyx_r = __pyx_pf_14unireedsolomon_3cff_6GF2int_48__int__(((struct __pyx_obj_14unireedsolomon_3cff_GF2int *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cff_6GF2int_48__int__(struct __pyx_obj_3cff_GF2int *__pyx_v_self) {
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_48__int__(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -7194,7 +7222,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_48__int__(struct __pyx_obj_3cff_GF2int *_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__int__", 0);
 
-  /* "cff.pyx":364
+  /* "unireedsolomon\cff.pyx":364
  * 
  *     def __int__(GF2int self):
  *         return self.value             # <<<<<<<<<<<<<<
@@ -7208,7 +7236,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_48__int__(struct __pyx_obj_3cff_GF2int *_
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "cff.pyx":363
+  /* "unireedsolomon\cff.pyx":363
  *         return self.value
  * 
  *     def __int__(GF2int self):             # <<<<<<<<<<<<<<
@@ -7219,7 +7247,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_48__int__(struct __pyx_obj_3cff_GF2int *_
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cff.GF2int.__int__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int.__int__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -7227,7 +7255,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_48__int__(struct __pyx_obj_3cff_GF2int *_
   return __pyx_r;
 }
 
-/* "cff.pyx":366
+/* "unireedsolomon\cff.pyx":366
  *         return self.value
  * 
  *     def __nonzero__(GF2int self): # eg, when using "not a"             # <<<<<<<<<<<<<<
@@ -7236,24 +7264,24 @@ static PyObject *__pyx_pf_3cff_6GF2int_48__int__(struct __pyx_obj_3cff_GF2int *_
  */
 
 /* Python wrapper */
-static int __pyx_pw_3cff_6GF2int_51__nonzero__(PyObject *__pyx_v_self); /*proto*/
-static int __pyx_pw_3cff_6GF2int_51__nonzero__(PyObject *__pyx_v_self) {
+static int __pyx_pw_14unireedsolomon_3cff_6GF2int_51__nonzero__(PyObject *__pyx_v_self); /*proto*/
+static int __pyx_pw_14unireedsolomon_3cff_6GF2int_51__nonzero__(PyObject *__pyx_v_self) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__nonzero__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3cff_6GF2int_50__nonzero__(((struct __pyx_obj_3cff_GF2int *)__pyx_v_self));
+  __pyx_r = __pyx_pf_14unireedsolomon_3cff_6GF2int_50__nonzero__(((struct __pyx_obj_14unireedsolomon_3cff_GF2int *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static int __pyx_pf_3cff_6GF2int_50__nonzero__(struct __pyx_obj_3cff_GF2int *__pyx_v_self) {
+static int __pyx_pf_14unireedsolomon_3cff_6GF2int_50__nonzero__(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_self) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__nonzero__", 0);
 
-  /* "cff.pyx":367
+  /* "unireedsolomon\cff.pyx":367
  * 
  *     def __nonzero__(GF2int self): # eg, when using "not a"
  *         return self.value != 0             # <<<<<<<<<<<<<<
@@ -7263,7 +7291,7 @@ static int __pyx_pf_3cff_6GF2int_50__nonzero__(struct __pyx_obj_3cff_GF2int *__p
   __pyx_r = (__pyx_v_self->value != 0);
   goto __pyx_L0;
 
-  /* "cff.pyx":366
+  /* "unireedsolomon\cff.pyx":366
  *         return self.value
  * 
  *     def __nonzero__(GF2int self): # eg, when using "not a"             # <<<<<<<<<<<<<<
@@ -7277,7 +7305,7 @@ static int __pyx_pf_3cff_6GF2int_50__nonzero__(struct __pyx_obj_3cff_GF2int *__p
   return __pyx_r;
 }
 
-/* "cff.pyx":369
+/* "unireedsolomon\cff.pyx":369
  *         return self.value != 0
  * 
  *     def __richcmp__(GF2int self, other, int op): # it's necessary to implement explicitly the behavior when comparing because we do not inherit from int...             # <<<<<<<<<<<<<<
@@ -7286,16 +7314,16 @@ static int __pyx_pf_3cff_6GF2int_50__nonzero__(struct __pyx_obj_3cff_GF2int *__p
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cff_6GF2int_53__richcmp__(PyObject *__pyx_v_self, PyObject *__pyx_v_other, int __pyx_v_op); /*proto*/
-static PyObject *__pyx_pw_3cff_6GF2int_53__richcmp__(PyObject *__pyx_v_self, PyObject *__pyx_v_other, int __pyx_v_op) {
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_53__richcmp__(PyObject *__pyx_v_self, PyObject *__pyx_v_other, int __pyx_v_op); /*proto*/
+static PyObject *__pyx_pw_14unireedsolomon_3cff_6GF2int_53__richcmp__(PyObject *__pyx_v_self, PyObject *__pyx_v_other, int __pyx_v_op) {
   CYTHON_UNUSED int __pyx_lineno = 0;
   CYTHON_UNUSED const char *__pyx_filename = NULL;
   CYTHON_UNUSED int __pyx_clineno = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__richcmp__ (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_self), __pyx_ptype_3cff_GF2int, 1, "self", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 369; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_3cff_6GF2int_52__richcmp__(((struct __pyx_obj_3cff_GF2int *)__pyx_v_self), ((PyObject *)__pyx_v_other), ((int)__pyx_v_op));
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_self), __pyx_ptype_14unireedsolomon_3cff_GF2int, 1, "self", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 369; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_14unireedsolomon_3cff_6GF2int_52__richcmp__(((struct __pyx_obj_14unireedsolomon_3cff_GF2int *)__pyx_v_self), ((PyObject *)__pyx_v_other), ((int)__pyx_v_op));
 
   /* function exit code */
   goto __pyx_L0;
@@ -7306,7 +7334,7 @@ static PyObject *__pyx_pw_3cff_6GF2int_53__richcmp__(PyObject *__pyx_v_self, PyO
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cff_6GF2int_52__richcmp__(struct __pyx_obj_3cff_GF2int *__pyx_v_self, PyObject *__pyx_v_other, int __pyx_v_op) {
+static PyObject *__pyx_pf_14unireedsolomon_3cff_6GF2int_52__richcmp__(struct __pyx_obj_14unireedsolomon_3cff_GF2int *__pyx_v_self, PyObject *__pyx_v_other, int __pyx_v_op) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -7317,7 +7345,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_52__richcmp__(struct __pyx_obj_3cff_GF2in
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__richcmp__", 0);
 
-  /* "cff.pyx":386
+  /* "unireedsolomon\cff.pyx":386
  *         elif op == 4:
  *             return int(self) > int(other)
  *         elif op == 5:             # <<<<<<<<<<<<<<
@@ -7325,7 +7353,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_52__richcmp__(struct __pyx_obj_3cff_GF2in
  */
   switch (__pyx_v_op) {
 
-    /* "cff.pyx":376
+    /* "unireedsolomon\cff.pyx":376
  *         # 3: !=
  *         # 5: >=
  *         if op == 0:             # <<<<<<<<<<<<<<
@@ -7334,7 +7362,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_52__richcmp__(struct __pyx_obj_3cff_GF2in
  */
     case 0:
 
-    /* "cff.pyx":377
+    /* "unireedsolomon\cff.pyx":377
  *         # 5: >=
  *         if op == 0:
  *             return int(self) < int(other)             # <<<<<<<<<<<<<<
@@ -7354,7 +7382,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_52__richcmp__(struct __pyx_obj_3cff_GF2in
     goto __pyx_L0;
     break;
 
-    /* "cff.pyx":378
+    /* "unireedsolomon\cff.pyx":378
  *         if op == 0:
  *             return int(self) < int(other)
  *         elif op == 1:             # <<<<<<<<<<<<<<
@@ -7363,7 +7391,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_52__richcmp__(struct __pyx_obj_3cff_GF2in
  */
     case 1:
 
-    /* "cff.pyx":379
+    /* "unireedsolomon\cff.pyx":379
  *             return int(self) < int(other)
  *         elif op == 1:
  *             return int(self) <= int(other)             # <<<<<<<<<<<<<<
@@ -7383,7 +7411,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_52__richcmp__(struct __pyx_obj_3cff_GF2in
     goto __pyx_L0;
     break;
 
-    /* "cff.pyx":380
+    /* "unireedsolomon\cff.pyx":380
  *         elif op == 1:
  *             return int(self) <= int(other)
  *         elif op == 2:             # <<<<<<<<<<<<<<
@@ -7392,7 +7420,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_52__richcmp__(struct __pyx_obj_3cff_GF2in
  */
     case 2:
 
-    /* "cff.pyx":381
+    /* "unireedsolomon\cff.pyx":381
  *             return int(self) <= int(other)
  *         elif op == 2:
  *             return int(self) == int(other)             # <<<<<<<<<<<<<<
@@ -7412,7 +7440,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_52__richcmp__(struct __pyx_obj_3cff_GF2in
     goto __pyx_L0;
     break;
 
-    /* "cff.pyx":382
+    /* "unireedsolomon\cff.pyx":382
  *         elif op == 2:
  *             return int(self) == int(other)
  *         elif op == 3:             # <<<<<<<<<<<<<<
@@ -7421,7 +7449,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_52__richcmp__(struct __pyx_obj_3cff_GF2in
  */
     case 3:
 
-    /* "cff.pyx":383
+    /* "unireedsolomon\cff.pyx":383
  *             return int(self) == int(other)
  *         elif op == 3:
  *             return int(self) != int(other)             # <<<<<<<<<<<<<<
@@ -7441,7 +7469,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_52__richcmp__(struct __pyx_obj_3cff_GF2in
     goto __pyx_L0;
     break;
 
-    /* "cff.pyx":384
+    /* "unireedsolomon\cff.pyx":384
  *         elif op == 3:
  *             return int(self) != int(other)
  *         elif op == 4:             # <<<<<<<<<<<<<<
@@ -7450,7 +7478,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_52__richcmp__(struct __pyx_obj_3cff_GF2in
  */
     case 4:
 
-    /* "cff.pyx":385
+    /* "unireedsolomon\cff.pyx":385
  *             return int(self) != int(other)
  *         elif op == 4:
  *             return int(self) > int(other)             # <<<<<<<<<<<<<<
@@ -7470,7 +7498,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_52__richcmp__(struct __pyx_obj_3cff_GF2in
     goto __pyx_L0;
     break;
 
-    /* "cff.pyx":386
+    /* "unireedsolomon\cff.pyx":386
  *         elif op == 4:
  *             return int(self) > int(other)
  *         elif op == 5:             # <<<<<<<<<<<<<<
@@ -7478,7 +7506,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_52__richcmp__(struct __pyx_obj_3cff_GF2in
  */
     case 5:
 
-    /* "cff.pyx":387
+    /* "unireedsolomon\cff.pyx":387
  *             return int(self) > int(other)
  *         elif op == 5:
  *             return int(self) >= int(other)             # <<<<<<<<<<<<<<
@@ -7498,7 +7526,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_52__richcmp__(struct __pyx_obj_3cff_GF2in
     default: break;
   }
 
-  /* "cff.pyx":369
+  /* "unireedsolomon\cff.pyx":369
  *         return self.value != 0
  * 
  *     def __richcmp__(GF2int self, other, int op): # it's necessary to implement explicitly the behavior when comparing because we do not inherit from int...             # <<<<<<<<<<<<<<
@@ -7513,7 +7541,7 @@ static PyObject *__pyx_pf_3cff_6GF2int_52__richcmp__(struct __pyx_obj_3cff_GF2in
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("cff.GF2int.__richcmp__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cff.GF2int.__richcmp__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -18787,10 +18815,10 @@ static void __pyx_memoryview__slice_assign_scalar(char *__pyx_v_data, Py_ssize_t
 
   /* function exit code */
 }
-static struct __pyx_vtabstruct_3cff_GF2int __pyx_vtable_3cff_GF2int;
+static struct __pyx_vtabstruct_14unireedsolomon_3cff_GF2int __pyx_vtable_14unireedsolomon_3cff_GF2int;
 
-static PyObject *__pyx_tp_new_3cff_GF2int(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
-  struct __pyx_obj_3cff_GF2int *p;
+static PyObject *__pyx_tp_new_14unireedsolomon_3cff_GF2int(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
+  struct __pyx_obj_14unireedsolomon_3cff_GF2int *p;
   PyObject *o;
   if (likely((t->tp_flags & Py_TPFLAGS_IS_ABSTRACT) == 0)) {
     o = (*t->tp_alloc)(t, 0);
@@ -18798,12 +18826,12 @@ static PyObject *__pyx_tp_new_3cff_GF2int(PyTypeObject *t, CYTHON_UNUSED PyObjec
     o = (PyObject *) PyBaseObject_Type.tp_new(t, __pyx_empty_tuple, 0);
   }
   if (unlikely(!o)) return 0;
-  p = ((struct __pyx_obj_3cff_GF2int *)o);
-  p->__pyx_vtab = __pyx_vtabptr_3cff_GF2int;
+  p = ((struct __pyx_obj_14unireedsolomon_3cff_GF2int *)o);
+  p->__pyx_vtab = __pyx_vtabptr_14unireedsolomon_3cff_GF2int;
   return o;
 }
 
-static void __pyx_tp_dealloc_3cff_GF2int(PyObject *o) {
+static void __pyx_tp_dealloc_14unireedsolomon_3cff_GF2int(PyObject *o) {
   #if PY_VERSION_HEX >= 0x030400a1
   if (unlikely(Py_TYPE(o)->tp_finalize) && (!PyType_IS_GC(Py_TYPE(o)) || !_PyGC_FINALIZED(o))) {
     if (PyObject_CallFinalizerFromDealloc(o)) return;
@@ -18812,46 +18840,46 @@ static void __pyx_tp_dealloc_3cff_GF2int(PyObject *o) {
   (*Py_TYPE(o)->tp_free)(o);
 }
 
-static PyMethodDef __pyx_methods_3cff_GF2int[] = {
-  {"__radd__", (PyCFunction)__pyx_pw_3cff_6GF2int_7__radd__, METH_O, 0},
-  {"__rsub__", (PyCFunction)__pyx_pw_3cff_6GF2int_9__rsub__, METH_O, 0},
-  {"__rmul__", (PyCFunction)__pyx_pw_3cff_6GF2int_17__rmul__, METH_O, 0},
-  {"inverse", (PyCFunction)__pyx_pw_3cff_6GF2int_21inverse, METH_NOARGS, 0},
-  {"__rtruediv__", (PyCFunction)__pyx_pw_3cff_6GF2int_29__rtruediv__, METH_O, 0},
-  {"__rfloordiv__", (PyCFunction)__pyx_pw_3cff_6GF2int_31__rfloordiv__, METH_O, 0},
-  {"__rdiv__", (PyCFunction)__pyx_pw_3cff_6GF2int_33__rdiv__, METH_O, 0},
-  {"_to_binpoly", (PyCFunction)__pyx_pw_3cff_6GF2int_39_to_binpoly, METH_NOARGS, __pyx_doc_3cff_6GF2int_38_to_binpoly},
-  {"multiply", (PyCFunction)__pyx_pw_3cff_6GF2int_41multiply, METH_VARARGS|METH_KEYWORDS, __pyx_doc_3cff_6GF2int_40multiply},
-  {"multiply_slow", (PyCFunction)__pyx_pw_3cff_6GF2int_43multiply_slow, METH_VARARGS|METH_KEYWORDS, __pyx_doc_3cff_6GF2int_42multiply_slow},
+static PyMethodDef __pyx_methods_14unireedsolomon_3cff_GF2int[] = {
+  {"__radd__", (PyCFunction)__pyx_pw_14unireedsolomon_3cff_6GF2int_7__radd__, METH_O, 0},
+  {"__rsub__", (PyCFunction)__pyx_pw_14unireedsolomon_3cff_6GF2int_9__rsub__, METH_O, 0},
+  {"__rmul__", (PyCFunction)__pyx_pw_14unireedsolomon_3cff_6GF2int_17__rmul__, METH_O, 0},
+  {"inverse", (PyCFunction)__pyx_pw_14unireedsolomon_3cff_6GF2int_21inverse, METH_NOARGS, 0},
+  {"__rtruediv__", (PyCFunction)__pyx_pw_14unireedsolomon_3cff_6GF2int_29__rtruediv__, METH_O, 0},
+  {"__rfloordiv__", (PyCFunction)__pyx_pw_14unireedsolomon_3cff_6GF2int_31__rfloordiv__, METH_O, 0},
+  {"__rdiv__", (PyCFunction)__pyx_pw_14unireedsolomon_3cff_6GF2int_33__rdiv__, METH_O, 0},
+  {"_to_binpoly", (PyCFunction)__pyx_pw_14unireedsolomon_3cff_6GF2int_39_to_binpoly, METH_NOARGS, __pyx_doc_14unireedsolomon_3cff_6GF2int_38_to_binpoly},
+  {"multiply", (PyCFunction)__pyx_pw_14unireedsolomon_3cff_6GF2int_41multiply, METH_VARARGS|METH_KEYWORDS, __pyx_doc_14unireedsolomon_3cff_6GF2int_40multiply},
+  {"multiply_slow", (PyCFunction)__pyx_pw_14unireedsolomon_3cff_6GF2int_43multiply_slow, METH_VARARGS|METH_KEYWORDS, __pyx_doc_14unireedsolomon_3cff_6GF2int_42multiply_slow},
   {0, 0, 0, 0}
 };
 
 static PyNumberMethods __pyx_tp_as_number_GF2int = {
-  __pyx_pw_3cff_6GF2int_3__add__, /*nb_add*/
-  __pyx_pw_3cff_6GF2int_5__sub__, /*nb_subtract*/
-  __pyx_pw_3cff_6GF2int_15__mul__, /*nb_multiply*/
+  __pyx_pw_14unireedsolomon_3cff_6GF2int_3__add__, /*nb_add*/
+  __pyx_pw_14unireedsolomon_3cff_6GF2int_5__sub__, /*nb_subtract*/
+  __pyx_pw_14unireedsolomon_3cff_6GF2int_15__mul__, /*nb_multiply*/
   #if PY_MAJOR_VERSION < 3 || CYTHON_COMPILING_IN_PYPY
-  __pyx_pw_3cff_6GF2int_27__div__, /*nb_divide*/
+  __pyx_pw_14unireedsolomon_3cff_6GF2int_27__div__, /*nb_divide*/
   #endif
   0, /*nb_remainder*/
   0, /*nb_divmod*/
-  __pyx_pw_3cff_6GF2int_19__pow__, /*nb_power*/
-  __pyx_pw_3cff_6GF2int_13__neg__, /*nb_negative*/
+  __pyx_pw_14unireedsolomon_3cff_6GF2int_19__pow__, /*nb_power*/
+  __pyx_pw_14unireedsolomon_3cff_6GF2int_13__neg__, /*nb_negative*/
   0, /*nb_positive*/
   0, /*nb_absolute*/
-  __pyx_pw_3cff_6GF2int_51__nonzero__, /*nb_nonzero*/
+  __pyx_pw_14unireedsolomon_3cff_6GF2int_51__nonzero__, /*nb_nonzero*/
   0, /*nb_invert*/
   0, /*nb_lshift*/
   0, /*nb_rshift*/
   0, /*nb_and*/
-  __pyx_pw_3cff_6GF2int_11__xor__, /*nb_xor*/
+  __pyx_pw_14unireedsolomon_3cff_6GF2int_11__xor__, /*nb_xor*/
   0, /*nb_or*/
   #if PY_MAJOR_VERSION < 3 || CYTHON_COMPILING_IN_PYPY
   0, /*nb_coerce*/
   #endif
-  __pyx_pw_3cff_6GF2int_49__int__, /*nb_int*/
+  __pyx_pw_14unireedsolomon_3cff_6GF2int_49__int__, /*nb_int*/
   #if PY_MAJOR_VERSION < 3
-  __pyx_pw_3cff_6GF2int_49__int__, /*nb_long*/
+  __pyx_pw_14unireedsolomon_3cff_6GF2int_49__int__, /*nb_long*/
   #else
   0, /*reserved*/
   #endif
@@ -18875,11 +18903,11 @@ static PyNumberMethods __pyx_tp_as_number_GF2int = {
   0, /*nb_inplace_and*/
   0, /*nb_inplace_xor*/
   0, /*nb_inplace_or*/
-  __pyx_pw_3cff_6GF2int_25__floordiv__, /*nb_floor_divide*/
-  __pyx_pw_3cff_6GF2int_23__truediv__, /*nb_true_divide*/
+  __pyx_pw_14unireedsolomon_3cff_6GF2int_25__floordiv__, /*nb_floor_divide*/
+  __pyx_pw_14unireedsolomon_3cff_6GF2int_23__truediv__, /*nb_true_divide*/
   0, /*nb_inplace_floor_divide*/
   0, /*nb_inplace_true_divide*/
-  __pyx_pw_3cff_6GF2int_45__index__, /*nb_index*/
+  __pyx_pw_14unireedsolomon_3cff_6GF2int_45__index__, /*nb_index*/
   #if PY_VERSION_HEX >= 0x03050000
   0, /*nb_matrix_multiply*/
   #endif
@@ -18888,12 +18916,12 @@ static PyNumberMethods __pyx_tp_as_number_GF2int = {
   #endif
 };
 
-static PyTypeObject __pyx_type_3cff_GF2int = {
+static PyTypeObject __pyx_type_14unireedsolomon_3cff_GF2int = {
   PyVarObject_HEAD_INIT(0, 0)
-  "cff.GF2int", /*tp_name*/
-  sizeof(struct __pyx_obj_3cff_GF2int), /*tp_basicsize*/
+  "unireedsolomon.cff.GF2int", /*tp_name*/
+  sizeof(struct __pyx_obj_14unireedsolomon_3cff_GF2int), /*tp_basicsize*/
   0, /*tp_itemsize*/
-  __pyx_tp_dealloc_3cff_GF2int, /*tp_dealloc*/
+  __pyx_tp_dealloc_14unireedsolomon_3cff_GF2int, /*tp_dealloc*/
   0, /*tp_print*/
   0, /*tp_getattr*/
   0, /*tp_setattr*/
@@ -18902,13 +18930,13 @@ static PyTypeObject __pyx_type_3cff_GF2int = {
   #else
   0, /*reserved*/
   #endif
-  __pyx_pw_3cff_6GF2int_35__repr__, /*tp_repr*/
+  __pyx_pw_14unireedsolomon_3cff_6GF2int_35__repr__, /*tp_repr*/
   &__pyx_tp_as_number_GF2int, /*tp_as_number*/
   0, /*tp_as_sequence*/
   0, /*tp_as_mapping*/
-  __pyx_pw_3cff_6GF2int_47__hash__, /*tp_hash*/
+  __pyx_pw_14unireedsolomon_3cff_6GF2int_47__hash__, /*tp_hash*/
   0, /*tp_call*/
-  __pyx_pw_3cff_6GF2int_37__str__, /*tp_str*/
+  __pyx_pw_14unireedsolomon_3cff_6GF2int_37__str__, /*tp_str*/
   0, /*tp_getattro*/
   0, /*tp_setattro*/
   0, /*tp_as_buffer*/
@@ -18916,11 +18944,11 @@ static PyTypeObject __pyx_type_3cff_GF2int = {
   "Instances of this object are elements of the field GF(2^p)\n    Instances are integers in the range 0 to p-1\n    This field is defined using the irreducable polynomial\n    x^8 + x^4 + x^3 + x + 1\n    and using 3 as the generator for the exponent table and log table.\n    ", /*tp_doc*/
   0, /*tp_traverse*/
   0, /*tp_clear*/
-  __pyx_pw_3cff_6GF2int_53__richcmp__, /*tp_richcompare*/
+  __pyx_pw_14unireedsolomon_3cff_6GF2int_53__richcmp__, /*tp_richcompare*/
   0, /*tp_weaklistoffset*/
   0, /*tp_iter*/
   0, /*tp_iternext*/
-  __pyx_methods_3cff_GF2int, /*tp_methods*/
+  __pyx_methods_14unireedsolomon_3cff_GF2int, /*tp_methods*/
   0, /*tp_members*/
   0, /*tp_getset*/
   0, /*tp_base*/
@@ -18928,9 +18956,9 @@ static PyTypeObject __pyx_type_3cff_GF2int = {
   0, /*tp_descr_get*/
   0, /*tp_descr_set*/
   0, /*tp_dictoffset*/
-  __pyx_pw_3cff_6GF2int_1__init__, /*tp_init*/
+  __pyx_pw_14unireedsolomon_3cff_6GF2int_1__init__, /*tp_init*/
   0, /*tp_alloc*/
-  __pyx_tp_new_3cff_GF2int, /*tp_new*/
+  __pyx_tp_new_14unireedsolomon_3cff_GF2int, /*tp_new*/
   0, /*tp_free*/
   0, /*tp_is_gc*/
   0, /*tp_bases*/
@@ -18945,14 +18973,14 @@ static PyTypeObject __pyx_type_3cff_GF2int = {
   #endif
 };
 
-static struct __pyx_obj_3cff___pyx_scope_struct__multiply_slow *__pyx_freelist_3cff___pyx_scope_struct__multiply_slow[8];
-static int __pyx_freecount_3cff___pyx_scope_struct__multiply_slow = 0;
+static struct __pyx_obj_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow *__pyx_freelist_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow[8];
+static int __pyx_freecount_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow = 0;
 
-static PyObject *__pyx_tp_new_3cff___pyx_scope_struct__multiply_slow(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
+static PyObject *__pyx_tp_new_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
   PyObject *o;
-  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_3cff___pyx_scope_struct__multiply_slow > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_3cff___pyx_scope_struct__multiply_slow)))) {
-    o = (PyObject*)__pyx_freelist_3cff___pyx_scope_struct__multiply_slow[--__pyx_freecount_3cff___pyx_scope_struct__multiply_slow];
-    memset(o, 0, sizeof(struct __pyx_obj_3cff___pyx_scope_struct__multiply_slow));
+  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow)))) {
+    o = (PyObject*)__pyx_freelist_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow[--__pyx_freecount_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow];
+    memset(o, 0, sizeof(struct __pyx_obj_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow));
     (void) PyObject_INIT(o, t);
     PyObject_GC_Track(o);
   } else {
@@ -18962,41 +18990,41 @@ static PyObject *__pyx_tp_new_3cff___pyx_scope_struct__multiply_slow(PyTypeObjec
   return o;
 }
 
-static void __pyx_tp_dealloc_3cff___pyx_scope_struct__multiply_slow(PyObject *o) {
-  struct __pyx_obj_3cff___pyx_scope_struct__multiply_slow *p = (struct __pyx_obj_3cff___pyx_scope_struct__multiply_slow *)o;
+static void __pyx_tp_dealloc_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow(PyObject *o) {
+  struct __pyx_obj_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow *p = (struct __pyx_obj_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow *)o;
   PyObject_GC_UnTrack(o);
   Py_CLEAR(p->__pyx_v_bit_length);
-  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_3cff___pyx_scope_struct__multiply_slow < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_3cff___pyx_scope_struct__multiply_slow)))) {
-    __pyx_freelist_3cff___pyx_scope_struct__multiply_slow[__pyx_freecount_3cff___pyx_scope_struct__multiply_slow++] = ((struct __pyx_obj_3cff___pyx_scope_struct__multiply_slow *)o);
+  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow)))) {
+    __pyx_freelist_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow[__pyx_freecount_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow++] = ((struct __pyx_obj_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow *)o);
   } else {
     (*Py_TYPE(o)->tp_free)(o);
   }
 }
 
-static int __pyx_tp_traverse_3cff___pyx_scope_struct__multiply_slow(PyObject *o, visitproc v, void *a) {
+static int __pyx_tp_traverse_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow(PyObject *o, visitproc v, void *a) {
   int e;
-  struct __pyx_obj_3cff___pyx_scope_struct__multiply_slow *p = (struct __pyx_obj_3cff___pyx_scope_struct__multiply_slow *)o;
+  struct __pyx_obj_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow *p = (struct __pyx_obj_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow *)o;
   if (p->__pyx_v_bit_length) {
     e = (*v)(p->__pyx_v_bit_length, a); if (e) return e;
   }
   return 0;
 }
 
-static int __pyx_tp_clear_3cff___pyx_scope_struct__multiply_slow(PyObject *o) {
+static int __pyx_tp_clear_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow(PyObject *o) {
   PyObject* tmp;
-  struct __pyx_obj_3cff___pyx_scope_struct__multiply_slow *p = (struct __pyx_obj_3cff___pyx_scope_struct__multiply_slow *)o;
+  struct __pyx_obj_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow *p = (struct __pyx_obj_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow *)o;
   tmp = ((PyObject*)p->__pyx_v_bit_length);
   p->__pyx_v_bit_length = Py_None; Py_INCREF(Py_None);
   Py_XDECREF(tmp);
   return 0;
 }
 
-static PyTypeObject __pyx_type_3cff___pyx_scope_struct__multiply_slow = {
+static PyTypeObject __pyx_type_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow = {
   PyVarObject_HEAD_INIT(0, 0)
-  "cff.__pyx_scope_struct__multiply_slow", /*tp_name*/
-  sizeof(struct __pyx_obj_3cff___pyx_scope_struct__multiply_slow), /*tp_basicsize*/
+  "unireedsolomon.cff.__pyx_scope_struct__multiply_slow", /*tp_name*/
+  sizeof(struct __pyx_obj_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow), /*tp_basicsize*/
   0, /*tp_itemsize*/
-  __pyx_tp_dealloc_3cff___pyx_scope_struct__multiply_slow, /*tp_dealloc*/
+  __pyx_tp_dealloc_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow, /*tp_dealloc*/
   0, /*tp_print*/
   0, /*tp_getattr*/
   0, /*tp_setattr*/
@@ -19017,8 +19045,8 @@ static PyTypeObject __pyx_type_3cff___pyx_scope_struct__multiply_slow = {
   0, /*tp_as_buffer*/
   Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
   0, /*tp_doc*/
-  __pyx_tp_traverse_3cff___pyx_scope_struct__multiply_slow, /*tp_traverse*/
-  __pyx_tp_clear_3cff___pyx_scope_struct__multiply_slow, /*tp_clear*/
+  __pyx_tp_traverse_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow, /*tp_traverse*/
+  __pyx_tp_clear_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow, /*tp_clear*/
   0, /*tp_richcompare*/
   0, /*tp_weaklistoffset*/
   0, /*tp_iter*/
@@ -19033,7 +19061,7 @@ static PyTypeObject __pyx_type_3cff___pyx_scope_struct__multiply_slow = {
   0, /*tp_dictoffset*/
   0, /*tp_init*/
   0, /*tp_alloc*/
-  __pyx_tp_new_3cff___pyx_scope_struct__multiply_slow, /*tp_new*/
+  __pyx_tp_new_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow, /*tp_new*/
   0, /*tp_free*/
   0, /*tp_is_gc*/
   0, /*tp_bases*/
@@ -19165,7 +19193,7 @@ static PyBufferProcs __pyx_tp_as_buffer_array = {
 
 static PyTypeObject __pyx_type___pyx_array = {
   PyVarObject_HEAD_INIT(0, 0)
-  "cff.array", /*tp_name*/
+  "unireedsolomon.cff.array", /*tp_name*/
   sizeof(struct __pyx_array_obj), /*tp_basicsize*/
   0, /*tp_itemsize*/
   __pyx_tp_dealloc_array, /*tp_dealloc*/
@@ -19270,7 +19298,7 @@ static PyMethodDef __pyx_methods_Enum[] = {
 
 static PyTypeObject __pyx_type___pyx_MemviewEnum = {
   PyVarObject_HEAD_INIT(0, 0)
-  "cff.Enum", /*tp_name*/
+  "unireedsolomon.cff.Enum", /*tp_name*/
   sizeof(struct __pyx_MemviewEnum_obj), /*tp_basicsize*/
   0, /*tp_itemsize*/
   __pyx_tp_dealloc_Enum, /*tp_dealloc*/
@@ -19516,7 +19544,7 @@ static PyBufferProcs __pyx_tp_as_buffer_memoryview = {
 
 static PyTypeObject __pyx_type___pyx_memoryview = {
   PyVarObject_HEAD_INIT(0, 0)
-  "cff.memoryview", /*tp_name*/
+  "unireedsolomon.cff.memoryview", /*tp_name*/
   sizeof(struct __pyx_memoryview_obj), /*tp_basicsize*/
   0, /*tp_itemsize*/
   __pyx_tp_dealloc_memoryview, /*tp_dealloc*/
@@ -19640,7 +19668,7 @@ static struct PyGetSetDef __pyx_getsets__memoryviewslice[] = {
 
 static PyTypeObject __pyx_type___pyx_memoryviewslice = {
   PyVarObject_HEAD_INIT(0, 0)
-  "cff._memoryviewslice", /*tp_name*/
+  "unireedsolomon.cff._memoryviewslice", /*tp_name*/
   sizeof(struct __pyx_memoryviewslice_obj), /*tp_basicsize*/
   0, /*tp_itemsize*/
   __pyx_tp_dealloc__memoryviewslice, /*tp_dealloc*/
@@ -19728,7 +19756,7 @@ static struct PyModuleDef __pyx_moduledef = {
 static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_s_0, __pyx_k_0, sizeof(__pyx_k_0), 0, 0, 1, 0},
   {&__pyx_kp_s_Buffer_view_does_not_expose_stri, __pyx_k_Buffer_view_does_not_expose_stri, sizeof(__pyx_k_Buffer_view_does_not_expose_stri), 0, 0, 1, 0},
-  {&__pyx_kp_s_C_git_rfigc_ReedSolomon_cff_pyx, __pyx_k_C_git_rfigc_ReedSolomon_cff_pyx, sizeof(__pyx_k_C_git_rfigc_ReedSolomon_cff_pyx), 0, 0, 1, 0},
+  {&__pyx_kp_s_C_git_rfigc_ReedSolomon_unireeds, __pyx_k_C_git_rfigc_ReedSolomon_unireeds, sizeof(__pyx_k_C_git_rfigc_ReedSolomon_unireeds), 0, 0, 1, 0},
   {&__pyx_kp_s_Can_only_create_a_buffer_that_is, __pyx_k_Can_only_create_a_buffer_that_is, sizeof(__pyx_k_Can_only_create_a_buffer_that_is), 0, 0, 1, 0},
   {&__pyx_kp_s_Cannot_index_with_type_s, __pyx_k_Cannot_index_with_type_s, sizeof(__pyx_k_Cannot_index_with_type_s), 0, 0, 1, 0},
   {&__pyx_n_s_Ellipsis, __pyx_k_Ellipsis, sizeof(__pyx_k_Ellipsis), 0, 0, 1, 1},
@@ -19753,7 +19781,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_c, __pyx_k_c, sizeof(__pyx_k_c), 0, 0, 1, 1},
   {&__pyx_n_u_c, __pyx_k_c, sizeof(__pyx_k_c), 0, 1, 0, 1},
   {&__pyx_n_s_c_exp, __pyx_k_c_exp, sizeof(__pyx_k_c_exp), 0, 0, 1, 1},
-  {&__pyx_n_s_cff, __pyx_k_cff, sizeof(__pyx_k_cff), 0, 0, 1, 1},
+  {&__pyx_n_s_carryless, __pyx_k_carryless, sizeof(__pyx_k_carryless), 0, 0, 1, 1},
   {&__pyx_n_s_cl_div, __pyx_k_cl_div, sizeof(__pyx_k_cl_div), 0, 0, 1, 1},
   {&__pyx_n_s_cl_mult, __pyx_k_cl_mult, sizeof(__pyx_k_cl_mult), 0, 0, 1, 1},
   {&__pyx_n_s_class, __pyx_k_class, sizeof(__pyx_k_class), 0, 0, 1, 1},
@@ -19831,6 +19859,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_truediv, __pyx_k_truediv, sizeof(__pyx_k_truediv), 0, 0, 1, 1},
   {&__pyx_kp_s_unable_to_allocate_array_data, __pyx_k_unable_to_allocate_array_data, sizeof(__pyx_k_unable_to_allocate_array_data), 0, 0, 1, 0},
   {&__pyx_kp_s_unable_to_allocate_shape_and_str, __pyx_k_unable_to_allocate_shape_and_str, sizeof(__pyx_k_unable_to_allocate_shape_and_str), 0, 0, 1, 0},
+  {&__pyx_n_s_unireedsolomon_cff, __pyx_k_unireedsolomon_cff, sizeof(__pyx_k_unireedsolomon_cff), 0, 0, 1, 1},
   {&__pyx_n_s_unpack, __pyx_k_unpack, sizeof(__pyx_k_unpack), 0, 0, 1, 1},
   {&__pyx_n_s_value, __pyx_k_value, sizeof(__pyx_k_value), 0, 0, 1, 1},
   {&__pyx_n_s_x, __pyx_k_x, sizeof(__pyx_k_x), 0, 0, 1, 1},
@@ -19857,7 +19886,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "cff.pyx":107
+  /* "unireedsolomon\cff.pyx":107
  * 
  *         # Second loop, build the whole Galois Field
  *         x = GF2int(1)             # <<<<<<<<<<<<<<
@@ -19868,7 +19897,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
 
-  /* "cff.pyx":148
+  /* "unireedsolomon\cff.pyx":148
  *     # It's basically the cumulative product of 1 by the generator number, on and on and on until you have walked through the whole field.
  *     # That's why exptable is always dense (all entries are filled), but logtable may be sparse (lots of empty values, because multiple logtable's entries point to the same exptable's entry).
  *     g = GF2int(1)             # <<<<<<<<<<<<<<
@@ -19879,7 +19908,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__2);
   __Pyx_GIVEREF(__pyx_tuple__2);
 
-  /* "cff.pyx":216
+  /* "unireedsolomon\cff.pyx":216
  *         "Multiplication in GF(2^8)"
  *         if a == 0 or b == 0:
  *             return GF2int(0)             # <<<<<<<<<<<<<<
@@ -19890,7 +19919,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__3);
   __Pyx_GIVEREF(__pyx_tuple__3);
 
-  /* "cff.pyx":237
+  /* "unireedsolomon\cff.pyx":237
  *         #return self * GF2int(other).inverse() # self / other = self * inv(other) . This is equivalent to what is below, but 2x slower.
  *         if self == 0 or other == 0:
  *             return GF2int(0)             # <<<<<<<<<<<<<<
@@ -19901,7 +19930,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__4);
   __Pyx_GIVEREF(__pyx_tuple__4);
 
-  /* "cff.pyx":245
+  /* "unireedsolomon\cff.pyx":245
  *     def __div__(int self, int other): # for Python 2.x
  *         if self == 0 or other == 0:
  *             return GF2int(0)             # <<<<<<<<<<<<<<
@@ -19912,18 +19941,18 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__5);
   __Pyx_GIVEREF(__pyx_tuple__5);
 
-  /* "cff.pyx":277
+  /* "unireedsolomon\cff.pyx":277
  *                 x ^= b # and compute the remainder of x / b
  *             i = i+1 # increment to compute the next power of 2
  *         return " + ".join(["x^%i" % y for y in c[::-1]]) # print a nice binary polynomial             # <<<<<<<<<<<<<<
  * 
- *     cpdef multiply(GF2int x, int y, int prim=0x11b, int field_charac_full=256):
+ *     cpdef multiply(GF2int x, int y, int prim=0x11b, int field_charac_full=256, int carryless=True):
  */
   __pyx_slice__7 = PySlice_New(Py_None, Py_None, __pyx_int_neg_1); if (unlikely(!__pyx_slice__7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 277; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_slice__7);
   __Pyx_GIVEREF(__pyx_slice__7);
 
-  /* "cff.pyx":308
+  /* "unireedsolomon\cff.pyx":308
  * 
  *         ### Define bitwise carry-less operations as inner functions ###
  *         def cl_mult(x, y):             # <<<<<<<<<<<<<<
@@ -19933,9 +19962,9 @@ static int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__8 = PyTuple_Pack(4, __pyx_n_s_x, __pyx_n_s_y, __pyx_n_s_z, __pyx_n_s_i); if (unlikely(!__pyx_tuple__8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 308; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__8);
   __Pyx_GIVEREF(__pyx_tuple__8);
-  __pyx_codeobj__9 = (PyObject*)__Pyx_PyCode_New(2, 0, 4, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__8, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_C_git_rfigc_ReedSolomon_cff_pyx, __pyx_n_s_cl_mult, 308, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 308; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__9 = (PyObject*)__Pyx_PyCode_New(2, 0, 4, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__8, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_C_git_rfigc_ReedSolomon_unireeds, __pyx_n_s_cl_mult, 308, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 308; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "cff.pyx":318
+  /* "unireedsolomon\cff.pyx":318
  *             return z
  * 
  *         def bit_length(n):             # <<<<<<<<<<<<<<
@@ -19945,9 +19974,9 @@ static int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__10 = PyTuple_Pack(2, __pyx_n_s_n, __pyx_n_s_bits); if (unlikely(!__pyx_tuple__10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 318; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__10);
   __Pyx_GIVEREF(__pyx_tuple__10);
-  __pyx_codeobj__11 = (PyObject*)__Pyx_PyCode_New(1, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__10, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_C_git_rfigc_ReedSolomon_cff_pyx, __pyx_n_s_bit_length, 318, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 318; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__11 = (PyObject*)__Pyx_PyCode_New(1, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__10, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_C_git_rfigc_ReedSolomon_unireeds, __pyx_n_s_bit_length, 318, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 318; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "cff.pyx":324
+  /* "unireedsolomon\cff.pyx":324
  *             return bits
  * 
  *         def cl_div(dividend, divisor=None):             # <<<<<<<<<<<<<<
@@ -19957,7 +19986,7 @@ static int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__12 = PyTuple_Pack(5, __pyx_n_s_dividend, __pyx_n_s_divisor, __pyx_n_s_dl1, __pyx_n_s_dl2, __pyx_n_s_i); if (unlikely(!__pyx_tuple__12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 324; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__12);
   __Pyx_GIVEREF(__pyx_tuple__12);
-  __pyx_codeobj__13 = (PyObject*)__Pyx_PyCode_New(2, 0, 5, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__12, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_C_git_rfigc_ReedSolomon_cff_pyx, __pyx_n_s_cl_div, 324, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__13)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 324; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__13 = (PyObject*)__Pyx_PyCode_New(2, 0, 5, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__12, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_C_git_rfigc_ReedSolomon_unireeds, __pyx_n_s_cl_div, 324, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__13)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 324; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_tuple__14 = PyTuple_Pack(1, ((PyObject *)Py_None)); if (unlikely(!__pyx_tuple__14)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 324; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__14);
   __Pyx_GIVEREF(__pyx_tuple__14);
@@ -20097,7 +20126,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__26);
   __Pyx_GIVEREF(__pyx_tuple__26);
 
-  /* "cff.pyx":65
+  /* "unireedsolomon\cff.pyx":65
  * cdef int[::1] GF2int_logtable = GF2int_logtable_a
  * 
  * def rwh_primes1(n):             # <<<<<<<<<<<<<<
@@ -20107,9 +20136,9 @@ static int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__27 = PyTuple_Pack(3, __pyx_n_s_n, __pyx_n_s_sieve, __pyx_n_s_i); if (unlikely(!__pyx_tuple__27)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 65; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__27);
   __Pyx_GIVEREF(__pyx_tuple__27);
-  __pyx_codeobj__28 = (PyObject*)__Pyx_PyCode_New(1, 0, 3, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__27, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_C_git_rfigc_ReedSolomon_cff_pyx, __pyx_n_s_rwh_primes1, 65, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__28)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 65; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__28 = (PyObject*)__Pyx_PyCode_New(1, 0, 3, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__27, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_C_git_rfigc_ReedSolomon_unireeds, __pyx_n_s_rwh_primes1, 65, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__28)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 65; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "cff.pyx":74
+  /* "unireedsolomon\cff.pyx":74
  *     return [2] + [2*i+1 for i in _range(1,n/2) if sieve[i]]
  * 
  * def find_prime_polynomials(generator=2, c_exp=8, fast_primes=False, single=False):             # <<<<<<<<<<<<<<
@@ -20119,9 +20148,9 @@ static int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__29 = PyTuple_Pack(14, __pyx_n_s_generator, __pyx_n_s_c_exp, __pyx_n_s_fast_primes, __pyx_n_s_single, __pyx_n_s_root_charac, __pyx_n_s_field_charac, __pyx_n_s_field_charac_next, __pyx_n_s_prim_candidates, __pyx_n_s_correct_primes, __pyx_n_s_prim, __pyx_n_s_seen, __pyx_n_s_conflict, __pyx_n_s_x, __pyx_n_s_i); if (unlikely(!__pyx_tuple__29)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__29);
   __Pyx_GIVEREF(__pyx_tuple__29);
-  __pyx_codeobj__30 = (PyObject*)__Pyx_PyCode_New(4, 0, 14, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__29, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_C_git_rfigc_ReedSolomon_cff_pyx, __pyx_n_s_find_prime_polynomials, 74, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__30)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__30 = (PyObject*)__Pyx_PyCode_New(4, 0, 14, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__29, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_C_git_rfigc_ReedSolomon_unireeds, __pyx_n_s_find_prime_polynomials, 74, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__30)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "cff.pyx":128
+  /* "unireedsolomon\cff.pyx":128
  *     return correct_primes # you can use the following to print the hexadecimal representation of each prime polynomial: print [hex(i) for i in correct_primes]
  * 
  * def init_lut(generator=3, prim=0x11b, c_exp=8):             # <<<<<<<<<<<<<<
@@ -20131,7 +20160,7 @@ static int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__31 = PyTuple_Pack(8, __pyx_n_s_generator, __pyx_n_s_prim, __pyx_n_s_c_exp, __pyx_n_s_exptable, __pyx_n_s_logtable, __pyx_n_s_g, __pyx_n_s_i, __pyx_n_s_x); if (unlikely(!__pyx_tuple__31)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 128; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__31);
   __Pyx_GIVEREF(__pyx_tuple__31);
-  __pyx_codeobj__32 = (PyObject*)__Pyx_PyCode_New(3, 0, 8, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__31, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_C_git_rfigc_ReedSolomon_cff_pyx, __pyx_n_s_init_lut, 128, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__32)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 128; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__32 = (PyObject*)__Pyx_PyCode_New(3, 0, 8, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__31, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_C_git_rfigc_ReedSolomon_unireeds, __pyx_n_s_init_lut, 128, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__32)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 128; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
   /* "View.MemoryView":276
  *         return self.name
@@ -20524,14 +20553,14 @@ PyMODINIT_FUNC PyInit_cff(void)
   #if PY_MAJOR_VERSION < 3 && (__PYX_DEFAULT_STRING_ENCODING_IS_ASCII || __PYX_DEFAULT_STRING_ENCODING_IS_DEFAULT)
   if (__Pyx_init_sys_getdefaultencoding_params() < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   #endif
-  if (__pyx_module_is_main_cff) {
+  if (__pyx_module_is_main_unireedsolomon__cff) {
     if (PyObject_SetAttrString(__pyx_m, "__name__", __pyx_n_s_main) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
   }
   #if PY_MAJOR_VERSION >= 3
   {
     PyObject *modules = PyImport_GetModuleDict(); if (unlikely(!modules)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    if (!PyDict_GetItemString(modules, "cff")) {
-      if (unlikely(PyDict_SetItemString(modules, "cff", __pyx_m) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (!PyDict_GetItemString(modules, "unireedsolomon.cff")) {
+      if (unlikely(PyDict_SetItemString(modules, "unireedsolomon.cff", __pyx_m) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
   }
   #endif
@@ -20540,8 +20569,8 @@ PyMODINIT_FUNC PyInit_cff(void)
   /*--- Constants init code ---*/
   if (unlikely(__Pyx_InitCachedConstants() < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   /*--- Global init code ---*/
-  __pyx_v_3cff_GF2int_exptable_a = ((arrayobject *)Py_None); Py_INCREF(Py_None);
-  __pyx_v_3cff_GF2int_logtable_a = ((arrayobject *)Py_None); Py_INCREF(Py_None);
+  __pyx_v_14unireedsolomon_3cff_GF2int_exptable_a = ((arrayobject *)Py_None); Py_INCREF(Py_None);
+  __pyx_v_14unireedsolomon_3cff_GF2int_logtable_a = ((arrayobject *)Py_None); Py_INCREF(Py_None);
   generic = Py_None; Py_INCREF(Py_None);
   strided = Py_None; Py_INCREF(Py_None);
   indirect = Py_None; Py_INCREF(Py_None);
@@ -20550,38 +20579,38 @@ PyMODINIT_FUNC PyInit_cff(void)
   /*--- Variable export code ---*/
   /*--- Function export code ---*/
   /*--- Type init code ---*/
-  __pyx_vtabptr_3cff_GF2int = &__pyx_vtable_3cff_GF2int;
-  __pyx_vtable_3cff_GF2int.inverse = (PyObject *(*)(struct __pyx_obj_3cff_GF2int *, int __pyx_skip_dispatch))__pyx_f_3cff_6GF2int_inverse;
-  __pyx_vtable_3cff_GF2int._to_binpoly = (PyObject *(*)(struct __pyx_obj_3cff_GF2int *, int __pyx_skip_dispatch))__pyx_f_3cff_6GF2int__to_binpoly;
-  __pyx_vtable_3cff_GF2int.multiply = (PyObject *(*)(struct __pyx_obj_3cff_GF2int *, int, int __pyx_skip_dispatch, struct __pyx_opt_args_3cff_6GF2int_multiply *__pyx_optional_args))__pyx_f_3cff_6GF2int_multiply;
-  if (PyType_Ready(&__pyx_type_3cff_GF2int) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 169; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_type_3cff_GF2int.tp_print = 0;
+  __pyx_vtabptr_14unireedsolomon_3cff_GF2int = &__pyx_vtable_14unireedsolomon_3cff_GF2int;
+  __pyx_vtable_14unireedsolomon_3cff_GF2int.inverse = (PyObject *(*)(struct __pyx_obj_14unireedsolomon_3cff_GF2int *, int __pyx_skip_dispatch))__pyx_f_14unireedsolomon_3cff_6GF2int_inverse;
+  __pyx_vtable_14unireedsolomon_3cff_GF2int._to_binpoly = (PyObject *(*)(struct __pyx_obj_14unireedsolomon_3cff_GF2int *, int __pyx_skip_dispatch))__pyx_f_14unireedsolomon_3cff_6GF2int__to_binpoly;
+  __pyx_vtable_14unireedsolomon_3cff_GF2int.multiply = (PyObject *(*)(struct __pyx_obj_14unireedsolomon_3cff_GF2int *, int, int __pyx_skip_dispatch, struct __pyx_opt_args_14unireedsolomon_3cff_6GF2int_multiply *__pyx_optional_args))__pyx_f_14unireedsolomon_3cff_6GF2int_multiply;
+  if (PyType_Ready(&__pyx_type_14unireedsolomon_3cff_GF2int) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 169; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_type_14unireedsolomon_3cff_GF2int.tp_print = 0;
   #if CYTHON_COMPILING_IN_CPYTHON
   {
-    PyObject *wrapper = PyObject_GetAttrString((PyObject *)&__pyx_type_3cff_GF2int, "__add__"); if (unlikely(!wrapper)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 169; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    PyObject *wrapper = PyObject_GetAttrString((PyObject *)&__pyx_type_14unireedsolomon_3cff_GF2int, "__add__"); if (unlikely(!wrapper)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 169; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     if (Py_TYPE(wrapper) == &PyWrapperDescr_Type) {
-      __pyx_wrapperbase_3cff_6GF2int_2__add__ = *((PyWrapperDescrObject *)wrapper)->d_base;
-      __pyx_wrapperbase_3cff_6GF2int_2__add__.doc = __pyx_doc_3cff_6GF2int_2__add__;
-      ((PyWrapperDescrObject *)wrapper)->d_base = &__pyx_wrapperbase_3cff_6GF2int_2__add__;
+      __pyx_wrapperbase_14unireedsolomon_3cff_6GF2int_2__add__ = *((PyWrapperDescrObject *)wrapper)->d_base;
+      __pyx_wrapperbase_14unireedsolomon_3cff_6GF2int_2__add__.doc = __pyx_doc_14unireedsolomon_3cff_6GF2int_2__add__;
+      ((PyWrapperDescrObject *)wrapper)->d_base = &__pyx_wrapperbase_14unireedsolomon_3cff_6GF2int_2__add__;
     }
   }
   #endif
   #if CYTHON_COMPILING_IN_CPYTHON
   {
-    PyObject *wrapper = PyObject_GetAttrString((PyObject *)&__pyx_type_3cff_GF2int, "__mul__"); if (unlikely(!wrapper)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 169; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    PyObject *wrapper = PyObject_GetAttrString((PyObject *)&__pyx_type_14unireedsolomon_3cff_GF2int, "__mul__"); if (unlikely(!wrapper)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 169; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     if (Py_TYPE(wrapper) == &PyWrapperDescr_Type) {
-      __pyx_wrapperbase_3cff_6GF2int_14__mul__ = *((PyWrapperDescrObject *)wrapper)->d_base;
-      __pyx_wrapperbase_3cff_6GF2int_14__mul__.doc = __pyx_doc_3cff_6GF2int_14__mul__;
-      ((PyWrapperDescrObject *)wrapper)->d_base = &__pyx_wrapperbase_3cff_6GF2int_14__mul__;
+      __pyx_wrapperbase_14unireedsolomon_3cff_6GF2int_14__mul__ = *((PyWrapperDescrObject *)wrapper)->d_base;
+      __pyx_wrapperbase_14unireedsolomon_3cff_6GF2int_14__mul__.doc = __pyx_doc_14unireedsolomon_3cff_6GF2int_14__mul__;
+      ((PyWrapperDescrObject *)wrapper)->d_base = &__pyx_wrapperbase_14unireedsolomon_3cff_6GF2int_14__mul__;
     }
   }
   #endif
-  if (__Pyx_SetVtable(__pyx_type_3cff_GF2int.tp_dict, __pyx_vtabptr_3cff_GF2int) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 169; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (PyObject_SetAttrString(__pyx_m, "GF2int", (PyObject *)&__pyx_type_3cff_GF2int) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 169; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_ptype_3cff_GF2int = &__pyx_type_3cff_GF2int;
-  if (PyType_Ready(&__pyx_type_3cff___pyx_scope_struct__multiply_slow) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 303; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_type_3cff___pyx_scope_struct__multiply_slow.tp_print = 0;
-  __pyx_ptype_3cff___pyx_scope_struct__multiply_slow = &__pyx_type_3cff___pyx_scope_struct__multiply_slow;
+  if (__Pyx_SetVtable(__pyx_type_14unireedsolomon_3cff_GF2int.tp_dict, __pyx_vtabptr_14unireedsolomon_3cff_GF2int) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 169; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyObject_SetAttrString(__pyx_m, "GF2int", (PyObject *)&__pyx_type_14unireedsolomon_3cff_GF2int) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 169; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_ptype_14unireedsolomon_3cff_GF2int = &__pyx_type_14unireedsolomon_3cff_GF2int;
+  if (PyType_Ready(&__pyx_type_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 303; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_type_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow.tp_print = 0;
+  __pyx_ptype_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow = &__pyx_type_14unireedsolomon_3cff___pyx_scope_struct__multiply_slow;
   if (PyType_Ready(&__pyx_type___pyx_array) < 0) {__pyx_filename = __pyx_f[2]; __pyx_lineno = 99; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_type___pyx_array.tp_print = 0;
   __pyx_array_type = &__pyx_type___pyx_array;
@@ -20624,10 +20653,10 @@ PyMODINIT_FUNC PyInit_cff(void)
   /*--- Function import code ---*/
   /*--- Execution code ---*/
 
-  /* "cff.pyx":13
+  /* "unireedsolomon\cff.pyx":13
  * cimport cython
  * 
- * from _compat import _range             # <<<<<<<<<<<<<<
+ * from ._compat import _range             # <<<<<<<<<<<<<<
  * 
  * from cpython cimport array
  */
@@ -20636,7 +20665,7 @@ PyMODINIT_FUNC PyInit_cff(void)
   __Pyx_INCREF(__pyx_n_s_range_2);
   __Pyx_GIVEREF(__pyx_n_s_range_2);
   PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_range_2);
-  __pyx_t_2 = __Pyx_Import(__pyx_n_s_compat, __pyx_t_1, -1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 13; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_compat, __pyx_t_1, 1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 13; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_range_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 13; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -20645,7 +20674,7 @@ PyMODINIT_FUNC PyInit_cff(void)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "cff.pyx":19
+  /* "unireedsolomon\cff.pyx":19
  * # Galois Field's characteristic, by default, it's GF(2^8) == GF(256)
  * # Note that it's -1 (thus for GF(2^8) it's really 255 and not 256) because this is historically tied to the definition of Reed-Solomon codes: since the 0 and 256 values are impossible, we effectively have only 255 possible values. But later were defined (singly) extended Reed-Solomon codes, which include the 0 and thus 256 values, and then doubly extended Reed-Solomon codes which include the 0 and 256 == infinity.
  * cdef int GF2_charac = int(2**8 - 1)             # <<<<<<<<<<<<<<
@@ -20656,18 +20685,18 @@ PyMODINIT_FUNC PyInit_cff(void)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 19; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_v_3cff_GF2_charac = __pyx_t_3;
+  __pyx_v_14unireedsolomon_3cff_GF2_charac = __pyx_t_3;
 
-  /* "cff.pyx":20
+  /* "unireedsolomon\cff.pyx":20
  * # Note that it's -1 (thus for GF(2^8) it's really 255 and not 256) because this is historically tied to the definition of Reed-Solomon codes: since the 0 and 256 values are impossible, we effectively have only 255 possible values. But later were defined (singly) extended Reed-Solomon codes, which include the 0 and thus 256 values, and then doubly extended Reed-Solomon codes which include the 0 and 256 == infinity.
  * cdef int GF2_charac = int(2**8 - 1)
  * cdef int GF2_c_exp = 8             # <<<<<<<<<<<<<<
  * 
  * # Exponent table for generator=3 and prim=0x11b in GF(2^8)
  */
-  __pyx_v_3cff_GF2_c_exp = 8;
+  __pyx_v_14unireedsolomon_3cff_GF2_c_exp = 8;
 
-  /* "cff.pyx":23
+  /* "unireedsolomon\cff.pyx":23
  * 
  * # Exponent table for generator=3 and prim=0x11b in GF(2^8)
  * cdef array.array GF2int_exptable_a = array.array('i', [1, 3, 5, 15, 17, 51, 85, 255, 26, 46, 114, 150, 161, 248, 19,             # <<<<<<<<<<<<<<
@@ -21455,26 +21484,26 @@ PyMODINIT_FUNC PyInit_cff(void)
   __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)((PyObject*)__pyx_ptype_7cpython_5array_array)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 23; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __Pyx_XGOTREF(((PyObject *)__pyx_v_3cff_GF2int_exptable_a));
-  __Pyx_DECREF_SET(__pyx_v_3cff_GF2int_exptable_a, ((arrayobject *)__pyx_t_2));
+  __Pyx_XGOTREF(((PyObject *)__pyx_v_14unireedsolomon_3cff_GF2int_exptable_a));
+  __Pyx_DECREF_SET(__pyx_v_14unireedsolomon_3cff_GF2int_exptable_a, ((arrayobject *)__pyx_t_2));
   __Pyx_GIVEREF(__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "cff.pyx":41
+  /* "unireedsolomon\cff.pyx":41
  *             141, 140, 143, 138, 133, 148, 167, 242, 13, 23, 57, 75, 221, 124,
  *             132, 151, 162, 253, 28, 36, 108, 180, 199, 82, 246, 1])
  * cdef int[::1] GF2int_exptable = GF2int_exptable_a             # <<<<<<<<<<<<<<
  * 
  * # Logarithm table for the same GF parameters
  */
-  __pyx_t_4 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_3cff_GF2int_exptable_a));
+  __pyx_t_4 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_14unireedsolomon_3cff_GF2int_exptable_a));
   if (unlikely(!__pyx_t_4.memview)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __PYX_XDEC_MEMVIEW(&__pyx_v_3cff_GF2int_exptable, 1);
-  __pyx_v_3cff_GF2int_exptable = __pyx_t_4;
+  __PYX_XDEC_MEMVIEW(&__pyx_v_14unireedsolomon_3cff_GF2int_exptable, 1);
+  __pyx_v_14unireedsolomon_3cff_GF2int_exptable = __pyx_t_4;
   __pyx_t_4.memview = NULL;
   __pyx_t_4.data = NULL;
 
-  /* "cff.pyx":45
+  /* "unireedsolomon\cff.pyx":45
  * # Logarithm table for the same GF parameters
  * # Note: do NOT use cdef int* GF2int_logtable = [...], it will be faster but return wrong results!
  * cdef array.array GF2int_logtable_a = array.array('i', [-1, 0, 25, 1, 50, 2, 26, 198, 75, 199, 27, 104, 51, 238, 223, # None was replaced by -1, because Cython doesn't support None nor NULL in arrays             # <<<<<<<<<<<<<<
@@ -22262,62 +22291,62 @@ PyMODINIT_FUNC PyInit_cff(void)
   __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)((PyObject*)__pyx_ptype_7cpython_5array_array)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 45; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __Pyx_XGOTREF(((PyObject *)__pyx_v_3cff_GF2int_logtable_a));
-  __Pyx_DECREF_SET(__pyx_v_3cff_GF2int_logtable_a, ((arrayobject *)__pyx_t_2));
+  __Pyx_XGOTREF(((PyObject *)__pyx_v_14unireedsolomon_3cff_GF2int_logtable_a));
+  __Pyx_DECREF_SET(__pyx_v_14unireedsolomon_3cff_GF2int_logtable_a, ((arrayobject *)__pyx_t_2));
   __Pyx_GIVEREF(__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "cff.pyx":63
+  /* "unireedsolomon\cff.pyx":63
  *             137, 180, 124, 184, 38, 119, 153, 227, 165, 103, 74, 237, 222, 197,
  *             49, 254, 24, 13, 99, 140, 128, 192, 247, 112, 7])
  * cdef int[::1] GF2int_logtable = GF2int_logtable_a             # <<<<<<<<<<<<<<
  * 
  * def rwh_primes1(n):
  */
-  __pyx_t_4 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_3cff_GF2int_logtable_a));
+  __pyx_t_4 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_14unireedsolomon_3cff_GF2int_logtable_a));
   if (unlikely(!__pyx_t_4.memview)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 63; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __PYX_XDEC_MEMVIEW(&__pyx_v_3cff_GF2int_logtable, 1);
-  __pyx_v_3cff_GF2int_logtable = __pyx_t_4;
+  __PYX_XDEC_MEMVIEW(&__pyx_v_14unireedsolomon_3cff_GF2int_logtable, 1);
+  __pyx_v_14unireedsolomon_3cff_GF2int_logtable = __pyx_t_4;
   __pyx_t_4.memview = NULL;
   __pyx_t_4.data = NULL;
 
-  /* "cff.pyx":65
+  /* "unireedsolomon\cff.pyx":65
  * cdef int[::1] GF2int_logtable = GF2int_logtable_a
  * 
  * def rwh_primes1(n):             # <<<<<<<<<<<<<<
  *     # http://stackoverflow.com/questions/2068372/fastest-way-to-list-all-primes-below-n-in-python/3035188#3035188
  *     ''' Returns  a list of primes < n '''
  */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_3cff_1rwh_primes1, NULL, __pyx_n_s_cff); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 65; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_14unireedsolomon_3cff_1rwh_primes1, NULL, __pyx_n_s_unireedsolomon_cff); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 65; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_rwh_primes1, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 65; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "cff.pyx":74
+  /* "unireedsolomon\cff.pyx":74
  *     return [2] + [2*i+1 for i in _range(1,n/2) if sieve[i]]
  * 
  * def find_prime_polynomials(generator=2, c_exp=8, fast_primes=False, single=False):             # <<<<<<<<<<<<<<
  *     '''Compute the list of prime polynomials for the given generator and galois field characteristic exponent.'''
  *     # fast_primes will output less results but will be significantly faster.
  */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_3cff_3find_prime_polynomials, NULL, __pyx_n_s_cff); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_14unireedsolomon_3cff_3find_prime_polynomials, NULL, __pyx_n_s_unireedsolomon_cff); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_find_prime_polynomials, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "cff.pyx":128
+  /* "unireedsolomon\cff.pyx":128
  *     return correct_primes # you can use the following to print the hexadecimal representation of each prime polynomial: print [hex(i) for i in correct_primes]
  * 
  * def init_lut(generator=3, prim=0x11b, c_exp=8):             # <<<<<<<<<<<<<<
  *     '''Precompute the logarithm and anti-log (look-up) tables for faster computation later, using the provided primitive polynomial.
  *     These tables are used for multiplication/division since addition/substraction are simple XOR operations inside GF of characteristic 2.
  */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_3cff_5init_lut, NULL, __pyx_n_s_cff); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 128; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_14unireedsolomon_3cff_5init_lut, NULL, __pyx_n_s_unireedsolomon_cff); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 128; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_init_lut, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 128; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "cff.pyx":1
+  /* "unireedsolomon\cff.pyx":1
  * # -*- coding: utf-8 -*-             # <<<<<<<<<<<<<<
  * 
  * # Copyright (c) 2010 Andrew Brown <brownan@cs.duke.edu, brownan@gmail.com>
@@ -22453,11 +22482,11 @@ PyMODINIT_FUNC PyInit_cff(void)
   __PYX_XDEC_MEMVIEW(&__pyx_t_4, 1);
   if (__pyx_m) {
     if (__pyx_d) {
-      __Pyx_AddTraceback("init cff", __pyx_clineno, __pyx_lineno, __pyx_filename);
+      __Pyx_AddTraceback("init unireedsolomon.cff", __pyx_clineno, __pyx_lineno, __pyx_filename);
     }
     Py_DECREF(__pyx_m); __pyx_m = 0;
   } else if (!PyErr_Occurred()) {
-    PyErr_SetString(PyExc_ImportError, "init cff");
+    PyErr_SetString(PyExc_ImportError, "init unireedsolomon.cff");
   }
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();

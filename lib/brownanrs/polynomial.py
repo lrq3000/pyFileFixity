@@ -7,7 +7,7 @@
 
 # TODO: use set instead of list? or bytearray?
 
-from _compat import _range, _StringIO, _izip
+from ._compat import _range, _StringIO, _izip
 
 class Polynomial(object):
     '''Completely general polynomial class.

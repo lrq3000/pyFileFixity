@@ -1,7 +1,7 @@
 from PIL import Image
 import sys
 
-import rs
+from . import rs
 
 rowstride = 255
 
@@ -24,7 +24,7 @@ def encode(input, output_filename):
     while True:
         block = input.read(223)
         if not block: break
-        code = coder.encode(block)
+        code = coder.encode_fast(block)
         output.append(code)
         sys.stderr.write(".")
 
@@ -45,8 +45,9 @@ def decode(input_filename):
         if blocknum*255 > len(data):
             break
         rowdata = data[blocknum*255:(blocknum+1)*255]
+        if not rowdata: break
 
-        decoded = coder.decode(rowdata)
+        decoded = coder.decode_fast(rowdata)
 
         blocknum += 1
         sys.stdout.write(str(decoded))
@@ -54,10 +55,14 @@ def decode(input_filename):
     sys.stderr.write("\n")
 
 if __name__ == "__main__":
+
     if "-d" == sys.argv[1]:
         # decode
         decode(sys.argv[2])
 
     else:
         # encode
-        encode(sys.stdin,sys.argv[1])
+        if len(sys.argv) >= 2:
+            encode(open(sys.argv[1], 'rb'), sys.argv[2])
+        else:
+            encode(sys.stdin, sys.argv[1])

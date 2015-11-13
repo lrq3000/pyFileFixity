@@ -255,8 +255,8 @@ class __Pyx_FakeReference {
 #define _USE_MATH_DEFINES
 #endif
 #include <math.h>
-#define __PYX_HAVE__cpolynomial
-#define __PYX_HAVE_API__cpolynomial
+#define __PYX_HAVE__unireedsolomon__cpolynomial
+#define __PYX_HAVE_API__unireedsolomon__cpolynomial
 #ifdef _OPENMP
 #include <omp.h>
 #endif /* _OPENMP */
@@ -446,22 +446,22 @@ static const char *__pyx_filename;
 
 
 static const char *__pyx_f[] = {
-  "cpolynomial.pyx",
+  "unireedsolomon\\cpolynomial.pyx",
 };
 
 /*--- Type declarations ---*/
-struct __pyx_obj_11cpolynomial_Polynomial;
+struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial;
 
-/* "cpolynomial.pyx":15
+/* "unireedsolomon\cpolynomial.pyx":15
  * @cython.nonecheck(False) # Turn off nonecheck locally for the function
  * @cython.boundscheck(False) # turn off boundscheck for this function
  * cdef class Polynomial:             # <<<<<<<<<<<<<<
  *     '''Completely general polynomial class.
  * 
  */
-struct __pyx_obj_11cpolynomial_Polynomial {
+struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial {
   PyObject_HEAD
-  struct __pyx_vtabstruct_11cpolynomial_Polynomial *__pyx_vtab;
+  struct __pyx_vtabstruct_14unireedsolomon_11cpolynomial_Polynomial *__pyx_vtab;
   PyObject *coefficients;
   int degree;
   int length;
@@ -469,21 +469,21 @@ struct __pyx_obj_11cpolynomial_Polynomial {
 
 
 
-struct __pyx_vtabstruct_11cpolynomial_Polynomial {
-  PyObject *(*mul_at)(struct __pyx_obj_11cpolynomial_Polynomial *, struct __pyx_obj_11cpolynomial_Polynomial *, int, int __pyx_skip_dispatch);
-  struct __pyx_obj_11cpolynomial_Polynomial *(*scale)(struct __pyx_obj_11cpolynomial_Polynomial *, int, int __pyx_skip_dispatch);
-  struct __pyx_obj_11cpolynomial_Polynomial *(*_fastfloordiv)(struct __pyx_obj_11cpolynomial_Polynomial *, struct __pyx_obj_11cpolynomial_Polynomial *, int __pyx_skip_dispatch);
-  struct __pyx_obj_11cpolynomial_Polynomial *(*_fastmod)(struct __pyx_obj_11cpolynomial_Polynomial *, struct __pyx_obj_11cpolynomial_Polynomial *, int __pyx_skip_dispatch);
-  struct __pyx_obj_11cpolynomial_Polynomial *(*_gffastfloordiv)(struct __pyx_obj_11cpolynomial_Polynomial *, struct __pyx_obj_11cpolynomial_Polynomial *, int __pyx_skip_dispatch);
-  struct __pyx_obj_11cpolynomial_Polynomial *(*_gffastmod)(struct __pyx_obj_11cpolynomial_Polynomial *, struct __pyx_obj_11cpolynomial_Polynomial *, int __pyx_skip_dispatch);
-  PyObject *(*_fastdivmod)(struct __pyx_obj_11cpolynomial_Polynomial *, struct __pyx_obj_11cpolynomial_Polynomial *, int __pyx_skip_dispatch);
-  PyObject *(*_gffastdivmod)(struct __pyx_obj_11cpolynomial_Polynomial *, struct __pyx_obj_11cpolynomial_Polynomial *, int __pyx_skip_dispatch);
-  PyObject *(*evaluate)(struct __pyx_obj_11cpolynomial_Polynomial *, int, int __pyx_skip_dispatch);
-  PyObject *(*evaluate_array)(struct __pyx_obj_11cpolynomial_Polynomial *, int, int __pyx_skip_dispatch);
-  struct __pyx_obj_11cpolynomial_Polynomial *(*derive)(struct __pyx_obj_11cpolynomial_Polynomial *, int __pyx_skip_dispatch);
-  int (*get_coefficient)(struct __pyx_obj_11cpolynomial_Polynomial *, int, int __pyx_skip_dispatch);
+struct __pyx_vtabstruct_14unireedsolomon_11cpolynomial_Polynomial {
+  PyObject *(*mul_at)(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *, int, int __pyx_skip_dispatch);
+  struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *(*scale)(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *, int, int __pyx_skip_dispatch);
+  struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *(*_fastfloordiv)(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *, int __pyx_skip_dispatch);
+  struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *(*_fastmod)(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *, int __pyx_skip_dispatch);
+  struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *(*_gffastfloordiv)(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *, int __pyx_skip_dispatch);
+  struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *(*_gffastmod)(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *, int __pyx_skip_dispatch);
+  PyObject *(*_fastdivmod)(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *, int __pyx_skip_dispatch);
+  PyObject *(*_gffastdivmod)(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *, int __pyx_skip_dispatch);
+  PyObject *(*evaluate)(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *, int, int __pyx_skip_dispatch);
+  PyObject *(*evaluate_array)(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *, int, int __pyx_skip_dispatch);
+  struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *(*derive)(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *, int __pyx_skip_dispatch);
+  int (*get_coefficient)(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *, int, int __pyx_skip_dispatch);
 };
-static struct __pyx_vtabstruct_11cpolynomial_Polynomial *__pyx_vtabptr_11cpolynomial_Polynomial;
+static struct __pyx_vtabstruct_14unireedsolomon_11cpolynomial_Polynomial *__pyx_vtabptr_14unireedsolomon_11cpolynomial_Polynomial;
 
 /* --- Runtime support code (head) --- */
 #ifndef CYTHON_REFNANNY
@@ -753,67 +753,67 @@ static int __Pyx_check_binary_version(void);
 
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
-static PyObject *__pyx_f_11cpolynomial_10Polynomial_mul_at(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_other, int __pyx_v_k, int __pyx_skip_dispatch); /* proto*/
-static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polynomial_scale(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_scalar, int __pyx_skip_dispatch); /* proto*/
-static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polynomial__fastfloordiv(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_other, int __pyx_skip_dispatch); /* proto*/
-static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polynomial__fastmod(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_other, int __pyx_skip_dispatch); /* proto*/
-static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polynomial__gffastfloordiv(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_other, int __pyx_skip_dispatch); /* proto*/
-static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polynomial__gffastmod(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_other, int __pyx_skip_dispatch); /* proto*/
-static PyObject *__pyx_f_11cpolynomial_10Polynomial__fastdivmod(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_dividend, struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_divisor, int __pyx_skip_dispatch); /* proto*/
-static PyObject *__pyx_f_11cpolynomial_10Polynomial__gffastdivmod(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_dividend, struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_divisor, int __pyx_skip_dispatch); /* proto*/
-static PyObject *__pyx_f_11cpolynomial_10Polynomial_evaluate(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_x, int __pyx_skip_dispatch); /* proto*/
-static PyObject *__pyx_f_11cpolynomial_10Polynomial_evaluate_array(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_x, int __pyx_skip_dispatch); /* proto*/
-static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polynomial_derive(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_skip_dispatch); /* proto*/
-static int __pyx_f_11cpolynomial_10Polynomial_get_coefficient(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_degree, int __pyx_skip_dispatch); /* proto*/
+static PyObject *__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial_mul_at(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_other, int __pyx_v_k, int __pyx_skip_dispatch); /* proto*/
+static struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial_scale(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_scalar, int __pyx_skip_dispatch); /* proto*/
+static struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial__fastfloordiv(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_other, int __pyx_skip_dispatch); /* proto*/
+static struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial__fastmod(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_other, int __pyx_skip_dispatch); /* proto*/
+static struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial__gffastfloordiv(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_other, int __pyx_skip_dispatch); /* proto*/
+static struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial__gffastmod(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_other, int __pyx_skip_dispatch); /* proto*/
+static PyObject *__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial__fastdivmod(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_dividend, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_divisor, int __pyx_skip_dispatch); /* proto*/
+static PyObject *__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial__gffastdivmod(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_dividend, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_divisor, int __pyx_skip_dispatch); /* proto*/
+static PyObject *__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial_evaluate(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_x, int __pyx_skip_dispatch); /* proto*/
+static PyObject *__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial_evaluate_array(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_x, int __pyx_skip_dispatch); /* proto*/
+static struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial_derive(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_skip_dispatch); /* proto*/
+static int __pyx_f_14unireedsolomon_11cpolynomial_10Polynomial_get_coefficient(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_degree, int __pyx_skip_dispatch); /* proto*/
 
 /* Module declarations from 'cython' */
 
-/* Module declarations from 'cpolynomial' */
-static PyTypeObject *__pyx_ptype_11cpolynomial_Polynomial = 0;
-#define __Pyx_MODULE_NAME "cpolynomial"
-int __pyx_module_is_main_cpolynomial = 0;
+/* Module declarations from 'unireedsolomon.cpolynomial' */
+static PyTypeObject *__pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial = 0;
+#define __Pyx_MODULE_NAME "unireedsolomon.cpolynomial"
+int __pyx_module_is_main_unireedsolomon__cpolynomial = 0;
 
-/* Implementation of 'cpolynomial' */
+/* Implementation of 'unireedsolomon.cpolynomial' */
 static PyObject *__pyx_builtin_TypeError;
 static PyObject *__pyx_builtin_enumerate;
 static PyObject *__pyx_builtin_ZeroDivisionError;
 static PyObject *__pyx_builtin_sum;
-static int __pyx_pf_11cpolynomial_10Polynomial___cinit__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, PyObject *__pyx_v_coefficients, PyObject *__pyx_v_keep_zero, PyObject *__pyx_v_sparse); /* proto */
-static Py_ssize_t __pyx_pf_11cpolynomial_10Polynomial_2__len__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_4__add__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_other); /* proto */
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_6__neg__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_8__sub__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_other); /* proto */
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_10__mul__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_other); /* proto */
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_12mul_at(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_other, int __pyx_v_k); /* proto */
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_14scale(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_scalar); /* proto */
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_16__floordiv__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_other); /* proto */
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_18__mod__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_other); /* proto */
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_20_fastfloordiv(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_other); /* proto */
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_22_fastmod(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_other); /* proto */
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_24_gffastfloordiv(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_other); /* proto */
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_26_gffastmod(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_other); /* proto */
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_28_fastdivmod(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_dividend, struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_divisor); /* proto */
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_30_gffastdivmod(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_dividend, struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_divisor); /* proto */
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_32__divmod__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_dividend, struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_divisor); /* proto */
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_34__richcmp__(PyObject *__pyx_v_self, PyObject *__pyx_v_other, int __pyx_v_op); /* proto */
-static Py_hash_t __pyx_pf_11cpolynomial_10Polynomial_36__hash__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_38__repr__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_40__str__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_42evaluate(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_x); /* proto */
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_44evaluate_array(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_x); /* proto */
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_46derive(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_48get_coefficient(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_degree); /* proto */
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_50__iter__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_52__getitem__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, PyObject *__pyx_v_slice); /* proto */
-static int __pyx_pf_11cpolynomial_10Polynomial_54__setitem__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, PyObject *__pyx_v_key, PyObject *__pyx_v_item); /* proto */
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_12coefficients___get__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self); /* proto */
-static int __pyx_pf_11cpolynomial_10Polynomial_12coefficients_2__set__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
-static int __pyx_pf_11cpolynomial_10Polynomial_12coefficients_4__del__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_6degree___get__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self); /* proto */
-static int __pyx_pf_11cpolynomial_10Polynomial_6degree_2__set__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_6length___get__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self); /* proto */
-static int __pyx_pf_11cpolynomial_10Polynomial_6length_2__set__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
-static PyObject *__pyx_tp_new_11cpolynomial_Polynomial(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static int __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial___cinit__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, PyObject *__pyx_v_coefficients, PyObject *__pyx_v_keep_zero, PyObject *__pyx_v_sparse); /* proto */
+static Py_ssize_t __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_2__len__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_4__add__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_other); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_6__neg__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_8__sub__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_other); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_10__mul__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_other); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_12mul_at(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_other, int __pyx_v_k); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_14scale(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_scalar); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_16__floordiv__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_other); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_18__mod__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_other); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_20_fastfloordiv(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_other); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_22_fastmod(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_other); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_24_gffastfloordiv(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_other); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_26_gffastmod(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_other); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_28_fastdivmod(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_dividend, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_divisor); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_30_gffastdivmod(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_dividend, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_divisor); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_32__divmod__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_dividend, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_divisor); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_34__richcmp__(PyObject *__pyx_v_self, PyObject *__pyx_v_other, int __pyx_v_op); /* proto */
+static Py_hash_t __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_36__hash__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_38__repr__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_40__str__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_42evaluate(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_x); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_44evaluate_array(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_x); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_46derive(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_48get_coefficient(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_degree); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_50__iter__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_52__getitem__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, PyObject *__pyx_v_slice); /* proto */
+static int __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_54__setitem__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, PyObject *__pyx_v_key, PyObject *__pyx_v_item); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_12coefficients___get__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self); /* proto */
+static int __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_12coefficients_2__set__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
+static int __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_12coefficients_4__del__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_6degree___get__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self); /* proto */
+static int __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_6degree_2__set__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_6length___get__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self); /* proto */
+static int __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_6length_2__set__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
+static PyObject *__pyx_tp_new_14unireedsolomon_11cpolynomial_Polynomial(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static char __pyx_k_k[] = "k";
 static char __pyx_k_s[] = "%s";
 static char __pyx_k__4[] = "";
@@ -912,7 +912,7 @@ static PyObject *__pyx_slice__3;
 static PyObject *__pyx_slice__7;
 static PyObject *__pyx_tuple__6;
 
-/* "cpolynomial.pyx":31
+/* "unireedsolomon\cpolynomial.pyx":31
  *     cdef public int length
  * 
  *     def __cinit__(self, list coefficients=None, keep_zero=False, **sparse):             # <<<<<<<<<<<<<<
@@ -921,8 +921,8 @@ static PyObject *__pyx_tuple__6;
  */
 
 /* Python wrapper */
-static int __pyx_pw_11cpolynomial_10Polynomial_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static int __pyx_pw_11cpolynomial_10Polynomial_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static int __pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static int __pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_coefficients = 0;
   PyObject *__pyx_v_keep_zero = 0;
   PyObject *__pyx_v_sparse = 0;
@@ -980,12 +980,12 @@ static int __pyx_pw_11cpolynomial_10Polynomial_1__cinit__(PyObject *__pyx_v_self
   __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 0, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_DECREF(__pyx_v_sparse); __pyx_v_sparse = 0;
-  __Pyx_AddTraceback("cpolynomial.Polynomial.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coefficients), (&PyList_Type), 1, "coefficients", 1))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_11cpolynomial_10Polynomial___cinit__(((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_self), __pyx_v_coefficients, __pyx_v_keep_zero, __pyx_v_sparse);
+  __pyx_r = __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial___cinit__(((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_self), __pyx_v_coefficients, __pyx_v_keep_zero, __pyx_v_sparse);
 
   /* function exit code */
   goto __pyx_L0;
@@ -997,7 +997,7 @@ static int __pyx_pw_11cpolynomial_10Polynomial_1__cinit__(PyObject *__pyx_v_self
   return __pyx_r;
 }
 
-static int __pyx_pf_11cpolynomial_10Polynomial___cinit__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, PyObject *__pyx_v_coefficients, PyObject *__pyx_v_keep_zero, PyObject *__pyx_v_sparse) {
+static int __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial___cinit__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, PyObject *__pyx_v_coefficients, PyObject *__pyx_v_keep_zero, PyObject *__pyx_v_sparse) {
   PyObject *__pyx_v_powers = NULL;
   PyObject *__pyx_v_highest = NULL;
   PyObject *__pyx_v_power = NULL;
@@ -1022,7 +1022,7 @@ static int __pyx_pf_11cpolynomial_10Polynomial___cinit__(struct __pyx_obj_11cpol
   __Pyx_RefNannySetupContext("__cinit__", 0);
   __Pyx_INCREF(__pyx_v_coefficients);
 
-  /* "cpolynomial.pyx":52
+  /* "unireedsolomon\cpolynomial.pyx":52
  *         4x^9 + 5x^5 + 2
  *         '''
  *         if coefficients is not None and sparse:             # <<<<<<<<<<<<<<
@@ -1041,7 +1041,7 @@ static int __pyx_pf_11cpolynomial_10Polynomial___cinit__(struct __pyx_obj_11cpol
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_1) {
 
-    /* "cpolynomial.pyx":53
+    /* "unireedsolomon\cpolynomial.pyx":53
  *         '''
  *         if coefficients is not None and sparse:
  *             raise TypeError("Specify coefficients list /or/ keyword terms, not"             # <<<<<<<<<<<<<<
@@ -1055,7 +1055,7 @@ static int __pyx_pf_11cpolynomial_10Polynomial___cinit__(struct __pyx_obj_11cpol
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 53; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "cpolynomial.pyx":55
+  /* "unireedsolomon\cpolynomial.pyx":55
  *             raise TypeError("Specify coefficients list /or/ keyword terms, not"
  *                     " both")
  *         if coefficients is not None:             # <<<<<<<<<<<<<<
@@ -1066,7 +1066,7 @@ static int __pyx_pf_11cpolynomial_10Polynomial___cinit__(struct __pyx_obj_11cpol
   __pyx_t_3 = (__pyx_t_1 != 0);
   if (__pyx_t_3) {
 
-    /* "cpolynomial.pyx":59
+    /* "unireedsolomon\cpolynomial.pyx":59
  *             #if isinstance(coefficients, tuple): coefficients = list(coefficients)
  *             # Expunge any leading (unsignificant) 0 coefficients
  *             if not keep_zero: # for some polynomials we may want to keep all zeros, even the higher insignificant zeros (eg, for the syndrome polynomial, we need to keep all coefficients because the length is a precious info)             # <<<<<<<<<<<<<<
@@ -1077,7 +1077,7 @@ static int __pyx_pf_11cpolynomial_10Polynomial___cinit__(struct __pyx_obj_11cpol
     __pyx_t_1 = ((!__pyx_t_3) != 0);
     if (__pyx_t_1) {
 
-      /* "cpolynomial.pyx":60
+      /* "unireedsolomon\cpolynomial.pyx":60
  *             # Expunge any leading (unsignificant) 0 coefficients
  *             if not keep_zero: # for some polynomials we may want to keep all zeros, even the higher insignificant zeros (eg, for the syndrome polynomial, we need to keep all coefficients because the length is a precious info)
  *                 while len(coefficients) > 0 and coefficients[0] == 0:             # <<<<<<<<<<<<<<
@@ -1107,7 +1107,7 @@ static int __pyx_pf_11cpolynomial_10Polynomial___cinit__(struct __pyx_obj_11cpol
         __pyx_L10_bool_binop_done:;
         if (!__pyx_t_1) break;
 
-        /* "cpolynomial.pyx":61
+        /* "unireedsolomon\cpolynomial.pyx":61
  *             if not keep_zero: # for some polynomials we may want to keep all zeros, even the higher insignificant zeros (eg, for the syndrome polynomial, we need to keep all coefficients because the length is a precious info)
  *                 while len(coefficients) > 0 and coefficients[0] == 0:
  *                     coefficients.pop(0)             # <<<<<<<<<<<<<<
@@ -1126,7 +1126,7 @@ static int __pyx_pf_11cpolynomial_10Polynomial___cinit__(struct __pyx_obj_11cpol
     }
     __pyx_L7:;
 
-    /* "cpolynomial.pyx":62
+    /* "unireedsolomon\cpolynomial.pyx":62
  *                 while len(coefficients) > 0 and coefficients[0] == 0:
  *                     coefficients.pop(0)
  *             if not coefficients:             # <<<<<<<<<<<<<<
@@ -1137,7 +1137,7 @@ static int __pyx_pf_11cpolynomial_10Polynomial___cinit__(struct __pyx_obj_11cpol
     __pyx_t_3 = ((!__pyx_t_1) != 0);
     if (__pyx_t_3) {
 
-      /* "cpolynomial.pyx":63
+      /* "unireedsolomon\cpolynomial.pyx":63
  *                     coefficients.pop(0)
  *             if not coefficients:
  *                 coefficients.append(0)             # <<<<<<<<<<<<<<
@@ -1153,7 +1153,7 @@ static int __pyx_pf_11cpolynomial_10Polynomial___cinit__(struct __pyx_obj_11cpol
     }
     __pyx_L12:;
 
-    /* "cpolynomial.pyx":65
+    /* "unireedsolomon\cpolynomial.pyx":65
  *                 coefficients.append(0)
  * 
  *             self.coefficients = coefficients             # <<<<<<<<<<<<<<
@@ -1168,7 +1168,7 @@ static int __pyx_pf_11cpolynomial_10Polynomial___cinit__(struct __pyx_obj_11cpol
     goto __pyx_L6;
   }
 
-  /* "cpolynomial.pyx":66
+  /* "unireedsolomon\cpolynomial.pyx":66
  * 
  *             self.coefficients = coefficients
  *         elif sparse:             # <<<<<<<<<<<<<<
@@ -1178,7 +1178,7 @@ static int __pyx_pf_11cpolynomial_10Polynomial___cinit__(struct __pyx_obj_11cpol
   __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_v_sparse); if (unlikely(__pyx_t_3 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 66; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (__pyx_t_3) {
 
-    /* "cpolynomial.pyx":68
+    /* "unireedsolomon\cpolynomial.pyx":68
  *         elif sparse:
  *             # Polynomial(x32=...)
  *             powers = list(sparse.keys())             # <<<<<<<<<<<<<<
@@ -1193,7 +1193,7 @@ static int __pyx_pf_11cpolynomial_10Polynomial___cinit__(struct __pyx_obj_11cpol
     __pyx_v_powers = ((PyObject*)__pyx_t_7);
     __pyx_t_7 = 0;
 
-    /* "cpolynomial.pyx":69
+    /* "unireedsolomon\cpolynomial.pyx":69
  *             # Polynomial(x32=...)
  *             powers = list(sparse.keys())
  *             powers.sort(reverse=1)             # <<<<<<<<<<<<<<
@@ -1211,7 +1211,7 @@ static int __pyx_pf_11cpolynomial_10Polynomial___cinit__(struct __pyx_obj_11cpol
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-    /* "cpolynomial.pyx":72
+    /* "unireedsolomon\cpolynomial.pyx":72
  *             # Not catching possible exceptions from the following line, let
  *             # them bubble up.
  *             highest = int(powers[0][1:])             # <<<<<<<<<<<<<<
@@ -1226,7 +1226,7 @@ static int __pyx_pf_11cpolynomial_10Polynomial___cinit__(struct __pyx_obj_11cpol
     __pyx_v_highest = __pyx_t_4;
     __pyx_t_4 = 0;
 
-    /* "cpolynomial.pyx":73
+    /* "unireedsolomon\cpolynomial.pyx":73
  *             # them bubble up.
  *             highest = int(powers[0][1:])
  *             coefficients = [0] * (highest+1)             # <<<<<<<<<<<<<<
@@ -1249,7 +1249,7 @@ static int __pyx_pf_11cpolynomial_10Polynomial___cinit__(struct __pyx_obj_11cpol
     __Pyx_DECREF_SET(__pyx_v_coefficients, ((PyObject*)__pyx_t_8));
     __pyx_t_8 = 0;
 
-    /* "cpolynomial.pyx":75
+    /* "unireedsolomon\cpolynomial.pyx":75
  *             coefficients = [0] * (highest+1)
  * 
  *             for power, coeff in sparse.items():             # <<<<<<<<<<<<<<
@@ -1353,7 +1353,7 @@ static int __pyx_pf_11cpolynomial_10Polynomial___cinit__(struct __pyx_obj_11cpol
       __Pyx_XDECREF_SET(__pyx_v_coeff, __pyx_t_10);
       __pyx_t_10 = 0;
 
-      /* "cpolynomial.pyx":76
+      /* "unireedsolomon\cpolynomial.pyx":76
  * 
  *             for power, coeff in sparse.items():
  *                 power = int(power[1:])             # <<<<<<<<<<<<<<
@@ -1368,7 +1368,7 @@ static int __pyx_pf_11cpolynomial_10Polynomial___cinit__(struct __pyx_obj_11cpol
       __Pyx_DECREF_SET(__pyx_v_power, __pyx_t_10);
       __pyx_t_10 = 0;
 
-      /* "cpolynomial.pyx":77
+      /* "unireedsolomon\cpolynomial.pyx":77
  *             for power, coeff in sparse.items():
  *                 power = int(power[1:])
  *                 coefficients[highest - power] = coeff             # <<<<<<<<<<<<<<
@@ -1380,7 +1380,7 @@ static int __pyx_pf_11cpolynomial_10Polynomial___cinit__(struct __pyx_obj_11cpol
       if (unlikely(PyObject_SetItem(__pyx_v_coefficients, __pyx_t_10, __pyx_v_coeff) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 77; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
 
-      /* "cpolynomial.pyx":75
+      /* "unireedsolomon\cpolynomial.pyx":75
  *             coefficients = [0] * (highest+1)
  * 
  *             for power, coeff in sparse.items():             # <<<<<<<<<<<<<<
@@ -1390,7 +1390,7 @@ static int __pyx_pf_11cpolynomial_10Polynomial___cinit__(struct __pyx_obj_11cpol
     }
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "cpolynomial.pyx":79
+    /* "unireedsolomon\cpolynomial.pyx":79
  *                 coefficients[highest - power] = coeff
  * 
  *             self.coefficients = coefficients             # <<<<<<<<<<<<<<
@@ -1406,7 +1406,7 @@ static int __pyx_pf_11cpolynomial_10Polynomial___cinit__(struct __pyx_obj_11cpol
   }
   /*else*/ {
 
-    /* "cpolynomial.pyx":82
+    /* "unireedsolomon\cpolynomial.pyx":82
  *         else:
  *             # Polynomial()
  *             self.coefficients = [0]             # <<<<<<<<<<<<<<
@@ -1426,7 +1426,7 @@ static int __pyx_pf_11cpolynomial_10Polynomial___cinit__(struct __pyx_obj_11cpol
   }
   __pyx_L6:;
 
-  /* "cpolynomial.pyx":84
+  /* "unireedsolomon\cpolynomial.pyx":84
  *             self.coefficients = [0]
  *         # In any case, compute the degree of the polynomial (=the maximum degree)
  *         self.length = len(self.coefficients)             # <<<<<<<<<<<<<<
@@ -1443,7 +1443,7 @@ static int __pyx_pf_11cpolynomial_10Polynomial___cinit__(struct __pyx_obj_11cpol
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_v_self->length = __pyx_t_5;
 
-  /* "cpolynomial.pyx":85
+  /* "unireedsolomon\cpolynomial.pyx":85
  *         # In any case, compute the degree of the polynomial (=the maximum degree)
  *         self.length = len(self.coefficients)
  *         self.degree = self.length-1             # <<<<<<<<<<<<<<
@@ -1452,7 +1452,7 @@ static int __pyx_pf_11cpolynomial_10Polynomial___cinit__(struct __pyx_obj_11cpol
  */
   __pyx_v_self->degree = (__pyx_v_self->length - 1);
 
-  /* "cpolynomial.pyx":31
+  /* "unireedsolomon\cpolynomial.pyx":31
  *     cdef public int length
  * 
  *     def __cinit__(self, list coefficients=None, keep_zero=False, **sparse):             # <<<<<<<<<<<<<<
@@ -1469,7 +1469,7 @@ static int __pyx_pf_11cpolynomial_10Polynomial___cinit__(struct __pyx_obj_11cpol
   __Pyx_XDECREF(__pyx_t_8);
   __Pyx_XDECREF(__pyx_t_10);
   __Pyx_XDECREF(__pyx_t_11);
-  __Pyx_AddTraceback("cpolynomial.Polynomial.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_powers);
@@ -1481,7 +1481,7 @@ static int __pyx_pf_11cpolynomial_10Polynomial___cinit__(struct __pyx_obj_11cpol
   return __pyx_r;
 }
 
-/* "cpolynomial.pyx":87
+/* "unireedsolomon\cpolynomial.pyx":87
  *         self.degree = self.length-1
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
@@ -1490,28 +1490,28 @@ static int __pyx_pf_11cpolynomial_10Polynomial___cinit__(struct __pyx_obj_11cpol
  */
 
 /* Python wrapper */
-static Py_ssize_t __pyx_pw_11cpolynomial_10Polynomial_3__len__(PyObject *__pyx_v_self); /*proto*/
-static char __pyx_doc_11cpolynomial_10Polynomial_2__len__[] = "Returns the number of terms in the polynomial";
+static Py_ssize_t __pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_3__len__(PyObject *__pyx_v_self); /*proto*/
+static char __pyx_doc_14unireedsolomon_11cpolynomial_10Polynomial_2__len__[] = "Returns the number of terms in the polynomial";
 #if CYTHON_COMPILING_IN_CPYTHON
-struct wrapperbase __pyx_wrapperbase_11cpolynomial_10Polynomial_2__len__;
+struct wrapperbase __pyx_wrapperbase_14unireedsolomon_11cpolynomial_10Polynomial_2__len__;
 #endif
-static Py_ssize_t __pyx_pw_11cpolynomial_10Polynomial_3__len__(PyObject *__pyx_v_self) {
+static Py_ssize_t __pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_3__len__(PyObject *__pyx_v_self) {
   Py_ssize_t __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__len__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_11cpolynomial_10Polynomial_2__len__(((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_self));
+  __pyx_r = __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_2__len__(((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static Py_ssize_t __pyx_pf_11cpolynomial_10Polynomial_2__len__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self) {
+static Py_ssize_t __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_2__len__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self) {
   Py_ssize_t __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__len__", 0);
 
-  /* "cpolynomial.pyx":89
+  /* "unireedsolomon\cpolynomial.pyx":89
  *     def __len__(self):
  *         '''Returns the number of terms in the polynomial'''
  *         return self.length             # <<<<<<<<<<<<<<
@@ -1521,7 +1521,7 @@ static Py_ssize_t __pyx_pf_11cpolynomial_10Polynomial_2__len__(struct __pyx_obj_
   __pyx_r = __pyx_v_self->length;
   goto __pyx_L0;
 
-  /* "cpolynomial.pyx":87
+  /* "unireedsolomon\cpolynomial.pyx":87
  *         self.degree = self.length-1
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
@@ -1535,7 +1535,7 @@ static Py_ssize_t __pyx_pf_11cpolynomial_10Polynomial_2__len__(struct __pyx_obj_
   return __pyx_r;
 }
 
-/* "cpolynomial.pyx":104
+/* "unireedsolomon\cpolynomial.pyx":104
  * #            return len(poly)-1
  * 
  *     def __add__(Polynomial self, Polynomial other):             # <<<<<<<<<<<<<<
@@ -1544,17 +1544,17 @@ static Py_ssize_t __pyx_pf_11cpolynomial_10Polynomial_2__len__(struct __pyx_obj_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_5__add__(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /*proto*/
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_5__add__(PyObject *__pyx_v_self, PyObject *__pyx_v_other) {
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_5__add__(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /*proto*/
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_5__add__(PyObject *__pyx_v_self, PyObject *__pyx_v_other) {
   CYTHON_UNUSED int __pyx_lineno = 0;
   CYTHON_UNUSED const char *__pyx_filename = NULL;
   CYTHON_UNUSED int __pyx_clineno = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__add__ (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_self), __pyx_ptype_11cpolynomial_Polynomial, 1, "self", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_other), __pyx_ptype_11cpolynomial_Polynomial, 1, "other", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_11cpolynomial_10Polynomial_4__add__(((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_self), ((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_other));
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_self), __pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial, 1, "self", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_other), __pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial, 1, "other", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_4__add__(((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_self), ((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_other));
 
   /* function exit code */
   goto __pyx_L0;
@@ -1565,7 +1565,7 @@ static PyObject *__pyx_pw_11cpolynomial_10Polynomial_5__add__(PyObject *__pyx_v_
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_4__add__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_other) {
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_4__add__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_other) {
   int __pyx_v_i;
   int __pyx_v_diff;
   PyObject *__pyx_v_t1 = 0;
@@ -1587,7 +1587,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_4__add__(struct __pyx_obj_1
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__add__", 0);
 
-  /* "cpolynomial.pyx":106
+  /* "unireedsolomon\cpolynomial.pyx":106
  *     def __add__(Polynomial self, Polynomial other):
  *         cdef int i
  *         cdef int diff = len(self) - len(other)             # <<<<<<<<<<<<<<
@@ -1598,7 +1598,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_4__add__(struct __pyx_obj_1
   __pyx_t_2 = PyObject_Length(((PyObject *)__pyx_v_other)); if (unlikely(__pyx_t_2 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_diff = (__pyx_t_1 - __pyx_t_2);
 
-  /* "cpolynomial.pyx":107
+  /* "unireedsolomon\cpolynomial.pyx":107
  *         cdef int i
  *         cdef int diff = len(self) - len(other)
  *         cdef list t1 = [0] * (-diff) + self.coefficients             # <<<<<<<<<<<<<<
@@ -1620,7 +1620,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_4__add__(struct __pyx_obj_1
   __pyx_v_t1 = ((PyObject*)__pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "cpolynomial.pyx":108
+  /* "unireedsolomon\cpolynomial.pyx":108
  *         cdef int diff = len(self) - len(other)
  *         cdef list t1 = [0] * (-diff) + self.coefficients
  *         cdef list t2 = [0] * diff + other.coefficients             # <<<<<<<<<<<<<<
@@ -1642,7 +1642,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_4__add__(struct __pyx_obj_1
   __pyx_v_t2 = ((PyObject*)__pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "cpolynomial.pyx":109
+  /* "unireedsolomon\cpolynomial.pyx":109
  *         cdef list t1 = [0] * (-diff) + self.coefficients
  *         cdef list t2 = [0] * diff + other.coefficients
  *         cdef list tres = [0] * len(t1) # DO NOT try to do the following or it will freeze in ecc mode 1: cdef Polynomial tres = Polynomial()             # <<<<<<<<<<<<<<
@@ -1662,7 +1662,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_4__add__(struct __pyx_obj_1
   __pyx_v_tres = ((PyObject*)__pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "cpolynomial.pyx":110
+  /* "unireedsolomon\cpolynomial.pyx":110
  *         cdef list t2 = [0] * diff + other.coefficients
  *         cdef list tres = [0] * len(t1) # DO NOT try to do the following or it will freeze in ecc mode 1: cdef Polynomial tres = Polynomial()
  *         for i in _range(len(t1)): # faster way in cython, better do it in a loop than in a list comprehension with _izip             # <<<<<<<<<<<<<<
@@ -1744,7 +1744,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_4__add__(struct __pyx_obj_1
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_v_i = __pyx_t_9;
 
-    /* "cpolynomial.pyx":111
+    /* "unireedsolomon\cpolynomial.pyx":111
  *         cdef list tres = [0] * len(t1) # DO NOT try to do the following or it will freeze in ecc mode 1: cdef Polynomial tres = Polynomial()
  *         for i in _range(len(t1)): # faster way in cython, better do it in a loop than in a list comprehension with _izip
  *             tres[i] = t1[i]+t2[i]             # <<<<<<<<<<<<<<
@@ -1762,7 +1762,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_4__add__(struct __pyx_obj_1
     if (unlikely(__Pyx_SetItemInt(__pyx_v_tres, __pyx_v_i, __pyx_t_5, int, 1, __Pyx_PyInt_From_int, 1, 1, 0) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 111; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-    /* "cpolynomial.pyx":110
+    /* "unireedsolomon\cpolynomial.pyx":110
  *         cdef list t2 = [0] * diff + other.coefficients
  *         cdef list tres = [0] * len(t1) # DO NOT try to do the following or it will freeze in ecc mode 1: cdef Polynomial tres = Polynomial()
  *         for i in _range(len(t1)): # faster way in cython, better do it in a loop than in a list comprehension with _izip             # <<<<<<<<<<<<<<
@@ -1772,7 +1772,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_4__add__(struct __pyx_obj_1
   }
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "cpolynomial.pyx":112
+  /* "unireedsolomon\cpolynomial.pyx":112
  *         for i in _range(len(t1)): # faster way in cython, better do it in a loop than in a list comprehension with _izip
  *             tres[i] = t1[i]+t2[i]
  *         return self.__class__(tres)             # <<<<<<<<<<<<<<
@@ -1811,7 +1811,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_4__add__(struct __pyx_obj_1
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "cpolynomial.pyx":104
+  /* "unireedsolomon\cpolynomial.pyx":104
  * #            return len(poly)-1
  * 
  *     def __add__(Polynomial self, Polynomial other):             # <<<<<<<<<<<<<<
@@ -1826,7 +1826,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_4__add__(struct __pyx_obj_1
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_7);
-  __Pyx_AddTraceback("cpolynomial.Polynomial.__add__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial.__add__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_t1);
@@ -1837,7 +1837,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_4__add__(struct __pyx_obj_1
   return __pyx_r;
 }
 
-/* "cpolynomial.pyx":115
+/* "unireedsolomon\cpolynomial.pyx":115
  *         #return self.__class__([x+y for x,y in _izip(t1, t2)]) # slower equivalent way to do polynomial addition with list comprehension
  * 
  *     def __neg__(Polynomial self):             # <<<<<<<<<<<<<<
@@ -1846,19 +1846,19 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_4__add__(struct __pyx_obj_1
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_7__neg__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_7__neg__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_7__neg__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_7__neg__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__neg__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_11cpolynomial_10Polynomial_6__neg__(((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_self));
+  __pyx_r = __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_6__neg__(((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_6__neg__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self) {
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_6__neg__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self) {
   PyObject *__pyx_v_c = 0;
   PyObject *__pyx_v_x = NULL;
   PyObject *__pyx_r = NULL;
@@ -1875,7 +1875,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_6__neg__(struct __pyx_obj_1
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__neg__", 0);
 
-  /* "cpolynomial.pyx":116
+  /* "unireedsolomon\cpolynomial.pyx":116
  * 
  *     def __neg__(Polynomial self):
  *         cdef list c = []             # <<<<<<<<<<<<<<
@@ -1887,7 +1887,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_6__neg__(struct __pyx_obj_1
   __pyx_v_c = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "cpolynomial.pyx":117
+  /* "unireedsolomon\cpolynomial.pyx":117
  *     def __neg__(Polynomial self):
  *         cdef list c = []
  *         if self[0].__class__.__name__ == "GF256int": # optimization: -GF256int(x) == GF256int(x), so it's useless to do a loop in this case             # <<<<<<<<<<<<<<
@@ -1906,7 +1906,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_6__neg__(struct __pyx_obj_1
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_3) {
 
-    /* "cpolynomial.pyx":118
+    /* "unireedsolomon\cpolynomial.pyx":118
  *         cdef list c = []
  *         if self[0].__class__.__name__ == "GF256int": # optimization: -GF256int(x) == GF256int(x), so it's useless to do a loop in this case
  *             return self             # <<<<<<<<<<<<<<
@@ -1920,7 +1920,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_6__neg__(struct __pyx_obj_1
   }
   /*else*/ {
 
-    /* "cpolynomial.pyx":120
+    /* "unireedsolomon\cpolynomial.pyx":120
  *             return self
  *         else:
  *             for x in self.coefficients:             # <<<<<<<<<<<<<<
@@ -1943,7 +1943,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_6__neg__(struct __pyx_obj_1
       __Pyx_XDECREF_SET(__pyx_v_x, __pyx_t_2);
       __pyx_t_2 = 0;
 
-      /* "cpolynomial.pyx":121
+      /* "unireedsolomon\cpolynomial.pyx":121
  *         else:
  *             for x in self.coefficients:
  *                 c.append(-x)             # <<<<<<<<<<<<<<
@@ -1955,7 +1955,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_6__neg__(struct __pyx_obj_1
       __pyx_t_5 = __Pyx_PyList_Append(__pyx_v_c, __pyx_t_2); if (unlikely(__pyx_t_5 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 121; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-      /* "cpolynomial.pyx":120
+      /* "unireedsolomon\cpolynomial.pyx":120
  *             return self
  *         else:
  *             for x in self.coefficients:             # <<<<<<<<<<<<<<
@@ -1965,7 +1965,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_6__neg__(struct __pyx_obj_1
     }
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "cpolynomial.pyx":122
+    /* "unireedsolomon\cpolynomial.pyx":122
  *             for x in self.coefficients:
  *                 c.append(-x)
  *             return self.__class__(c)             # <<<<<<<<<<<<<<
@@ -2005,7 +2005,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_6__neg__(struct __pyx_obj_1
     goto __pyx_L0;
   }
 
-  /* "cpolynomial.pyx":115
+  /* "unireedsolomon\cpolynomial.pyx":115
  *         #return self.__class__([x+y for x,y in _izip(t1, t2)]) # slower equivalent way to do polynomial addition with list comprehension
  * 
  *     def __neg__(Polynomial self):             # <<<<<<<<<<<<<<
@@ -2019,7 +2019,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_6__neg__(struct __pyx_obj_1
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_7);
-  __Pyx_AddTraceback("cpolynomial.Polynomial.__neg__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial.__neg__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_c);
@@ -2029,7 +2029,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_6__neg__(struct __pyx_obj_1
   return __pyx_r;
 }
 
-/* "cpolynomial.pyx":124
+/* "unireedsolomon\cpolynomial.pyx":124
  *             return self.__class__(c)
  * 
  *     def __sub__(Polynomial self, Polynomial other):             # <<<<<<<<<<<<<<
@@ -2038,17 +2038,17 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_6__neg__(struct __pyx_obj_1
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_9__sub__(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /*proto*/
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_9__sub__(PyObject *__pyx_v_self, PyObject *__pyx_v_other) {
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_9__sub__(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /*proto*/
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_9__sub__(PyObject *__pyx_v_self, PyObject *__pyx_v_other) {
   CYTHON_UNUSED int __pyx_lineno = 0;
   CYTHON_UNUSED const char *__pyx_filename = NULL;
   CYTHON_UNUSED int __pyx_clineno = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__sub__ (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_self), __pyx_ptype_11cpolynomial_Polynomial, 1, "self", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 124; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_other), __pyx_ptype_11cpolynomial_Polynomial, 1, "other", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 124; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_11cpolynomial_10Polynomial_8__sub__(((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_self), ((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_other));
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_self), __pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial, 1, "self", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 124; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_other), __pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial, 1, "other", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 124; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_8__sub__(((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_self), ((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_other));
 
   /* function exit code */
   goto __pyx_L0;
@@ -2059,7 +2059,7 @@ static PyObject *__pyx_pw_11cpolynomial_10Polynomial_9__sub__(PyObject *__pyx_v_
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_8__sub__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_other) {
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_8__sub__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_other) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2069,7 +2069,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_8__sub__(struct __pyx_obj_1
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__sub__", 0);
 
-  /* "cpolynomial.pyx":125
+  /* "unireedsolomon\cpolynomial.pyx":125
  * 
  *     def __sub__(Polynomial self, Polynomial other):
  *         return self + -other             # <<<<<<<<<<<<<<
@@ -2086,7 +2086,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_8__sub__(struct __pyx_obj_1
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "cpolynomial.pyx":124
+  /* "unireedsolomon\cpolynomial.pyx":124
  *             return self.__class__(c)
  * 
  *     def __sub__(Polynomial self, Polynomial other):             # <<<<<<<<<<<<<<
@@ -2098,7 +2098,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_8__sub__(struct __pyx_obj_1
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_AddTraceback("cpolynomial.Polynomial.__sub__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial.__sub__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -2106,7 +2106,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_8__sub__(struct __pyx_obj_1
   return __pyx_r;
 }
 
-/* "cpolynomial.pyx":127
+/* "unireedsolomon\cpolynomial.pyx":127
  *         return self + -other
  * 
  *     def __mul__(Polynomial self, Polynomial other):             # <<<<<<<<<<<<<<
@@ -2115,21 +2115,21 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_8__sub__(struct __pyx_obj_1
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_11__mul__(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /*proto*/
-static char __pyx_doc_11cpolynomial_10Polynomial_10__mul__[] = "Multiply two polynomials (also works over Galois Fields, but it's a general approach). Algebraically, multiplying polynomials over a Galois field is equivalent to convolving vectors containing the polynomials' coefficients, where the convolution operation uses arithmetic over the same Galois field (see Matlab's gfconv()).";
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_11__mul__(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /*proto*/
+static char __pyx_doc_14unireedsolomon_11cpolynomial_10Polynomial_10__mul__[] = "Multiply two polynomials (also works over Galois Fields, but it's a general approach). Algebraically, multiplying polynomials over a Galois field is equivalent to convolving vectors containing the polynomials' coefficients, where the convolution operation uses arithmetic over the same Galois field (see Matlab's gfconv()).";
 #if CYTHON_COMPILING_IN_CPYTHON
-struct wrapperbase __pyx_wrapperbase_11cpolynomial_10Polynomial_10__mul__;
+struct wrapperbase __pyx_wrapperbase_14unireedsolomon_11cpolynomial_10Polynomial_10__mul__;
 #endif
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_11__mul__(PyObject *__pyx_v_self, PyObject *__pyx_v_other) {
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_11__mul__(PyObject *__pyx_v_self, PyObject *__pyx_v_other) {
   CYTHON_UNUSED int __pyx_lineno = 0;
   CYTHON_UNUSED const char *__pyx_filename = NULL;
   CYTHON_UNUSED int __pyx_clineno = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__mul__ (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_self), __pyx_ptype_11cpolynomial_Polynomial, 1, "self", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 127; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_other), __pyx_ptype_11cpolynomial_Polynomial, 1, "other", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 127; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_11cpolynomial_10Polynomial_10__mul__(((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_self), ((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_other));
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_self), __pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial, 1, "self", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 127; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_other), __pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial, 1, "other", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 127; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_10__mul__(((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_self), ((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_other));
 
   /* function exit code */
   goto __pyx_L0;
@@ -2140,7 +2140,7 @@ static PyObject *__pyx_pw_11cpolynomial_10Polynomial_11__mul__(PyObject *__pyx_v
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_10__mul__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_other) {
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_10__mul__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_other) {
   PyObject *__pyx_v_terms = 0;
   int __pyx_v_l1l2;
   PyObject *__pyx_v_i1 = NULL;
@@ -2165,7 +2165,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_10__mul__(struct __pyx_obj_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__mul__", 0);
 
-  /* "cpolynomial.pyx":129
+  /* "unireedsolomon\cpolynomial.pyx":129
  *     def __mul__(Polynomial self, Polynomial other):
  *         '''Multiply two polynomials (also works over Galois Fields, but it's a general approach). Algebraically, multiplying polynomials over a Galois field is equivalent to convolving vectors containing the polynomials' coefficients, where the convolution operation uses arithmetic over the same Galois field (see Matlab's gfconv()).'''
  *         cdef list terms = [0] * (len(self) + len(other))             # <<<<<<<<<<<<<<
@@ -2186,7 +2186,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_10__mul__(struct __pyx_obj_
   __pyx_v_terms = ((PyObject*)__pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "cpolynomial.pyx":133
+  /* "unireedsolomon\cpolynomial.pyx":133
  *         #cdef int l1 = self.degree
  *         #cdef int l2 = other.degree
  *         cdef int l1l2 = self.degree + other.degree             # <<<<<<<<<<<<<<
@@ -2195,7 +2195,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_10__mul__(struct __pyx_obj_
  */
   __pyx_v_l1l2 = (__pyx_v_self->degree + __pyx_v_other->degree);
 
-  /* "cpolynomial.pyx":134
+  /* "unireedsolomon\cpolynomial.pyx":134
  *         #cdef int l2 = other.degree
  *         cdef int l1l2 = self.degree + other.degree
  *         for i1, c1 in enumerate(self.coefficients):             # <<<<<<<<<<<<<<
@@ -2223,7 +2223,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_10__mul__(struct __pyx_obj_
     __pyx_t_3 = __pyx_t_5;
     __pyx_t_5 = 0;
 
-    /* "cpolynomial.pyx":135
+    /* "unireedsolomon\cpolynomial.pyx":135
  *         cdef int l1l2 = self.degree + other.degree
  *         for i1, c1 in enumerate(self.coefficients):
  *             if c1 == 0: # log(0) is undefined, skip (and in addition it's a nice optimization)             # <<<<<<<<<<<<<<
@@ -2235,7 +2235,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_10__mul__(struct __pyx_obj_
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     if (__pyx_t_6) {
 
-      /* "cpolynomial.pyx":136
+      /* "unireedsolomon\cpolynomial.pyx":136
  *         for i1, c1 in enumerate(self.coefficients):
  *             if c1 == 0: # log(0) is undefined, skip (and in addition it's a nice optimization)
  *                 continue             # <<<<<<<<<<<<<<
@@ -2245,7 +2245,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_10__mul__(struct __pyx_obj_
       goto __pyx_L3_continue;
     }
 
-    /* "cpolynomial.pyx":137
+    /* "unireedsolomon\cpolynomial.pyx":137
  *             if c1 == 0: # log(0) is undefined, skip (and in addition it's a nice optimization)
  *                 continue
  *             for i2, c2 in enumerate(other.coefficients):             # <<<<<<<<<<<<<<
@@ -2273,7 +2273,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_10__mul__(struct __pyx_obj_
       __pyx_t_5 = __pyx_t_8;
       __pyx_t_8 = 0;
 
-      /* "cpolynomial.pyx":138
+      /* "unireedsolomon\cpolynomial.pyx":138
  *                 continue
  *             for i2, c2 in enumerate(other.coefficients):
  *                 if c2 == 0: # log(0) is undefined, skip (and in addition it's a nice optimization)             # <<<<<<<<<<<<<<
@@ -2285,7 +2285,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_10__mul__(struct __pyx_obj_
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       if (__pyx_t_6) {
 
-        /* "cpolynomial.pyx":139
+        /* "unireedsolomon\cpolynomial.pyx":139
  *             for i2, c2 in enumerate(other.coefficients):
  *                 if c2 == 0: # log(0) is undefined, skip (and in addition it's a nice optimization)
  *                     continue             # <<<<<<<<<<<<<<
@@ -2296,7 +2296,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_10__mul__(struct __pyx_obj_
       }
       /*else*/ {
 
-        /* "cpolynomial.pyx":142
+        /* "unireedsolomon\cpolynomial.pyx":142
  *                 else:
  *                     #terms[-((l1-i1)+(l2-i2))-1] += c1*c2 # old way, but not optimized because we recompute l1+l2 everytime
  *                     terms[ -(l1l2-(i1+i2)+1) ] += c1*c2             # <<<<<<<<<<<<<<
@@ -2330,7 +2330,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_10__mul__(struct __pyx_obj_
         __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
       }
 
-      /* "cpolynomial.pyx":137
+      /* "unireedsolomon\cpolynomial.pyx":137
  *             if c1 == 0: # log(0) is undefined, skip (and in addition it's a nice optimization)
  *                 continue
  *             for i2, c2 in enumerate(other.coefficients):             # <<<<<<<<<<<<<<
@@ -2342,7 +2342,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_10__mul__(struct __pyx_obj_
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-    /* "cpolynomial.pyx":134
+    /* "unireedsolomon\cpolynomial.pyx":134
  *         #cdef int l2 = other.degree
  *         cdef int l1l2 = self.degree + other.degree
  *         for i1, c1 in enumerate(self.coefficients):             # <<<<<<<<<<<<<<
@@ -2354,7 +2354,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_10__mul__(struct __pyx_obj_
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "cpolynomial.pyx":143
+  /* "unireedsolomon\cpolynomial.pyx":143
  *                     #terms[-((l1-i1)+(l2-i2))-1] += c1*c2 # old way, but not optimized because we recompute l1+l2 everytime
  *                     terms[ -(l1l2-(i1+i2)+1) ] += c1*c2
  *         return self.__class__(terms)             # <<<<<<<<<<<<<<
@@ -2393,7 +2393,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_10__mul__(struct __pyx_obj_
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "cpolynomial.pyx":127
+  /* "unireedsolomon\cpolynomial.pyx":127
  *         return self + -other
  * 
  *     def __mul__(Polynomial self, Polynomial other):             # <<<<<<<<<<<<<<
@@ -2411,7 +2411,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_10__mul__(struct __pyx_obj_
   __Pyx_XDECREF(__pyx_t_9);
   __Pyx_XDECREF(__pyx_t_10);
   __Pyx_XDECREF(__pyx_t_11);
-  __Pyx_AddTraceback("cpolynomial.Polynomial.__mul__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial.__mul__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_terms);
@@ -2424,7 +2424,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_10__mul__(struct __pyx_obj_
   return __pyx_r;
 }
 
-/* "cpolynomial.pyx":145
+/* "unireedsolomon\cpolynomial.pyx":145
  *         return self.__class__(terms)
  * 
  *     cpdef mul_at(Polynomial self, Polynomial other, int k):             # <<<<<<<<<<<<<<
@@ -2432,8 +2432,8 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_10__mul__(struct __pyx_obj_
  *         if k > (self.degree + other.degree) or k > self.degree: return 0 # optimization: if the required coefficient is above the maximum coefficient of the resulting polynomial, we can already predict that and just return 0
  */
 
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_13mul_at(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_f_11cpolynomial_10Polynomial_mul_at(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_other, int __pyx_v_k, int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_13mul_at(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial_mul_at(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_other, int __pyx_v_k, int __pyx_skip_dispatch) {
   PyObject *__pyx_v_term = NULL;
   PyObject *__pyx_v_i = NULL;
   PyObject *__pyx_v_coef1 = NULL;
@@ -2462,7 +2462,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial_mul_at(struct __pyx_obj_11cp
   else if (unlikely(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dictoffset != 0)) {
     __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_mul_at); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 145; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_11cpolynomial_10Polynomial_13mul_at)) {
+    if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_13mul_at)) {
       __Pyx_XDECREF(__pyx_r);
       __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_k); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 145; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_3);
@@ -2502,7 +2502,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial_mul_at(struct __pyx_obj_11cp
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   }
 
-  /* "cpolynomial.pyx":147
+  /* "unireedsolomon\cpolynomial.pyx":147
  *     cpdef mul_at(Polynomial self, Polynomial other, int k):
  *         '''Compute the multiplication between two polynomials only at the specified coefficient (this is a lot cheaper than doing the full polynomial multiplication and then extract only the required coefficient)'''
  *         if k > (self.degree + other.degree) or k > self.degree: return 0 # optimization: if the required coefficient is above the maximum coefficient of the resulting polynomial, we can already predict that and just return 0             # <<<<<<<<<<<<<<
@@ -2525,7 +2525,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial_mul_at(struct __pyx_obj_11cp
     goto __pyx_L0;
   }
 
-  /* "cpolynomial.pyx":149
+  /* "unireedsolomon\cpolynomial.pyx":149
  *         if k > (self.degree + other.degree) or k > self.degree: return 0 # optimization: if the required coefficient is above the maximum coefficient of the resulting polynomial, we can already predict that and just return 0
  * 
  *         term = 0             # <<<<<<<<<<<<<<
@@ -2535,7 +2535,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial_mul_at(struct __pyx_obj_11cp
   __Pyx_INCREF(__pyx_int_0);
   __pyx_v_term = __pyx_int_0;
 
-  /* "cpolynomial.pyx":150
+  /* "unireedsolomon\cpolynomial.pyx":150
  * 
  *         term = 0
  *         for i in _range(min(len(self), len(other))):             # <<<<<<<<<<<<<<
@@ -2622,7 +2622,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial_mul_at(struct __pyx_obj_11cp
     __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "cpolynomial.pyx":151
+    /* "unireedsolomon\cpolynomial.pyx":151
  *         term = 0
  *         for i in _range(min(len(self), len(other))):
  *             coef1 = self.coefficients[-(k-i+1)]             # <<<<<<<<<<<<<<
@@ -2650,7 +2650,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial_mul_at(struct __pyx_obj_11cp
     __Pyx_XDECREF_SET(__pyx_v_coef1, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "cpolynomial.pyx":152
+    /* "unireedsolomon\cpolynomial.pyx":152
  *         for i in _range(min(len(self), len(other))):
  *             coef1 = self.coefficients[-(k-i+1)]
  *             coef2 = other.coefficients[-(i+1)]             # <<<<<<<<<<<<<<
@@ -2672,7 +2672,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial_mul_at(struct __pyx_obj_11cp
     __Pyx_XDECREF_SET(__pyx_v_coef2, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "cpolynomial.pyx":153
+    /* "unireedsolomon\cpolynomial.pyx":153
  *             coef1 = self.coefficients[-(k-i+1)]
  *             coef2 = other.coefficients[-(i+1)]
  *             if coef1 == 0 or coef2 == 0: continue # log(0) is undefined, skip (and in addition it's a nice optimization)             # <<<<<<<<<<<<<<
@@ -2696,7 +2696,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial_mul_at(struct __pyx_obj_11cp
       goto __pyx_L6_continue;
     }
 
-    /* "cpolynomial.pyx":154
+    /* "unireedsolomon\cpolynomial.pyx":154
  *             coef2 = other.coefficients[-(i+1)]
  *             if coef1 == 0 or coef2 == 0: continue # log(0) is undefined, skip (and in addition it's a nice optimization)
  *             term += coef1 * coef2             # <<<<<<<<<<<<<<
@@ -2711,7 +2711,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial_mul_at(struct __pyx_obj_11cp
     __Pyx_DECREF_SET(__pyx_v_term, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "cpolynomial.pyx":150
+    /* "unireedsolomon\cpolynomial.pyx":150
  * 
  *         term = 0
  *         for i in _range(min(len(self), len(other))):             # <<<<<<<<<<<<<<
@@ -2722,7 +2722,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial_mul_at(struct __pyx_obj_11cp
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "cpolynomial.pyx":155
+  /* "unireedsolomon\cpolynomial.pyx":155
  *             if coef1 == 0 or coef2 == 0: continue # log(0) is undefined, skip (and in addition it's a nice optimization)
  *             term += coef1 * coef2
  *         return term             # <<<<<<<<<<<<<<
@@ -2734,7 +2734,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial_mul_at(struct __pyx_obj_11cp
   __pyx_r = __pyx_v_term;
   goto __pyx_L0;
 
-  /* "cpolynomial.pyx":145
+  /* "unireedsolomon\cpolynomial.pyx":145
  *         return self.__class__(terms)
  * 
  *     cpdef mul_at(Polynomial self, Polynomial other, int k):             # <<<<<<<<<<<<<<
@@ -2750,7 +2750,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial_mul_at(struct __pyx_obj_11cp
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_7);
-  __Pyx_AddTraceback("cpolynomial.Polynomial.mul_at", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial.mul_at", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_term);
@@ -2763,10 +2763,10 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial_mul_at(struct __pyx_obj_11cp
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_13mul_at(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_11cpolynomial_10Polynomial_12mul_at[] = "Compute the multiplication between two polynomials only at the specified coefficient (this is a lot cheaper than doing the full polynomial multiplication and then extract only the required coefficient)";
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_13mul_at(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_other = 0;
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_13mul_at(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_14unireedsolomon_11cpolynomial_10Polynomial_12mul_at[] = "Compute the multiplication between two polynomials only at the specified coefficient (this is a lot cheaper than doing the full polynomial multiplication and then extract only the required coefficient)";
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_13mul_at(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_other = 0;
   int __pyx_v_k;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
@@ -2806,19 +2806,19 @@ static PyObject *__pyx_pw_11cpolynomial_10Polynomial_13mul_at(PyObject *__pyx_v_
       values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
     }
-    __pyx_v_other = ((struct __pyx_obj_11cpolynomial_Polynomial *)values[0]);
+    __pyx_v_other = ((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)values[0]);
     __pyx_v_k = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_k == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 145; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("mul_at", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 145; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cpolynomial.Polynomial.mul_at", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial.mul_at", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_other), __pyx_ptype_11cpolynomial_Polynomial, 1, "other", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 145; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_11cpolynomial_10Polynomial_12mul_at(((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_self), __pyx_v_other, __pyx_v_k);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_other), __pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial, 1, "other", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 145; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_12mul_at(((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_self), __pyx_v_other, __pyx_v_k);
 
   /* function exit code */
   goto __pyx_L0;
@@ -2829,7 +2829,7 @@ static PyObject *__pyx_pw_11cpolynomial_10Polynomial_13mul_at(PyObject *__pyx_v_
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_12mul_at(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_other, int __pyx_v_k) {
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_12mul_at(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_other, int __pyx_v_k) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2838,7 +2838,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_12mul_at(struct __pyx_obj_1
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("mul_at", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_11cpolynomial_10Polynomial_mul_at(__pyx_v_self, __pyx_v_other, __pyx_v_k, 1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 145; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_f_14unireedsolomon_11cpolynomial_10Polynomial_mul_at(__pyx_v_self, __pyx_v_other, __pyx_v_k, 1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 145; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -2847,7 +2847,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_12mul_at(struct __pyx_obj_1
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cpolynomial.Polynomial.mul_at", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial.mul_at", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -2855,7 +2855,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_12mul_at(struct __pyx_obj_1
   return __pyx_r;
 }
 
-/* "cpolynomial.pyx":157
+/* "unireedsolomon\cpolynomial.pyx":157
  *         return term
  * 
  *     cpdef Polynomial scale(Polynomial self, int scalar):             # <<<<<<<<<<<<<<
@@ -2863,10 +2863,10 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_12mul_at(struct __pyx_obj_1
  *         return self.__class__([self.coefficients[i] * scalar for i in _range(len(self))])
  */
 
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_15scale(PyObject *__pyx_v_self, PyObject *__pyx_arg_scalar); /*proto*/
-static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polynomial_scale(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_scalar, int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_15scale(PyObject *__pyx_v_self, PyObject *__pyx_arg_scalar); /*proto*/
+static struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial_scale(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_scalar, int __pyx_skip_dispatch) {
   PyObject *__pyx_v_i = NULL;
-  struct __pyx_obj_11cpolynomial_Polynomial *__pyx_r = NULL;
+  struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
@@ -2888,7 +2888,7 @@ static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polyno
   else if (unlikely(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dictoffset != 0)) {
     __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_scale); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 157; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_11cpolynomial_10Polynomial_15scale)) {
+    if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_15scale)) {
       __Pyx_XDECREF(((PyObject *)__pyx_r));
       __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_scalar); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 157; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_3);
@@ -2919,8 +2919,8 @@ static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polyno
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       }
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_11cpolynomial_Polynomial))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 157; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      __pyx_r = ((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_t_2);
+      if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 157; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_r = ((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_t_2);
       __pyx_t_2 = 0;
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       goto __pyx_L0;
@@ -2928,7 +2928,7 @@ static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polyno
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   }
 
-  /* "cpolynomial.pyx":159
+  /* "unireedsolomon\cpolynomial.pyx":159
  *     cpdef Polynomial scale(Polynomial self, int scalar):
  *         '''Multiply a polynomial with a scalar'''
  *         return self.__class__([self.coefficients[i] * scalar for i in _range(len(self))])             # <<<<<<<<<<<<<<
@@ -3055,12 +3055,12 @@ static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polyno
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_11cpolynomial_Polynomial))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 159; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = ((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_t_1);
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 159; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = ((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_t_1);
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "cpolynomial.pyx":157
+  /* "unireedsolomon\cpolynomial.pyx":157
  *         return term
  * 
  *     cpdef Polynomial scale(Polynomial self, int scalar):             # <<<<<<<<<<<<<<
@@ -3078,7 +3078,7 @@ static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polyno
   __Pyx_XDECREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_8);
   __Pyx_XDECREF(__pyx_t_9);
-  __Pyx_AddTraceback("cpolynomial.Polynomial.scale", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial.scale", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_i);
@@ -3088,9 +3088,9 @@ static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polyno
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_15scale(PyObject *__pyx_v_self, PyObject *__pyx_arg_scalar); /*proto*/
-static char __pyx_doc_11cpolynomial_10Polynomial_14scale[] = "Multiply a polynomial with a scalar";
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_15scale(PyObject *__pyx_v_self, PyObject *__pyx_arg_scalar) {
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_15scale(PyObject *__pyx_v_self, PyObject *__pyx_arg_scalar); /*proto*/
+static char __pyx_doc_14unireedsolomon_11cpolynomial_10Polynomial_14scale[] = "Multiply a polynomial with a scalar";
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_15scale(PyObject *__pyx_v_self, PyObject *__pyx_arg_scalar) {
   int __pyx_v_scalar;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
@@ -3103,18 +3103,18 @@ static PyObject *__pyx_pw_11cpolynomial_10Polynomial_15scale(PyObject *__pyx_v_s
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cpolynomial.Polynomial.scale", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial.scale", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_11cpolynomial_10Polynomial_14scale(((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_self), ((int)__pyx_v_scalar));
+  __pyx_r = __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_14scale(((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_self), ((int)__pyx_v_scalar));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_14scale(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_scalar) {
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_14scale(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_scalar) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3123,7 +3123,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_14scale(struct __pyx_obj_11
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("scale", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = ((PyObject *)__pyx_f_11cpolynomial_10Polynomial_scale(__pyx_v_self, __pyx_v_scalar, 1)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 157; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = ((PyObject *)__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial_scale(__pyx_v_self, __pyx_v_scalar, 1)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 157; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -3132,7 +3132,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_14scale(struct __pyx_obj_11
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cpolynomial.Polynomial.scale", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial.scale", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -3140,7 +3140,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_14scale(struct __pyx_obj_11
   return __pyx_r;
 }
 
-/* "cpolynomial.pyx":161
+/* "unireedsolomon\cpolynomial.pyx":161
  *         return self.__class__([self.coefficients[i] * scalar for i in _range(len(self))])
  * 
  *     def __floordiv__(Polynomial self, Polynomial other):             # <<<<<<<<<<<<<<
@@ -3149,17 +3149,17 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_14scale(struct __pyx_obj_11
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_17__floordiv__(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /*proto*/
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_17__floordiv__(PyObject *__pyx_v_self, PyObject *__pyx_v_other) {
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_17__floordiv__(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /*proto*/
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_17__floordiv__(PyObject *__pyx_v_self, PyObject *__pyx_v_other) {
   CYTHON_UNUSED int __pyx_lineno = 0;
   CYTHON_UNUSED const char *__pyx_filename = NULL;
   CYTHON_UNUSED int __pyx_clineno = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__floordiv__ (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_self), __pyx_ptype_11cpolynomial_Polynomial, 1, "self", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_other), __pyx_ptype_11cpolynomial_Polynomial, 1, "other", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_11cpolynomial_10Polynomial_16__floordiv__(((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_self), ((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_other));
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_self), __pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial, 1, "self", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_other), __pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial, 1, "other", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_16__floordiv__(((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_self), ((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_other));
 
   /* function exit code */
   goto __pyx_L0;
@@ -3170,7 +3170,7 @@ static PyObject *__pyx_pw_11cpolynomial_10Polynomial_17__floordiv__(PyObject *__
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_16__floordiv__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_other) {
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_16__floordiv__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_other) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3180,7 +3180,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_16__floordiv__(struct __pyx
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__floordiv__", 0);
 
-  /* "cpolynomial.pyx":162
+  /* "unireedsolomon\cpolynomial.pyx":162
  * 
  *     def __floordiv__(Polynomial self, Polynomial other):
  *         return divmod(self, other)[0]             # <<<<<<<<<<<<<<
@@ -3197,7 +3197,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_16__floordiv__(struct __pyx
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "cpolynomial.pyx":161
+  /* "unireedsolomon\cpolynomial.pyx":161
  *         return self.__class__([self.coefficients[i] * scalar for i in _range(len(self))])
  * 
  *     def __floordiv__(Polynomial self, Polynomial other):             # <<<<<<<<<<<<<<
@@ -3209,7 +3209,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_16__floordiv__(struct __pyx
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_AddTraceback("cpolynomial.Polynomial.__floordiv__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial.__floordiv__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -3217,7 +3217,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_16__floordiv__(struct __pyx
   return __pyx_r;
 }
 
-/* "cpolynomial.pyx":163
+/* "unireedsolomon\cpolynomial.pyx":163
  *     def __floordiv__(Polynomial self, Polynomial other):
  *         return divmod(self, other)[0]
  *     def __mod__(Polynomial self, Polynomial other):             # <<<<<<<<<<<<<<
@@ -3226,17 +3226,17 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_16__floordiv__(struct __pyx
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_19__mod__(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /*proto*/
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_19__mod__(PyObject *__pyx_v_self, PyObject *__pyx_v_other) {
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_19__mod__(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /*proto*/
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_19__mod__(PyObject *__pyx_v_self, PyObject *__pyx_v_other) {
   CYTHON_UNUSED int __pyx_lineno = 0;
   CYTHON_UNUSED const char *__pyx_filename = NULL;
   CYTHON_UNUSED int __pyx_clineno = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__mod__ (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_self), __pyx_ptype_11cpolynomial_Polynomial, 1, "self", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_other), __pyx_ptype_11cpolynomial_Polynomial, 1, "other", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_11cpolynomial_10Polynomial_18__mod__(((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_self), ((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_other));
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_self), __pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial, 1, "self", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_other), __pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial, 1, "other", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_18__mod__(((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_self), ((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_other));
 
   /* function exit code */
   goto __pyx_L0;
@@ -3247,7 +3247,7 @@ static PyObject *__pyx_pw_11cpolynomial_10Polynomial_19__mod__(PyObject *__pyx_v
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_18__mod__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_other) {
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_18__mod__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_other) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3257,7 +3257,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_18__mod__(struct __pyx_obj_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__mod__", 0);
 
-  /* "cpolynomial.pyx":164
+  /* "unireedsolomon\cpolynomial.pyx":164
  *         return divmod(self, other)[0]
  *     def __mod__(Polynomial self, Polynomial other):
  *         return divmod(self, other)[1]             # <<<<<<<<<<<<<<
@@ -3274,7 +3274,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_18__mod__(struct __pyx_obj_
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "cpolynomial.pyx":163
+  /* "unireedsolomon\cpolynomial.pyx":163
  *     def __floordiv__(Polynomial self, Polynomial other):
  *         return divmod(self, other)[0]
  *     def __mod__(Polynomial self, Polynomial other):             # <<<<<<<<<<<<<<
@@ -3286,7 +3286,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_18__mod__(struct __pyx_obj_
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_AddTraceback("cpolynomial.Polynomial.__mod__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial.__mod__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -3294,7 +3294,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_18__mod__(struct __pyx_obj_
   return __pyx_r;
 }
 
-/* "cpolynomial.pyx":165
+/* "unireedsolomon\cpolynomial.pyx":165
  *     def __mod__(Polynomial self, Polynomial other):
  *         return divmod(self, other)[1]
  *     cpdef Polynomial _fastfloordiv(Polynomial self, Polynomial other):             # <<<<<<<<<<<<<<
@@ -3302,9 +3302,9 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_18__mod__(struct __pyx_obj_
  *     cpdef Polynomial _fastmod(Polynomial self, Polynomial other):
  */
 
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_21_fastfloordiv(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /*proto*/
-static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polynomial__fastfloordiv(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_other, int __pyx_skip_dispatch) {
-  struct __pyx_obj_11cpolynomial_Polynomial *__pyx_r = NULL;
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_21_fastfloordiv(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /*proto*/
+static struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial__fastfloordiv(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_other, int __pyx_skip_dispatch) {
+  struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
@@ -3321,7 +3321,7 @@ static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polyno
   else if (unlikely(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dictoffset != 0)) {
     __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_fastfloordiv); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 165; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_11cpolynomial_10Polynomial_21_fastfloordiv)) {
+    if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_21_fastfloordiv)) {
       __Pyx_XDECREF(((PyObject *)__pyx_r));
       __Pyx_INCREF(__pyx_t_1);
       __pyx_t_3 = __pyx_t_1; __pyx_t_4 = NULL;
@@ -3349,8 +3349,8 @@ static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polyno
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       }
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_11cpolynomial_Polynomial))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 165; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      __pyx_r = ((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_t_2);
+      if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 165; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_r = ((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_t_2);
       __pyx_t_2 = 0;
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       goto __pyx_L0;
@@ -3358,7 +3358,7 @@ static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polyno
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   }
 
-  /* "cpolynomial.pyx":166
+  /* "unireedsolomon\cpolynomial.pyx":166
  *         return divmod(self, other)[1]
  *     cpdef Polynomial _fastfloordiv(Polynomial self, Polynomial other):
  *         return self._fastdivmod(other)[0]             # <<<<<<<<<<<<<<
@@ -3366,19 +3366,19 @@ static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polyno
  *         return self._fastdivmod(other)[1]
  */
   __Pyx_XDECREF(((PyObject *)__pyx_r));
-  __pyx_t_1 = ((struct __pyx_vtabstruct_11cpolynomial_Polynomial *)__pyx_v_self->__pyx_vtab)->_fastdivmod(__pyx_v_self, __pyx_v_other, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 166; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = ((struct __pyx_vtabstruct_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_self->__pyx_vtab)->_fastdivmod(__pyx_v_self, __pyx_v_other, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 166; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   if (unlikely(__pyx_t_1 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 166; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
-  if (!(likely(((PyTuple_GET_ITEM(__pyx_t_1, 0)) == Py_None) || likely(__Pyx_TypeTest(PyTuple_GET_ITEM(__pyx_t_1, 0), __pyx_ptype_11cpolynomial_Polynomial))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 166; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((PyTuple_GET_ITEM(__pyx_t_1, 0)) == Py_None) || likely(__Pyx_TypeTest(PyTuple_GET_ITEM(__pyx_t_1, 0), __pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 166; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_INCREF(PyTuple_GET_ITEM(__pyx_t_1, 0));
-  __pyx_r = ((struct __pyx_obj_11cpolynomial_Polynomial *)PyTuple_GET_ITEM(__pyx_t_1, 0));
+  __pyx_r = ((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)PyTuple_GET_ITEM(__pyx_t_1, 0));
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "cpolynomial.pyx":165
+  /* "unireedsolomon\cpolynomial.pyx":165
  *     def __mod__(Polynomial self, Polynomial other):
  *         return divmod(self, other)[1]
  *     cpdef Polynomial _fastfloordiv(Polynomial self, Polynomial other):             # <<<<<<<<<<<<<<
@@ -3393,7 +3393,7 @@ static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polyno
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_AddTraceback("cpolynomial.Polynomial._fastfloordiv", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial._fastfloordiv", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XGIVEREF((PyObject *)__pyx_r);
@@ -3402,16 +3402,16 @@ static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polyno
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_21_fastfloordiv(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /*proto*/
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_21_fastfloordiv(PyObject *__pyx_v_self, PyObject *__pyx_v_other) {
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_21_fastfloordiv(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /*proto*/
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_21_fastfloordiv(PyObject *__pyx_v_self, PyObject *__pyx_v_other) {
   CYTHON_UNUSED int __pyx_lineno = 0;
   CYTHON_UNUSED const char *__pyx_filename = NULL;
   CYTHON_UNUSED int __pyx_clineno = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("_fastfloordiv (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_other), __pyx_ptype_11cpolynomial_Polynomial, 1, "other", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 165; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_11cpolynomial_10Polynomial_20_fastfloordiv(((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_self), ((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_other));
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_other), __pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial, 1, "other", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 165; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_20_fastfloordiv(((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_self), ((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_other));
 
   /* function exit code */
   goto __pyx_L0;
@@ -3422,7 +3422,7 @@ static PyObject *__pyx_pw_11cpolynomial_10Polynomial_21_fastfloordiv(PyObject *_
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_20_fastfloordiv(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_other) {
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_20_fastfloordiv(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_other) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3431,7 +3431,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_20_fastfloordiv(struct __py
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_fastfloordiv", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = ((PyObject *)__pyx_f_11cpolynomial_10Polynomial__fastfloordiv(__pyx_v_self, __pyx_v_other, 1)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 165; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = ((PyObject *)__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial__fastfloordiv(__pyx_v_self, __pyx_v_other, 1)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 165; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -3440,7 +3440,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_20_fastfloordiv(struct __py
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cpolynomial.Polynomial._fastfloordiv", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial._fastfloordiv", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -3448,7 +3448,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_20_fastfloordiv(struct __py
   return __pyx_r;
 }
 
-/* "cpolynomial.pyx":167
+/* "unireedsolomon\cpolynomial.pyx":167
  *     cpdef Polynomial _fastfloordiv(Polynomial self, Polynomial other):
  *         return self._fastdivmod(other)[0]
  *     cpdef Polynomial _fastmod(Polynomial self, Polynomial other):             # <<<<<<<<<<<<<<
@@ -3456,9 +3456,9 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_20_fastfloordiv(struct __py
  *     cpdef Polynomial _gffastfloordiv(Polynomial self, Polynomial other):
  */
 
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_23_fastmod(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /*proto*/
-static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polynomial__fastmod(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_other, int __pyx_skip_dispatch) {
-  struct __pyx_obj_11cpolynomial_Polynomial *__pyx_r = NULL;
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_23_fastmod(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /*proto*/
+static struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial__fastmod(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_other, int __pyx_skip_dispatch) {
+  struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
@@ -3475,7 +3475,7 @@ static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polyno
   else if (unlikely(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dictoffset != 0)) {
     __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_fastmod); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_11cpolynomial_10Polynomial_23_fastmod)) {
+    if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_23_fastmod)) {
       __Pyx_XDECREF(((PyObject *)__pyx_r));
       __Pyx_INCREF(__pyx_t_1);
       __pyx_t_3 = __pyx_t_1; __pyx_t_4 = NULL;
@@ -3503,8 +3503,8 @@ static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polyno
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       }
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_11cpolynomial_Polynomial))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      __pyx_r = ((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_t_2);
+      if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_r = ((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_t_2);
       __pyx_t_2 = 0;
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       goto __pyx_L0;
@@ -3512,7 +3512,7 @@ static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polyno
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   }
 
-  /* "cpolynomial.pyx":168
+  /* "unireedsolomon\cpolynomial.pyx":168
  *         return self._fastdivmod(other)[0]
  *     cpdef Polynomial _fastmod(Polynomial self, Polynomial other):
  *         return self._fastdivmod(other)[1]             # <<<<<<<<<<<<<<
@@ -3520,19 +3520,19 @@ static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polyno
  *         return self._gffastdivmod(other)[0]
  */
   __Pyx_XDECREF(((PyObject *)__pyx_r));
-  __pyx_t_1 = ((struct __pyx_vtabstruct_11cpolynomial_Polynomial *)__pyx_v_self->__pyx_vtab)->_fastdivmod(__pyx_v_self, __pyx_v_other, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 168; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = ((struct __pyx_vtabstruct_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_self->__pyx_vtab)->_fastdivmod(__pyx_v_self, __pyx_v_other, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 168; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   if (unlikely(__pyx_t_1 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 168; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
-  if (!(likely(((PyTuple_GET_ITEM(__pyx_t_1, 1)) == Py_None) || likely(__Pyx_TypeTest(PyTuple_GET_ITEM(__pyx_t_1, 1), __pyx_ptype_11cpolynomial_Polynomial))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 168; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((PyTuple_GET_ITEM(__pyx_t_1, 1)) == Py_None) || likely(__Pyx_TypeTest(PyTuple_GET_ITEM(__pyx_t_1, 1), __pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 168; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_INCREF(PyTuple_GET_ITEM(__pyx_t_1, 1));
-  __pyx_r = ((struct __pyx_obj_11cpolynomial_Polynomial *)PyTuple_GET_ITEM(__pyx_t_1, 1));
+  __pyx_r = ((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)PyTuple_GET_ITEM(__pyx_t_1, 1));
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "cpolynomial.pyx":167
+  /* "unireedsolomon\cpolynomial.pyx":167
  *     cpdef Polynomial _fastfloordiv(Polynomial self, Polynomial other):
  *         return self._fastdivmod(other)[0]
  *     cpdef Polynomial _fastmod(Polynomial self, Polynomial other):             # <<<<<<<<<<<<<<
@@ -3547,7 +3547,7 @@ static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polyno
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_AddTraceback("cpolynomial.Polynomial._fastmod", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial._fastmod", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XGIVEREF((PyObject *)__pyx_r);
@@ -3556,16 +3556,16 @@ static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polyno
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_23_fastmod(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /*proto*/
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_23_fastmod(PyObject *__pyx_v_self, PyObject *__pyx_v_other) {
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_23_fastmod(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /*proto*/
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_23_fastmod(PyObject *__pyx_v_self, PyObject *__pyx_v_other) {
   CYTHON_UNUSED int __pyx_lineno = 0;
   CYTHON_UNUSED const char *__pyx_filename = NULL;
   CYTHON_UNUSED int __pyx_clineno = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("_fastmod (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_other), __pyx_ptype_11cpolynomial_Polynomial, 1, "other", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_11cpolynomial_10Polynomial_22_fastmod(((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_self), ((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_other));
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_other), __pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial, 1, "other", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_22_fastmod(((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_self), ((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_other));
 
   /* function exit code */
   goto __pyx_L0;
@@ -3576,7 +3576,7 @@ static PyObject *__pyx_pw_11cpolynomial_10Polynomial_23_fastmod(PyObject *__pyx_
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_22_fastmod(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_other) {
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_22_fastmod(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_other) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3585,7 +3585,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_22_fastmod(struct __pyx_obj
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_fastmod", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = ((PyObject *)__pyx_f_11cpolynomial_10Polynomial__fastmod(__pyx_v_self, __pyx_v_other, 1)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = ((PyObject *)__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial__fastmod(__pyx_v_self, __pyx_v_other, 1)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -3594,7 +3594,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_22_fastmod(struct __pyx_obj
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cpolynomial.Polynomial._fastmod", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial._fastmod", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -3602,7 +3602,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_22_fastmod(struct __pyx_obj
   return __pyx_r;
 }
 
-/* "cpolynomial.pyx":169
+/* "unireedsolomon\cpolynomial.pyx":169
  *     cpdef Polynomial _fastmod(Polynomial self, Polynomial other):
  *         return self._fastdivmod(other)[1]
  *     cpdef Polynomial _gffastfloordiv(Polynomial self, Polynomial other):             # <<<<<<<<<<<<<<
@@ -3610,9 +3610,9 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_22_fastmod(struct __pyx_obj
  *     cpdef Polynomial _gffastmod(Polynomial self, Polynomial other):
  */
 
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_25_gffastfloordiv(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /*proto*/
-static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polynomial__gffastfloordiv(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_other, int __pyx_skip_dispatch) {
-  struct __pyx_obj_11cpolynomial_Polynomial *__pyx_r = NULL;
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_25_gffastfloordiv(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /*proto*/
+static struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial__gffastfloordiv(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_other, int __pyx_skip_dispatch) {
+  struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
@@ -3629,7 +3629,7 @@ static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polyno
   else if (unlikely(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dictoffset != 0)) {
     __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_gffastfloordiv); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 169; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_11cpolynomial_10Polynomial_25_gffastfloordiv)) {
+    if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_25_gffastfloordiv)) {
       __Pyx_XDECREF(((PyObject *)__pyx_r));
       __Pyx_INCREF(__pyx_t_1);
       __pyx_t_3 = __pyx_t_1; __pyx_t_4 = NULL;
@@ -3657,8 +3657,8 @@ static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polyno
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       }
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_11cpolynomial_Polynomial))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 169; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      __pyx_r = ((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_t_2);
+      if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 169; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_r = ((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_t_2);
       __pyx_t_2 = 0;
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       goto __pyx_L0;
@@ -3666,7 +3666,7 @@ static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polyno
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   }
 
-  /* "cpolynomial.pyx":170
+  /* "unireedsolomon\cpolynomial.pyx":170
  *         return self._fastdivmod(other)[1]
  *     cpdef Polynomial _gffastfloordiv(Polynomial self, Polynomial other):
  *         return self._gffastdivmod(other)[0]             # <<<<<<<<<<<<<<
@@ -3674,19 +3674,19 @@ static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polyno
  *         return self._gffastdivmod(other)[1]
  */
   __Pyx_XDECREF(((PyObject *)__pyx_r));
-  __pyx_t_1 = ((struct __pyx_vtabstruct_11cpolynomial_Polynomial *)__pyx_v_self->__pyx_vtab)->_gffastdivmod(__pyx_v_self, __pyx_v_other, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 170; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = ((struct __pyx_vtabstruct_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_self->__pyx_vtab)->_gffastdivmod(__pyx_v_self, __pyx_v_other, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 170; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   if (unlikely(__pyx_t_1 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 170; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
-  if (!(likely(((PyTuple_GET_ITEM(__pyx_t_1, 0)) == Py_None) || likely(__Pyx_TypeTest(PyTuple_GET_ITEM(__pyx_t_1, 0), __pyx_ptype_11cpolynomial_Polynomial))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 170; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((PyTuple_GET_ITEM(__pyx_t_1, 0)) == Py_None) || likely(__Pyx_TypeTest(PyTuple_GET_ITEM(__pyx_t_1, 0), __pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 170; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_INCREF(PyTuple_GET_ITEM(__pyx_t_1, 0));
-  __pyx_r = ((struct __pyx_obj_11cpolynomial_Polynomial *)PyTuple_GET_ITEM(__pyx_t_1, 0));
+  __pyx_r = ((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)PyTuple_GET_ITEM(__pyx_t_1, 0));
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "cpolynomial.pyx":169
+  /* "unireedsolomon\cpolynomial.pyx":169
  *     cpdef Polynomial _fastmod(Polynomial self, Polynomial other):
  *         return self._fastdivmod(other)[1]
  *     cpdef Polynomial _gffastfloordiv(Polynomial self, Polynomial other):             # <<<<<<<<<<<<<<
@@ -3701,7 +3701,7 @@ static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polyno
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_AddTraceback("cpolynomial.Polynomial._gffastfloordiv", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial._gffastfloordiv", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XGIVEREF((PyObject *)__pyx_r);
@@ -3710,16 +3710,16 @@ static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polyno
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_25_gffastfloordiv(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /*proto*/
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_25_gffastfloordiv(PyObject *__pyx_v_self, PyObject *__pyx_v_other) {
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_25_gffastfloordiv(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /*proto*/
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_25_gffastfloordiv(PyObject *__pyx_v_self, PyObject *__pyx_v_other) {
   CYTHON_UNUSED int __pyx_lineno = 0;
   CYTHON_UNUSED const char *__pyx_filename = NULL;
   CYTHON_UNUSED int __pyx_clineno = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("_gffastfloordiv (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_other), __pyx_ptype_11cpolynomial_Polynomial, 1, "other", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 169; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_11cpolynomial_10Polynomial_24_gffastfloordiv(((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_self), ((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_other));
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_other), __pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial, 1, "other", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 169; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_24_gffastfloordiv(((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_self), ((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_other));
 
   /* function exit code */
   goto __pyx_L0;
@@ -3730,7 +3730,7 @@ static PyObject *__pyx_pw_11cpolynomial_10Polynomial_25_gffastfloordiv(PyObject 
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_24_gffastfloordiv(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_other) {
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_24_gffastfloordiv(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_other) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3739,7 +3739,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_24_gffastfloordiv(struct __
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_gffastfloordiv", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = ((PyObject *)__pyx_f_11cpolynomial_10Polynomial__gffastfloordiv(__pyx_v_self, __pyx_v_other, 1)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 169; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = ((PyObject *)__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial__gffastfloordiv(__pyx_v_self, __pyx_v_other, 1)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 169; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -3748,7 +3748,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_24_gffastfloordiv(struct __
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cpolynomial.Polynomial._gffastfloordiv", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial._gffastfloordiv", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -3756,7 +3756,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_24_gffastfloordiv(struct __
   return __pyx_r;
 }
 
-/* "cpolynomial.pyx":171
+/* "unireedsolomon\cpolynomial.pyx":171
  *     cpdef Polynomial _gffastfloordiv(Polynomial self, Polynomial other):
  *         return self._gffastdivmod(other)[0]
  *     cpdef Polynomial _gffastmod(Polynomial self, Polynomial other):             # <<<<<<<<<<<<<<
@@ -3764,9 +3764,9 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_24_gffastfloordiv(struct __
  * 
  */
 
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_27_gffastmod(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /*proto*/
-static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polynomial__gffastmod(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_other, int __pyx_skip_dispatch) {
-  struct __pyx_obj_11cpolynomial_Polynomial *__pyx_r = NULL;
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_27_gffastmod(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /*proto*/
+static struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial__gffastmod(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_other, int __pyx_skip_dispatch) {
+  struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
@@ -3783,7 +3783,7 @@ static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polyno
   else if (unlikely(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dictoffset != 0)) {
     __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_gffastmod); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 171; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_11cpolynomial_10Polynomial_27_gffastmod)) {
+    if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_27_gffastmod)) {
       __Pyx_XDECREF(((PyObject *)__pyx_r));
       __Pyx_INCREF(__pyx_t_1);
       __pyx_t_3 = __pyx_t_1; __pyx_t_4 = NULL;
@@ -3811,8 +3811,8 @@ static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polyno
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       }
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_11cpolynomial_Polynomial))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 171; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      __pyx_r = ((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_t_2);
+      if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 171; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_r = ((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_t_2);
       __pyx_t_2 = 0;
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       goto __pyx_L0;
@@ -3820,7 +3820,7 @@ static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polyno
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   }
 
-  /* "cpolynomial.pyx":172
+  /* "unireedsolomon\cpolynomial.pyx":172
  *         return self._gffastdivmod(other)[0]
  *     cpdef Polynomial _gffastmod(Polynomial self, Polynomial other):
  *         return self._gffastdivmod(other)[1]             # <<<<<<<<<<<<<<
@@ -3828,19 +3828,19 @@ static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polyno
  *     cpdef tuple _fastdivmod(Polynomial dividend, Polynomial divisor):
  */
   __Pyx_XDECREF(((PyObject *)__pyx_r));
-  __pyx_t_1 = ((struct __pyx_vtabstruct_11cpolynomial_Polynomial *)__pyx_v_self->__pyx_vtab)->_gffastdivmod(__pyx_v_self, __pyx_v_other, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 172; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = ((struct __pyx_vtabstruct_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_self->__pyx_vtab)->_gffastdivmod(__pyx_v_self, __pyx_v_other, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 172; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   if (unlikely(__pyx_t_1 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 172; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
-  if (!(likely(((PyTuple_GET_ITEM(__pyx_t_1, 1)) == Py_None) || likely(__Pyx_TypeTest(PyTuple_GET_ITEM(__pyx_t_1, 1), __pyx_ptype_11cpolynomial_Polynomial))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 172; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((PyTuple_GET_ITEM(__pyx_t_1, 1)) == Py_None) || likely(__Pyx_TypeTest(PyTuple_GET_ITEM(__pyx_t_1, 1), __pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 172; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_INCREF(PyTuple_GET_ITEM(__pyx_t_1, 1));
-  __pyx_r = ((struct __pyx_obj_11cpolynomial_Polynomial *)PyTuple_GET_ITEM(__pyx_t_1, 1));
+  __pyx_r = ((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)PyTuple_GET_ITEM(__pyx_t_1, 1));
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "cpolynomial.pyx":171
+  /* "unireedsolomon\cpolynomial.pyx":171
  *     cpdef Polynomial _gffastfloordiv(Polynomial self, Polynomial other):
  *         return self._gffastdivmod(other)[0]
  *     cpdef Polynomial _gffastmod(Polynomial self, Polynomial other):             # <<<<<<<<<<<<<<
@@ -3855,7 +3855,7 @@ static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polyno
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_AddTraceback("cpolynomial.Polynomial._gffastmod", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial._gffastmod", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XGIVEREF((PyObject *)__pyx_r);
@@ -3864,16 +3864,16 @@ static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polyno
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_27_gffastmod(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /*proto*/
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_27_gffastmod(PyObject *__pyx_v_self, PyObject *__pyx_v_other) {
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_27_gffastmod(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /*proto*/
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_27_gffastmod(PyObject *__pyx_v_self, PyObject *__pyx_v_other) {
   CYTHON_UNUSED int __pyx_lineno = 0;
   CYTHON_UNUSED const char *__pyx_filename = NULL;
   CYTHON_UNUSED int __pyx_clineno = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("_gffastmod (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_other), __pyx_ptype_11cpolynomial_Polynomial, 1, "other", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 171; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_11cpolynomial_10Polynomial_26_gffastmod(((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_self), ((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_other));
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_other), __pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial, 1, "other", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 171; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_26_gffastmod(((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_self), ((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_other));
 
   /* function exit code */
   goto __pyx_L0;
@@ -3884,7 +3884,7 @@ static PyObject *__pyx_pw_11cpolynomial_10Polynomial_27_gffastmod(PyObject *__py
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_26_gffastmod(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_other) {
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_26_gffastmod(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_other) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3893,7 +3893,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_26_gffastmod(struct __pyx_o
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_gffastmod", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = ((PyObject *)__pyx_f_11cpolynomial_10Polynomial__gffastmod(__pyx_v_self, __pyx_v_other, 1)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 171; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = ((PyObject *)__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial__gffastmod(__pyx_v_self, __pyx_v_other, 1)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 171; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -3902,7 +3902,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_26_gffastmod(struct __pyx_o
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cpolynomial.Polynomial._gffastmod", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial._gffastmod", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -3910,7 +3910,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_26_gffastmod(struct __pyx_o
   return __pyx_r;
 }
 
-/* "cpolynomial.pyx":174
+/* "unireedsolomon\cpolynomial.pyx":174
  *         return self._gffastdivmod(other)[1]
  * 
  *     cpdef tuple _fastdivmod(Polynomial dividend, Polynomial divisor):             # <<<<<<<<<<<<<<
@@ -3918,8 +3918,8 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_26_gffastmod(struct __pyx_o
  *         A nearly exact same code is explained greatly here: http://research.swtch.com/field and you can also check the Wikipedia article and the Khan Academy video.'''
  */
 
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_29_fastdivmod(PyObject *__pyx_v_dividend, PyObject *__pyx_v_divisor); /*proto*/
-static PyObject *__pyx_f_11cpolynomial_10Polynomial__fastdivmod(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_dividend, struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_divisor, int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_29_fastdivmod(PyObject *__pyx_v_dividend, PyObject *__pyx_v_divisor); /*proto*/
+static PyObject *__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial__fastdivmod(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_dividend, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_divisor, int __pyx_skip_dispatch) {
   int __pyx_v_i;
   int __pyx_v_j;
   PyObject *__pyx_v_coef = 0;
@@ -3950,7 +3950,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial__fastdivmod(struct __pyx_obj
   else if (unlikely(Py_TYPE(((PyObject *)__pyx_v_dividend))->tp_dictoffset != 0)) {
     __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_dividend), __pyx_n_s_fastdivmod); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 174; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_11cpolynomial_10Polynomial_29_fastdivmod)) {
+    if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_29_fastdivmod)) {
       __Pyx_XDECREF(__pyx_r);
       __Pyx_INCREF(__pyx_t_1);
       __pyx_t_3 = __pyx_t_1; __pyx_t_4 = NULL;
@@ -3987,7 +3987,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial__fastdivmod(struct __pyx_obj
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   }
 
-  /* "cpolynomial.pyx":183
+  /* "unireedsolomon\cpolynomial.pyx":183
  *         cdef object coef
  * 
  *         cdef list msg_out = list(dividend) # Copy the dividend             # <<<<<<<<<<<<<<
@@ -3999,7 +3999,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial__fastdivmod(struct __pyx_obj
   __pyx_v_msg_out = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "cpolynomial.pyx":184
+  /* "unireedsolomon\cpolynomial.pyx":184
  * 
  *         cdef list msg_out = list(dividend) # Copy the dividend
  *         cdef object normalizer = divisor[0] # precomputing for performance             # <<<<<<<<<<<<<<
@@ -4011,7 +4011,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial__fastdivmod(struct __pyx_obj
   __pyx_v_normalizer = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "cpolynomial.pyx":185
+  /* "unireedsolomon\cpolynomial.pyx":185
  *         cdef list msg_out = list(dividend) # Copy the dividend
  *         cdef object normalizer = divisor[0] # precomputing for performance
  *         for i in _range(len(dividend)-(len(divisor)-1)):             # <<<<<<<<<<<<<<
@@ -4094,7 +4094,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial__fastdivmod(struct __pyx_obj
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_v_i = __pyx_t_9;
 
-    /* "cpolynomial.pyx":186
+    /* "unireedsolomon\cpolynomial.pyx":186
  *         cdef object normalizer = divisor[0] # precomputing for performance
  *         for i in _range(len(dividend)-(len(divisor)-1)):
  *             msg_out[i] /= normalizer # for general polynomial division (when polynomials are non-monic), the usual way of using synthetic division is to divide the divisor g(x) with its leading coefficient (call it a). In this implementation, this means:we need to compute: coef = msg_out[i] / gen[0]. For more infos, see http://en.wikipedia.org/wiki/Synthetic_division             # <<<<<<<<<<<<<<
@@ -4110,7 +4110,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial__fastdivmod(struct __pyx_obj
     if (unlikely(__Pyx_SetItemInt(__pyx_v_msg_out, __pyx_t_9, __pyx_t_4, int, 1, __Pyx_PyInt_From_int, 1, 1, 0) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 186; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "cpolynomial.pyx":187
+    /* "unireedsolomon\cpolynomial.pyx":187
  *         for i in _range(len(dividend)-(len(divisor)-1)):
  *             msg_out[i] /= normalizer # for general polynomial division (when polynomials are non-monic), the usual way of using synthetic division is to divide the divisor g(x) with its leading coefficient (call it a). In this implementation, this means:we need to compute: coef = msg_out[i] / gen[0]. For more infos, see http://en.wikipedia.org/wiki/Synthetic_division
  *             coef = msg_out[i] # precaching             # <<<<<<<<<<<<<<
@@ -4122,7 +4122,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial__fastdivmod(struct __pyx_obj
     __Pyx_XDECREF_SET(__pyx_v_coef, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "cpolynomial.pyx":188
+    /* "unireedsolomon\cpolynomial.pyx":188
  *             msg_out[i] /= normalizer # for general polynomial division (when polynomials are non-monic), the usual way of using synthetic division is to divide the divisor g(x) with its leading coefficient (call it a). In this implementation, this means:we need to compute: coef = msg_out[i] / gen[0]. For more infos, see http://en.wikipedia.org/wiki/Synthetic_division
  *             coef = msg_out[i] # precaching
  *             if coef != 0: # log(0) is undefined, so we need to avoid that case explicitly (and it's also a good optimization)             # <<<<<<<<<<<<<<
@@ -4134,7 +4134,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial__fastdivmod(struct __pyx_obj
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     if (__pyx_t_10) {
 
-      /* "cpolynomial.pyx":189
+      /* "unireedsolomon\cpolynomial.pyx":189
  *             coef = msg_out[i] # precaching
  *             if coef != 0: # log(0) is undefined, so we need to avoid that case explicitly (and it's also a good optimization)
  *                 for j in _range(1, len(divisor)): # in synthetic division, we always skip the first coefficient of the divisior, because it's only used to normalize the dividend coefficient             # <<<<<<<<<<<<<<
@@ -4217,7 +4217,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial__fastdivmod(struct __pyx_obj
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
         __pyx_v_j = __pyx_t_9;
 
-        /* "cpolynomial.pyx":190
+        /* "unireedsolomon\cpolynomial.pyx":190
  *             if coef != 0: # log(0) is undefined, so we need to avoid that case explicitly (and it's also a good optimization)
  *                 for j in _range(1, len(divisor)): # in synthetic division, we always skip the first coefficient of the divisior, because it's only used to normalize the dividend coefficient
  *                     if divisor[j] != 0: # log(0) is undefined so we need to avoid that case             # <<<<<<<<<<<<<<
@@ -4232,7 +4232,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial__fastdivmod(struct __pyx_obj
         __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
         if (__pyx_t_10) {
 
-          /* "cpolynomial.pyx":191
+          /* "unireedsolomon\cpolynomial.pyx":191
  *                 for j in _range(1, len(divisor)): # in synthetic division, we always skip the first coefficient of the divisior, because it's only used to normalize the dividend coefficient
  *                     if divisor[j] != 0: # log(0) is undefined so we need to avoid that case
  *                         msg_out[i + j] += -divisor[j] * coef             # <<<<<<<<<<<<<<
@@ -4260,7 +4260,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial__fastdivmod(struct __pyx_obj
         }
         __pyx_L8:;
 
-        /* "cpolynomial.pyx":189
+        /* "unireedsolomon\cpolynomial.pyx":189
  *             coef = msg_out[i] # precaching
  *             if coef != 0: # log(0) is undefined, so we need to avoid that case explicitly (and it's also a good optimization)
  *                 for j in _range(1, len(divisor)): # in synthetic division, we always skip the first coefficient of the divisior, because it's only used to normalize the dividend coefficient             # <<<<<<<<<<<<<<
@@ -4273,7 +4273,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial__fastdivmod(struct __pyx_obj
     }
     __pyx_L5:;
 
-    /* "cpolynomial.pyx":185
+    /* "unireedsolomon\cpolynomial.pyx":185
  *         cdef list msg_out = list(dividend) # Copy the dividend
  *         cdef object normalizer = divisor[0] # precomputing for performance
  *         for i in _range(len(dividend)-(len(divisor)-1)):             # <<<<<<<<<<<<<<
@@ -4283,7 +4283,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial__fastdivmod(struct __pyx_obj
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "cpolynomial.pyx":194
+  /* "unireedsolomon\cpolynomial.pyx":194
  * 
  *         # The resulting msg_out contains both the quotient and the remainder, the remainder being the size of the divisor (the remainder has necessarily the same degree as the divisor -- not length but degree == length-1 -- since it's what we couldn't divide from the dividend), so we compute the index where this separation is, and return the quotient and remainder.
  *         separator = -(len(divisor)-1)             # <<<<<<<<<<<<<<
@@ -4293,7 +4293,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial__fastdivmod(struct __pyx_obj
   __pyx_t_7 = PyObject_Length(((PyObject *)__pyx_v_divisor)); if (unlikely(__pyx_t_7 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 194; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_separator = (-(__pyx_t_7 - 1));
 
-  /* "cpolynomial.pyx":195
+  /* "unireedsolomon\cpolynomial.pyx":195
  *         # The resulting msg_out contains both the quotient and the remainder, the remainder being the size of the divisor (the remainder has necessarily the same degree as the divisor -- not length but degree == length-1 -- since it's what we couldn't divide from the dividend), so we compute the index where this separation is, and return the quotient and remainder.
  *         separator = -(len(divisor)-1)
  *         return Polynomial(msg_out[:separator]), Polynomial(msg_out[separator:]) # return quotient, remainder.             # <<<<<<<<<<<<<<
@@ -4308,7 +4308,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial__fastdivmod(struct __pyx_obj
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)((PyObject*)__pyx_ptype_11cpolynomial_Polynomial)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 195; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)((PyObject*)__pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 195; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_1 = __Pyx_PyList_GetSlice(__pyx_v_msg_out, __pyx_v_separator, PY_SSIZE_T_MAX); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 195; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -4318,7 +4318,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial__fastdivmod(struct __pyx_obj
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)((PyObject*)__pyx_ptype_11cpolynomial_Polynomial)), __pyx_t_3, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 195; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)((PyObject*)__pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial)), __pyx_t_3, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 195; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 195; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -4333,7 +4333,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial__fastdivmod(struct __pyx_obj
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "cpolynomial.pyx":174
+  /* "unireedsolomon\cpolynomial.pyx":174
  *         return self._gffastdivmod(other)[1]
  * 
  *     cpdef tuple _fastdivmod(Polynomial dividend, Polynomial divisor):             # <<<<<<<<<<<<<<
@@ -4349,7 +4349,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial__fastdivmod(struct __pyx_obj
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_11);
-  __Pyx_AddTraceback("cpolynomial.Polynomial._fastdivmod", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial._fastdivmod", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_coef);
@@ -4361,17 +4361,17 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial__fastdivmod(struct __pyx_obj
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_29_fastdivmod(PyObject *__pyx_v_dividend, PyObject *__pyx_v_divisor); /*proto*/
-static char __pyx_doc_11cpolynomial_10Polynomial_28_fastdivmod[] = "Fast polynomial division by using Extended Synthetic Division (aka Horner's method). Also works with non-monic polynomials.\n        A nearly exact same code is explained greatly here: http://research.swtch.com/field and you can also check the Wikipedia article and the Khan Academy video.";
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_29_fastdivmod(PyObject *__pyx_v_dividend, PyObject *__pyx_v_divisor) {
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_29_fastdivmod(PyObject *__pyx_v_dividend, PyObject *__pyx_v_divisor); /*proto*/
+static char __pyx_doc_14unireedsolomon_11cpolynomial_10Polynomial_28_fastdivmod[] = "Fast polynomial division by using Extended Synthetic Division (aka Horner's method). Also works with non-monic polynomials.\n        A nearly exact same code is explained greatly here: http://research.swtch.com/field and you can also check the Wikipedia article and the Khan Academy video.";
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_29_fastdivmod(PyObject *__pyx_v_dividend, PyObject *__pyx_v_divisor) {
   CYTHON_UNUSED int __pyx_lineno = 0;
   CYTHON_UNUSED const char *__pyx_filename = NULL;
   CYTHON_UNUSED int __pyx_clineno = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("_fastdivmod (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_divisor), __pyx_ptype_11cpolynomial_Polynomial, 1, "divisor", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 174; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_11cpolynomial_10Polynomial_28_fastdivmod(((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_dividend), ((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_divisor));
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_divisor), __pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial, 1, "divisor", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 174; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_28_fastdivmod(((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_dividend), ((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_divisor));
 
   /* function exit code */
   goto __pyx_L0;
@@ -4382,7 +4382,7 @@ static PyObject *__pyx_pw_11cpolynomial_10Polynomial_29_fastdivmod(PyObject *__p
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_28_fastdivmod(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_dividend, struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_divisor) {
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_28_fastdivmod(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_dividend, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_divisor) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -4391,7 +4391,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_28_fastdivmod(struct __pyx_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_fastdivmod", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_11cpolynomial_10Polynomial__fastdivmod(__pyx_v_dividend, __pyx_v_divisor, 1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 174; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_f_14unireedsolomon_11cpolynomial_10Polynomial__fastdivmod(__pyx_v_dividend, __pyx_v_divisor, 1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 174; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -4400,7 +4400,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_28_fastdivmod(struct __pyx_
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cpolynomial.Polynomial._fastdivmod", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial._fastdivmod", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -4408,7 +4408,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_28_fastdivmod(struct __pyx_
   return __pyx_r;
 }
 
-/* "cpolynomial.pyx":197
+/* "unireedsolomon\cpolynomial.pyx":197
  *         return Polynomial(msg_out[:separator]), Polynomial(msg_out[separator:]) # return quotient, remainder.
  * 
  *     cpdef tuple _gffastdivmod(Polynomial dividend, Polynomial divisor):             # <<<<<<<<<<<<<<
@@ -4416,8 +4416,8 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_28_fastdivmod(struct __pyx_
  *         Transposed from the reedsolomon library: https://github.com/tomerfiliba/reedsolomon
  */
 
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_31_gffastdivmod(PyObject *__pyx_v_dividend, PyObject *__pyx_v_divisor); /*proto*/
-static PyObject *__pyx_f_11cpolynomial_10Polynomial__gffastdivmod(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_dividend, struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_divisor, int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_31_gffastdivmod(PyObject *__pyx_v_dividend, PyObject *__pyx_v_divisor); /*proto*/
+static PyObject *__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial__gffastdivmod(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_dividend, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_divisor, int __pyx_skip_dispatch) {
   int __pyx_v_i;
   int __pyx_v_j;
   PyObject *__pyx_v_coef = 0;
@@ -4447,7 +4447,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial__gffastdivmod(struct __pyx_o
   else if (unlikely(Py_TYPE(((PyObject *)__pyx_v_dividend))->tp_dictoffset != 0)) {
     __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_dividend), __pyx_n_s_gffastdivmod); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 197; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_11cpolynomial_10Polynomial_31_gffastdivmod)) {
+    if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_31_gffastdivmod)) {
       __Pyx_XDECREF(__pyx_r);
       __Pyx_INCREF(__pyx_t_1);
       __pyx_t_3 = __pyx_t_1; __pyx_t_4 = NULL;
@@ -4484,7 +4484,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial__gffastdivmod(struct __pyx_o
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   }
 
-  /* "cpolynomial.pyx":205
+  /* "unireedsolomon\cpolynomial.pyx":205
  *         cdef int j
  *         cdef object coef
  *         cdef list msg_out = list(dividend)             # <<<<<<<<<<<<<<
@@ -4496,7 +4496,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial__gffastdivmod(struct __pyx_o
   __pyx_v_msg_out = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "cpolynomial.pyx":207
+  /* "unireedsolomon\cpolynomial.pyx":207
  *         cdef list msg_out = list(dividend)
  * 
  *         for i in _range(len(dividend)-(len(divisor)-1)):             # <<<<<<<<<<<<<<
@@ -4579,7 +4579,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial__gffastdivmod(struct __pyx_o
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_v_i = __pyx_t_9;
 
-    /* "cpolynomial.pyx":208
+    /* "unireedsolomon\cpolynomial.pyx":208
  * 
  *         for i in _range(len(dividend)-(len(divisor)-1)):
  *             coef = msg_out[i] # precaching             # <<<<<<<<<<<<<<
@@ -4591,7 +4591,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial__gffastdivmod(struct __pyx_o
     __Pyx_XDECREF_SET(__pyx_v_coef, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "cpolynomial.pyx":209
+    /* "unireedsolomon\cpolynomial.pyx":209
  *         for i in _range(len(dividend)-(len(divisor)-1)):
  *             coef = msg_out[i] # precaching
  *             if coef != 0: # log(0) is undefined, so we need to avoid that case explicitly (and it's also a good optimization)             # <<<<<<<<<<<<<<
@@ -4603,7 +4603,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial__gffastdivmod(struct __pyx_o
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     if (__pyx_t_10) {
 
-      /* "cpolynomial.pyx":210
+      /* "unireedsolomon\cpolynomial.pyx":210
  *             coef = msg_out[i] # precaching
  *             if coef != 0: # log(0) is undefined, so we need to avoid that case explicitly (and it's also a good optimization)
  *                 for j in _range(1, len(divisor)): # in synthetic division, we always skip the first coefficient of the divisior, because it's only used to normalize the dividend coefficient (which is here useless since the divisor, the generator polynomial, is always monic)             # <<<<<<<<<<<<<<
@@ -4686,7 +4686,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial__gffastdivmod(struct __pyx_o
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
         __pyx_v_j = __pyx_t_9;
 
-        /* "cpolynomial.pyx":212
+        /* "unireedsolomon\cpolynomial.pyx":212
  *                 for j in _range(1, len(divisor)): # in synthetic division, we always skip the first coefficient of the divisior, because it's only used to normalize the dividend coefficient (which is here useless since the divisor, the generator polynomial, is always monic)
  *                     #if divisor[j] != 0: # log(0) is undefined so we need to check that, but it slow things down in fact and it's useless in our case (reed-solomon encoding) since we know that all coefficients in the generator are not 0
  *                     msg_out[i + j] ^= divisor[j] * coef # equivalent to the more mathematically correct (but xoring directly is faster): msg_out[i + j] += -divisor[j] * coef             # <<<<<<<<<<<<<<
@@ -4708,7 +4708,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial__gffastdivmod(struct __pyx_o
         if (unlikely(__Pyx_SetItemInt(__pyx_v_msg_out, __pyx_t_9, __pyx_t_11, int, 1, __Pyx_PyInt_From_int, 1, 1, 0) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 212; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
 
-        /* "cpolynomial.pyx":210
+        /* "unireedsolomon\cpolynomial.pyx":210
  *             coef = msg_out[i] # precaching
  *             if coef != 0: # log(0) is undefined, so we need to avoid that case explicitly (and it's also a good optimization)
  *                 for j in _range(1, len(divisor)): # in synthetic division, we always skip the first coefficient of the divisior, because it's only used to normalize the dividend coefficient (which is here useless since the divisor, the generator polynomial, is always monic)             # <<<<<<<<<<<<<<
@@ -4721,7 +4721,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial__gffastdivmod(struct __pyx_o
     }
     __pyx_L5:;
 
-    /* "cpolynomial.pyx":207
+    /* "unireedsolomon\cpolynomial.pyx":207
  *         cdef list msg_out = list(dividend)
  * 
  *         for i in _range(len(dividend)-(len(divisor)-1)):             # <<<<<<<<<<<<<<
@@ -4731,7 +4731,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial__gffastdivmod(struct __pyx_o
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "cpolynomial.pyx":216
+  /* "unireedsolomon\cpolynomial.pyx":216
  * 
  *         # The resulting msg_out contains both the quotient and the remainder, the remainder being the size of the divisor (the remainder has necessarily the same degree as the divisor -- not length but degree == length-1 -- since it's what we couldn't divide from the dividend), so we compute the index where this separation is, and return the quotient and remainder.
  *         separator = -(len(divisor)-1)             # <<<<<<<<<<<<<<
@@ -4741,7 +4741,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial__gffastdivmod(struct __pyx_o
   __pyx_t_7 = PyObject_Length(((PyObject *)__pyx_v_divisor)); if (unlikely(__pyx_t_7 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 216; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_separator = (-(__pyx_t_7 - 1));
 
-  /* "cpolynomial.pyx":217
+  /* "unireedsolomon\cpolynomial.pyx":217
  *         # The resulting msg_out contains both the quotient and the remainder, the remainder being the size of the divisor (the remainder has necessarily the same degree as the divisor -- not length but degree == length-1 -- since it's what we couldn't divide from the dividend), so we compute the index where this separation is, and return the quotient and remainder.
  *         separator = -(len(divisor)-1)
  *         return Polynomial(msg_out[:separator]), Polynomial(msg_out[separator:]) # return quotient, remainder.             # <<<<<<<<<<<<<<
@@ -4756,7 +4756,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial__gffastdivmod(struct __pyx_o
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)((PyObject*)__pyx_ptype_11cpolynomial_Polynomial)), __pyx_t_4, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 217; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)((PyObject*)__pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial)), __pyx_t_4, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 217; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_t_4 = __Pyx_PyList_GetSlice(__pyx_v_msg_out, __pyx_v_separator, PY_SSIZE_T_MAX); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 217; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -4766,7 +4766,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial__gffastdivmod(struct __pyx_o
   __Pyx_GIVEREF(__pyx_t_4);
   PyTuple_SET_ITEM(__pyx_t_11, 0, __pyx_t_4);
   __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyObject_Call(((PyObject *)((PyObject*)__pyx_ptype_11cpolynomial_Polynomial)), __pyx_t_11, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 217; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __Pyx_PyObject_Call(((PyObject *)((PyObject*)__pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial)), __pyx_t_11, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 217; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
   __pyx_t_11 = PyTuple_New(2); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 217; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -4781,7 +4781,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial__gffastdivmod(struct __pyx_o
   __pyx_t_11 = 0;
   goto __pyx_L0;
 
-  /* "cpolynomial.pyx":197
+  /* "unireedsolomon\cpolynomial.pyx":197
  *         return Polynomial(msg_out[:separator]), Polynomial(msg_out[separator:]) # return quotient, remainder.
  * 
  *     cpdef tuple _gffastdivmod(Polynomial dividend, Polynomial divisor):             # <<<<<<<<<<<<<<
@@ -4797,7 +4797,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial__gffastdivmod(struct __pyx_o
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_11);
-  __Pyx_AddTraceback("cpolynomial.Polynomial._gffastdivmod", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial._gffastdivmod", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_coef);
@@ -4808,17 +4808,17 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial__gffastdivmod(struct __pyx_o
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_31_gffastdivmod(PyObject *__pyx_v_dividend, PyObject *__pyx_v_divisor); /*proto*/
-static char __pyx_doc_11cpolynomial_10Polynomial_30_gffastdivmod[] = "Fast polynomial division by using Extended Synthetic Division and optimized for GF(2^p) computations (so it is not generic, must be used with GF256int).\n        Transposed from the reedsolomon library: https://github.com/tomerfiliba/reedsolomon\n        BEWARE: it works only for monic divisor polynomial! (which is always the case with Reed-Solomon's generator polynomials)";
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_31_gffastdivmod(PyObject *__pyx_v_dividend, PyObject *__pyx_v_divisor) {
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_31_gffastdivmod(PyObject *__pyx_v_dividend, PyObject *__pyx_v_divisor); /*proto*/
+static char __pyx_doc_14unireedsolomon_11cpolynomial_10Polynomial_30_gffastdivmod[] = "Fast polynomial division by using Extended Synthetic Division and optimized for GF(2^p) computations (so it is not generic, must be used with GF256int).\n        Transposed from the reedsolomon library: https://github.com/tomerfiliba/reedsolomon\n        BEWARE: it works only for monic divisor polynomial! (which is always the case with Reed-Solomon's generator polynomials)";
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_31_gffastdivmod(PyObject *__pyx_v_dividend, PyObject *__pyx_v_divisor) {
   CYTHON_UNUSED int __pyx_lineno = 0;
   CYTHON_UNUSED const char *__pyx_filename = NULL;
   CYTHON_UNUSED int __pyx_clineno = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("_gffastdivmod (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_divisor), __pyx_ptype_11cpolynomial_Polynomial, 1, "divisor", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 197; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_11cpolynomial_10Polynomial_30_gffastdivmod(((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_dividend), ((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_divisor));
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_divisor), __pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial, 1, "divisor", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 197; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_30_gffastdivmod(((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_dividend), ((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_divisor));
 
   /* function exit code */
   goto __pyx_L0;
@@ -4829,7 +4829,7 @@ static PyObject *__pyx_pw_11cpolynomial_10Polynomial_31_gffastdivmod(PyObject *_
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_30_gffastdivmod(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_dividend, struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_divisor) {
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_30_gffastdivmod(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_dividend, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_divisor) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -4838,7 +4838,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_30_gffastdivmod(struct __py
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_gffastdivmod", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_11cpolynomial_10Polynomial__gffastdivmod(__pyx_v_dividend, __pyx_v_divisor, 1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 197; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_f_14unireedsolomon_11cpolynomial_10Polynomial__gffastdivmod(__pyx_v_dividend, __pyx_v_divisor, 1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 197; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -4847,7 +4847,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_30_gffastdivmod(struct __py
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cpolynomial.Polynomial._gffastdivmod", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial._gffastdivmod", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -4855,7 +4855,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_30_gffastdivmod(struct __py
   return __pyx_r;
 }
 
-/* "cpolynomial.pyx":219
+/* "unireedsolomon\cpolynomial.pyx":219
  *         return Polynomial(msg_out[:separator]), Polynomial(msg_out[separator:]) # return quotient, remainder.
  * 
  *     def __divmod__(Polynomial dividend, Polynomial divisor):             # <<<<<<<<<<<<<<
@@ -4864,21 +4864,21 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_30_gffastdivmod(struct __py
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_33__divmod__(PyObject *__pyx_v_dividend, PyObject *__pyx_v_divisor); /*proto*/
-static char __pyx_doc_11cpolynomial_10Polynomial_32__divmod__[] = "Implementation of the Polynomial Long Division, without recursion. Polynomial Long Division is very similar to a simple division of integers, see purplemath.com. Implementation inspired by the pseudo-code from Rosettacode.org";
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_33__divmod__(PyObject *__pyx_v_dividend, PyObject *__pyx_v_divisor); /*proto*/
+static char __pyx_doc_14unireedsolomon_11cpolynomial_10Polynomial_32__divmod__[] = "Implementation of the Polynomial Long Division, without recursion. Polynomial Long Division is very similar to a simple division of integers, see purplemath.com. Implementation inspired by the pseudo-code from Rosettacode.org";
 #if CYTHON_COMPILING_IN_CPYTHON
-struct wrapperbase __pyx_wrapperbase_11cpolynomial_10Polynomial_32__divmod__;
+struct wrapperbase __pyx_wrapperbase_14unireedsolomon_11cpolynomial_10Polynomial_32__divmod__;
 #endif
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_33__divmod__(PyObject *__pyx_v_dividend, PyObject *__pyx_v_divisor) {
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_33__divmod__(PyObject *__pyx_v_dividend, PyObject *__pyx_v_divisor) {
   CYTHON_UNUSED int __pyx_lineno = 0;
   CYTHON_UNUSED const char *__pyx_filename = NULL;
   CYTHON_UNUSED int __pyx_clineno = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__divmod__ (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_dividend), __pyx_ptype_11cpolynomial_Polynomial, 1, "dividend", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 219; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_divisor), __pyx_ptype_11cpolynomial_Polynomial, 1, "divisor", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 219; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_11cpolynomial_10Polynomial_32__divmod__(((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_dividend), ((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_divisor));
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_dividend), __pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial, 1, "dividend", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 219; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_divisor), __pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial, 1, "divisor", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 219; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_32__divmod__(((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_dividend), ((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_divisor));
 
   /* function exit code */
   goto __pyx_L0;
@@ -4889,7 +4889,7 @@ static PyObject *__pyx_pw_11cpolynomial_10Polynomial_33__divmod__(PyObject *__py
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_32__divmod__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_dividend, struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_divisor) {
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_32__divmod__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_dividend, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_divisor) {
   PyObject *__pyx_v_class_ = NULL;
   int __pyx_v_dividend_power;
   PyObject *__pyx_v_dividend_coefficient = 0;
@@ -4899,9 +4899,9 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_32__divmod__(struct __pyx_o
   PyObject *__pyx_v_remainder_coefficient = 0;
   int __pyx_v_quotient_power;
   PyObject *__pyx_v_quotient_coefficient = 0;
-  struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_remainder = 0;
-  struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_quotient = 0;
-  struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_q = 0;
+  struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_remainder = 0;
+  struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_quotient = 0;
+  struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_q = 0;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -4917,7 +4917,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_32__divmod__(struct __pyx_o
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__divmod__", 0);
 
-  /* "cpolynomial.pyx":245
+  /* "unireedsolomon\cpolynomial.pyx":245
  *           return (q, r)
  *           '''
  *         class_ = dividend.__class__             # <<<<<<<<<<<<<<
@@ -4929,7 +4929,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_32__divmod__(struct __pyx_o
   __pyx_v_class_ = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "cpolynomial.pyx":250
+  /* "unireedsolomon\cpolynomial.pyx":250
  *         # of the divisor can go into the highest order term of the dividend
  * 
  *         cdef int dividend_power = dividend.degree             # <<<<<<<<<<<<<<
@@ -4939,7 +4939,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_32__divmod__(struct __pyx_o
   __pyx_t_2 = __pyx_v_dividend->degree;
   __pyx_v_dividend_power = __pyx_t_2;
 
-  /* "cpolynomial.pyx":251
+  /* "unireedsolomon\cpolynomial.pyx":251
  * 
  *         cdef int dividend_power = dividend.degree
  *         cdef object dividend_coefficient = dividend[0]             # <<<<<<<<<<<<<<
@@ -4951,7 +4951,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_32__divmod__(struct __pyx_o
   __pyx_v_dividend_coefficient = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "cpolynomial.pyx":253
+  /* "unireedsolomon\cpolynomial.pyx":253
  *         cdef object dividend_coefficient = dividend[0]
  * 
  *         cdef int divisor_power = divisor.degree             # <<<<<<<<<<<<<<
@@ -4961,7 +4961,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_32__divmod__(struct __pyx_o
   __pyx_t_2 = __pyx_v_divisor->degree;
   __pyx_v_divisor_power = __pyx_t_2;
 
-  /* "cpolynomial.pyx":254
+  /* "unireedsolomon\cpolynomial.pyx":254
  * 
  *         cdef int divisor_power = divisor.degree
  *         cdef object divisor_coefficient = divisor[0]             # <<<<<<<<<<<<<<
@@ -4973,7 +4973,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_32__divmod__(struct __pyx_o
   __pyx_v_divisor_coefficient = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "cpolynomial.pyx":264
+  /* "unireedsolomon\cpolynomial.pyx":264
  *         cdef Polynomial q
  * 
  *         if divisor_power < 0:             # <<<<<<<<<<<<<<
@@ -4983,7 +4983,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_32__divmod__(struct __pyx_o
   __pyx_t_3 = ((__pyx_v_divisor_power < 0) != 0);
   if (__pyx_t_3) {
 
-    /* "cpolynomial.pyx":265
+    /* "unireedsolomon\cpolynomial.pyx":265
  * 
  *         if divisor_power < 0:
  *             raise ZeroDivisionError             # <<<<<<<<<<<<<<
@@ -4994,7 +4994,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_32__divmod__(struct __pyx_o
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 265; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "cpolynomial.pyx":266
+  /* "unireedsolomon\cpolynomial.pyx":266
  *         if divisor_power < 0:
  *             raise ZeroDivisionError
  *         elif dividend_power < divisor_power:             # <<<<<<<<<<<<<<
@@ -5004,7 +5004,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_32__divmod__(struct __pyx_o
   __pyx_t_3 = ((__pyx_v_dividend_power < __pyx_v_divisor_power) != 0);
   if (__pyx_t_3) {
 
-    /* "cpolynomial.pyx":269
+    /* "unireedsolomon\cpolynomial.pyx":269
  *             # Doesn't divide at all (divisor is too big), return 0 for the quotient and the entire
  *             # dividend as the remainder
  *             quotient = class_()             # <<<<<<<<<<<<<<
@@ -5030,11 +5030,11 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_32__divmod__(struct __pyx_o
     }
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_11cpolynomial_Polynomial))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 269; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __pyx_v_quotient = ((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_t_1);
+    if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 269; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_v_quotient = ((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "cpolynomial.pyx":270
+    /* "unireedsolomon\cpolynomial.pyx":270
  *             # dividend as the remainder
  *             quotient = class_()
  *             remainder = dividend             # <<<<<<<<<<<<<<
@@ -5047,7 +5047,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_32__divmod__(struct __pyx_o
   }
   /*else*/ {
 
-    /* "cpolynomial.pyx":272
+    /* "unireedsolomon\cpolynomial.pyx":272
  *             remainder = dividend
  *         else: # dividend_power > divisor_power
  *             quotient = class_() # init the quotient array             # <<<<<<<<<<<<<<
@@ -5073,11 +5073,11 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_32__divmod__(struct __pyx_o
     }
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_11cpolynomial_Polynomial))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 272; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __pyx_v_quotient = ((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_t_1);
+    if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 272; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_v_quotient = ((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "cpolynomial.pyx":274
+    /* "unireedsolomon\cpolynomial.pyx":274
  *             quotient = class_() # init the quotient array
  *             # init the remainder to the dividend, and we will divide it sucessively by the quotient major coefficient
  *             remainder = dividend             # <<<<<<<<<<<<<<
@@ -5087,7 +5087,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_32__divmod__(struct __pyx_o
     __Pyx_INCREF(((PyObject *)__pyx_v_dividend));
     __pyx_v_remainder = __pyx_v_dividend;
 
-    /* "cpolynomial.pyx":275
+    /* "unireedsolomon\cpolynomial.pyx":275
  *             # init the remainder to the dividend, and we will divide it sucessively by the quotient major coefficient
  *             remainder = dividend
  *             remainder_power = dividend_power             # <<<<<<<<<<<<<<
@@ -5096,7 +5096,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_32__divmod__(struct __pyx_o
  */
     __pyx_v_remainder_power = __pyx_v_dividend_power;
 
-    /* "cpolynomial.pyx":276
+    /* "unireedsolomon\cpolynomial.pyx":276
  *             remainder = dividend
  *             remainder_power = dividend_power
  *             remainder_coefficient = dividend_coefficient             # <<<<<<<<<<<<<<
@@ -5106,7 +5106,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_32__divmod__(struct __pyx_o
     __Pyx_INCREF(__pyx_v_dividend_coefficient);
     __pyx_v_remainder_coefficient = __pyx_v_dividend_coefficient;
 
-    /* "cpolynomial.pyx":277
+    /* "unireedsolomon\cpolynomial.pyx":277
  *             remainder_power = dividend_power
  *             remainder_coefficient = dividend_coefficient
  *             quotient_power = remainder_power - divisor_power             # <<<<<<<<<<<<<<
@@ -5115,7 +5115,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_32__divmod__(struct __pyx_o
  */
     __pyx_v_quotient_power = (__pyx_v_remainder_power - __pyx_v_divisor_power);
 
-    /* "cpolynomial.pyx":280
+    /* "unireedsolomon\cpolynomial.pyx":280
  * 
  *             # Compute how many times the highest order term in the divisor goes into the dividend
  *             while quotient_power >= 0 and remainder.coefficients != [0]: # Until there's no remainder left (or the remainder cannot be divided anymore by the divisor)             # <<<<<<<<<<<<<<
@@ -5142,7 +5142,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_32__divmod__(struct __pyx_o
       __pyx_L6_bool_binop_done:;
       if (!__pyx_t_3) break;
 
-      /* "cpolynomial.pyx":281
+      /* "unireedsolomon\cpolynomial.pyx":281
  *             # Compute how many times the highest order term in the divisor goes into the dividend
  *             while quotient_power >= 0 and remainder.coefficients != [0]: # Until there's no remainder left (or the remainder cannot be divided anymore by the divisor)
  *                 quotient_coefficient = remainder_coefficient / divisor_coefficient             # <<<<<<<<<<<<<<
@@ -5154,7 +5154,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_32__divmod__(struct __pyx_o
       __Pyx_XDECREF_SET(__pyx_v_quotient_coefficient, __pyx_t_4);
       __pyx_t_4 = 0;
 
-      /* "cpolynomial.pyx":282
+      /* "unireedsolomon\cpolynomial.pyx":282
  *             while quotient_power >= 0 and remainder.coefficients != [0]: # Until there's no remainder left (or the remainder cannot be divided anymore by the divisor)
  *                 quotient_coefficient = remainder_coefficient / divisor_coefficient
  *                 q = class_( [quotient_coefficient] + [0] * quotient_power ) # construct an array with only the quotient major coefficient (we divide the remainder only with the major coeff)             # <<<<<<<<<<<<<<
@@ -5206,11 +5206,11 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_32__divmod__(struct __pyx_o
         __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       }
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (!(likely(((__pyx_t_4) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_4, __pyx_ptype_11cpolynomial_Polynomial))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 282; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      __Pyx_XDECREF_SET(__pyx_v_q, ((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_t_4));
+      if (!(likely(((__pyx_t_4) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_4, __pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 282; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_XDECREF_SET(__pyx_v_q, ((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_t_4));
       __pyx_t_4 = 0;
 
-      /* "cpolynomial.pyx":283
+      /* "unireedsolomon\cpolynomial.pyx":283
  *                 quotient_coefficient = remainder_coefficient / divisor_coefficient
  *                 q = class_( [quotient_coefficient] + [0] * quotient_power ) # construct an array with only the quotient major coefficient (we divide the remainder only with the major coeff)
  *                 quotient[quotient_power] = quotient_coefficient # add the coeff to the full quotient. Equivalent to: quotient = quotient + q             # <<<<<<<<<<<<<<
@@ -5219,7 +5219,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_32__divmod__(struct __pyx_o
  */
       if (unlikely(__Pyx_SetItemInt(((PyObject *)__pyx_v_quotient), __pyx_v_quotient_power, __pyx_v_quotient_coefficient, int, 1, __Pyx_PyInt_From_int, 0, 1, 0) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 283; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-      /* "cpolynomial.pyx":284
+      /* "unireedsolomon\cpolynomial.pyx":284
  *                 q = class_( [quotient_coefficient] + [0] * quotient_power ) # construct an array with only the quotient major coefficient (we divide the remainder only with the major coeff)
  *                 quotient[quotient_power] = quotient_coefficient # add the coeff to the full quotient. Equivalent to: quotient = quotient + q
  *                 remainder = remainder - q * divisor # divide the remainder with the major coeff quotient multiplied by the divisor, this gives us the new remainder             # <<<<<<<<<<<<<<
@@ -5231,11 +5231,11 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_32__divmod__(struct __pyx_o
       __pyx_t_5 = PyNumber_Subtract(((PyObject *)__pyx_v_remainder), __pyx_t_4); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 284; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (!(likely(((__pyx_t_5) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_5, __pyx_ptype_11cpolynomial_Polynomial))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 284; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      __Pyx_DECREF_SET(__pyx_v_remainder, ((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_t_5));
+      if (!(likely(((__pyx_t_5) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_5, __pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 284; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_DECREF_SET(__pyx_v_remainder, ((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_t_5));
       __pyx_t_5 = 0;
 
-      /* "cpolynomial.pyx":285
+      /* "unireedsolomon\cpolynomial.pyx":285
  *                 quotient[quotient_power] = quotient_coefficient # add the coeff to the full quotient. Equivalent to: quotient = quotient + q
  *                 remainder = remainder - q * divisor # divide the remainder with the major coeff quotient multiplied by the divisor, this gives us the new remainder
  *                 remainder_power = remainder.degree # compute the new remainder degree             # <<<<<<<<<<<<<<
@@ -5245,7 +5245,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_32__divmod__(struct __pyx_o
       __pyx_t_2 = __pyx_v_remainder->degree;
       __pyx_v_remainder_power = __pyx_t_2;
 
-      /* "cpolynomial.pyx":286
+      /* "unireedsolomon\cpolynomial.pyx":286
  *                 remainder = remainder - q * divisor # divide the remainder with the major coeff quotient multiplied by the divisor, this gives us the new remainder
  *                 remainder_power = remainder.degree # compute the new remainder degree
  *                 remainder_coefficient = remainder[0] # Compute the new remainder coefficient             # <<<<<<<<<<<<<<
@@ -5257,7 +5257,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_32__divmod__(struct __pyx_o
       __Pyx_DECREF_SET(__pyx_v_remainder_coefficient, __pyx_t_5);
       __pyx_t_5 = 0;
 
-      /* "cpolynomial.pyx":287
+      /* "unireedsolomon\cpolynomial.pyx":287
  *                 remainder_power = remainder.degree # compute the new remainder degree
  *                 remainder_coefficient = remainder[0] # Compute the new remainder coefficient
  *                 quotient_power = remainder_power - divisor_power             # <<<<<<<<<<<<<<
@@ -5269,7 +5269,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_32__divmod__(struct __pyx_o
   }
   __pyx_L3:;
 
-  /* "cpolynomial.pyx":289
+  /* "unireedsolomon\cpolynomial.pyx":289
  *                 quotient_power = remainder_power - divisor_power
  *                 #print "quotient: %s remainder: %s" % (quotient, remainder)
  *         return quotient, remainder             # <<<<<<<<<<<<<<
@@ -5289,7 +5289,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_32__divmod__(struct __pyx_o
   __pyx_t_5 = 0;
   goto __pyx_L0;
 
-  /* "cpolynomial.pyx":219
+  /* "unireedsolomon\cpolynomial.pyx":219
  *         return Polynomial(msg_out[:separator]), Polynomial(msg_out[separator:]) # return quotient, remainder.
  * 
  *     def __divmod__(Polynomial dividend, Polynomial divisor):             # <<<<<<<<<<<<<<
@@ -5304,7 +5304,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_32__divmod__(struct __pyx_o
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_7);
   __Pyx_XDECREF(__pyx_t_8);
-  __Pyx_AddTraceback("cpolynomial.Polynomial.__divmod__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial.__divmod__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_class_);
@@ -5320,7 +5320,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_32__divmod__(struct __pyx_o
   return __pyx_r;
 }
 
-/* "cpolynomial.pyx":291
+/* "unireedsolomon\cpolynomial.pyx":291
  *         return quotient, remainder
  * 
  *     def __richcmp__(self, other, int op):             # <<<<<<<<<<<<<<
@@ -5329,19 +5329,19 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_32__divmod__(struct __pyx_o
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_35__richcmp__(PyObject *__pyx_v_self, PyObject *__pyx_v_other, int __pyx_v_op); /*proto*/
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_35__richcmp__(PyObject *__pyx_v_self, PyObject *__pyx_v_other, int __pyx_v_op) {
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_35__richcmp__(PyObject *__pyx_v_self, PyObject *__pyx_v_other, int __pyx_v_op); /*proto*/
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_35__richcmp__(PyObject *__pyx_v_self, PyObject *__pyx_v_other, int __pyx_v_op) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__richcmp__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_11cpolynomial_10Polynomial_34__richcmp__(((PyObject *)__pyx_v_self), ((PyObject *)__pyx_v_other), ((int)__pyx_v_op));
+  __pyx_r = __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_34__richcmp__(((PyObject *)__pyx_v_self), ((PyObject *)__pyx_v_other), ((int)__pyx_v_op));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_34__richcmp__(PyObject *__pyx_v_self, PyObject *__pyx_v_other, int __pyx_v_op) {
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_34__richcmp__(PyObject *__pyx_v_self, PyObject *__pyx_v_other, int __pyx_v_op) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -5352,7 +5352,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_34__richcmp__(PyObject *__p
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__richcmp__", 0);
 
-  /* "cpolynomial.pyx":300
+  /* "unireedsolomon\cpolynomial.pyx":300
  *         if op == 2:
  *             return self.coefficients == other.coefficients
  *         elif op == 3:             # <<<<<<<<<<<<<<
@@ -5361,7 +5361,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_34__richcmp__(PyObject *__p
  */
   switch (__pyx_v_op) {
 
-    /* "cpolynomial.pyx":298
+    /* "unireedsolomon\cpolynomial.pyx":298
  *         # 3: !=
  *         # 5: >=
  *         if op == 2:             # <<<<<<<<<<<<<<
@@ -5370,7 +5370,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_34__richcmp__(PyObject *__p
  */
     case 2:
 
-    /* "cpolynomial.pyx":299
+    /* "unireedsolomon\cpolynomial.pyx":299
  *         # 5: >=
  *         if op == 2:
  *             return self.coefficients == other.coefficients             # <<<<<<<<<<<<<<
@@ -5390,7 +5390,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_34__richcmp__(PyObject *__p
     goto __pyx_L0;
     break;
 
-    /* "cpolynomial.pyx":300
+    /* "unireedsolomon\cpolynomial.pyx":300
  *         if op == 2:
  *             return self.coefficients == other.coefficients
  *         elif op == 3:             # <<<<<<<<<<<<<<
@@ -5399,7 +5399,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_34__richcmp__(PyObject *__p
  */
     case 3:
 
-    /* "cpolynomial.pyx":301
+    /* "unireedsolomon\cpolynomial.pyx":301
  *             return self.coefficients == other.coefficients
  *         elif op == 3:
  *             return self.coefficients != other.coefficients             # <<<<<<<<<<<<<<
@@ -5421,7 +5421,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_34__richcmp__(PyObject *__p
     default: break;
   }
 
-  /* "cpolynomial.pyx":291
+  /* "unireedsolomon\cpolynomial.pyx":291
  *         return quotient, remainder
  * 
  *     def __richcmp__(self, other, int op):             # <<<<<<<<<<<<<<
@@ -5436,7 +5436,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_34__richcmp__(PyObject *__p
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("cpolynomial.Polynomial.__richcmp__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial.__richcmp__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -5444,7 +5444,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_34__richcmp__(PyObject *__p
   return __pyx_r;
 }
 
-/* "cpolynomial.pyx":302
+/* "unireedsolomon\cpolynomial.pyx":302
  *         elif op == 3:
  *             return self.coefficients != other.coefficients
  *     def __hash__(self):             # <<<<<<<<<<<<<<
@@ -5453,19 +5453,19 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_34__richcmp__(PyObject *__p
  */
 
 /* Python wrapper */
-static Py_hash_t __pyx_pw_11cpolynomial_10Polynomial_37__hash__(PyObject *__pyx_v_self); /*proto*/
-static Py_hash_t __pyx_pw_11cpolynomial_10Polynomial_37__hash__(PyObject *__pyx_v_self) {
+static Py_hash_t __pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_37__hash__(PyObject *__pyx_v_self); /*proto*/
+static Py_hash_t __pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_37__hash__(PyObject *__pyx_v_self) {
   Py_hash_t __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__hash__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_11cpolynomial_10Polynomial_36__hash__(((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_self));
+  __pyx_r = __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_36__hash__(((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static Py_hash_t __pyx_pf_11cpolynomial_10Polynomial_36__hash__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self) {
+static Py_hash_t __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_36__hash__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self) {
   Py_hash_t __pyx_r;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -5475,7 +5475,7 @@ static Py_hash_t __pyx_pf_11cpolynomial_10Polynomial_36__hash__(struct __pyx_obj
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__hash__", 0);
 
-  /* "cpolynomial.pyx":303
+  /* "unireedsolomon\cpolynomial.pyx":303
  *             return self.coefficients != other.coefficients
  *     def __hash__(self):
  *         return hash(self.coefficients)             # <<<<<<<<<<<<<<
@@ -5489,7 +5489,7 @@ static Py_hash_t __pyx_pf_11cpolynomial_10Polynomial_36__hash__(struct __pyx_obj
   __pyx_r = __pyx_t_2;
   goto __pyx_L0;
 
-  /* "cpolynomial.pyx":302
+  /* "unireedsolomon\cpolynomial.pyx":302
  *         elif op == 3:
  *             return self.coefficients != other.coefficients
  *     def __hash__(self):             # <<<<<<<<<<<<<<
@@ -5500,7 +5500,7 @@ static Py_hash_t __pyx_pf_11cpolynomial_10Polynomial_36__hash__(struct __pyx_obj
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cpolynomial.Polynomial.__hash__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial.__hash__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
   if (unlikely(__pyx_r == -1) && !PyErr_Occurred()) __pyx_r = -2;
@@ -5508,7 +5508,7 @@ static Py_hash_t __pyx_pf_11cpolynomial_10Polynomial_36__hash__(struct __pyx_obj
   return __pyx_r;
 }
 
-/* "cpolynomial.pyx":305
+/* "unireedsolomon\cpolynomial.pyx":305
  *         return hash(self.coefficients)
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
@@ -5517,19 +5517,19 @@ static Py_hash_t __pyx_pf_11cpolynomial_10Polynomial_36__hash__(struct __pyx_obj
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_39__repr__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_39__repr__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_39__repr__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_39__repr__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__repr__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_11cpolynomial_10Polynomial_38__repr__(((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_self));
+  __pyx_r = __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_38__repr__(((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_38__repr__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self) {
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_38__repr__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self) {
   PyObject *__pyx_v_n = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -5540,7 +5540,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_38__repr__(struct __pyx_obj
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__repr__", 0);
 
-  /* "cpolynomial.pyx":306
+  /* "unireedsolomon\cpolynomial.pyx":306
  * 
  *     def __repr__(self):
  *         n = self.__class__.__name__             # <<<<<<<<<<<<<<
@@ -5555,7 +5555,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_38__repr__(struct __pyx_obj
   __pyx_v_n = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "cpolynomial.pyx":307
+  /* "unireedsolomon\cpolynomial.pyx":307
  *     def __repr__(self):
  *         n = self.__class__.__name__
  *         return "%s(%r)" % (n, self.coefficients)             # <<<<<<<<<<<<<<
@@ -5578,7 +5578,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_38__repr__(struct __pyx_obj
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "cpolynomial.pyx":305
+  /* "unireedsolomon\cpolynomial.pyx":305
  *         return hash(self.coefficients)
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
@@ -5590,7 +5590,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_38__repr__(struct __pyx_obj
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_AddTraceback("cpolynomial.Polynomial.__repr__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial.__repr__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_n);
@@ -5599,7 +5599,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_38__repr__(struct __pyx_obj
   return __pyx_r;
 }
 
-/* "cpolynomial.pyx":308
+/* "unireedsolomon\cpolynomial.pyx":308
  *         n = self.__class__.__name__
  *         return "%s(%r)" % (n, self.coefficients)
  *     def __str__(self):             # <<<<<<<<<<<<<<
@@ -5608,19 +5608,19 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_38__repr__(struct __pyx_obj
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_41__str__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_41__str__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_41__str__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_41__str__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__str__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_11cpolynomial_10Polynomial_40__str__(((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_self));
+  __pyx_r = __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_40__str__(((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_40__str__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self) {
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_40__str__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self) {
   PyObject *__pyx_v_buf = NULL;
   int __pyx_v_l;
   int __pyx_v_power;
@@ -5645,7 +5645,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_40__str__(struct __pyx_obj_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__str__", 0);
 
-  /* "cpolynomial.pyx":309
+  /* "unireedsolomon\cpolynomial.pyx":309
  *         return "%s(%r)" % (n, self.coefficients)
  *     def __str__(self):
  *         buf = _StringIO()             # <<<<<<<<<<<<<<
@@ -5675,7 +5675,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_40__str__(struct __pyx_obj_
   __pyx_v_buf = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "cpolynomial.pyx":310
+  /* "unireedsolomon\cpolynomial.pyx":310
  *     def __str__(self):
  *         buf = _StringIO()
  *         cdef int l = len(self) - 1             # <<<<<<<<<<<<<<
@@ -5685,7 +5685,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_40__str__(struct __pyx_obj_
   __pyx_t_4 = PyObject_Length(((PyObject *)__pyx_v_self)); if (unlikely(__pyx_t_4 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 310; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_l = (__pyx_t_4 - 1);
 
-  /* "cpolynomial.pyx":312
+  /* "unireedsolomon\cpolynomial.pyx":312
  *         cdef int l = len(self) - 1
  *         cdef int power
  *         for i, c in enumerate(self.coefficients):             # <<<<<<<<<<<<<<
@@ -5713,7 +5713,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_40__str__(struct __pyx_obj_
     __pyx_t_1 = __pyx_t_3;
     __pyx_t_3 = 0;
 
-    /* "cpolynomial.pyx":313
+    /* "unireedsolomon\cpolynomial.pyx":313
  *         cdef int power
  *         for i, c in enumerate(self.coefficients):
  *             if not c and i > 0:             # <<<<<<<<<<<<<<
@@ -5734,7 +5734,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_40__str__(struct __pyx_obj_
     __pyx_L6_bool_binop_done:;
     if (__pyx_t_5) {
 
-      /* "cpolynomial.pyx":314
+      /* "unireedsolomon\cpolynomial.pyx":314
  *         for i, c in enumerate(self.coefficients):
  *             if not c and i > 0:
  *                 continue             # <<<<<<<<<<<<<<
@@ -5744,7 +5744,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_40__str__(struct __pyx_obj_
       goto __pyx_L3_continue;
     }
 
-    /* "cpolynomial.pyx":315
+    /* "unireedsolomon\cpolynomial.pyx":315
  *             if not c and i > 0:
  *                 continue
  *             power = l - i             # <<<<<<<<<<<<<<
@@ -5760,7 +5760,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_40__str__(struct __pyx_obj_
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __pyx_v_power = __pyx_t_9;
 
-    /* "cpolynomial.pyx":316
+    /* "unireedsolomon\cpolynomial.pyx":316
  *                 continue
  *             power = l - i
  *             if c == 1 and power != 0:             # <<<<<<<<<<<<<<
@@ -5780,7 +5780,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_40__str__(struct __pyx_obj_
     __pyx_L9_bool_binop_done:;
     if (__pyx_t_5) {
 
-      /* "cpolynomial.pyx":317
+      /* "unireedsolomon\cpolynomial.pyx":317
  *             power = l - i
  *             if c == 1 and power != 0:
  *                 c = ""             # <<<<<<<<<<<<<<
@@ -5793,7 +5793,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_40__str__(struct __pyx_obj_
     }
     __pyx_L8:;
 
-    /* "cpolynomial.pyx":318
+    /* "unireedsolomon\cpolynomial.pyx":318
  *             if c == 1 and power != 0:
  *                 c = ""
  *             if power > 1:             # <<<<<<<<<<<<<<
@@ -5803,7 +5803,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_40__str__(struct __pyx_obj_
     __pyx_t_5 = ((__pyx_v_power > 1) != 0);
     if (__pyx_t_5) {
 
-      /* "cpolynomial.pyx":319
+      /* "unireedsolomon\cpolynomial.pyx":319
  *                 c = ""
  *             if power > 1:
  *                 buf.write("%sx^%s" % (c, power))             # <<<<<<<<<<<<<<
@@ -5855,7 +5855,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_40__str__(struct __pyx_obj_
       goto __pyx_L11;
     }
 
-    /* "cpolynomial.pyx":320
+    /* "unireedsolomon\cpolynomial.pyx":320
  *             if power > 1:
  *                 buf.write("%sx^%s" % (c, power))
  *             elif power == 1:             # <<<<<<<<<<<<<<
@@ -5865,7 +5865,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_40__str__(struct __pyx_obj_
     __pyx_t_5 = ((__pyx_v_power == 1) != 0);
     if (__pyx_t_5) {
 
-      /* "cpolynomial.pyx":321
+      /* "unireedsolomon\cpolynomial.pyx":321
  *                 buf.write("%sx^%s" % (c, power))
  *             elif power == 1:
  *                 buf.write("%sx" % c)             # <<<<<<<<<<<<<<
@@ -5907,7 +5907,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_40__str__(struct __pyx_obj_
     }
     /*else*/ {
 
-      /* "cpolynomial.pyx":323
+      /* "unireedsolomon\cpolynomial.pyx":323
  *                 buf.write("%sx" % c)
  *             else:
  *                 buf.write("%s" % c)             # <<<<<<<<<<<<<<
@@ -5948,7 +5948,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_40__str__(struct __pyx_obj_
     }
     __pyx_L11:;
 
-    /* "cpolynomial.pyx":324
+    /* "unireedsolomon\cpolynomial.pyx":324
  *             else:
  *                 buf.write("%s" % c)
  *             buf.write(" + ")             # <<<<<<<<<<<<<<
@@ -5962,7 +5962,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_40__str__(struct __pyx_obj_
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-    /* "cpolynomial.pyx":312
+    /* "unireedsolomon\cpolynomial.pyx":312
  *         cdef int l = len(self) - 1
  *         cdef int power
  *         for i, c in enumerate(self.coefficients):             # <<<<<<<<<<<<<<
@@ -5974,7 +5974,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_40__str__(struct __pyx_obj_
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "cpolynomial.pyx":325
+  /* "unireedsolomon\cpolynomial.pyx":325
  *                 buf.write("%s" % c)
  *             buf.write(" + ")
  *         return buf.getvalue()[:-3]             # <<<<<<<<<<<<<<
@@ -6009,7 +6009,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_40__str__(struct __pyx_obj_
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "cpolynomial.pyx":308
+  /* "unireedsolomon\cpolynomial.pyx":308
  *         n = self.__class__.__name__
  *         return "%s(%r)" % (n, self.coefficients)
  *     def __str__(self):             # <<<<<<<<<<<<<<
@@ -6026,7 +6026,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_40__str__(struct __pyx_obj_
   __Pyx_XDECREF(__pyx_t_10);
   __Pyx_XDECREF(__pyx_t_11);
   __Pyx_XDECREF(__pyx_t_12);
-  __Pyx_AddTraceback("cpolynomial.Polynomial.__str__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial.__str__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_buf);
@@ -6037,7 +6037,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_40__str__(struct __pyx_obj_
   return __pyx_r;
 }
 
-/* "cpolynomial.pyx":327
+/* "unireedsolomon\cpolynomial.pyx":327
  *         return buf.getvalue()[:-3]
  * 
  *     cpdef evaluate(Polynomial self, int x):             # <<<<<<<<<<<<<<
@@ -6045,8 +6045,8 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_40__str__(struct __pyx_obj_
  *         # Holds the sum over each term in the polynomial
  */
 
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_43evaluate(PyObject *__pyx_v_self, PyObject *__pyx_arg_x); /*proto*/
-static PyObject *__pyx_f_11cpolynomial_10Polynomial_evaluate(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_x, int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_43evaluate(PyObject *__pyx_v_self, PyObject *__pyx_arg_x); /*proto*/
+static PyObject *__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial_evaluate(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_x, int __pyx_skip_dispatch) {
   int __pyx_v_i;
   PyObject *__pyx_v_y = 0;
   PyObject *__pyx_r = NULL;
@@ -6070,7 +6070,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial_evaluate(struct __pyx_obj_11
   else if (unlikely(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dictoffset != 0)) {
     __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_evaluate); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 327; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_11cpolynomial_10Polynomial_43evaluate)) {
+    if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_43evaluate)) {
       __Pyx_XDECREF(__pyx_r);
       __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_x); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 327; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_3);
@@ -6109,7 +6109,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial_evaluate(struct __pyx_obj_11
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   }
 
-  /* "cpolynomial.pyx":343
+  /* "unireedsolomon\cpolynomial.pyx":343
  *         # Faster alternative using Horner's Scheme
  *         cdef int i
  *         cdef object y = self[0]             # <<<<<<<<<<<<<<
@@ -6121,7 +6121,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial_evaluate(struct __pyx_obj_11
   __pyx_v_y = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "cpolynomial.pyx":344
+  /* "unireedsolomon\cpolynomial.pyx":344
  *         cdef int i
  *         cdef object y = self[0]
  *         for i in _range(1, len(self)):             # <<<<<<<<<<<<<<
@@ -6204,7 +6204,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial_evaluate(struct __pyx_obj_11
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_v_i = __pyx_t_9;
 
-    /* "cpolynomial.pyx":345
+    /* "unireedsolomon\cpolynomial.pyx":345
  *         cdef object y = self[0]
  *         for i in _range(1, len(self)):
  *             y = y * x + self.coefficients[i]             # <<<<<<<<<<<<<<
@@ -6229,7 +6229,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial_evaluate(struct __pyx_obj_11
     __Pyx_DECREF_SET(__pyx_v_y, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "cpolynomial.pyx":344
+    /* "unireedsolomon\cpolynomial.pyx":344
  *         cdef int i
  *         cdef object y = self[0]
  *         for i in _range(1, len(self)):             # <<<<<<<<<<<<<<
@@ -6239,7 +6239,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial_evaluate(struct __pyx_obj_11
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "cpolynomial.pyx":346
+  /* "unireedsolomon\cpolynomial.pyx":346
  *         for i in _range(1, len(self)):
  *             y = y * x + self.coefficients[i]
  *         return y             # <<<<<<<<<<<<<<
@@ -6251,7 +6251,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial_evaluate(struct __pyx_obj_11
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "cpolynomial.pyx":327
+  /* "unireedsolomon\cpolynomial.pyx":327
  *         return buf.getvalue()[:-3]
  * 
  *     cpdef evaluate(Polynomial self, int x):             # <<<<<<<<<<<<<<
@@ -6267,7 +6267,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial_evaluate(struct __pyx_obj_11
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_6);
-  __Pyx_AddTraceback("cpolynomial.Polynomial.evaluate", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial.evaluate", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_y);
@@ -6277,9 +6277,9 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial_evaluate(struct __pyx_obj_11
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_43evaluate(PyObject *__pyx_v_self, PyObject *__pyx_arg_x); /*proto*/
-static char __pyx_doc_11cpolynomial_10Polynomial_42evaluate[] = "Evaluate this polynomial at value x, returning the result (which is the sum of all evaluations at each term).";
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_43evaluate(PyObject *__pyx_v_self, PyObject *__pyx_arg_x) {
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_43evaluate(PyObject *__pyx_v_self, PyObject *__pyx_arg_x); /*proto*/
+static char __pyx_doc_14unireedsolomon_11cpolynomial_10Polynomial_42evaluate[] = "Evaluate this polynomial at value x, returning the result (which is the sum of all evaluations at each term).";
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_43evaluate(PyObject *__pyx_v_self, PyObject *__pyx_arg_x) {
   int __pyx_v_x;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
@@ -6292,18 +6292,18 @@ static PyObject *__pyx_pw_11cpolynomial_10Polynomial_43evaluate(PyObject *__pyx_
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cpolynomial.Polynomial.evaluate", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial.evaluate", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_11cpolynomial_10Polynomial_42evaluate(((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_self), ((int)__pyx_v_x));
+  __pyx_r = __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_42evaluate(((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_self), ((int)__pyx_v_x));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_42evaluate(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_x) {
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_42evaluate(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_x) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -6312,7 +6312,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_42evaluate(struct __pyx_obj
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("evaluate", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_11cpolynomial_10Polynomial_evaluate(__pyx_v_self, __pyx_v_x, 1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 327; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_f_14unireedsolomon_11cpolynomial_10Polynomial_evaluate(__pyx_v_self, __pyx_v_x, 1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 327; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -6321,7 +6321,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_42evaluate(struct __pyx_obj
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cpolynomial.Polynomial.evaluate", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial.evaluate", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -6329,7 +6329,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_42evaluate(struct __pyx_obj
   return __pyx_r;
 }
 
-/* "cpolynomial.pyx":348
+/* "unireedsolomon\cpolynomial.pyx":348
  *         return y
  * 
  *     cpdef tuple evaluate_array(Polynomial self, int x):             # <<<<<<<<<<<<<<
@@ -6337,8 +6337,8 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_42evaluate(struct __pyx_obj
  *         x_gf = self.coefficients[0].__class__(x)
  */
 
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_45evaluate_array(PyObject *__pyx_v_self, PyObject *__pyx_arg_x); /*proto*/
-static PyObject *__pyx_f_11cpolynomial_10Polynomial_evaluate_array(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_x, int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_45evaluate_array(PyObject *__pyx_v_self, PyObject *__pyx_arg_x); /*proto*/
+static PyObject *__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial_evaluate_array(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_x, int __pyx_skip_dispatch) {
   PyObject *__pyx_v_x_gf = NULL;
   PyObject *__pyx_v_arr = 0;
   PyObject *__pyx_v_i = NULL;
@@ -6362,7 +6362,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial_evaluate_array(struct __pyx_
   else if (unlikely(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dictoffset != 0)) {
     __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_evaluate_array); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 348; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_11cpolynomial_10Polynomial_45evaluate_array)) {
+    if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_45evaluate_array)) {
       __Pyx_XDECREF(__pyx_r);
       __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_x); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 348; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_3);
@@ -6402,7 +6402,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial_evaluate_array(struct __pyx_
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   }
 
-  /* "cpolynomial.pyx":350
+  /* "unireedsolomon\cpolynomial.pyx":350
  *     cpdef tuple evaluate_array(Polynomial self, int x):
  *         '''Simple way of evaluating a polynomial at value x, but here we return both the full array (evaluated at each polynomial position) and the sum'''
  *         x_gf = self.coefficients[0].__class__(x)             # <<<<<<<<<<<<<<
@@ -6446,7 +6446,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial_evaluate_array(struct __pyx_
   __pyx_v_x_gf = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "cpolynomial.pyx":351
+  /* "unireedsolomon\cpolynomial.pyx":351
  *         '''Simple way of evaluating a polynomial at value x, but here we return both the full array (evaluated at each polynomial position) and the sum'''
  *         x_gf = self.coefficients[0].__class__(x)
  *         cdef list arr = [self.coefficients[-i]*x_gf**(i-1) for i in _range(len(self), 0, -1)]             # <<<<<<<<<<<<<<
@@ -6557,7 +6557,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial_evaluate_array(struct __pyx_
   __pyx_v_arr = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "cpolynomial.pyx":353
+  /* "unireedsolomon\cpolynomial.pyx":353
  *         cdef list arr = [self.coefficients[-i]*x_gf**(i-1) for i in _range(len(self), 0, -1)]
  *         # if x == 1: arr = sum(self.coefficients)
  *         return arr, sum(arr)             # <<<<<<<<<<<<<<
@@ -6585,7 +6585,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial_evaluate_array(struct __pyx_
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "cpolynomial.pyx":348
+  /* "unireedsolomon\cpolynomial.pyx":348
  *         return y
  * 
  *     cpdef tuple evaluate_array(Polynomial self, int x):             # <<<<<<<<<<<<<<
@@ -6601,7 +6601,7 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial_evaluate_array(struct __pyx_
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_6);
-  __Pyx_AddTraceback("cpolynomial.Polynomial.evaluate_array", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial.evaluate_array", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_x_gf);
@@ -6613,9 +6613,9 @@ static PyObject *__pyx_f_11cpolynomial_10Polynomial_evaluate_array(struct __pyx_
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_45evaluate_array(PyObject *__pyx_v_self, PyObject *__pyx_arg_x); /*proto*/
-static char __pyx_doc_11cpolynomial_10Polynomial_44evaluate_array[] = "Simple way of evaluating a polynomial at value x, but here we return both the full array (evaluated at each polynomial position) and the sum";
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_45evaluate_array(PyObject *__pyx_v_self, PyObject *__pyx_arg_x) {
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_45evaluate_array(PyObject *__pyx_v_self, PyObject *__pyx_arg_x); /*proto*/
+static char __pyx_doc_14unireedsolomon_11cpolynomial_10Polynomial_44evaluate_array[] = "Simple way of evaluating a polynomial at value x, but here we return both the full array (evaluated at each polynomial position) and the sum";
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_45evaluate_array(PyObject *__pyx_v_self, PyObject *__pyx_arg_x) {
   int __pyx_v_x;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
@@ -6628,18 +6628,18 @@ static PyObject *__pyx_pw_11cpolynomial_10Polynomial_45evaluate_array(PyObject *
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cpolynomial.Polynomial.evaluate_array", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial.evaluate_array", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_11cpolynomial_10Polynomial_44evaluate_array(((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_self), ((int)__pyx_v_x));
+  __pyx_r = __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_44evaluate_array(((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_self), ((int)__pyx_v_x));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_44evaluate_array(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_x) {
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_44evaluate_array(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_x) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -6648,7 +6648,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_44evaluate_array(struct __p
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("evaluate_array", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_11cpolynomial_10Polynomial_evaluate_array(__pyx_v_self, __pyx_v_x, 1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 348; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_f_14unireedsolomon_11cpolynomial_10Polynomial_evaluate_array(__pyx_v_self, __pyx_v_x, 1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 348; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -6657,7 +6657,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_44evaluate_array(struct __p
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cpolynomial.Polynomial.evaluate_array", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial.evaluate_array", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -6665,7 +6665,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_44evaluate_array(struct __p
   return __pyx_r;
 }
 
-/* "cpolynomial.pyx":355
+/* "unireedsolomon\cpolynomial.pyx":355
  *         return arr, sum(arr)
  * 
  *     cpdef Polynomial derive(Polynomial self):             # <<<<<<<<<<<<<<
@@ -6673,11 +6673,11 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_44evaluate_array(struct __p
  *         #res = [0] * (len(self)-1) # pre-allocate the list, it will be one item shorter because the constant coefficient (x^0) will be removed
  */
 
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_47derive(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polynomial_derive(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_47derive(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial_derive(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_skip_dispatch) {
   int __pyx_v_L;
   PyObject *__pyx_v_i = NULL;
-  struct __pyx_obj_11cpolynomial_Polynomial *__pyx_r = NULL;
+  struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
@@ -6697,7 +6697,7 @@ static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polyno
   else if (unlikely(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dictoffset != 0)) {
     __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_derive); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 355; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_11cpolynomial_10Polynomial_47derive)) {
+    if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_47derive)) {
       __Pyx_XDECREF(((PyObject *)__pyx_r));
       __Pyx_INCREF(__pyx_t_1);
       __pyx_t_3 = __pyx_t_1; __pyx_t_4 = NULL;
@@ -6718,8 +6718,8 @@ static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polyno
       }
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_11cpolynomial_Polynomial))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 355; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      __pyx_r = ((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_t_2);
+      if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 355; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_r = ((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_t_2);
       __pyx_t_2 = 0;
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       goto __pyx_L0;
@@ -6727,7 +6727,7 @@ static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polyno
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   }
 
-  /* "cpolynomial.pyx":365
+  /* "unireedsolomon\cpolynomial.pyx":365
  *         #return Polynomial( [(i-1) * self[-i] for i in _range(2, len(self)+1)][::-1] )
  *         # Another faster version
  *         cdef int L = len(self)-1             # <<<<<<<<<<<<<<
@@ -6737,7 +6737,7 @@ static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polyno
   __pyx_t_5 = PyObject_Length(((PyObject *)__pyx_v_self)); if (unlikely(__pyx_t_5 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 365; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_L = (__pyx_t_5 - 1);
 
-  /* "cpolynomial.pyx":366
+  /* "unireedsolomon\cpolynomial.pyx":366
  *         # Another faster version
  *         cdef int L = len(self)-1
  *         return Polynomial( [(L-i) * self[i] for i in _range(0, len(self)-1)] )             # <<<<<<<<<<<<<<
@@ -6841,14 +6841,14 @@ static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polyno
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)((PyObject*)__pyx_ptype_11cpolynomial_Polynomial)), __pyx_t_3, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 366; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)((PyObject*)__pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial)), __pyx_t_3, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 366; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_r = ((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_t_1);
+  __pyx_r = ((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_t_1);
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "cpolynomial.pyx":355
+  /* "unireedsolomon\cpolynomial.pyx":355
  *         return arr, sum(arr)
  * 
  *     cpdef Polynomial derive(Polynomial self):             # <<<<<<<<<<<<<<
@@ -6864,7 +6864,7 @@ static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polyno
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_7);
-  __Pyx_AddTraceback("cpolynomial.Polynomial.derive", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial.derive", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_i);
@@ -6874,20 +6874,20 @@ static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_f_11cpolynomial_10Polyno
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_47derive(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_11cpolynomial_10Polynomial_46derive[] = "Compute the formal derivative of the polynomial: sum(i*coeff[i] x^(i-1))";
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_47derive(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_47derive(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_14unireedsolomon_11cpolynomial_10Polynomial_46derive[] = "Compute the formal derivative of the polynomial: sum(i*coeff[i] x^(i-1))";
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_47derive(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("derive (wrapper)", 0);
-  __pyx_r = __pyx_pf_11cpolynomial_10Polynomial_46derive(((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_self));
+  __pyx_r = __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_46derive(((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_46derive(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self) {
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_46derive(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -6896,7 +6896,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_46derive(struct __pyx_obj_1
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("derive", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = ((PyObject *)__pyx_f_11cpolynomial_10Polynomial_derive(__pyx_v_self, 1)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 355; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = ((PyObject *)__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial_derive(__pyx_v_self, 1)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 355; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -6905,7 +6905,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_46derive(struct __pyx_obj_1
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cpolynomial.Polynomial.derive", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial.derive", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -6913,7 +6913,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_46derive(struct __pyx_obj_1
   return __pyx_r;
 }
 
-/* "cpolynomial.pyx":368
+/* "unireedsolomon\cpolynomial.pyx":368
  *         return Polynomial( [(L-i) * self[i] for i in _range(0, len(self)-1)] )
  * 
  *     cpdef int get_coefficient(self, int degree):             # <<<<<<<<<<<<<<
@@ -6921,8 +6921,8 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_46derive(struct __pyx_obj_1
  *         if degree > self.degree:
  */
 
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_49get_coefficient(PyObject *__pyx_v_self, PyObject *__pyx_arg_degree); /*proto*/
-static int __pyx_f_11cpolynomial_10Polynomial_get_coefficient(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_degree, int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_49get_coefficient(PyObject *__pyx_v_self, PyObject *__pyx_arg_degree); /*proto*/
+static int __pyx_f_14unireedsolomon_11cpolynomial_10Polynomial_get_coefficient(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_degree, int __pyx_skip_dispatch) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -6944,7 +6944,7 @@ static int __pyx_f_11cpolynomial_10Polynomial_get_coefficient(struct __pyx_obj_1
   else if (unlikely(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dictoffset != 0)) {
     __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_get_coefficient); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 368; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_11cpolynomial_10Polynomial_49get_coefficient)) {
+    if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_49get_coefficient)) {
       __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_degree); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 368; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_INCREF(__pyx_t_1);
@@ -6983,7 +6983,7 @@ static int __pyx_f_11cpolynomial_10Polynomial_get_coefficient(struct __pyx_obj_1
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   }
 
-  /* "cpolynomial.pyx":370
+  /* "unireedsolomon\cpolynomial.pyx":370
  *     cpdef int get_coefficient(self, int degree):
  *         '''Returns the coefficient of the specified term'''
  *         if degree > self.degree:             # <<<<<<<<<<<<<<
@@ -6993,7 +6993,7 @@ static int __pyx_f_11cpolynomial_10Polynomial_get_coefficient(struct __pyx_obj_1
   __pyx_t_8 = ((__pyx_v_degree > __pyx_v_self->degree) != 0);
   if (__pyx_t_8) {
 
-    /* "cpolynomial.pyx":371
+    /* "unireedsolomon\cpolynomial.pyx":371
  *         '''Returns the coefficient of the specified term'''
  *         if degree > self.degree:
  *             return 0             # <<<<<<<<<<<<<<
@@ -7005,7 +7005,7 @@ static int __pyx_f_11cpolynomial_10Polynomial_get_coefficient(struct __pyx_obj_1
   }
   /*else*/ {
 
-    /* "cpolynomial.pyx":373
+    /* "unireedsolomon\cpolynomial.pyx":373
  *             return 0
  *         else:
  *             return self.coefficients[-(degree+1)]             # <<<<<<<<<<<<<<
@@ -7025,7 +7025,7 @@ static int __pyx_f_11cpolynomial_10Polynomial_get_coefficient(struct __pyx_obj_1
     goto __pyx_L0;
   }
 
-  /* "cpolynomial.pyx":368
+  /* "unireedsolomon\cpolynomial.pyx":368
  *         return Polynomial( [(L-i) * self[i] for i in _range(0, len(self)-1)] )
  * 
  *     cpdef int get_coefficient(self, int degree):             # <<<<<<<<<<<<<<
@@ -7041,7 +7041,7 @@ static int __pyx_f_11cpolynomial_10Polynomial_get_coefficient(struct __pyx_obj_1
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_6);
-  __Pyx_WriteUnraisable("cpolynomial.Polynomial.get_coefficient", __pyx_clineno, __pyx_lineno, __pyx_filename, 0, 0);
+  __Pyx_WriteUnraisable("unireedsolomon.cpolynomial.Polynomial.get_coefficient", __pyx_clineno, __pyx_lineno, __pyx_filename, 0, 0);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
@@ -7049,9 +7049,9 @@ static int __pyx_f_11cpolynomial_10Polynomial_get_coefficient(struct __pyx_obj_1
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_49get_coefficient(PyObject *__pyx_v_self, PyObject *__pyx_arg_degree); /*proto*/
-static char __pyx_doc_11cpolynomial_10Polynomial_48get_coefficient[] = "Returns the coefficient of the specified term";
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_49get_coefficient(PyObject *__pyx_v_self, PyObject *__pyx_arg_degree) {
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_49get_coefficient(PyObject *__pyx_v_self, PyObject *__pyx_arg_degree); /*proto*/
+static char __pyx_doc_14unireedsolomon_11cpolynomial_10Polynomial_48get_coefficient[] = "Returns the coefficient of the specified term";
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_49get_coefficient(PyObject *__pyx_v_self, PyObject *__pyx_arg_degree) {
   int __pyx_v_degree;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
@@ -7064,18 +7064,18 @@ static PyObject *__pyx_pw_11cpolynomial_10Polynomial_49get_coefficient(PyObject 
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cpolynomial.Polynomial.get_coefficient", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial.get_coefficient", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_11cpolynomial_10Polynomial_48get_coefficient(((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_self), ((int)__pyx_v_degree));
+  __pyx_r = __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_48get_coefficient(((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_self), ((int)__pyx_v_degree));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_48get_coefficient(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_degree) {
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_48get_coefficient(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, int __pyx_v_degree) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -7084,7 +7084,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_48get_coefficient(struct __
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("get_coefficient", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_f_11cpolynomial_10Polynomial_get_coefficient(__pyx_v_self, __pyx_v_degree, 1)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 368; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial_get_coefficient(__pyx_v_self, __pyx_v_degree, 1)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 368; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -7093,7 +7093,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_48get_coefficient(struct __
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cpolynomial.Polynomial.get_coefficient", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial.get_coefficient", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -7101,7 +7101,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_48get_coefficient(struct __
   return __pyx_r;
 }
 
-/* "cpolynomial.pyx":375
+/* "unireedsolomon\cpolynomial.pyx":375
  *             return self.coefficients[-(degree+1)]
  * 
  *     def __iter__(self):             # <<<<<<<<<<<<<<
@@ -7110,19 +7110,19 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_48get_coefficient(struct __
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_51__iter__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_51__iter__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_51__iter__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_51__iter__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__iter__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_11cpolynomial_10Polynomial_50__iter__(((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_self));
+  __pyx_r = __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_50__iter__(((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_50__iter__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self) {
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_50__iter__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -7132,7 +7132,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_50__iter__(struct __pyx_obj
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__iter__", 0);
 
-  /* "cpolynomial.pyx":376
+  /* "unireedsolomon\cpolynomial.pyx":376
  * 
  *     def __iter__(self):
  *         return iter(self.coefficients)             # <<<<<<<<<<<<<<
@@ -7149,7 +7149,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_50__iter__(struct __pyx_obj
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "cpolynomial.pyx":375
+  /* "unireedsolomon\cpolynomial.pyx":375
  *             return self.coefficients[-(degree+1)]
  * 
  *     def __iter__(self):             # <<<<<<<<<<<<<<
@@ -7161,7 +7161,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_50__iter__(struct __pyx_obj
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_AddTraceback("cpolynomial.Polynomial.__iter__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial.__iter__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -7169,7 +7169,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_50__iter__(struct __pyx_obj
   return __pyx_r;
 }
 
-/* "cpolynomial.pyx":380
+/* "unireedsolomon\cpolynomial.pyx":380
  *             #yield item
  * 
  *     def  __getitem__(self, slice):             # <<<<<<<<<<<<<<
@@ -7178,19 +7178,19 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_50__iter__(struct __pyx_obj
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_53__getitem__(PyObject *__pyx_v_self, PyObject *__pyx_v_slice); /*proto*/
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_53__getitem__(PyObject *__pyx_v_self, PyObject *__pyx_v_slice) {
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_53__getitem__(PyObject *__pyx_v_self, PyObject *__pyx_v_slice); /*proto*/
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_53__getitem__(PyObject *__pyx_v_self, PyObject *__pyx_v_slice) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__getitem__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_11cpolynomial_10Polynomial_52__getitem__(((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_self), ((PyObject *)__pyx_v_slice));
+  __pyx_r = __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_52__getitem__(((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_self), ((PyObject *)__pyx_v_slice));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_52__getitem__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, PyObject *__pyx_v_slice) {
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_52__getitem__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, PyObject *__pyx_v_slice) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -7199,7 +7199,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_52__getitem__(struct __pyx_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__getitem__", 0);
 
-  /* "cpolynomial.pyx":381
+  /* "unireedsolomon\cpolynomial.pyx":381
  * 
  *     def  __getitem__(self, slice):
  *         return self.coefficients[slice]             # <<<<<<<<<<<<<<
@@ -7217,7 +7217,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_52__getitem__(struct __pyx_
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "cpolynomial.pyx":380
+  /* "unireedsolomon\cpolynomial.pyx":380
  *             #yield item
  * 
  *     def  __getitem__(self, slice):             # <<<<<<<<<<<<<<
@@ -7228,7 +7228,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_52__getitem__(struct __pyx_
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cpolynomial.Polynomial.__getitem__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial.__getitem__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -7236,7 +7236,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_52__getitem__(struct __pyx_
   return __pyx_r;
 }
 
-/* "cpolynomial.pyx":383
+/* "unireedsolomon\cpolynomial.pyx":383
  *         return self.coefficients[slice]
  * 
  *     def __setitem__(self, key, item):             # <<<<<<<<<<<<<<
@@ -7245,23 +7245,23 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_52__getitem__(struct __pyx_
  */
 
 /* Python wrapper */
-static int __pyx_pw_11cpolynomial_10Polynomial_55__setitem__(PyObject *__pyx_v_self, PyObject *__pyx_v_key, PyObject *__pyx_v_item); /*proto*/
-static char __pyx_doc_11cpolynomial_10Polynomial_54__setitem__[] = "Set or create a coefficient value, the key being the coefficient order (not the internal list index)";
+static int __pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_55__setitem__(PyObject *__pyx_v_self, PyObject *__pyx_v_key, PyObject *__pyx_v_item); /*proto*/
+static char __pyx_doc_14unireedsolomon_11cpolynomial_10Polynomial_54__setitem__[] = "Set or create a coefficient value, the key being the coefficient order (not the internal list index)";
 #if CYTHON_COMPILING_IN_CPYTHON
-struct wrapperbase __pyx_wrapperbase_11cpolynomial_10Polynomial_54__setitem__;
+struct wrapperbase __pyx_wrapperbase_14unireedsolomon_11cpolynomial_10Polynomial_54__setitem__;
 #endif
-static int __pyx_pw_11cpolynomial_10Polynomial_55__setitem__(PyObject *__pyx_v_self, PyObject *__pyx_v_key, PyObject *__pyx_v_item) {
+static int __pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_55__setitem__(PyObject *__pyx_v_self, PyObject *__pyx_v_key, PyObject *__pyx_v_item) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__setitem__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_11cpolynomial_10Polynomial_54__setitem__(((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_self), ((PyObject *)__pyx_v_key), ((PyObject *)__pyx_v_item));
+  __pyx_r = __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_54__setitem__(((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_self), ((PyObject *)__pyx_v_key), ((PyObject *)__pyx_v_item));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static int __pyx_pf_11cpolynomial_10Polynomial_54__setitem__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, PyObject *__pyx_v_key, PyObject *__pyx_v_item) {
+static int __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_54__setitem__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, PyObject *__pyx_v_key, PyObject *__pyx_v_item) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -7274,7 +7274,7 @@ static int __pyx_pf_11cpolynomial_10Polynomial_54__setitem__(struct __pyx_obj_11
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__setitem__", 0);
 
-  /* "cpolynomial.pyx":385
+  /* "unireedsolomon\cpolynomial.pyx":385
  *     def __setitem__(self, key, item):
  *         '''Set or create a coefficient value, the key being the coefficient order (not the internal list index)'''
  *         if key < self.length:             # <<<<<<<<<<<<<<
@@ -7289,7 +7289,7 @@ static int __pyx_pf_11cpolynomial_10Polynomial_54__setitem__(struct __pyx_obj_11
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (__pyx_t_3) {
 
-    /* "cpolynomial.pyx":386
+    /* "unireedsolomon\cpolynomial.pyx":386
  *         '''Set or create a coefficient value, the key being the coefficient order (not the internal list index)'''
  *         if key < self.length:
  *             self.coefficients[-key-1] = item             # <<<<<<<<<<<<<<
@@ -7311,7 +7311,7 @@ static int __pyx_pf_11cpolynomial_10Polynomial_54__setitem__(struct __pyx_obj_11
   }
   /*else*/ {
 
-    /* "cpolynomial.pyx":388
+    /* "unireedsolomon\cpolynomial.pyx":388
  *             self.coefficients[-key-1] = item
  *         else:
  *             self.coefficients = [item] + [0]*(key-self.length) + list(self.coefficients)             # <<<<<<<<<<<<<<
@@ -7355,7 +7355,7 @@ static int __pyx_pf_11cpolynomial_10Polynomial_54__setitem__(struct __pyx_obj_11
     __pyx_v_self->coefficients = ((PyObject*)__pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "cpolynomial.pyx":389
+    /* "unireedsolomon\cpolynomial.pyx":389
  *         else:
  *             self.coefficients = [item] + [0]*(key-self.length) + list(self.coefficients)
  *             self.length = len(self.coefficients)             # <<<<<<<<<<<<<<
@@ -7371,7 +7371,7 @@ static int __pyx_pf_11cpolynomial_10Polynomial_54__setitem__(struct __pyx_obj_11
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_v_self->length = __pyx_t_5;
 
-    /* "cpolynomial.pyx":390
+    /* "unireedsolomon\cpolynomial.pyx":390
  *             self.coefficients = [item] + [0]*(key-self.length) + list(self.coefficients)
  *             self.length = len(self.coefficients)
  *             self.degree = self.length-1             # <<<<<<<<<<<<<<
@@ -7380,7 +7380,7 @@ static int __pyx_pf_11cpolynomial_10Polynomial_54__setitem__(struct __pyx_obj_11
   }
   __pyx_L3:;
 
-  /* "cpolynomial.pyx":383
+  /* "unireedsolomon\cpolynomial.pyx":383
  *         return self.coefficients[slice]
  * 
  *     def __setitem__(self, key, item):             # <<<<<<<<<<<<<<
@@ -7395,14 +7395,14 @@ static int __pyx_pf_11cpolynomial_10Polynomial_54__setitem__(struct __pyx_obj_11
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_AddTraceback("cpolynomial.Polynomial.__setitem__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial.__setitem__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "cpolynomial.pyx":27
+/* "unireedsolomon\cpolynomial.pyx":27
  *     need to be modified.'''
  * 
  *     cdef public list coefficients             # <<<<<<<<<<<<<<
@@ -7411,19 +7411,19 @@ static int __pyx_pf_11cpolynomial_10Polynomial_54__setitem__(struct __pyx_obj_11
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_12coefficients_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_12coefficients_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_12coefficients_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_12coefficients_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_11cpolynomial_10Polynomial_12coefficients___get__(((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_self));
+  __pyx_r = __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_12coefficients___get__(((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_12coefficients___get__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self) {
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_12coefficients___get__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__", 0);
@@ -7440,19 +7440,19 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_12coefficients___get__(stru
 }
 
 /* Python wrapper */
-static int __pyx_pw_11cpolynomial_10Polynomial_12coefficients_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
-static int __pyx_pw_11cpolynomial_10Polynomial_12coefficients_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
+static int __pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_12coefficients_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
+static int __pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_12coefficients_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__set__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_11cpolynomial_10Polynomial_12coefficients_2__set__(((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_self), ((PyObject *)__pyx_v_value));
+  __pyx_r = __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_12coefficients_2__set__(((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_self), ((PyObject *)__pyx_v_value));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static int __pyx_pf_11cpolynomial_10Polynomial_12coefficients_2__set__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, PyObject *__pyx_v_value) {
+static int __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_12coefficients_2__set__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, PyObject *__pyx_v_value) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -7474,7 +7474,7 @@ static int __pyx_pf_11cpolynomial_10Polynomial_12coefficients_2__set__(struct __
   goto __pyx_L0;
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cpolynomial.Polynomial.coefficients.__set__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial.coefficients.__set__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
@@ -7482,19 +7482,19 @@ static int __pyx_pf_11cpolynomial_10Polynomial_12coefficients_2__set__(struct __
 }
 
 /* Python wrapper */
-static int __pyx_pw_11cpolynomial_10Polynomial_12coefficients_5__del__(PyObject *__pyx_v_self); /*proto*/
-static int __pyx_pw_11cpolynomial_10Polynomial_12coefficients_5__del__(PyObject *__pyx_v_self) {
+static int __pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_12coefficients_5__del__(PyObject *__pyx_v_self); /*proto*/
+static int __pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_12coefficients_5__del__(PyObject *__pyx_v_self) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__del__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_11cpolynomial_10Polynomial_12coefficients_4__del__(((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_self));
+  __pyx_r = __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_12coefficients_4__del__(((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static int __pyx_pf_11cpolynomial_10Polynomial_12coefficients_4__del__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self) {
+static int __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_12coefficients_4__del__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__del__", 0);
@@ -7510,7 +7510,7 @@ static int __pyx_pf_11cpolynomial_10Polynomial_12coefficients_4__del__(struct __
   return __pyx_r;
 }
 
-/* "cpolynomial.pyx":28
+/* "unireedsolomon\cpolynomial.pyx":28
  * 
  *     cdef public list coefficients
  *     cdef public int degree             # <<<<<<<<<<<<<<
@@ -7519,19 +7519,19 @@ static int __pyx_pf_11cpolynomial_10Polynomial_12coefficients_4__del__(struct __
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_6degree_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_6degree_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_6degree_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_6degree_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_11cpolynomial_10Polynomial_6degree___get__(((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_self));
+  __pyx_r = __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_6degree___get__(((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_6degree___get__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self) {
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_6degree___get__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -7549,7 +7549,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_6degree___get__(struct __py
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cpolynomial.Polynomial.degree.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial.degree.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -7558,19 +7558,19 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_6degree___get__(struct __py
 }
 
 /* Python wrapper */
-static int __pyx_pw_11cpolynomial_10Polynomial_6degree_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
-static int __pyx_pw_11cpolynomial_10Polynomial_6degree_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
+static int __pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_6degree_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
+static int __pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_6degree_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__set__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_11cpolynomial_10Polynomial_6degree_2__set__(((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_self), ((PyObject *)__pyx_v_value));
+  __pyx_r = __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_6degree_2__set__(((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_self), ((PyObject *)__pyx_v_value));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static int __pyx_pf_11cpolynomial_10Polynomial_6degree_2__set__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, PyObject *__pyx_v_value) {
+static int __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_6degree_2__set__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, PyObject *__pyx_v_value) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
@@ -7585,14 +7585,14 @@ static int __pyx_pf_11cpolynomial_10Polynomial_6degree_2__set__(struct __pyx_obj
   __pyx_r = 0;
   goto __pyx_L0;
   __pyx_L1_error:;
-  __Pyx_AddTraceback("cpolynomial.Polynomial.degree.__set__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial.degree.__set__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "cpolynomial.pyx":29
+/* "unireedsolomon\cpolynomial.pyx":29
  *     cdef public list coefficients
  *     cdef public int degree
  *     cdef public int length             # <<<<<<<<<<<<<<
@@ -7601,19 +7601,19 @@ static int __pyx_pf_11cpolynomial_10Polynomial_6degree_2__set__(struct __pyx_obj
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_6length_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_11cpolynomial_10Polynomial_6length_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_6length_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_6length_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_11cpolynomial_10Polynomial_6length___get__(((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_self));
+  __pyx_r = __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_6length___get__(((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_11cpolynomial_10Polynomial_6length___get__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self) {
+static PyObject *__pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_6length___get__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -7631,7 +7631,7 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_6length___get__(struct __py
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cpolynomial.Polynomial.length.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial.length.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -7640,19 +7640,19 @@ static PyObject *__pyx_pf_11cpolynomial_10Polynomial_6length___get__(struct __py
 }
 
 /* Python wrapper */
-static int __pyx_pw_11cpolynomial_10Polynomial_6length_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
-static int __pyx_pw_11cpolynomial_10Polynomial_6length_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
+static int __pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_6length_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
+static int __pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_6length_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__set__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_11cpolynomial_10Polynomial_6length_2__set__(((struct __pyx_obj_11cpolynomial_Polynomial *)__pyx_v_self), ((PyObject *)__pyx_v_value));
+  __pyx_r = __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_6length_2__set__(((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)__pyx_v_self), ((PyObject *)__pyx_v_value));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static int __pyx_pf_11cpolynomial_10Polynomial_6length_2__set__(struct __pyx_obj_11cpolynomial_Polynomial *__pyx_v_self, PyObject *__pyx_v_value) {
+static int __pyx_pf_14unireedsolomon_11cpolynomial_10Polynomial_6length_2__set__(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_v_self, PyObject *__pyx_v_value) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
@@ -7667,23 +7667,23 @@ static int __pyx_pf_11cpolynomial_10Polynomial_6length_2__set__(struct __pyx_obj
   __pyx_r = 0;
   goto __pyx_L0;
   __pyx_L1_error:;
-  __Pyx_AddTraceback("cpolynomial.Polynomial.length.__set__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("unireedsolomon.cpolynomial.Polynomial.length.__set__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-static struct __pyx_vtabstruct_11cpolynomial_Polynomial __pyx_vtable_11cpolynomial_Polynomial;
+static struct __pyx_vtabstruct_14unireedsolomon_11cpolynomial_Polynomial __pyx_vtable_14unireedsolomon_11cpolynomial_Polynomial;
 
-static struct __pyx_obj_11cpolynomial_Polynomial *__pyx_freelist_11cpolynomial_Polynomial[64];
-static int __pyx_freecount_11cpolynomial_Polynomial = 0;
+static struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *__pyx_freelist_14unireedsolomon_11cpolynomial_Polynomial[64];
+static int __pyx_freecount_14unireedsolomon_11cpolynomial_Polynomial = 0;
 
-static PyObject *__pyx_tp_new_11cpolynomial_Polynomial(PyTypeObject *t, PyObject *a, PyObject *k) {
-  struct __pyx_obj_11cpolynomial_Polynomial *p;
+static PyObject *__pyx_tp_new_14unireedsolomon_11cpolynomial_Polynomial(PyTypeObject *t, PyObject *a, PyObject *k) {
+  struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *p;
   PyObject *o;
-  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_11cpolynomial_Polynomial > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_11cpolynomial_Polynomial)) & ((t->tp_flags & (Py_TPFLAGS_IS_ABSTRACT | Py_TPFLAGS_HEAPTYPE)) == 0))) {
-    o = (PyObject*)__pyx_freelist_11cpolynomial_Polynomial[--__pyx_freecount_11cpolynomial_Polynomial];
-    memset(o, 0, sizeof(struct __pyx_obj_11cpolynomial_Polynomial));
+  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_14unireedsolomon_11cpolynomial_Polynomial > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial)) & ((t->tp_flags & (Py_TPFLAGS_IS_ABSTRACT | Py_TPFLAGS_HEAPTYPE)) == 0))) {
+    o = (PyObject*)__pyx_freelist_14unireedsolomon_11cpolynomial_Polynomial[--__pyx_freecount_14unireedsolomon_11cpolynomial_Polynomial];
+    memset(o, 0, sizeof(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial));
     (void) PyObject_INIT(o, t);
     PyObject_GC_Track(o);
   } else {
@@ -7694,17 +7694,17 @@ static PyObject *__pyx_tp_new_11cpolynomial_Polynomial(PyTypeObject *t, PyObject
     }
     if (unlikely(!o)) return 0;
   }
-  p = ((struct __pyx_obj_11cpolynomial_Polynomial *)o);
-  p->__pyx_vtab = __pyx_vtabptr_11cpolynomial_Polynomial;
+  p = ((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)o);
+  p->__pyx_vtab = __pyx_vtabptr_14unireedsolomon_11cpolynomial_Polynomial;
   p->coefficients = ((PyObject*)Py_None); Py_INCREF(Py_None);
-  if (unlikely(__pyx_pw_11cpolynomial_10Polynomial_1__cinit__(o, a, k) < 0)) {
+  if (unlikely(__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_1__cinit__(o, a, k) < 0)) {
     Py_DECREF(o); o = 0;
   }
   return o;
 }
 
-static void __pyx_tp_dealloc_11cpolynomial_Polynomial(PyObject *o) {
-  struct __pyx_obj_11cpolynomial_Polynomial *p = (struct __pyx_obj_11cpolynomial_Polynomial *)o;
+static void __pyx_tp_dealloc_14unireedsolomon_11cpolynomial_Polynomial(PyObject *o) {
+  struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *p = (struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)o;
   #if PY_VERSION_HEX >= 0x030400a1
   if (unlikely(Py_TYPE(o)->tp_finalize) && !_PyGC_FINALIZED(o)) {
     if (PyObject_CallFinalizerFromDealloc(o)) return;
@@ -7712,31 +7712,31 @@ static void __pyx_tp_dealloc_11cpolynomial_Polynomial(PyObject *o) {
   #endif
   PyObject_GC_UnTrack(o);
   Py_CLEAR(p->coefficients);
-  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_11cpolynomial_Polynomial < 64) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_11cpolynomial_Polynomial)) & ((Py_TYPE(o)->tp_flags & (Py_TPFLAGS_IS_ABSTRACT | Py_TPFLAGS_HEAPTYPE)) == 0))) {
-    __pyx_freelist_11cpolynomial_Polynomial[__pyx_freecount_11cpolynomial_Polynomial++] = ((struct __pyx_obj_11cpolynomial_Polynomial *)o);
+  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_14unireedsolomon_11cpolynomial_Polynomial < 64) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial)) & ((Py_TYPE(o)->tp_flags & (Py_TPFLAGS_IS_ABSTRACT | Py_TPFLAGS_HEAPTYPE)) == 0))) {
+    __pyx_freelist_14unireedsolomon_11cpolynomial_Polynomial[__pyx_freecount_14unireedsolomon_11cpolynomial_Polynomial++] = ((struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)o);
   } else {
     (*Py_TYPE(o)->tp_free)(o);
   }
 }
 
-static int __pyx_tp_traverse_11cpolynomial_Polynomial(PyObject *o, visitproc v, void *a) {
+static int __pyx_tp_traverse_14unireedsolomon_11cpolynomial_Polynomial(PyObject *o, visitproc v, void *a) {
   int e;
-  struct __pyx_obj_11cpolynomial_Polynomial *p = (struct __pyx_obj_11cpolynomial_Polynomial *)o;
+  struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *p = (struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)o;
   if (p->coefficients) {
     e = (*v)(p->coefficients, a); if (e) return e;
   }
   return 0;
 }
 
-static int __pyx_tp_clear_11cpolynomial_Polynomial(PyObject *o) {
+static int __pyx_tp_clear_14unireedsolomon_11cpolynomial_Polynomial(PyObject *o) {
   PyObject* tmp;
-  struct __pyx_obj_11cpolynomial_Polynomial *p = (struct __pyx_obj_11cpolynomial_Polynomial *)o;
+  struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *p = (struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *)o;
   tmp = ((PyObject*)p->coefficients);
   p->coefficients = ((PyObject*)Py_None); Py_INCREF(Py_None);
   Py_XDECREF(tmp);
   return 0;
 }
-static PyObject *__pyx_sq_item_11cpolynomial_Polynomial(PyObject *o, Py_ssize_t i) {
+static PyObject *__pyx_sq_item_14unireedsolomon_11cpolynomial_Polynomial(PyObject *o, Py_ssize_t i) {
   PyObject *r;
   PyObject *x = PyInt_FromSsize_t(i); if(!x) return 0;
   r = Py_TYPE(o)->tp_as_mapping->mp_subscript(o, x);
@@ -7744,9 +7744,9 @@ static PyObject *__pyx_sq_item_11cpolynomial_Polynomial(PyObject *o, Py_ssize_t 
   return r;
 }
 
-static int __pyx_mp_ass_subscript_11cpolynomial_Polynomial(PyObject *o, PyObject *i, PyObject *v) {
+static int __pyx_mp_ass_subscript_14unireedsolomon_11cpolynomial_Polynomial(PyObject *o, PyObject *i, PyObject *v) {
   if (v) {
-    return __pyx_pw_11cpolynomial_10Polynomial_55__setitem__(o, i, v);
+    return __pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_55__setitem__(o, i, v);
   }
   else {
     PyErr_Format(PyExc_NotImplementedError,
@@ -7755,40 +7755,26 @@ static int __pyx_mp_ass_subscript_11cpolynomial_Polynomial(PyObject *o, PyObject
   }
 }
 
-static PyObject *__pyx_getprop_11cpolynomial_10Polynomial_coefficients(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_11cpolynomial_10Polynomial_12coefficients_1__get__(o);
+static PyObject *__pyx_getprop_14unireedsolomon_11cpolynomial_10Polynomial_coefficients(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_12coefficients_1__get__(o);
 }
 
-static int __pyx_setprop_11cpolynomial_10Polynomial_coefficients(PyObject *o, PyObject *v, CYTHON_UNUSED void *x) {
+static int __pyx_setprop_14unireedsolomon_11cpolynomial_10Polynomial_coefficients(PyObject *o, PyObject *v, CYTHON_UNUSED void *x) {
   if (v) {
-    return __pyx_pw_11cpolynomial_10Polynomial_12coefficients_3__set__(o, v);
+    return __pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_12coefficients_3__set__(o, v);
   }
   else {
-    return __pyx_pw_11cpolynomial_10Polynomial_12coefficients_5__del__(o);
+    return __pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_12coefficients_5__del__(o);
   }
 }
 
-static PyObject *__pyx_getprop_11cpolynomial_10Polynomial_degree(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_11cpolynomial_10Polynomial_6degree_1__get__(o);
+static PyObject *__pyx_getprop_14unireedsolomon_11cpolynomial_10Polynomial_degree(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_6degree_1__get__(o);
 }
 
-static int __pyx_setprop_11cpolynomial_10Polynomial_degree(PyObject *o, PyObject *v, CYTHON_UNUSED void *x) {
+static int __pyx_setprop_14unireedsolomon_11cpolynomial_10Polynomial_degree(PyObject *o, PyObject *v, CYTHON_UNUSED void *x) {
   if (v) {
-    return __pyx_pw_11cpolynomial_10Polynomial_6degree_3__set__(o, v);
-  }
-  else {
-    PyErr_SetString(PyExc_NotImplementedError, "__del__");
-    return -1;
-  }
-}
-
-static PyObject *__pyx_getprop_11cpolynomial_10Polynomial_length(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_11cpolynomial_10Polynomial_6length_1__get__(o);
-}
-
-static int __pyx_setprop_11cpolynomial_10Polynomial_length(PyObject *o, PyObject *v, CYTHON_UNUSED void *x) {
-  if (v) {
-    return __pyx_pw_11cpolynomial_10Polynomial_6length_3__set__(o, v);
+    return __pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_6degree_3__set__(o, v);
   }
   else {
     PyErr_SetString(PyExc_NotImplementedError, "__del__");
@@ -7796,40 +7782,54 @@ static int __pyx_setprop_11cpolynomial_10Polynomial_length(PyObject *o, PyObject
   }
 }
 
-static PyMethodDef __pyx_methods_11cpolynomial_Polynomial[] = {
-  {"mul_at", (PyCFunction)__pyx_pw_11cpolynomial_10Polynomial_13mul_at, METH_VARARGS|METH_KEYWORDS, __pyx_doc_11cpolynomial_10Polynomial_12mul_at},
-  {"scale", (PyCFunction)__pyx_pw_11cpolynomial_10Polynomial_15scale, METH_O, __pyx_doc_11cpolynomial_10Polynomial_14scale},
-  {"_fastfloordiv", (PyCFunction)__pyx_pw_11cpolynomial_10Polynomial_21_fastfloordiv, METH_O, 0},
-  {"_fastmod", (PyCFunction)__pyx_pw_11cpolynomial_10Polynomial_23_fastmod, METH_O, 0},
-  {"_gffastfloordiv", (PyCFunction)__pyx_pw_11cpolynomial_10Polynomial_25_gffastfloordiv, METH_O, 0},
-  {"_gffastmod", (PyCFunction)__pyx_pw_11cpolynomial_10Polynomial_27_gffastmod, METH_O, 0},
-  {"_fastdivmod", (PyCFunction)__pyx_pw_11cpolynomial_10Polynomial_29_fastdivmod, METH_O, __pyx_doc_11cpolynomial_10Polynomial_28_fastdivmod},
-  {"_gffastdivmod", (PyCFunction)__pyx_pw_11cpolynomial_10Polynomial_31_gffastdivmod, METH_O, __pyx_doc_11cpolynomial_10Polynomial_30_gffastdivmod},
-  {"evaluate", (PyCFunction)__pyx_pw_11cpolynomial_10Polynomial_43evaluate, METH_O, __pyx_doc_11cpolynomial_10Polynomial_42evaluate},
-  {"evaluate_array", (PyCFunction)__pyx_pw_11cpolynomial_10Polynomial_45evaluate_array, METH_O, __pyx_doc_11cpolynomial_10Polynomial_44evaluate_array},
-  {"derive", (PyCFunction)__pyx_pw_11cpolynomial_10Polynomial_47derive, METH_NOARGS, __pyx_doc_11cpolynomial_10Polynomial_46derive},
-  {"get_coefficient", (PyCFunction)__pyx_pw_11cpolynomial_10Polynomial_49get_coefficient, METH_O, __pyx_doc_11cpolynomial_10Polynomial_48get_coefficient},
+static PyObject *__pyx_getprop_14unireedsolomon_11cpolynomial_10Polynomial_length(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_6length_1__get__(o);
+}
+
+static int __pyx_setprop_14unireedsolomon_11cpolynomial_10Polynomial_length(PyObject *o, PyObject *v, CYTHON_UNUSED void *x) {
+  if (v) {
+    return __pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_6length_3__set__(o, v);
+  }
+  else {
+    PyErr_SetString(PyExc_NotImplementedError, "__del__");
+    return -1;
+  }
+}
+
+static PyMethodDef __pyx_methods_14unireedsolomon_11cpolynomial_Polynomial[] = {
+  {"mul_at", (PyCFunction)__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_13mul_at, METH_VARARGS|METH_KEYWORDS, __pyx_doc_14unireedsolomon_11cpolynomial_10Polynomial_12mul_at},
+  {"scale", (PyCFunction)__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_15scale, METH_O, __pyx_doc_14unireedsolomon_11cpolynomial_10Polynomial_14scale},
+  {"_fastfloordiv", (PyCFunction)__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_21_fastfloordiv, METH_O, 0},
+  {"_fastmod", (PyCFunction)__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_23_fastmod, METH_O, 0},
+  {"_gffastfloordiv", (PyCFunction)__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_25_gffastfloordiv, METH_O, 0},
+  {"_gffastmod", (PyCFunction)__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_27_gffastmod, METH_O, 0},
+  {"_fastdivmod", (PyCFunction)__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_29_fastdivmod, METH_O, __pyx_doc_14unireedsolomon_11cpolynomial_10Polynomial_28_fastdivmod},
+  {"_gffastdivmod", (PyCFunction)__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_31_gffastdivmod, METH_O, __pyx_doc_14unireedsolomon_11cpolynomial_10Polynomial_30_gffastdivmod},
+  {"evaluate", (PyCFunction)__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_43evaluate, METH_O, __pyx_doc_14unireedsolomon_11cpolynomial_10Polynomial_42evaluate},
+  {"evaluate_array", (PyCFunction)__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_45evaluate_array, METH_O, __pyx_doc_14unireedsolomon_11cpolynomial_10Polynomial_44evaluate_array},
+  {"derive", (PyCFunction)__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_47derive, METH_NOARGS, __pyx_doc_14unireedsolomon_11cpolynomial_10Polynomial_46derive},
+  {"get_coefficient", (PyCFunction)__pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_49get_coefficient, METH_O, __pyx_doc_14unireedsolomon_11cpolynomial_10Polynomial_48get_coefficient},
   {0, 0, 0, 0}
 };
 
-static struct PyGetSetDef __pyx_getsets_11cpolynomial_Polynomial[] = {
-  {(char *)"coefficients", __pyx_getprop_11cpolynomial_10Polynomial_coefficients, __pyx_setprop_11cpolynomial_10Polynomial_coefficients, 0, 0},
-  {(char *)"degree", __pyx_getprop_11cpolynomial_10Polynomial_degree, __pyx_setprop_11cpolynomial_10Polynomial_degree, 0, 0},
-  {(char *)"length", __pyx_getprop_11cpolynomial_10Polynomial_length, __pyx_setprop_11cpolynomial_10Polynomial_length, 0, 0},
+static struct PyGetSetDef __pyx_getsets_14unireedsolomon_11cpolynomial_Polynomial[] = {
+  {(char *)"coefficients", __pyx_getprop_14unireedsolomon_11cpolynomial_10Polynomial_coefficients, __pyx_setprop_14unireedsolomon_11cpolynomial_10Polynomial_coefficients, 0, 0},
+  {(char *)"degree", __pyx_getprop_14unireedsolomon_11cpolynomial_10Polynomial_degree, __pyx_setprop_14unireedsolomon_11cpolynomial_10Polynomial_degree, 0, 0},
+  {(char *)"length", __pyx_getprop_14unireedsolomon_11cpolynomial_10Polynomial_length, __pyx_setprop_14unireedsolomon_11cpolynomial_10Polynomial_length, 0, 0},
   {0, 0, 0, 0, 0}
 };
 
 static PyNumberMethods __pyx_tp_as_number_Polynomial = {
-  __pyx_pw_11cpolynomial_10Polynomial_5__add__, /*nb_add*/
-  __pyx_pw_11cpolynomial_10Polynomial_9__sub__, /*nb_subtract*/
-  __pyx_pw_11cpolynomial_10Polynomial_11__mul__, /*nb_multiply*/
+  __pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_5__add__, /*nb_add*/
+  __pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_9__sub__, /*nb_subtract*/
+  __pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_11__mul__, /*nb_multiply*/
   #if PY_MAJOR_VERSION < 3 || CYTHON_COMPILING_IN_PYPY
   0, /*nb_divide*/
   #endif
-  __pyx_pw_11cpolynomial_10Polynomial_19__mod__, /*nb_remainder*/
-  __pyx_pw_11cpolynomial_10Polynomial_33__divmod__, /*nb_divmod*/
+  __pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_19__mod__, /*nb_remainder*/
+  __pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_33__divmod__, /*nb_divmod*/
   0, /*nb_power*/
-  __pyx_pw_11cpolynomial_10Polynomial_7__neg__, /*nb_negative*/
+  __pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_7__neg__, /*nb_negative*/
   0, /*nb_positive*/
   0, /*nb_absolute*/
   0, /*nb_nonzero*/
@@ -7868,7 +7868,7 @@ static PyNumberMethods __pyx_tp_as_number_Polynomial = {
   0, /*nb_inplace_and*/
   0, /*nb_inplace_xor*/
   0, /*nb_inplace_or*/
-  __pyx_pw_11cpolynomial_10Polynomial_17__floordiv__, /*nb_floor_divide*/
+  __pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_17__floordiv__, /*nb_floor_divide*/
   0, /*nb_true_divide*/
   0, /*nb_inplace_floor_divide*/
   0, /*nb_inplace_true_divide*/
@@ -7882,10 +7882,10 @@ static PyNumberMethods __pyx_tp_as_number_Polynomial = {
 };
 
 static PySequenceMethods __pyx_tp_as_sequence_Polynomial = {
-  __pyx_pw_11cpolynomial_10Polynomial_3__len__, /*sq_length*/
+  __pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_3__len__, /*sq_length*/
   0, /*sq_concat*/
   0, /*sq_repeat*/
-  __pyx_sq_item_11cpolynomial_Polynomial, /*sq_item*/
+  __pyx_sq_item_14unireedsolomon_11cpolynomial_Polynomial, /*sq_item*/
   0, /*sq_slice*/
   0, /*sq_ass_item*/
   0, /*sq_ass_slice*/
@@ -7895,17 +7895,17 @@ static PySequenceMethods __pyx_tp_as_sequence_Polynomial = {
 };
 
 static PyMappingMethods __pyx_tp_as_mapping_Polynomial = {
-  __pyx_pw_11cpolynomial_10Polynomial_3__len__, /*mp_length*/
-  __pyx_pw_11cpolynomial_10Polynomial_53__getitem__, /*mp_subscript*/
-  __pyx_mp_ass_subscript_11cpolynomial_Polynomial, /*mp_ass_subscript*/
+  __pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_3__len__, /*mp_length*/
+  __pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_53__getitem__, /*mp_subscript*/
+  __pyx_mp_ass_subscript_14unireedsolomon_11cpolynomial_Polynomial, /*mp_ass_subscript*/
 };
 
-static PyTypeObject __pyx_type_11cpolynomial_Polynomial = {
+static PyTypeObject __pyx_type_14unireedsolomon_11cpolynomial_Polynomial = {
   PyVarObject_HEAD_INIT(0, 0)
-  "cpolynomial.Polynomial", /*tp_name*/
-  sizeof(struct __pyx_obj_11cpolynomial_Polynomial), /*tp_basicsize*/
+  "unireedsolomon.cpolynomial.Polynomial", /*tp_name*/
+  sizeof(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial), /*tp_basicsize*/
   0, /*tp_itemsize*/
-  __pyx_tp_dealloc_11cpolynomial_Polynomial, /*tp_dealloc*/
+  __pyx_tp_dealloc_14unireedsolomon_11cpolynomial_Polynomial, /*tp_dealloc*/
   0, /*tp_print*/
   0, /*tp_getattr*/
   0, /*tp_setattr*/
@@ -7914,27 +7914,27 @@ static PyTypeObject __pyx_type_11cpolynomial_Polynomial = {
   #else
   0, /*reserved*/
   #endif
-  __pyx_pw_11cpolynomial_10Polynomial_39__repr__, /*tp_repr*/
+  __pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_39__repr__, /*tp_repr*/
   &__pyx_tp_as_number_Polynomial, /*tp_as_number*/
   &__pyx_tp_as_sequence_Polynomial, /*tp_as_sequence*/
   &__pyx_tp_as_mapping_Polynomial, /*tp_as_mapping*/
-  __pyx_pw_11cpolynomial_10Polynomial_37__hash__, /*tp_hash*/
+  __pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_37__hash__, /*tp_hash*/
   0, /*tp_call*/
-  __pyx_pw_11cpolynomial_10Polynomial_41__str__, /*tp_str*/
+  __pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_41__str__, /*tp_str*/
   0, /*tp_getattro*/
   0, /*tp_setattro*/
   0, /*tp_as_buffer*/
   Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
   "Completely general polynomial class.\n\n    Polynomial objects are mutable.\n\n    Implementation note: while this class is mostly agnostic to the type of\n    coefficients used (as long as they support the usual mathematical\n    operations), the Polynomial class still assumes the additive identity and\n    multiplicative identity are 0 and 1 respectively. If you're doing math over\n    some strange field or using non-numbers as coefficients, this class will\n    need to be modified.", /*tp_doc*/
-  __pyx_tp_traverse_11cpolynomial_Polynomial, /*tp_traverse*/
-  __pyx_tp_clear_11cpolynomial_Polynomial, /*tp_clear*/
-  __pyx_pw_11cpolynomial_10Polynomial_35__richcmp__, /*tp_richcompare*/
+  __pyx_tp_traverse_14unireedsolomon_11cpolynomial_Polynomial, /*tp_traverse*/
+  __pyx_tp_clear_14unireedsolomon_11cpolynomial_Polynomial, /*tp_clear*/
+  __pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_35__richcmp__, /*tp_richcompare*/
   0, /*tp_weaklistoffset*/
-  __pyx_pw_11cpolynomial_10Polynomial_51__iter__, /*tp_iter*/
+  __pyx_pw_14unireedsolomon_11cpolynomial_10Polynomial_51__iter__, /*tp_iter*/
   0, /*tp_iternext*/
-  __pyx_methods_11cpolynomial_Polynomial, /*tp_methods*/
+  __pyx_methods_14unireedsolomon_11cpolynomial_Polynomial, /*tp_methods*/
   0, /*tp_members*/
-  __pyx_getsets_11cpolynomial_Polynomial, /*tp_getset*/
+  __pyx_getsets_14unireedsolomon_11cpolynomial_Polynomial, /*tp_getset*/
   0, /*tp_base*/
   0, /*tp_dict*/
   0, /*tp_descr_get*/
@@ -7942,7 +7942,7 @@ static PyTypeObject __pyx_type_11cpolynomial_Polynomial = {
   0, /*tp_dictoffset*/
   0, /*tp_init*/
   0, /*tp_alloc*/
-  __pyx_tp_new_11cpolynomial_Polynomial, /*tp_new*/
+  __pyx_tp_new_14unireedsolomon_11cpolynomial_Polynomial, /*tp_new*/
   0, /*tp_free*/
   0, /*tp_is_gc*/
   0, /*tp_bases*/
@@ -8040,7 +8040,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "cpolynomial.pyx":53
+  /* "unireedsolomon\cpolynomial.pyx":53
  *         '''
  *         if coefficients is not None and sparse:
  *             raise TypeError("Specify coefficients list /or/ keyword terms, not"             # <<<<<<<<<<<<<<
@@ -8051,7 +8051,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
 
-  /* "cpolynomial.pyx":72
+  /* "unireedsolomon\cpolynomial.pyx":72
  *             # Not catching possible exceptions from the following line, let
  *             # them bubble up.
  *             highest = int(powers[0][1:])             # <<<<<<<<<<<<<<
@@ -8062,7 +8062,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_slice__2);
   __Pyx_GIVEREF(__pyx_slice__2);
 
-  /* "cpolynomial.pyx":76
+  /* "unireedsolomon\cpolynomial.pyx":76
  * 
  *             for power, coeff in sparse.items():
  *                 power = int(power[1:])             # <<<<<<<<<<<<<<
@@ -8073,7 +8073,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_slice__3);
   __Pyx_GIVEREF(__pyx_slice__3);
 
-  /* "cpolynomial.pyx":324
+  /* "unireedsolomon\cpolynomial.pyx":324
  *             else:
  *                 buf.write("%s" % c)
  *             buf.write(" + ")             # <<<<<<<<<<<<<<
@@ -8084,7 +8084,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__6);
   __Pyx_GIVEREF(__pyx_tuple__6);
 
-  /* "cpolynomial.pyx":325
+  /* "unireedsolomon\cpolynomial.pyx":325
  *                 buf.write("%s" % c)
  *             buf.write(" + ")
  *         return buf.getvalue()[:-3]             # <<<<<<<<<<<<<<
@@ -8174,14 +8174,14 @@ PyMODINIT_FUNC PyInit_cpolynomial(void)
   #if PY_MAJOR_VERSION < 3 && (__PYX_DEFAULT_STRING_ENCODING_IS_ASCII || __PYX_DEFAULT_STRING_ENCODING_IS_DEFAULT)
   if (__Pyx_init_sys_getdefaultencoding_params() < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   #endif
-  if (__pyx_module_is_main_cpolynomial) {
+  if (__pyx_module_is_main_unireedsolomon__cpolynomial) {
     if (PyObject_SetAttrString(__pyx_m, "__name__", __pyx_n_s_main) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
   }
   #if PY_MAJOR_VERSION >= 3
   {
     PyObject *modules = PyImport_GetModuleDict(); if (unlikely(!modules)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    if (!PyDict_GetItemString(modules, "cpolynomial")) {
-      if (unlikely(PyDict_SetItemString(modules, "cpolynomial", __pyx_m) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (!PyDict_GetItemString(modules, "unireedsolomon.cpolynomial")) {
+      if (unlikely(PyDict_SetItemString(modules, "unireedsolomon.cpolynomial", __pyx_m) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
   }
   #endif
@@ -8193,73 +8193,73 @@ PyMODINIT_FUNC PyInit_cpolynomial(void)
   /*--- Variable export code ---*/
   /*--- Function export code ---*/
   /*--- Type init code ---*/
-  __pyx_vtabptr_11cpolynomial_Polynomial = &__pyx_vtable_11cpolynomial_Polynomial;
-  __pyx_vtable_11cpolynomial_Polynomial.mul_at = (PyObject *(*)(struct __pyx_obj_11cpolynomial_Polynomial *, struct __pyx_obj_11cpolynomial_Polynomial *, int, int __pyx_skip_dispatch))__pyx_f_11cpolynomial_10Polynomial_mul_at;
-  __pyx_vtable_11cpolynomial_Polynomial.scale = (struct __pyx_obj_11cpolynomial_Polynomial *(*)(struct __pyx_obj_11cpolynomial_Polynomial *, int, int __pyx_skip_dispatch))__pyx_f_11cpolynomial_10Polynomial_scale;
-  __pyx_vtable_11cpolynomial_Polynomial._fastfloordiv = (struct __pyx_obj_11cpolynomial_Polynomial *(*)(struct __pyx_obj_11cpolynomial_Polynomial *, struct __pyx_obj_11cpolynomial_Polynomial *, int __pyx_skip_dispatch))__pyx_f_11cpolynomial_10Polynomial__fastfloordiv;
-  __pyx_vtable_11cpolynomial_Polynomial._fastmod = (struct __pyx_obj_11cpolynomial_Polynomial *(*)(struct __pyx_obj_11cpolynomial_Polynomial *, struct __pyx_obj_11cpolynomial_Polynomial *, int __pyx_skip_dispatch))__pyx_f_11cpolynomial_10Polynomial__fastmod;
-  __pyx_vtable_11cpolynomial_Polynomial._gffastfloordiv = (struct __pyx_obj_11cpolynomial_Polynomial *(*)(struct __pyx_obj_11cpolynomial_Polynomial *, struct __pyx_obj_11cpolynomial_Polynomial *, int __pyx_skip_dispatch))__pyx_f_11cpolynomial_10Polynomial__gffastfloordiv;
-  __pyx_vtable_11cpolynomial_Polynomial._gffastmod = (struct __pyx_obj_11cpolynomial_Polynomial *(*)(struct __pyx_obj_11cpolynomial_Polynomial *, struct __pyx_obj_11cpolynomial_Polynomial *, int __pyx_skip_dispatch))__pyx_f_11cpolynomial_10Polynomial__gffastmod;
-  __pyx_vtable_11cpolynomial_Polynomial._fastdivmod = (PyObject *(*)(struct __pyx_obj_11cpolynomial_Polynomial *, struct __pyx_obj_11cpolynomial_Polynomial *, int __pyx_skip_dispatch))__pyx_f_11cpolynomial_10Polynomial__fastdivmod;
-  __pyx_vtable_11cpolynomial_Polynomial._gffastdivmod = (PyObject *(*)(struct __pyx_obj_11cpolynomial_Polynomial *, struct __pyx_obj_11cpolynomial_Polynomial *, int __pyx_skip_dispatch))__pyx_f_11cpolynomial_10Polynomial__gffastdivmod;
-  __pyx_vtable_11cpolynomial_Polynomial.evaluate = (PyObject *(*)(struct __pyx_obj_11cpolynomial_Polynomial *, int, int __pyx_skip_dispatch))__pyx_f_11cpolynomial_10Polynomial_evaluate;
-  __pyx_vtable_11cpolynomial_Polynomial.evaluate_array = (PyObject *(*)(struct __pyx_obj_11cpolynomial_Polynomial *, int, int __pyx_skip_dispatch))__pyx_f_11cpolynomial_10Polynomial_evaluate_array;
-  __pyx_vtable_11cpolynomial_Polynomial.derive = (struct __pyx_obj_11cpolynomial_Polynomial *(*)(struct __pyx_obj_11cpolynomial_Polynomial *, int __pyx_skip_dispatch))__pyx_f_11cpolynomial_10Polynomial_derive;
-  __pyx_vtable_11cpolynomial_Polynomial.get_coefficient = (int (*)(struct __pyx_obj_11cpolynomial_Polynomial *, int, int __pyx_skip_dispatch))__pyx_f_11cpolynomial_10Polynomial_get_coefficient;
-  if (PyType_Ready(&__pyx_type_11cpolynomial_Polynomial) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 15; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_type_11cpolynomial_Polynomial.tp_print = 0;
+  __pyx_vtabptr_14unireedsolomon_11cpolynomial_Polynomial = &__pyx_vtable_14unireedsolomon_11cpolynomial_Polynomial;
+  __pyx_vtable_14unireedsolomon_11cpolynomial_Polynomial.mul_at = (PyObject *(*)(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *, int, int __pyx_skip_dispatch))__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial_mul_at;
+  __pyx_vtable_14unireedsolomon_11cpolynomial_Polynomial.scale = (struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *(*)(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *, int, int __pyx_skip_dispatch))__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial_scale;
+  __pyx_vtable_14unireedsolomon_11cpolynomial_Polynomial._fastfloordiv = (struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *(*)(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *, int __pyx_skip_dispatch))__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial__fastfloordiv;
+  __pyx_vtable_14unireedsolomon_11cpolynomial_Polynomial._fastmod = (struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *(*)(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *, int __pyx_skip_dispatch))__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial__fastmod;
+  __pyx_vtable_14unireedsolomon_11cpolynomial_Polynomial._gffastfloordiv = (struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *(*)(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *, int __pyx_skip_dispatch))__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial__gffastfloordiv;
+  __pyx_vtable_14unireedsolomon_11cpolynomial_Polynomial._gffastmod = (struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *(*)(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *, int __pyx_skip_dispatch))__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial__gffastmod;
+  __pyx_vtable_14unireedsolomon_11cpolynomial_Polynomial._fastdivmod = (PyObject *(*)(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *, int __pyx_skip_dispatch))__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial__fastdivmod;
+  __pyx_vtable_14unireedsolomon_11cpolynomial_Polynomial._gffastdivmod = (PyObject *(*)(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *, struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *, int __pyx_skip_dispatch))__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial__gffastdivmod;
+  __pyx_vtable_14unireedsolomon_11cpolynomial_Polynomial.evaluate = (PyObject *(*)(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *, int, int __pyx_skip_dispatch))__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial_evaluate;
+  __pyx_vtable_14unireedsolomon_11cpolynomial_Polynomial.evaluate_array = (PyObject *(*)(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *, int, int __pyx_skip_dispatch))__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial_evaluate_array;
+  __pyx_vtable_14unireedsolomon_11cpolynomial_Polynomial.derive = (struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *(*)(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *, int __pyx_skip_dispatch))__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial_derive;
+  __pyx_vtable_14unireedsolomon_11cpolynomial_Polynomial.get_coefficient = (int (*)(struct __pyx_obj_14unireedsolomon_11cpolynomial_Polynomial *, int, int __pyx_skip_dispatch))__pyx_f_14unireedsolomon_11cpolynomial_10Polynomial_get_coefficient;
+  if (PyType_Ready(&__pyx_type_14unireedsolomon_11cpolynomial_Polynomial) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 15; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_type_14unireedsolomon_11cpolynomial_Polynomial.tp_print = 0;
   #if CYTHON_COMPILING_IN_CPYTHON
   {
-    PyObject *wrapper = PyObject_GetAttrString((PyObject *)&__pyx_type_11cpolynomial_Polynomial, "__len__"); if (unlikely(!wrapper)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 15; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    PyObject *wrapper = PyObject_GetAttrString((PyObject *)&__pyx_type_14unireedsolomon_11cpolynomial_Polynomial, "__len__"); if (unlikely(!wrapper)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 15; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     if (Py_TYPE(wrapper) == &PyWrapperDescr_Type) {
-      __pyx_wrapperbase_11cpolynomial_10Polynomial_2__len__ = *((PyWrapperDescrObject *)wrapper)->d_base;
-      __pyx_wrapperbase_11cpolynomial_10Polynomial_2__len__.doc = __pyx_doc_11cpolynomial_10Polynomial_2__len__;
-      ((PyWrapperDescrObject *)wrapper)->d_base = &__pyx_wrapperbase_11cpolynomial_10Polynomial_2__len__;
+      __pyx_wrapperbase_14unireedsolomon_11cpolynomial_10Polynomial_2__len__ = *((PyWrapperDescrObject *)wrapper)->d_base;
+      __pyx_wrapperbase_14unireedsolomon_11cpolynomial_10Polynomial_2__len__.doc = __pyx_doc_14unireedsolomon_11cpolynomial_10Polynomial_2__len__;
+      ((PyWrapperDescrObject *)wrapper)->d_base = &__pyx_wrapperbase_14unireedsolomon_11cpolynomial_10Polynomial_2__len__;
     }
   }
   #endif
   #if CYTHON_COMPILING_IN_CPYTHON
   {
-    PyObject *wrapper = PyObject_GetAttrString((PyObject *)&__pyx_type_11cpolynomial_Polynomial, "__mul__"); if (unlikely(!wrapper)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 15; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    PyObject *wrapper = PyObject_GetAttrString((PyObject *)&__pyx_type_14unireedsolomon_11cpolynomial_Polynomial, "__mul__"); if (unlikely(!wrapper)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 15; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     if (Py_TYPE(wrapper) == &PyWrapperDescr_Type) {
-      __pyx_wrapperbase_11cpolynomial_10Polynomial_10__mul__ = *((PyWrapperDescrObject *)wrapper)->d_base;
-      __pyx_wrapperbase_11cpolynomial_10Polynomial_10__mul__.doc = __pyx_doc_11cpolynomial_10Polynomial_10__mul__;
-      ((PyWrapperDescrObject *)wrapper)->d_base = &__pyx_wrapperbase_11cpolynomial_10Polynomial_10__mul__;
+      __pyx_wrapperbase_14unireedsolomon_11cpolynomial_10Polynomial_10__mul__ = *((PyWrapperDescrObject *)wrapper)->d_base;
+      __pyx_wrapperbase_14unireedsolomon_11cpolynomial_10Polynomial_10__mul__.doc = __pyx_doc_14unireedsolomon_11cpolynomial_10Polynomial_10__mul__;
+      ((PyWrapperDescrObject *)wrapper)->d_base = &__pyx_wrapperbase_14unireedsolomon_11cpolynomial_10Polynomial_10__mul__;
     }
   }
   #endif
   #if CYTHON_COMPILING_IN_CPYTHON
   {
-    PyObject *wrapper = PyObject_GetAttrString((PyObject *)&__pyx_type_11cpolynomial_Polynomial, "__divmod__"); if (unlikely(!wrapper)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 15; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    PyObject *wrapper = PyObject_GetAttrString((PyObject *)&__pyx_type_14unireedsolomon_11cpolynomial_Polynomial, "__divmod__"); if (unlikely(!wrapper)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 15; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     if (Py_TYPE(wrapper) == &PyWrapperDescr_Type) {
-      __pyx_wrapperbase_11cpolynomial_10Polynomial_32__divmod__ = *((PyWrapperDescrObject *)wrapper)->d_base;
-      __pyx_wrapperbase_11cpolynomial_10Polynomial_32__divmod__.doc = __pyx_doc_11cpolynomial_10Polynomial_32__divmod__;
-      ((PyWrapperDescrObject *)wrapper)->d_base = &__pyx_wrapperbase_11cpolynomial_10Polynomial_32__divmod__;
+      __pyx_wrapperbase_14unireedsolomon_11cpolynomial_10Polynomial_32__divmod__ = *((PyWrapperDescrObject *)wrapper)->d_base;
+      __pyx_wrapperbase_14unireedsolomon_11cpolynomial_10Polynomial_32__divmod__.doc = __pyx_doc_14unireedsolomon_11cpolynomial_10Polynomial_32__divmod__;
+      ((PyWrapperDescrObject *)wrapper)->d_base = &__pyx_wrapperbase_14unireedsolomon_11cpolynomial_10Polynomial_32__divmod__;
     }
   }
   #endif
   #if CYTHON_COMPILING_IN_CPYTHON
   {
-    PyObject *wrapper = PyObject_GetAttrString((PyObject *)&__pyx_type_11cpolynomial_Polynomial, "__setitem__"); if (unlikely(!wrapper)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 15; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    PyObject *wrapper = PyObject_GetAttrString((PyObject *)&__pyx_type_14unireedsolomon_11cpolynomial_Polynomial, "__setitem__"); if (unlikely(!wrapper)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 15; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     if (Py_TYPE(wrapper) == &PyWrapperDescr_Type) {
-      __pyx_wrapperbase_11cpolynomial_10Polynomial_54__setitem__ = *((PyWrapperDescrObject *)wrapper)->d_base;
-      __pyx_wrapperbase_11cpolynomial_10Polynomial_54__setitem__.doc = __pyx_doc_11cpolynomial_10Polynomial_54__setitem__;
-      ((PyWrapperDescrObject *)wrapper)->d_base = &__pyx_wrapperbase_11cpolynomial_10Polynomial_54__setitem__;
+      __pyx_wrapperbase_14unireedsolomon_11cpolynomial_10Polynomial_54__setitem__ = *((PyWrapperDescrObject *)wrapper)->d_base;
+      __pyx_wrapperbase_14unireedsolomon_11cpolynomial_10Polynomial_54__setitem__.doc = __pyx_doc_14unireedsolomon_11cpolynomial_10Polynomial_54__setitem__;
+      ((PyWrapperDescrObject *)wrapper)->d_base = &__pyx_wrapperbase_14unireedsolomon_11cpolynomial_10Polynomial_54__setitem__;
     }
   }
   #endif
-  if (__Pyx_SetVtable(__pyx_type_11cpolynomial_Polynomial.tp_dict, __pyx_vtabptr_11cpolynomial_Polynomial) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 15; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (PyObject_SetAttrString(__pyx_m, "Polynomial", (PyObject *)&__pyx_type_11cpolynomial_Polynomial) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 15; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_ptype_11cpolynomial_Polynomial = &__pyx_type_11cpolynomial_Polynomial;
+  if (__Pyx_SetVtable(__pyx_type_14unireedsolomon_11cpolynomial_Polynomial.tp_dict, __pyx_vtabptr_14unireedsolomon_11cpolynomial_Polynomial) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 15; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyObject_SetAttrString(__pyx_m, "Polynomial", (PyObject *)&__pyx_type_14unireedsolomon_11cpolynomial_Polynomial) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 15; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_ptype_14unireedsolomon_11cpolynomial_Polynomial = &__pyx_type_14unireedsolomon_11cpolynomial_Polynomial;
   /*--- Type import code ---*/
   /*--- Variable import code ---*/
   /*--- Function import code ---*/
   /*--- Execution code ---*/
 
-  /* "cpolynomial.pyx":10
+  /* "unireedsolomon\cpolynomial.pyx":10
  * cimport cython
  * 
- * from _compat import _range, _StringIO             # <<<<<<<<<<<<<<
+ * from ._compat import _range, _StringIO             # <<<<<<<<<<<<<<
  * 
  * @cython.freelist(64) # fast instanciation via freelist pool
  */
@@ -8271,7 +8271,7 @@ PyMODINIT_FUNC PyInit_cpolynomial(void)
   __Pyx_INCREF(__pyx_n_s_StringIO);
   __Pyx_GIVEREF(__pyx_n_s_StringIO);
   PyList_SET_ITEM(__pyx_t_1, 1, __pyx_n_s_StringIO);
-  __pyx_t_2 = __Pyx_Import(__pyx_n_s_compat, __pyx_t_1, -1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 10; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_compat, __pyx_t_1, 1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 10; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_range); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 10; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -8284,7 +8284,7 @@ PyMODINIT_FUNC PyInit_cpolynomial(void)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "cpolynomial.pyx":1
+  /* "unireedsolomon\cpolynomial.pyx":1
  * # -*- coding: utf-8 -*-             # <<<<<<<<<<<<<<
  * 
  * # Copyright (c) 2010 Andrew Brown <brownan@cs.duke.edu, brownan@gmail.com>
@@ -8302,11 +8302,11 @@ PyMODINIT_FUNC PyInit_cpolynomial(void)
   __Pyx_XDECREF(__pyx_t_2);
   if (__pyx_m) {
     if (__pyx_d) {
-      __Pyx_AddTraceback("init cpolynomial", __pyx_clineno, __pyx_lineno, __pyx_filename);
+      __Pyx_AddTraceback("init unireedsolomon.cpolynomial", __pyx_clineno, __pyx_lineno, __pyx_filename);
     }
     Py_DECREF(__pyx_m); __pyx_m = 0;
   } else if (!PyErr_Occurred()) {
-    PyErr_SetString(PyExc_ImportError, "init cpolynomial");
+    PyErr_SetString(PyExc_ImportError, "init unireedsolomon.cpolynomial");
   }
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();

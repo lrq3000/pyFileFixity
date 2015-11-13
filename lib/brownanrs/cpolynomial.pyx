@@ -7,7 +7,7 @@
 import cython
 cimport cython
 
-from _compat import _range, _StringIO
+from ._compat import _range, _StringIO
 
 @cython.freelist(64) # fast instanciation via freelist pool
 @cython.nonecheck(False) # Turn off nonecheck locally for the function

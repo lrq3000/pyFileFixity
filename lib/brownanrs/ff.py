@@ -8,7 +8,7 @@
 # For fast software computation in Finite Fields, see the excellent paper: Huang, Cheng, and Lihao Xu. "Fast software implementation of finite field operations." Washington University in St. Louis, Tech. Rep (2003).
 # to understand the basic mathematical notions behind finite fields, see the excellent tutorial: http://research.swtch.com/field
 
-from _compat import _range
+from ._compat import _range
 
 import array
 
@@ -262,12 +262,12 @@ class GF2int(int):
             i = i+1 # increment to compute the next power of 2
         return " + ".join(["x^%i" % y for y in c[::-1]]) # print a nice binary polynomial
 
-    def multiply(a, b, prim=0x11b, field_charac_full=256):
+    def multiply(a, b, prim=0x11b, field_charac_full=256, carryless=True):
         '''A slow multiply method. This method gives the same results as the
         other __mul__ method but without needing precomputed tables,
         thus it can be used to generate those tables.
 
-        If prim is set to 0, the function produces the result of a standard multiplication of integers (outside of a finite field, ie, no modular reduction and no carry-less operations).
+        If prim is set to 0 and carryless=False, the function produces the result of a standard multiplication of integers (outside of a finite field, ie, no modular reduction and no carry-less operations).
 
         This procedure is called Russian Peasant Multiplication algorithm, which is just a general algorithm to multiply two integers together.
         The only two differences that you need to account for when doing multiplication in a finite field (as opposed to just integers) are:
@@ -279,10 +279,10 @@ class GF2int(int):
         a = int(a)
         b = int(b)
         while b: # while b is not 0
-            if b & 1: r = r ^ a if prim > 0 else r + a # b is odd, then add the corresponding a to r (the sum of all a's corresponding to odd b's will give the final product). Note that since we're in GF(2), the addition is in fact an XOR (very important because in GF(2) the multiplication and additions are carry-less, thus it changes the result!).
+            if b & 1: r = r ^ a if carryless else r + a # b is odd, then add the corresponding a to r (the sum of all a's corresponding to odd b's will give the final product). Note that since we're in GF(2), the addition is in fact an XOR (very important because in GF(2) the multiplication and additions are carry-less, thus it changes the result!).
             b = b >> 1 # equivalent to b // 2
             a = a << 1 # equivalent to a*2
-            if prim > 0 and a & field_charac_full: a = a ^ prim # GF modulo: if a >= 256 then apply modular reduction using the primitive polynomial (we just substract, but since the primitive number can be above 256 then we directly XOR). If you comment this line out, you get the same result as standard multiplication on integers.
+            if prim > 0 and a & field_charac_full: a = a ^ prim # GF modulo: if a >= 256 then apply modular reduction using the primitive polynomial (we just substract, but since the primitive number can be above 256 then we directly XOR).
 
         return GF2int(r)
 
