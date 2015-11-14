@@ -59,7 +59,7 @@ def fullpath(relpath):
         relpath = relpath.name
     return os.path.abspath(os.path.expanduser(relpath))
 
-def path_test_files(type=None, path=None, createdir=False):
+def path_sample_files(type=None, path=None, createdir=False):
     """ Helper function to return the full path to the test files """
     subdir = ''
     if not type:
@@ -97,13 +97,14 @@ def tamper_file(path, pos=0, replace_str=None):
         return False
     return True
 
-def find_next_entry(path, marker="\xFF\xFF\xFF\xFF"):
+def find_next_entry(path, marker="\xFF\xFF\xFF\xFF", initpos=0):
     '''Find the next position of a marker in a file'''
     blocksize = 65535
     start = None # start is the relative position of the marker in the current buffer
     startcursor = None # startcursor is the absolute position of the starting position of the marker in the file
     buf = 1
     with open(path, 'rb') as infile:
+        if initpos > 0: infile.seek(initpos)
         # Enumerate all markers in a generator
         while (buf):
             # Read a long block at once, we will readjust the file cursor after
@@ -118,3 +119,11 @@ def find_next_entry(path, marker="\xFF\xFF\xFF\xFF"):
 def create_dir_if_not_exist(path):
     if not os.path.exists(path):
         os.makedirs(path)
+
+def get_marker(type=1):
+    if type == 1:
+        return "\xFE\xFF\xFE\xFF\xFE\xFF\xFE\xFF\xFE\xFF"
+    elif type == 2:
+        return "\xFA\xFF\xFA\xFF\xFA"
+    else:
+        return ''

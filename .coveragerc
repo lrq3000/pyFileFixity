@@ -2,10 +2,19 @@
 branch = True
 omit =
     tests/*
-    lib/*
     __init__.py
     easy_profiler.py
     ecc_speedtest.py
     filetamper.py
     pycleaner.py
     setup.py
+include = 
+    lib/aux_funcs.py
+    lib/eccman.py
+    lib/hasher.py
+    lib/tee.py
+    _infos.py
+    header_ecc.py
+    repair_ecc.py
+    rfigc.py
+    structural_variable_ecc.py

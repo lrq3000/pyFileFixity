@@ -1006,8 +1006,8 @@ There are a few studies about the most resilient file formats, such as:
    :alt: Image corruption and repair example
 .. |Build Status| image:: https://travis-ci.org/lrq3000/pyFileFixity.svg?branch=master
    :target: https://travis-ci.org/lrq3000/pyFileFixity
-.. |Coverage Status| image:: https://coveralls.io/repos/lrq3000/pyFileFixity/badge.svg
-   :target: https://coveralls.io/r/lrq3000/pyFileFixity
+.. |Coverage Status| image:: https://codecov.io/github/lrq3000/pyFileFixity/coverage.svg?branch=master
+   :target: https://codecov.io/github/lrq3000/pyFileFixity?branch=master
 .. |PyPi Status| image:: https://img.shields.io/pypi/v/pyFileFixity.svg
    :target: https://pypi.python.org/pypi/pyFileFixity
 .. |PyPi Downloads| image:: https://img.shields.io/pypi/dm/pyFileFixity.svg

@@ -9,7 +9,7 @@ import shutil
 
 from .. import rfigc
 from ..lib.aux_funcs import recwalk
-from .aux_tests import check_eq_files, check_eq_dir, path_test_files, tamper_file, create_dir_if_not_exist
+from .aux_tests import check_eq_files, check_eq_dir, path_sample_files, tamper_file, create_dir_if_not_exist
 
 def partial_eq(file, file_partial):
     """ Do a partial comparison, line by line, we compare only using "line2 in line1", where line2 is from file_partial """
@@ -25,15 +25,15 @@ def partial_eq(file, file_partial):
 
 def setup_module():
     """ Initialize the tests by emptying the out directory """
-    outfolder = path_test_files('output')
+    outfolder = path_sample_files('output')
     shutil.rmtree(outfolder, ignore_errors=True)
     create_dir_if_not_exist(outfolder)
 
 def test_one_file():
     """ rfigc: test creation and verification of rfigc database for one file """
-    filein = path_test_files('input', 'tuxsmall.jpg')
-    filedb = path_test_files('output', 'd_file.csv')
-    fileres = path_test_files('results', 'test_rfigc_test_one_file.csv')
+    filein = path_sample_files('input', 'tuxsmall.jpg')
+    filedb = path_sample_files('output', 'd_file.csv')
+    fileres = path_sample_files('results', 'test_rfigc_test_one_file.csv')
     # Generate database file
     assert rfigc.main('-i "%s" -d "%s" -g -f --silent' % (filein, filedb)) == 0
     # Check files are ok
@@ -47,9 +47,9 @@ def test_one_file():
 
 def test_dir():
     """ rfigc: test creation and verification of database for a full directory """
-    filein = path_test_files('input', )
-    filedb = path_test_files('output', 'd_dir.csv')
-    fileres = path_test_files('results', 'test_rfigc_test_dir.csv')
+    filein = path_sample_files('input', )
+    filedb = path_sample_files('output', 'd_dir.csv')
+    fileres = path_sample_files('results', 'test_rfigc_test_dir.csv')
     # Generate database file
     assert rfigc.main('-i "%s" -d "%s" -g -f --silent' % (filein, filedb)) == 0
     # Check files are ok
@@ -62,11 +62,11 @@ def test_dir():
 
 def test_error_file():
     """ rfigc: test tamper file and error file generation """
-    filein = path_test_files('input', 'tuxsmall.jpg')
-    filedb = path_test_files('output', 'd.csv')
-    fileout = path_test_files('output', 'tuxsmall.jpg')
-    fileout2 = path_test_files('output', 'errors.log')
-    fileres = path_test_files('results', 'test_rfigc_test_error_file.log')
+    filein = path_sample_files('input', 'tuxsmall.jpg')
+    filedb = path_sample_files('output', 'd.csv')
+    fileout = path_sample_files('output', 'tuxsmall.jpg')
+    fileout2 = path_sample_files('output', 'errors.log')
+    fileres = path_sample_files('results', 'test_rfigc_test_error_file.log')
     assert rfigc.main('-i "%s" -d "%s" -g -f --silent' % (filein, filedb)) == 0
     shutil.copyfile(filein, fileout)
     tamper_file(fileout, 3)
@@ -75,10 +75,10 @@ def test_error_file():
 
 def test_filescrape():
     """ rfigc: test --filescraping_recovery """
-    filein_dir = path_test_files('input', )
-    filedb = path_test_files('output', 'db_filescrape.csv')
-    fileout_dir = path_test_files('output', 'filescrape')
-    fileout_dir_rec = path_test_files('output', 'filescrape_rec')
+    filein_dir = path_sample_files('input', )
+    filedb = path_sample_files('output', 'db_filescrape.csv')
+    fileout_dir = path_sample_files('output', 'filescrape')
+    fileout_dir_rec = path_sample_files('output', 'filescrape_rec')
     create_dir_if_not_exist(fileout_dir)
     create_dir_if_not_exist(fileout_dir_rec)
     # Simulate a filescrape (copy the files but rename them all)
@@ -94,12 +94,12 @@ def test_filescrape():
 
 def test_update():
     """ rfigc: test --update """
-    filein = path_test_files('input', )
-    filedb = path_test_files('output', 'd_update.csv')
-    fileout_dir = path_test_files('output', 'update')
-    fileout = path_test_files('output', 'update/added_file.txt')
-    fileres1 = path_test_files('results', 'test_rfigc_test_update_append.csv')
-    fileres2 = path_test_files('results', 'test_rfigc_test_update_remove.csv')
+    filein = path_sample_files('input', )
+    filedb = path_sample_files('output', 'd_update.csv')
+    fileout_dir = path_sample_files('output', 'update')
+    fileout = path_sample_files('output', 'update/added_file.txt')
+    fileres1 = path_sample_files('results', 'test_rfigc_test_update_append.csv')
+    fileres2 = path_sample_files('results', 'test_rfigc_test_update_remove.csv')
     # Generate a database from input files
     assert rfigc.main('-i "%s" -d "%s" -g -f --silent' % (filein, filedb)) == 0
     # Create a new file in another folder
