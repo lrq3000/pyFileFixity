@@ -584,6 +584,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
                         # -- Committing the hash/ecc encoding of the file's content
                         db.write(ecc_entry) # commit to the ecc file, and replicate the number of times required
                         # -- External indexes backup: calculate the position of the entrymarker and of each field delimiter, and compute their ecc, and save into the index backup file. This will allow later to retrieve the position of each marker in the ecc file, and repair them if necessary, while just incurring a very cheap storage cost.
+                        # Also, the index backup file is fixed delimited fields sizes, which means that each field has a very specifically delimited size, so that we don't need any marker: we can just compute the total size for each entry, and thus find all entries independently even if one or several are corrupted beyond repair, so that this won't affect other index entries.
                         markers_pos = [entrymarker_pos,
                                                     entrymarker_pos+len(entrymarker)+len(relfilepath),
                                                     entrymarker_pos+len(entrymarker)+len(relfilepath)+len(field_delim)+len(str(filesize)),
@@ -592,8 +593,11 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
                                                     ] # Make the list of all markers positions for this ecc entry. The first and last indexes are the most important (first is the entrymarker, the last is the field_delim just before the ecc track start)
                         markers_pos = [struct.pack('>Q', x) for x in markers_pos] # Convert to a binary representation in 8 bytes using unsigned long long (up to 16 EB, this should be more than sufficient)
                         markers_types = ["1", "2", "2", "2", "2"]
-                        markers_pos_ecc = [ecc_manager_idx.encode(x+y) for x,y in zip(markers_types,markers_pos)] # compute the ecc for each number
-                        dbidx.write(''.join([str(x) for items in zip(markers_types,markers_pos,markers_pos_ecc) for x in items])) # couple each marker's position with its ecc, and write them all consecutively into the index backup file
+                        markers_pos_ecc = [ecc_manager_idx.encode("%s%s" % (x,y)) for x,y in zip(markers_types,markers_pos)] # compute the ecc for each number
+                        # Couple each marker's position with its type and with its ecc, and write them all consecutively into the index backup file
+                        for items in zip(markers_types,markers_pos,markers_pos_ecc):
+                            for item in items:
+                                dbidx.write(str(item))
                 files_done += 1
         ptee.write("All done! Total number of files processed: %i, skipped: %i" % (files_done, files_skipped))
         return 0
