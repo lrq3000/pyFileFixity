@@ -27,7 +27,6 @@
 #  Error Correction Code for Files Headers
 #                by Stephen Larroque
 #                       License: MIT
-#                 Runs on Python 2.7.x
 #              Creation date: 2015-03-12
 #=================================
 #

@@ -27,9 +27,7 @@
 #  Recursive/Relative Files Integrity Generator and Checker
 #                by Stephen Larroque
 #                       License: MIT
-#                 Runs on Python 2.7.6
 #              Creation date: 2015-02-27
-#          Last modification: 2015-03-18
 #=================================
 #
 # TODO:

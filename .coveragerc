@@ -17,4 +17,4 @@ include =
     header_ecc.py
     repair_ecc.py
     rfigc.py
-    structural_variable_ecc.py
+    structural_adaptive_ecc.py

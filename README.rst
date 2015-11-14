@@ -42,6 +42,8 @@ Of course, you can also protect the whole file, not only the header, using pyFil
 Quickstart
 ----------
 
+Runs on Python 2.7.10 and on PyPy (not yet ported to Python 3 but the libraries are already compatible).
+
 - To generate a monitoring database (to later check if files were changed, but no possibility of repairing):
 
 ``python rfigc.py -i "your_folder" -d "dbhash.csv" -g -f -l "log.txt"``

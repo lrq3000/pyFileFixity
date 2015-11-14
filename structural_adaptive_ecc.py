@@ -27,7 +27,6 @@
 #  Structural Adaptive Error Correction Code generator and checker
 #                by Stephen Larroque
 #                       License: MIT
-#                 Runs on Python 2.7.x
 #              Creation date: 2015-03-10
 #=================================
 #
