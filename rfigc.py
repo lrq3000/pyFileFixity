@@ -319,34 +319,35 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
 
         # Precompute the total number of lines to process (this should be fairly quick)
         filestodocount = 0
-        for row in csv.DictReader(open(database, 'rb'), lineterminator='\n', delimiter='|', quotechar='"'):
-            filestodocount = filestodocount + 1
+        with open(database, 'rb') as dbf:
+            for row in csv.DictReader(dbf, lineterminator='\n', delimiter='|', quotechar='"'):
+                filestodocount = filestodocount + 1
 
-        # Preparing CSV writer for the temporary file that will have the lines removed
-        with open(database+'.rem', 'wb') as dbfilerem:
-            csv_writer = csv.writer(dbfilerem, lineterminator='\n', delimiter='|', quotechar='"')
+            # Preparing CSV writer for the temporary file that will have the lines removed
+            with open(database+'.rem', 'wb') as dbfilerem:
+                csv_writer = csv.writer(dbfilerem, lineterminator='\n', delimiter='|', quotechar='"')
 
-            # Printing CSV headers
-            csv_headers = ['path', 'md5', 'sha1', 'last_modification_timestamp', 'last_modification_date', 'size', 'ext']
-            csv_writer.writerow(csv_headers)
+                # Printing CSV headers
+                csv_headers = ['path', 'md5', 'sha1', 'last_modification_timestamp', 'last_modification_date', 'size', 'ext']
+                csv_writer.writerow(csv_headers)
 
-            dbf = open(database, 'rb')
-            dbfile = csv.DictReader(dbf, lineterminator='\n', delimiter='|', quotechar='"') # we need to reopen the file to put the reading cursor (the generator position) back to the beginning
-            delcount = 0
-            filescount = 0
-            for row in tqdm.tqdm(dbfile, file=ptee, total=filestodocount, leave=True):
-                filescount = filescount + 1
-                filepath = os.path.join(rootfolderpath, row['path']) # Build the absolute file path
+                dbf.seek(0)
+                dbfile = csv.DictReader(dbf, lineterminator='\n', delimiter='|', quotechar='"') # we need to reopen the file to put the reading cursor (the generator position) back to the beginning
+                delcount = 0
+                filescount = 0
+                for row in tqdm.tqdm(dbfile, file=ptee, total=filestodocount, leave=True):
+                    filescount = filescount + 1
+                    filepath = os.path.join(rootfolderpath, row['path']) # Build the absolute file path
 
-                if verbose: ptee.write("\n- Processing file %s" % row['path'])
-                errors = []
-                if not os.path.isfile(filepath):
-                    delcount = delcount + 1
-                    ptee.write("\n- File %s is missing, removed from database." % row['path'])
-                else:
-                    csv_writer.writerow( [ path2unix(row['path']), row['md5'], row['sha1'], row['last_modification_timestamp'], row['last_modification_date'], row['size'], row['ext'] ] )
+                    if verbose: ptee.write("\n- Processing file %s" % row['path'])
+                    errors = []
+                    if not os.path.isfile(filepath):
+                        delcount = delcount + 1
+                        ptee.write("\n- File %s is missing, removed from database." % row['path'])
+                    else:
+                        csv_writer.writerow( [ path2unix(row['path']), row['md5'], row['sha1'], row['last_modification_timestamp'], row['last_modification_date'], row['size'], row['ext'] ] )
+
         # REMOVE UPDATE DONE, we remove the old database file and replace it with the new
-        dbf.close()
         os.remove(database) # delete old database
         os.rename(database+'.rem', database) # rename new database to match old name
         # Show some stats
@@ -381,8 +382,9 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
             if (update and append):
                 # Extract all paths already stored in database to avoid readding them
                 db_paths = {}
-                for row in csv.DictReader(open(database, 'rb'), lineterminator='\n', delimiter='|', quotechar='"'):
-                    db_paths[row['path']] = True
+                with open(database, 'rb') as dbf:
+                    for row in csv.DictReader(dbf, lineterminator='\n', delimiter='|', quotechar='"'):
+                        db_paths[row['path']] = True
 
             # Counting the total number of files that we will have to process
             ptee.write("Counting total number of files to process, please wait...")
@@ -513,67 +515,67 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
 
         # Precompute the total number of lines to process (this should be fairly quick)
         filestodocount = 0
-        for row in csv.DictReader(open(database, 'rb'), lineterminator='\n', delimiter='|', quotechar='"'):
-            filestodocount = filestodocount + 1
+        with open(database, 'rb') as dbf:
+            for row in csv.DictReader(dbf, lineterminator='\n', delimiter='|', quotechar='"'):
+                filestodocount = filestodocount + 1
 
-        # Processing the files using the database list
-        ptee.write("Checking for files corruption based on database %s on input path %s, please wait..." % (database, inputpath))
-        dbf = open(database, 'rb')
-        dbfile = csv.DictReader(dbf, lineterminator='\n', delimiter='|', quotechar='"') # we need to reopen the file to put the reading cursor (the generator position) back to the beginning
-        errorscount = 0
-        filescount = 0
-        for row in tqdm.tqdm(dbfile, file=ptee, total=filestodocount, leave=True):
-            filescount = filescount + 1
-            filepath = os.path.join(rootfolderpath, row['path'])
+            # Processing the files using the database list
+            ptee.write("Checking for files corruption based on database %s on input path %s, please wait..." % (database, inputpath))
+            dbf.seek(0)
+            dbfile = csv.DictReader(dbf, lineterminator='\n', delimiter='|', quotechar='"') # we need to reopen the file to put the reading cursor (the generator position) back to the beginning
+            errorscount = 0
+            filescount = 0
+            for row in tqdm.tqdm(dbfile, file=ptee, total=filestodocount, leave=True):
+                filescount = filescount + 1
+                filepath = os.path.join(rootfolderpath, row['path'])
 
-            if verbose: ptee.write("\n- Processing file %s" % row['path'])
-            errors = []
-            if not os.path.isfile(filepath):
-                if not skip_missing: errors.append('file is missing')
-            # First generate the current file's metadata given the filepath from the CSV, and then we will check the differences from database
-            else:
-                try: # Try to be resilient to various file access errors
-                    # Generate hash
-                    if not skip_hash:
-                        md5hash, sha1hash = generate_hashes(filepath)
-                    else:
-                        md5hash = sha1hash = 0
-                    # Check structure integrity if enabled
-                    if structure_check:
-                        struct_result = check_structure(filepath)
-                        if struct_result:
-                            errors.append("structure error (%s)" % struct_result)
-                    # Compute other metadata
-                    with open(filepath) as thisfile:
-                        ext = os.path.splitext(filepath)[1]
-                        statinfos = os.stat(filepath)
-                        size = statinfos.st_size
-                        lastmodif = statinfos.st_mtime
-                        lastmodif_readable = datetime.datetime.fromtimestamp(lastmodif).strftime("%Y-%m-%d %H:%M:%S")
+                if verbose: ptee.write("\n- Processing file %s" % row['path'])
+                errors = []
+                if not os.path.isfile(filepath):
+                    if not skip_missing: errors.append('file is missing')
+                # First generate the current file's metadata given the filepath from the CSV, and then we will check the differences from database
+                else:
+                    try: # Try to be resilient to various file access errors
+                        # Generate hash
+                        if not skip_hash:
+                            md5hash, sha1hash = generate_hashes(filepath)
+                        else:
+                            md5hash = sha1hash = 0
+                        # Check structure integrity if enabled
+                        if structure_check:
+                            struct_result = check_structure(filepath)
+                            if struct_result:
+                                errors.append("structure error (%s)" % struct_result)
+                        # Compute other metadata
+                        with open(filepath) as thisfile:
+                            ext = os.path.splitext(filepath)[1]
+                            statinfos = os.stat(filepath)
+                            size = statinfos.st_size
+                            lastmodif = statinfos.st_mtime
+                            lastmodif_readable = datetime.datetime.fromtimestamp(lastmodif).strftime("%Y-%m-%d %H:%M:%S")
 
-                        # CHECK THE DIFFERENCES
-                        if not skip_hash and md5hash != row['md5'] and sha1hash != row['sha1']:
-                            errors.append('both md5 and sha1 hash failed')
-                        elif not skip_hash and ((md5hash == row['md5'] and sha1hash != row['sha1']) or (md5hash != row['md5'] and sha1hash == row['sha1'])):
-                            errors.append('one of the hash failed but not the other (which may indicate that the database file is corrupted)')
-                        if ext != row['ext']:
-                            errors.append('extension has changed')
-                        if size != int(row['size']):
-                            errors.append("size has changed (before: %s - now: %s)" % (row['size'], size))
-                        if not disable_modification_date_checking and (lastmodif != float(row['last_modification_timestamp']) and round(lastmodif,0) != round(float(row['last_modification_timestamp']),0)): # for usage with PyPy: last modification time is differently managed (rounded), thus we need to round here manually to compare against PyPy.
-                            errors.append("modification date has changed (before: %s - now: %s)" % (row['last_modification_date'], lastmodif_readable))
-                except IOError as e: # Catch IOError as a file error
-                    errors.append('file can\'t be read, IOError (inaccessible, maybe bad sector?)')
-                except Exception as e: # Any other exception when accessing the file will also be caught as a file error
-                    errors.append('file can\'t be accessed: %s' % e)
-            # Print/Log all errors for this file if any happened
-            if errors:
-                errorscount = errorscount + 1
-                ptee.write("\n- Error for file %s: %s." % (row['path'], ', '.join(errors)))
-                if errors_file is not None: # Write error in a csv file if supplied (for easy processing later by other softwares such as file repair softwares)
-                    e_writer.writerow( [row['path'], ', '.join(errors)] )
+                            # CHECK THE DIFFERENCES
+                            if not skip_hash and md5hash != row['md5'] and sha1hash != row['sha1']:
+                                errors.append('both md5 and sha1 hash failed')
+                            elif not skip_hash and ((md5hash == row['md5'] and sha1hash != row['sha1']) or (md5hash != row['md5'] and sha1hash == row['sha1'])):
+                                errors.append('one of the hash failed but not the other (which may indicate that the database file is corrupted)')
+                            if ext != row['ext']:
+                                errors.append('extension has changed')
+                            if size != int(row['size']):
+                                errors.append("size has changed (before: %s - now: %s)" % (row['size'], size))
+                            if not disable_modification_date_checking and (lastmodif != float(row['last_modification_timestamp']) and round(lastmodif,0) != round(float(row['last_modification_timestamp']),0)): # for usage with PyPy: last modification time is differently managed (rounded), thus we need to round here manually to compare against PyPy.
+                                errors.append("modification date has changed (before: %s - now: %s)" % (row['last_modification_date'], lastmodif_readable))
+                    except IOError as e: # Catch IOError as a file error
+                        errors.append('file can\'t be read, IOError (inaccessible, maybe bad sector?)')
+                    except Exception as e: # Any other exception when accessing the file will also be caught as a file error
+                        errors.append('file can\'t be accessed: %s' % e)
+                # Print/Log all errors for this file if any happened
+                if errors:
+                    errorscount = errorscount + 1
+                    ptee.write("\n- Error for file %s: %s." % (row['path'], ', '.join(errors)))
+                    if errors_file is not None: # Write error in a csv file if supplied (for easy processing later by other softwares such as file repair softwares)
+                        e_writer.writerow( [row['path'], ', '.join(errors)] )
         # END OF CHECKING: show some stats
-        dbf.close()
         ptee.write("----------------------------------------------------")
         ptee.write("All files checked: Total: %i - Files with errors: %i.\n\n" % (filescount, errorscount))
         retval = (errorscount > 0)

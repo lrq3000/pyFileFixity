@@ -4,6 +4,7 @@ import itertools
 import hashlib
 
 import sys
+import os
 
 import shutil
 
@@ -19,11 +20,13 @@ def get_db_idx():
 
 def restore_db():
     filedb, filedb_bak = get_db()
+    os.remove(filedb)
     shutil.copyfile(filedb_bak, filedb)
     return 0
 
 def restore_db_idx():
     filedb_idx, filedb_idx_bak = get_db_idx()
+    os.remove(filedb_idx)
     shutil.copyfile(filedb_idx_bak, filedb_idx)
     return 0
 
@@ -42,10 +45,14 @@ def setup_module():
 
 def test_check():
     """ recc: check db and index files are the same as expected """
+    # this also helps to check that restore_db() and restore_db_idx() are working correctly since they are critical for other tests
     filedb, filedb_bak = get_db()
     filedb_idx, filedb_idx_bak = get_db_idx()
     fileres = path_sample_files('results', 'test_repair_ecc_check.db')
     fileres_idx = path_sample_files('results', 'test_repair_ecc_check.db.idx')
+    # Recopy the original untampered files
+    restore_db()
+    restore_db_idx()
     # Check that generated files are correct
     startpos1 = find_next_entry(filedb, get_marker(type=1)).next() # need to skip the comments, so we detect where the first entrymarker begins
     startpos2 = find_next_entry(fileres, get_marker(type=1)).next()
