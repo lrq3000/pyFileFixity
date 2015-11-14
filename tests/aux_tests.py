@@ -59,23 +59,28 @@ def fullpath(relpath):
         relpath = relpath.name
     return os.path.abspath(os.path.expanduser(relpath))
 
-def path_input(path=None):
-    if path:
-        return fullpath(os.path.join('tests', 'files', path))
-    else:
-        return fullpath(os.path.join('tests', 'files'))
+def path_test_files(type=None, path=None, createdir=False):
+    """ Helper function to return the full path to the test files """
+    subdir = ''
+    if not type:
+        return ''
+    elif type == 'input':
+        subdir = 'files'
+    elif type == 'results':
+        subdir = 'results'
+    elif type == 'output':
+        subdir = 'out'
 
-def path_results(path=None):
+    dirpath = ''
     if path:
-        return fullpath(os.path.join('tests', 'results', path))
+        dirpath = fullpath(os.path.join('tests', subdir, path))
     else:
-        return fullpath(os.path.join('tests', 'results'))
+        dirpath = fullpath(os.path.join('tests', subdir))
 
-def path_output(path=None):
-    if path:
-        return fullpath(os.path.join('tests', 'out', path))
-    else:
-        return fullpath(os.path.join('tests', 'out'))
+    if createdir:
+        create_dir_if_not_exist(dirpath)
+
+    return dirpath
 
 def tamper_file(path, pos=0, replace_str=None):
     """Tamper a file at the given position and using the given string"""
