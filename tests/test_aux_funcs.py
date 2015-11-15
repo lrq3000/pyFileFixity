@@ -51,8 +51,7 @@ def test_sizeof_fmt():
 
 def test_path2unix():
     """ aux: test path2unix """
-    print(auxf.path2unix(r'test\some\folder\file.ext'))
-    assert auxf.path2unix(r'test\some\folder\file.ext') == r'test/some/folder/file.ext'
+    assert auxf.path2unix(r'test\some\folder\file.ext', True) == r'test/some/folder/file.ext'
     assert auxf.path2unix(r'test/some/folder/file.ext') == r'test/some/folder/file.ext'
 
 def test_is_file():

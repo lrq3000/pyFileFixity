@@ -6,7 +6,7 @@
 
 import os
 import argparse
-from pathlib2 import PurePath # opposite operation of os.path.join (split a path into parts)
+from pathlib2 import PurePath, PureWindowsPath, PurePosixPath # opposite operation of os.path.join (split a path into parts)
 import posixpath # to generate unix paths
 
 try:
@@ -68,10 +68,13 @@ def sizeof_fmt(num, suffix='B', mod=1024.0):
         num /= mod
     return "%.1f%s%s" % (num, 'Y', suffix)
 
-def path2unix(path):
-    '''From a path given in any format, converts to posix path format'''
-    print list(PurePath(path).parts)
-    return posixpath.join(*list(PurePath(path).parts))
+def path2unix(path, fromwinpath=False):
+    '''From a path given in any format, converts to posix path format
+    fromwinpath=True forces the input path to be recognized as a Windows path (useful on Unix machines to unit test Windows paths)'''
+    if fromwinpath:
+        return posixpath.join(*list(PureWindowsPath(path).parts))
+    else:
+        return posixpath.join(*list(PurePath(path).parts))
 
 def get_next_entry(file, entrymarker="\xFE\xFF\xFE\xFF\xFE\xFF\xFE\xFF\xFE\xFF", only_coord=True, blocksize=65535):
     '''Find or real the next ecc entry in a given ecc file.
