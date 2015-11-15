@@ -3,6 +3,7 @@
 from __future__ import with_statement
 
 import os
+import shutil
 
 def check_eq_files(path1, path2, blocksize=65535, startpos1=0, startpos2=0):
     """ Return True if both files are identical, False otherwise """
@@ -128,6 +129,17 @@ def create_dir_if_not_exist(path):
     """Create a directory if it does not already exist, else nothing is done and no error is return"""
     if not os.path.exists(path):
         os.makedirs(path)
+
+def remove_if_exist(path):
+    """Delete a file or a directory recursively if it exists, else no exception is raised"""
+    if os.path.exists(path):
+        if os.path.isdir(path):
+            shutil.rmtree(path)
+            return True
+        elif os.path.isfile(path):
+            os.remove(path)
+            return True
+    return False
 
 def get_marker(type=1):
     """Helper function to store the usual entry and fields markers in ecc files"""
