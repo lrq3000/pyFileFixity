@@ -6,7 +6,7 @@ from StringIO import StringIO
 import os
 import shutil
 
-from .aux_tests import get_marker, dummy_ecc_file_gen, check_eq_files, check_eq_dir, path_sample_files, tamper_file, find_next_entry, create_dir_if_not_exist
+from .aux_tests import get_marker, dummy_ecc_file_gen, path_sample_files, create_dir_if_not_exist
 
 from ..lib import aux_funcs as auxf
 from ..lib.argparse import ArgumentTypeError
@@ -45,7 +45,7 @@ def test_sizeof_fmt():
     # Test without SI prefix
     assert auxf.sizeof_fmt(1023.0, suffix='B', mod=1024.0) == "1023.0B"
     # Test all possible SI prefixes
-    pows = ['', 'K','M','G','T','P','E','Z']
+    pows = ['', 'K','M','G','T','P','E','Z', 'Y']
     for p in range(1, len(pows)):
         assert auxf.sizeof_fmt(1024.0**p, suffix='B', mod=1024.0) == ("1.0%sB" % pows[p])
 
