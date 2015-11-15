@@ -45,6 +45,8 @@ class Hasher(object):
             self.length = 4
         elif self.algo == "none":
             self.length = 0
+        else:
+            raise NameError('Hashing algorithm %s is unknown!' % algo)
 
     def hash(self, mes):
         # use hashlib.algorithms_guaranteed to list algorithms
@@ -60,6 +62,8 @@ class Hasher(object):
             return hashlib.sha256(mes).hexdigest().encode('base64')[:4]
         elif self.algo == "none":
             return ''
+        else:
+            raise NameError('Hashing algorithm %s is unknown!' % self.algo)
 
     def __len__(self):
         return self.length

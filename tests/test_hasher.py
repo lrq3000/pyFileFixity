@@ -1,5 +1,7 @@
 from __future__ import print_function
 
+from nose.tools import assert_raises
+
 import shutil
 
 from .aux_tests import path_sample_files, create_dir_if_not_exist
@@ -30,3 +32,11 @@ def test_hasher():
         #print(algo+": "+shash) # debug
         assert len(shash) == algo_params[algo][0]
         assert shash == algo_params[algo][1]
+    # Check that unknown algorithms raise an exception
+    with assert_raises(NameError) as cm:
+        h = Hasher("unknown_algo")
+    # Second check of unknown algo raising exception
+    h = Hasher()
+    h.algo = "unknown_algo"
+    with assert_raises(NameError) as cm:
+        print(h.hash("abcdef"))
