@@ -62,7 +62,7 @@ def detect_reedsolomon_parameters(message, mesecc_orig, gen_list=[2, 3, 5], c_ex
     # To compare with the supplied RS code, we compute the Hamming distance, so that even if the RS code is tampered, we can still find the closest set of RS parameters to decode this message.
     # The goal is to provide users a function so that they can use the "hello world" sample string in generated ECC files to recover their RS parameters in case they forget them. But users can use any sample message: for example, if they have an untampered file and its relative ecc track, they can use the ecc track as the mesecc_orig and their original file as the sample message.
 
-    import lib.reedsolomon.reedsolo as reedsolop
+    from .reedsolomon import reedsolo as reedsolop # need to import another time the reedsolo library for detect_reedsolomon_parameters to work (because we need to reinit all the tables, and they are declared module-wide, so this would conflict with decoding)
 
     # Init the variables
     n = len(mesecc_orig)
