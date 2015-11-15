@@ -118,7 +118,7 @@ def generate_hashes(filepath, blocksize=65536):
 #***********************************
 
 # Try to import Gooey for GUI display, but manage exception so that we replace the Gooey decorator by a dummy function that will just return the main function as-is, thus keeping the compatibility with command-line usage
-try:
+try:  # pragma: no cover
     import lib.gooey as gooey
 except ImportError as exc:
     # Define a dummy replacement function for Gooey to stay compatible with command-line usage
@@ -130,7 +130,7 @@ except ImportError as exc:
         print('ERROR: --gui specified but an error happened with lib/gooey, cannot load the GUI (however you can still use this script in commandline). Check that lib/gooey exists and that you have wxpython installed. Here is the error: ')
         raise(exc)
 
-def conditional_decorator(flag, dec):
+def conditional_decorator(flag, dec):  # pragma: no cover
     def decorate(fn):
         if flag:
             return dec(fn)
@@ -138,7 +138,7 @@ def conditional_decorator(flag, dec):
             return fn
     return decorate
 
-def check_gui_arg():
+def check_gui_arg():  # pragma: no cover
     '''Check that the --gui argument was passed, and if true, we remove the --gui option and replace by --gui_launched so that Gooey does not loop infinitely'''
     if len(sys.argv) > 1 and sys.argv[1] == '--gui':
         # DEPRECATED since Gooey automatically supply a --ignore-gooey argument when calling back the script for processing
@@ -147,7 +147,7 @@ def check_gui_arg():
     else:
         return False
 
-def AutoGooey(fn):
+def AutoGooey(fn):  # pragma: no cover
     '''Automatically show a Gooey GUI if --gui is passed as the first argument, else it will just run the function as normal'''
     if check_gui_arg():
         return gooey.Gooey(fn)
@@ -193,7 +193,8 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
 
     #== Commandline arguments
     #-- Constructing the parser
-    if len(argv) > 0 and (argv[0] == '--gui' and not '--ignore-gooey' in argv): # Use GooeyParser if we want the GUI because it will provide better widgets
+    # Use GooeyParser if we want the GUI because it will provide better widgets
+    if len(argv) > 0 and (argv[0] == '--gui' and not '--ignore-gooey' in argv):  # pragma: no cover
         # Initialize the Gooey parser
         main_parser = gooey.GooeyParser(add_help=True, description=desc, epilog=ep, formatter_class=argparse.RawTextHelpFormatter)
         # Define Gooey widget types explicitly (because type auto-detection doesn't work quite well)
