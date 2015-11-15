@@ -62,7 +62,7 @@ thispathname = os.path.dirname(sys.argv[0])
 sys.path.append(os.path.join(thispathname, 'lib'))
 
 # Import necessary libraries
-from lib.aux_funcs import is_dir, is_dir_or_file, fullpath, recwalk, sizeof_fmt, path2unix
+from lib.aux_funcs import get_next_entry, is_dir, is_dir_or_file, fullpath, recwalk, sizeof_fmt, path2unix
 import lib.argparse as argparse
 import datetime, time
 import lib.tqdm as tqdm
@@ -89,54 +89,10 @@ from lib.brownanrs.rs import RSCodecError
 #***********************************
 
 def feature_scaling(x, xmin, xmax, a=0, b=1):
-    '''Generalized feature scaling (unused, only useful for variable error correction rate in the future)'''
+    '''Generalized feature scaling (useful for variable error correction rate calculation)'''
     return a + float(x - xmin) * (b - a) / (xmax - xmin)
 
 #--------------------------------
-
-def find_next_entry(file, entrymarker="\xFF\xFF\xFF\xFF"):
-    '''Find the next ecc entry in the ecc file, and return the start and end positions. This will find any string length between two entrymarkers. The reading is very tolerant, so it will always return any valid entry (but also scrambled entries if any, but the decoding will ensure everything's ok).'''
-    blocksize = 65535
-    found = False
-    start = None # start and end vars are the relative position of the starting/ending entrymarkers in the current buffer
-    end = None
-    startcursor = None # startcursor and endcursor are the absolute position of the starting/ending entrymarkers inside the database file
-    endcursor = None
-    buf = 1
-    # Continue the search as long as we did not find at least one starting marker and one ending marker (or end of file)
-    while (not found and buf):
-        # Read a long block at once, we will readjust the file cursor after
-        buf = file.read(blocksize)
-        # Find the start marker (if not found already)
-        if start is None or start == -1:
-            start = buf.find(entrymarker); # relative position of the starting marker in the currently read string
-            if start >= 0 and not startcursor: # assign startcursor only if it's empty (meaning that we did not find the starting entrymarker, else if found we are only looking for 
-                startcursor = file.tell() - len(buf) + start # absolute position of the starting marker in the file
-            if start >= 0: start = start + len(entrymarker)
-        # If we have a starting marker, we try to find a subsequent marker which will be the ending of our entry (if the entry is corrupted we don't care: it won't pass the entry_to_dict() decoding or subsequent steps of decoding and we will just pass to the next ecc entry). This allows to process any valid entry, no matter if previous ones were scrambled.
-        if startcursor is not None and startcursor >= 0:
-            end = buf.find(entrymarker, start)
-            if end < 0 and len(buf) < blocksize: # Special case: we didn't find any ending marker but we reached the end of file, then we are probably in fact just reading the last entry (thus there's no ending marker for this entry)
-                end = len(buf) # It's ok, we have our entry, the ending marker is just the end of file
-            # If we found an ending marker (or if end of file is reached), then we compute the absolute cursor value and put the file reading cursor back in position, just before the next entry (where the ending marker is if any)
-            if end >= 0:
-                endcursor = file.tell() - len(buf) + end
-                file.seek(endcursor)
-                found = True
-        #print("Start:", start, startcursor)
-        #print("End: ", end, endcursor)
-        # Stop criterion to avoid infinite loop: in the case we could not find any entry in the rest of the file and we reached the EOF, we just quit now
-        if len(buf) < blocksize: break
-        # Did not find the full entry in one buffer? Reinit variables for next iteration, but keep in memory startcursor.
-        if start > 0: start = 0 # reset the start position for the end buf find at next iteration (ie: in the arithmetic operations to compute the absolute endcursor position, the start entrymarker won't be accounted because it was discovered in a previous buffer).
-        if not endcursor: file.seek(file.tell()-len(entrymarker)) # Try to fix edge case where blocksize stops the buffer exactly in the middle of the ending entrymarker. The starting marker should always be ok because it should be quite close (or generally immediately after) the previous entry, but the end depends on the end of the current entry (size of the original file), thus the buffer may miss the ending entrymarker. should offset file.seek(-len(entrymarker)) before searching for ending.
-
-    entry_pos = None # return None if there's no new entry to read
-    if found: # if an entry was found, we return the starting position and ending position of the ecc entry (without the entrymarker). Note: we just return the reading positions and not the entry itself because it can get quite huge and may overflow memory, thus we will read each ecc blocks on request using a generator.
-        entry_pos = [startcursor + len(entrymarker), endcursor]
-        file.seek(startcursor+len(entrymarker))
-    # Detect from first marker to the next
-    return entry_pos
 
 def entry_fields(file, entry_pos, field_delim="\xFF"):
     '''From an ecc entry position (a list with starting and ending positions), extract the metadata fields (filename, filesize, ecc for both), and the starting/ending positions of the ecc stream (containing variably encoded blocks of hash and ecc per blocks of the original file's header)'''
@@ -208,56 +164,56 @@ def stream_entry_assemble(hasher, file, eccfile, entry_fields, max_block_size, h
     size = file.tell()
     if curpos < size: print("WARNING: end of ecc track reached but not the end of file! Either the ecc ending marker was misdetected, or either the file hash changed! Some blocks maybe may not have been properly checked!")
 
- # TODO: entries_disambiguate() NOT READY! we can either disambiguate on the fly (since the ecc field is not longer completely loaded in memory) each block (should be implemented inside (entry_fields and entry_assemble) or we can pre-compute disambiguation by reading each character in parallel from the file and then outputting to a temporary file.
-def entries_disambiguate(entries, field_delim="\xFF", ptee=None): # field_delim is only useful if there are errors
-    '''Takes a list of ecc entries in string format (not yet assembled) representing the same data (replicated over several entries), and disambiguate by majority vote: for position in string, if the character is not the same accross all entries, we keep the major one. If none, it will be replaced by a null byte (because we can't know if any of the entries are correct about this character).'''
-    # The idea of replication combined with ECC was a bit inspired by this paper: Friedman, Roy, Yoav Kantor, and Amir Kantor. "Combining Erasure-Code and Replication Redundancy Schemes for Increased Storage and Repair Efficiency in P2P Storage Systems.", 2013, Technion, Computer Science Department, Technical Report CS-2013-03
+ # TODO: entries_disambiguate() move to replicate_repair.py
+# def entries_disambiguate(entries, field_delim="\xFF", ptee=None): # field_delim is only useful if there are errors
+    # '''Takes a list of ecc entries in string format (not yet assembled) representing the same data (replicated over several entries), and disambiguate by majority vote: for position in string, if the character is not the same accross all entries, we keep the major one. If none, it will be replaced by a null byte (because we can't know if any of the entries are correct about this character).'''
+    # # The idea of replication combined with ECC was a bit inspired by this paper: Friedman, Roy, Yoav Kantor, and Amir Kantor. "Combining Erasure-Code and Replication Redundancy Schemes for Increased Storage and Repair Efficiency in P2P Storage Systems.", 2013, Technion, Computer Science Department, Technical Report CS-2013-03
 
-    if not entries[0]: return None # if entries is empty (we have reached end of file), just return None
+    # if not entries[0]: return None # if entries is empty (we have reached end of file), just return None
 
-    final_entry = []
-    errors = []
-    if len(entries) == 1:
-        final_entry = entries[0]
-    else:
-        # Walk along each column (imagine the strings being rows in a matrix, then we pick one column at each iteration = all characters at position i of each string), so that we can compare these characters easily
-        for i in xrange(len(entries[0])):
-            hist = {} # kind of histogram, we just memorize how many times a character is presented at the position i in each string
-            # Extract the character at position i of each string and compute the histogram at the same time (number of time this character appear among all strings at this position i)
-            for e in entries:
-                key = str(ord(e[i])) # convert to the ascii value to avoid any funky problem with encoding in dict keys
-                hist[key] = hist.get(key, 0) + 1
-            # If there's only one character (it's the same accross all strings at position i), then it's an exact match, we just save the character and we can skip to the next iteration
-            if len(hist) == 1:
-                final_entry.append(chr(int(hist.iterkeys().next())))
-                continue
-            # Else, the character is different among different entries, we will pick the major one (mode)
-            elif len(hist) > 1:
-                # Sort the dict by value (and reverse because we want the most frequent first)
-                skeys = sorted(hist, key=hist.get, reverse=True)
-                # If each entries present a different character (thus the major has only an occurrence of 1), then it's too ambiguous and we just set a null byte to signal that
-                if hist[skeys[0]] == 1:
-                    final_entry.append("\x00")
-                    errors.append(i) # Print an error indicating the characters that failed
-                # Else if there is a tie (at least two characters appear with the same frequency), then we just pick one of them
-                elif hist[skeys[0]] == hist[skeys[1]]:
-                    final_entry.append(chr(int(skeys[0]))) # TODO: find a way to account for both characters. Maybe return two different strings that will both have to be tested? (eg: maybe one has a tampered hash, both will be tested and if one correction pass the hash then it's ok we found the correct one)
-                # Else we have a clear major character that appear in more entries than any other character, then we keep this one
-                else:
-                    final_entry.append(chr(int(skeys[0]))) # alternative one-liner: max(hist.iteritems(), key=operator.itemgetter(1))[0]
-                continue
-        # Concatenate to a string (this is faster than using a string from the start and concatenating at each iteration because Python strings are immutable so Python has to copy over the whole string, it's in O(n^2)
-        final_entry = ''.join(final_entry)
-        # Errors signaling
-        if errors:
-            #entry_p = entry_fields(final_entry, field_delim) # get the filename
-            if ptee:
-                ptee.write("Unrecoverable corruptions in a ecc entry on characters: %s. Ecc entry:\n%s" % (errors, final_entry)) # Signal to user that this file has unrecoverable corruptions (he may try to fix the bits manually or with his own script)
-            else:
-                print("Unrecoverable corruptions in a ecc entry on characters: %s. Ecc entry:\n%s" % (errors, final_entry))
-            # After printing the error, return None so that we won't try to decode a corrupted ecc entry
-            #final_entry = None
-    return final_entry
+    # final_entry = []
+    # errors = []
+    # if len(entries) == 1:
+        # final_entry = entries[0]
+    # else:
+        # # Walk along each column (imagine the strings being rows in a matrix, then we pick one column at each iteration = all characters at position i of each string), so that we can compare these characters easily
+        # for i in xrange(len(entries[0])):
+            # hist = {} # kind of histogram, we just memorize how many times a character is presented at the position i in each string
+            # # Extract the character at position i of each string and compute the histogram at the same time (number of time this character appear among all strings at this position i)
+            # for e in entries:
+                # key = str(ord(e[i])) # convert to the ascii value to avoid any funky problem with encoding in dict keys
+                # hist[key] = hist.get(key, 0) + 1
+            # # If there's only one character (it's the same accross all strings at position i), then it's an exact match, we just save the character and we can skip to the next iteration
+            # if len(hist) == 1:
+                # final_entry.append(chr(int(hist.iterkeys().next())))
+                # continue
+            # # Else, the character is different among different entries, we will pick the major one (mode)
+            # elif len(hist) > 1:
+                # # Sort the dict by value (and reverse because we want the most frequent first)
+                # skeys = sorted(hist, key=hist.get, reverse=True)
+                # # If each entries present a different character (thus the major has only an occurrence of 1), then it's too ambiguous and we just set a null byte to signal that
+                # if hist[skeys[0]] == 1:
+                    # final_entry.append("\x00")
+                    # errors.append(i) # Print an error indicating the characters that failed
+                # # Else if there is a tie (at least two characters appear with the same frequency), then we just pick one of them
+                # elif hist[skeys[0]] == hist[skeys[1]]:
+                    # final_entry.append(chr(int(skeys[0]))) # TODO: find a way to account for both characters. Maybe return two different strings that will both have to be tested? (eg: maybe one has a tampered hash, both will be tested and if one correction pass the hash then it's ok we found the correct one)
+                # # Else we have a clear major character that appear in more entries than any other character, then we keep this one
+                # else:
+                    # final_entry.append(chr(int(skeys[0]))) # alternative one-liner: max(hist.iteritems(), key=operator.itemgetter(1))[0]
+                # continue
+        # # Concatenate to a string (this is faster than using a string from the start and concatenating at each iteration because Python strings are immutable so Python has to copy over the whole string, it's in O(n^2)
+        # final_entry = ''.join(final_entry)
+        # # Errors signaling
+        # if errors:
+            # #entry_p = entry_fields(final_entry, field_delim) # get the filename
+            # if ptee:
+                # ptee.write("Unrecoverable corruptions in a ecc entry on characters: %s. Ecc entry:\n%s" % (errors, final_entry)) # Signal to user that this file has unrecoverable corruptions (he may try to fix the bits manually or with his own script)
+            # else:
+                # print("Unrecoverable corruptions in a ecc entry on characters: %s. Ecc entry:\n%s" % (errors, final_entry))
+            # # After printing the error, return None so that we won't try to decode a corrupted ecc entry
+            # #final_entry = None
+    # return final_entry
 
 def stream_compute_ecc_hash(ecc_manager, hasher, file, max_block_size, header_size, resilience_rates):
     '''Generate a stream of hash/ecc blocks, of variable encoding rate and size, given a file.'''
@@ -406,8 +362,6 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
                         help='Resilience rate for stage 3 (rate that will be applied towards the end of the files).', **widget_text)
     main_parser.add_argument('-ri', '--resilience_rate_intra', type=float, default=0.5, required=False,
                         help='Resilience rate for intra-ecc (ecc on meta-data, such as filepath, thus this defines the ecc for the critical spots!).', **widget_text)
-    main_parser.add_argument('--replication_rate', type=int, default=1, required=False,
-                        help='Replication rate, if you want to duplicate each ecc entry (DO NOT USE, not implemented yet, see sourcecode for what to implement).', **widget_text)
     main_parser.add_argument('-l', '--log', metavar='/some/folder/filename.log', type=str, nargs=1, required=False,
                         help='Path to the log file. (Output will be piped to both the stdout and the log file)', **widget_filesave)
     main_parser.add_argument('--stats_only', action='store_true', required=False, default=False,
@@ -470,7 +424,6 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
     resilience_rate_s2 = args.resilience_rate_stage2
     resilience_rate_s3 = args.resilience_rate_stage3
     resilience_rate_intra = args.resilience_rate_intra
-    replication_rate = args.replication_rate
     enable_erasures = args.enable_erasures
     only_erasures = args.only_erasures
     erasure_symbol = args.erasure_symbol
@@ -511,9 +464,6 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
 
     if header_size < 1:
         raise ValueError('Header size cannot be negative.')
-
-    if replication_rate < 0 or replication_rate == 2:
-        raise ValueError('Replication rate must either be 1 (no replication) or above 3 to be useful (cannot disambiguate with only 2 replications).')
 
     if hash_algo not in Hasher.known_algo:
         raise ValueError("Specified hash algorithm %s is unknown!" % hash_algo)
@@ -572,7 +522,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
             filesize_header = size
             filesize_content = 0
         # Size of the ecc entry for this file will be: entrymarker-bytes + field_delim-bytes*occurrence + length-filepath-string + length-size-string + length-filepath-ecc + size of the ecc per block for all blocks in file header + size of the hash per block for all blocks in file header.
-        sizeecc += replication_rate * (len(entrymarker) + len(field_delim)*3 + len(relfilepath) + len(str(size)) + int(float(len(relfilepath))*resilience_rate_intra) + (int(math.ceil(float(filesize_header) / ecc_params_header["message_size"])) * (ecc_params_header["ecc_size"]+ecc_params_header["hash_size"])) + (int(math.ceil(float(filesize_content) / ecc_params_variable_average["message_size"])) * (ecc_params_variable_average["ecc_size"]+ecc_params_variable_average["hash_size"])) ) # Compute the total number of bytes we will add with ecc + hash (accounting for the padding of the remaining characters at the end of the sequence in case it doesn't fit with the message_size, by using ceil() )
+        sizeecc += (len(entrymarker) + len(field_delim)*3 + len(relfilepath) + len(str(size)) + int(float(len(relfilepath))*resilience_rate_intra) + (int(math.ceil(float(filesize_header) / ecc_params_header["message_size"])) * (ecc_params_header["ecc_size"]+ecc_params_header["hash_size"])) + (int(math.ceil(float(filesize_content) / ecc_params_variable_average["message_size"])) * (ecc_params_variable_average["ecc_size"]+ecc_params_variable_average["hash_size"])) ) # Compute the total number of bytes we will add with ecc + hash (accounting for the padding of the remaining characters at the end of the sequence in case it doesn't fit with the message_size, by using ceil() )
     ptee.write("Precomputing done.")
     if generate: # show statistics only if generating an ecc file
         # TODO: add the size of the ecc format header? (arguments string + PYHEADERECC identifier)
@@ -625,34 +575,33 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
 
                 # Opening the input file's to read its header and compute the ecc/hash blocks
                 if verbose: ptee.write("\n- Processing file %s" % relfilepath)
-                for i in xrange(replication_rate): # TODO: that's a shame because we recompute several times the whole ecc entry. Try to put the ecc entry in a temporary file at first or in StringIO (does it buffer in a file?), and then streamline copy to the ecc file. Or alternative: ecc fields are replicated, not the whole ecc entry.
-                    with open(os.path.join(rootfolderpath, filepath), 'rb') as file:
-                        entrymarker_pos = db.tell() # backup the position of the start of this ecc entry
-                        # -- Intra-ecc generation: Compute an ecc for the filepath, to avoid a critical spot here (so that we don't care that the filepath gets corrupted, we have an ecc to fix it!)
-                        fpfile = StringIO(relfilepath)
-                        relfilepath_ecc = compute_ecc_hash_from_string(relfilepath, ecc_manager_intra, hasher_intra, max_block_size, resilience_rate_intra)
-                        filesize_ecc = compute_ecc_hash_from_string(str(filesize), ecc_manager_intra, hasher_intra, max_block_size, resilience_rate_intra)
-                        db.write(("%s%s%s%s%s%s%s%s%s") % (entrymarker, relfilepath, field_delim, filesize, field_delim, relfilepath_ecc, field_delim, filesize_ecc, field_delim)) # first save the file's metadata (filename, filesize, ecc for filename, ...), separated with field_delim
-                        # -- External indexes backup: calculate the position of the entrymarker and of each field delimiter, and compute their ecc, and save into the index backup file. This will allow later to retrieve the position of each marker in the ecc file, and repair them if necessary, while just incurring a very cheap storage cost.
-                        # Also, the index backup file is fixed delimited fields sizes, which means that each field has a very specifically delimited size, so that we don't need any marker: we can just compute the total size for each entry, and thus find all entries independently even if one or several are corrupted beyond repair, so that this won't affect other index entries.
-                        markers_pos = [
-                                                        entrymarker_pos,
-                                                        entrymarker_pos+len(entrymarker)+len(relfilepath),
-                                                        entrymarker_pos+len(entrymarker)+len(relfilepath)+len(field_delim)+len(str(filesize)),
-                                                        entrymarker_pos+len(entrymarker)+len(relfilepath)+len(field_delim)+len(str(filesize))+len(field_delim)+len(relfilepath_ecc),
-                                                        db.tell()-len(field_delim)
-                                                        ] # Make the list of all markers positions for this ecc entry. The first and last indexes are the most important (first is the entrymarker, the last is the field_delim just before the ecc track start)
-                        markers_pos = [struct.pack('>Q', x) for x in markers_pos] # Convert to a binary representation in 8 bytes using unsigned long long (up to 16 EB, this should be more than sufficient)
-                        markers_types = ["1", "2", "2", "2", "2"]
-                        markers_pos_ecc = [ecc_manager_idx.encode("%s%s" % (x,y)) for x,y in zip(markers_types,markers_pos)] # compute the ecc for each number
-                        # Couple each marker's position with its type and with its ecc, and write them all consecutively into the index backup file
-                        for items in zip(markers_types,markers_pos,markers_pos_ecc):
-                            for item in items:
-                                dbidx.write(str(item))
-                        # -- Hash/Ecc encoding of file's content (everything is managed inside stream_compute_ecc_hash)
-                        for ecc_entry in stream_compute_ecc_hash(ecc_manager_variable, hasher, file, max_block_size, header_size, resilience_rates): # then compute the ecc/hash entry for this file's header (each value will be a block, a string of hash+ecc per block of data, because Reed-Solomon is limited to a maximum of 255 bytes, including the original_message+ecc! And in addition we want to use a variable rate for RS that is decreasing along the file)
-                            db.write( "%s%s" % (str(ecc_entry[0]),str(ecc_entry[1])) ) # note that there's no separator between consecutive blocks, but by calculating the ecc parameters, we will know when decoding the size of each block!
-                            bardisp.update(ecc_entry[2]['message_size'])
+                with open(os.path.join(rootfolderpath, filepath), 'rb') as file:
+                    entrymarker_pos = db.tell() # backup the position of the start of this ecc entry
+                    # -- Intra-ecc generation: Compute an ecc for the filepath, to avoid a critical spot here (so that we don't care that the filepath gets corrupted, we have an ecc to fix it!)
+                    fpfile = StringIO(relfilepath)
+                    relfilepath_ecc = compute_ecc_hash_from_string(relfilepath, ecc_manager_intra, hasher_intra, max_block_size, resilience_rate_intra)
+                    filesize_ecc = compute_ecc_hash_from_string(str(filesize), ecc_manager_intra, hasher_intra, max_block_size, resilience_rate_intra)
+                    db.write(("%s%s%s%s%s%s%s%s%s") % (entrymarker, relfilepath, field_delim, filesize, field_delim, relfilepath_ecc, field_delim, filesize_ecc, field_delim)) # first save the file's metadata (filename, filesize, ecc for filename, ...), separated with field_delim
+                    # -- External indexes backup: calculate the position of the entrymarker and of each field delimiter, and compute their ecc, and save into the index backup file. This will allow later to retrieve the position of each marker in the ecc file, and repair them if necessary, while just incurring a very cheap storage cost.
+                    # Also, the index backup file is fixed delimited fields sizes, which means that each field has a very specifically delimited size, so that we don't need any marker: we can just compute the total size for each entry, and thus find all entries independently even if one or several are corrupted beyond repair, so that this won't affect other index entries.
+                    markers_pos = [
+                                                    entrymarker_pos,
+                                                    entrymarker_pos+len(entrymarker)+len(relfilepath),
+                                                    entrymarker_pos+len(entrymarker)+len(relfilepath)+len(field_delim)+len(str(filesize)),
+                                                    entrymarker_pos+len(entrymarker)+len(relfilepath)+len(field_delim)+len(str(filesize))+len(field_delim)+len(relfilepath_ecc),
+                                                    db.tell()-len(field_delim)
+                                                    ] # Make the list of all markers positions for this ecc entry. The first and last indexes are the most important (first is the entrymarker, the last is the field_delim just before the ecc track start)
+                    markers_pos = [struct.pack('>Q', x) for x in markers_pos] # Convert to a binary representation in 8 bytes using unsigned long long (up to 16 EB, this should be more than sufficient)
+                    markers_types = ["1", "2", "2", "2", "2"]
+                    markers_pos_ecc = [ecc_manager_idx.encode("%s%s" % (x,y)) for x,y in zip(markers_types,markers_pos)] # compute the ecc for each number
+                    # Couple each marker's position with its type and with its ecc, and write them all consecutively into the index backup file
+                    for items in zip(markers_types,markers_pos,markers_pos_ecc):
+                        for item in items:
+                            dbidx.write(str(item))
+                    # -- Hash/Ecc encoding of file's content (everything is managed inside stream_compute_ecc_hash)
+                    for ecc_entry in stream_compute_ecc_hash(ecc_manager_variable, hasher, file, max_block_size, header_size, resilience_rates): # then compute the ecc/hash entry for this file's header (each value will be a block, a string of hash+ecc per block of data, because Reed-Solomon is limited to a maximum of 255 bytes, including the original_message+ecc! And in addition we want to use a variable rate for RS that is decreasing along the file)
+                        db.write( "%s%s" % (str(ecc_entry[0]),str(ecc_entry[1])) ) # note that there's no separator between consecutive blocks, but by calculating the ecc parameters, we will know when decoding the size of each block!
+                        bardisp.update(ecc_entry[2]['message_size'])
                 files_done += 1
         if bardisp.n > bardisp.total: bardisp.total = bardisp.n # small workaround because n may be higher than total (because of files ending before 'message_size', thus the message is padded and in the end, we have outputted and processed a bit more characters than are really in the files, thus why total can be below n). Doing this allows to keep the trace of the progression bar.
         bardisp.close()
@@ -690,19 +639,19 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
             while entry:
 
                 # -- Read the next ecc entry (extract the raw string from the ecc file)
-                if replication_rate == 1:
-                    entry_pos = find_next_entry(db, entrymarker)
-                    if entry_pos:
-                        if bardisp_first_open: bardisp.n = entry_pos[0]-len(entrymarker) # add the size of the comments in the ecc header
-                        bardisp.update(entry_pos[1]-entry_pos[0]+len(entrymarker)) # update progress bar
+                #if replication_rate == 1:
+                entry_pos = get_next_entry(db, entrymarker)
+                if entry_pos:
+                    if bardisp_first_open: bardisp.n = entry_pos[0]-len(entrymarker) # add the size of the comments in the ecc header
+                    bardisp.update(entry_pos[1]-entry_pos[0]+len(entrymarker)) # update progress bar
 
                 # -- Disambiguation/Replication management: if replication rate was used, then fetch all entries for the same file at once, and then disambiguate by majority vote
-                else: # TODO: replication not ready yet
-                    entries_pos = []
-                    for i in xrange(replication_rate):
-                        entries_pos.append(find_next_entry(db, entrymarker))
-                    entry_pos = entries_disambiguate(entries_pos, field_delim, ptee)
-                    if entry_pos: bardisp.update((entry_pos[1]-entry_pos[0]+len(entrymarker))*replication_rate) # update progress bar
+                # else: # TODO: replication not ready yet
+                    # entries_pos = []
+                    # for i in xrange(replication_rate):
+                        # entries_pos.append(get_next_entry(db, entrymarker))
+                    # entry_pos = entries_disambiguate(entries_pos, field_delim, ptee)
+                    # if entry_pos: bardisp.update((entry_pos[1]-entry_pos[0]+len(entrymarker))*replication_rate) # update progress bar
                 # No entry? Then we finished because this is the end of file (stop condition)
                 if not entry_pos: break
 
@@ -753,7 +702,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
                 if verbose: ptee.write("\n- Processing file %s" % relfilepath)
 
                 # -- Check filepath
-                # Check that the filepath isn't corrupted (detectable mainly with replication_rate >= 3, but if a silent error erase a character (not only flip a bit), then it will also be detected this way
+                # Check that the filepath isn't corrupted (if a silent error erase a character (not only flip a bit), then it will also be detected this way)
                 if relfilepath.find("\x00") >= 0:
                     ptee.write("Error: ecc entry corrupted on filepath field, please try to manually repair the filepath (filepath: %s - missing/corrupted character at %i)." % (relfilepath, relfilepath.find("\x00")))
                     files_skipped += 1
@@ -835,7 +784,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
                                         # Detect if the ecc track is misaligned/misdetected (we encounter only errors that we can't fix)
                                         if err_consecutive and i >= 10: # threshold is ten consecutive uncorrectable errors
                                             ptee.write("Failure: Too many consecutive uncorrectable errors for %s. Most likely, the ecc track was misdetected (try to repair the entrymarkers and field delimiters). Skipping this track/file." % relfilepath)
-                                            db.seek(entry_p["ecc_field_pos"][1]) # Optimization: move the reading cursor to the beginning of the next ecc entry, this will save some iterations in find_next_entry()
+                                            db.seek(entry_p["ecc_field_pos"][1]) # Optimization: move the reading cursor to the beginning of the next ecc entry, this will save some iterations in get_next_entry()
                                             break
                     # Copying the last access time and last modification time from the original file TODO: a more reliable way would be to use the db computed by rfigc.py, because if a software maliciously tampered the data, then the modification date may also have changed (but not if it's a silent error, in that case we're ok).
                     filestats = os.stat(filepath)

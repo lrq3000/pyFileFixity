@@ -125,13 +125,24 @@ def find_next_entry(path, marker="\xFF\xFF\xFF\xFF", initpos=0):
     infile.close() # don't forget to close after the loop!
 
 def create_dir_if_not_exist(path):
+    """Create a directory if it does not already exist, else nothing is done and no error is return"""
     if not os.path.exists(path):
         os.makedirs(path)
 
 def get_marker(type=1):
+    """Helper function to store the usual entry and fields markers in ecc files"""
     if type == 1:
         return "\xFE\xFF\xFE\xFF\xFE\xFF\xFE\xFF\xFE\xFF"
     elif type == 2:
         return "\xFA\xFF\xFA\xFF\xFA"
     else:
         return ''
+
+def dummy_ecc_file_gen(nb_files=1):
+    """ Generate a dummy ecc file, following the specs (of course the ecc tracks are fake!) """
+    # Create header comments
+    fcontent = '''**SCRIPT_CODE_NAMEv111...000...000**\n** Comment 2\n** Yet another comment\n'''
+    # Create files entries
+    for i in range(1, nb_files+1):
+        fcontent += get_marker(1)+("file%i.ext"%i)+get_marker(2)+("filesize%i"%i)+get_marker(2)+("relfilepath%i_ecc"%i)+get_marker(2)+("filesize%i_ecc"%i)+get_marker(2)+"hash-ecc-entry_"*(i*3)
+    return fcontent
