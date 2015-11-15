@@ -14,6 +14,15 @@ try:
 except ImportError:
     from os import walk # else, default to os.walk()
 
+
+def is_file(dirname):
+    '''Checks if a path is an actual file that exists'''
+    if not os.path.isfile(dirname):
+        msg = "{0} is not an existing file".format(dirname)
+        raise argparse.ArgumentTypeError(msg)
+    else:
+        return dirname
+
 def is_dir(dirname):
     '''Checks if a path is an actual directory that exists'''
     if not os.path.isdir(dirname):
