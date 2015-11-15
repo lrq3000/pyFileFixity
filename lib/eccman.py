@@ -68,8 +68,10 @@ def detect_reedsolomon_parameters(message, mesecc_orig, gen_list=[2, 3, 5], c_ex
     n = len(mesecc_orig)
     k = len(message)
     field_charac = int((2**c_exp) - 1)
-    maxval = max(mesecc_orig)
-    if (max(mesecc_orig) > field_charac):
+    maxval1 = max([ord(x) if isinstance(x, basestring) else x for x in message ])
+    maxval2 = max([ord(x) if isinstance(x, basestring) else x for x in mesecc_orig])
+    maxval = max([maxval1, maxval2])
+    if (maxval > field_charac):
         raise ValueError("The specified field's exponent is wrong, the message contains values (%i) above the field's cardinality (%i)!" % (maxval, field_charac))
 
     # Prepare the variable that will store the result
@@ -99,13 +101,15 @@ def detect_reedsolomon_parameters(message, mesecc_orig, gen_list=[2, 3, 5], c_ex
                     if h == 0: break
 
     # Printing the results to the user
-    if best_match["hscore"] >= 0:
+    if best_match["hscore"] >= 0 and best_match["hscore"] < len(mesecc_orig):
         perfect_match_str = " (0=perfect match)" if best_match["hscore"]==0 else ""
-        print "Found closest set of parameters, with Hamming distance %i%s:" % (best_match["hscore"], perfect_match_str)
+        result = ''
+        result += "Found closest set of parameters, with Hamming distance %i%s:\n" % (best_match["hscore"], perfect_match_str)
         for param in best_match["params"]:
-            print "gen_nb=%s prim=%s(%s) fcr=%s" % (param["gen_nb"], param["prim"], hex(param["prim"]), param["fcr"])
+            result += "gen_nb=%s prim=%s(%s) fcr=%s\n" % (param["gen_nb"], param["prim"], hex(param["prim"]), param["fcr"])
+        return result
     else:
-        print "Parameters could not be automatically detected..."
+        return "Parameters could not be automatically detected..."
 
 
 ### Main ECCMan Class to manage ECC codecs ###
