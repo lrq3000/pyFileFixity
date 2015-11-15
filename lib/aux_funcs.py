@@ -70,6 +70,7 @@ def sizeof_fmt(num, suffix='B', mod=1024.0):
 
 def path2unix(path):
     '''From a path given in any format, converts to posix path format'''
+    print list(PurePath(path).parts)
     return posixpath.join(*list(PurePath(path).parts))
 
 def get_next_entry(file, entrymarker="\xFE\xFF\xFE\xFF\xFE\xFF\xFE\xFF\xFE\xFF", only_coord=True, blocksize=65535):
