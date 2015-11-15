@@ -230,11 +230,11 @@ try:  # pragma: no cover
     import lib.gooey as gooey
 except ImportError as exc:
     # Define a dummy replacement function for Gooey to stay compatible with command-line usage
-    class gooey(object):
+    class gooey(object):  # pragma: no cover
         def Gooey(func):
             return func
     # If --gui was specified, then there's a problem
-    if len(sys.argv) > 1 and sys.argv[1] == '--gui':
+    if len(sys.argv) > 1 and sys.argv[1] == '--gui':  # pragma: no cover
         print('ERROR: --gui specified but an error happened with lib/gooey, cannot load the GUI (however you can still use this script in commandline). Check that lib/gooey exists and that you have wxpython installed. Here is the error: ')
         raise(exc)
 
