@@ -37,7 +37,7 @@ def test_tee_stdout():
     """ tee: test tee stdout """
     instring1 = "First line\nSecond line\n"
     instring2 = "Third line\n"
-    filelog = path_sample_files('output', 'tee1.log')
+    filelog = path_sample_files('output', 'tee2.log')
     remove_if_exist(filelog)
     # Access stdout and memorize the cursor position just before the test
     sysout = sys.stdout
