@@ -45,6 +45,9 @@ build_cython:
 	python setup.py build_ext --inplace
 
 build:
+	python -c "import shutil; shutil.rmtree('build', True)"
+	python -c "import shutil; shutil.rmtree('dist', True)"
+	python -c "import shutil; shutil.rmtree('pyFileFixity.egg-info', True)"
 	python setup.py sdist --formats=gztar,zip bdist_wininst
 	python setup.py sdist bdist_wheel
 
@@ -53,6 +56,12 @@ pypimeta:
 
 pypi:
 	twine upload dist/*
+
+buildupload:
+	@make testsetup
+	@make build
+	@make pypimeta
+	@make pypi
 
 none:
 	# used for unit testing
