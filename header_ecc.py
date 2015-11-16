@@ -129,7 +129,7 @@ def entry_assemble(entry_fields, ecc_params, header_size, filepath, fileheader=N
     if fileheader is None:
         with open(filepath, 'rb') as file: # filepath is the absolute path to the original file (the one with maybe corruptions, NOT the output repaired file!)
             # Compute the size of the buffer to read: either header_size if possible, but if the file is smaller than that then we will read the whole file.
-            if entry_fields["filesize"] < header_size:
+            if entry_fields["filesize"] > 0 and entry_fields["filesize"] < header_size:
                 fileheader = file.read(entry_fields["filesize"])
             else:
                 fileheader = file.read(header_size)

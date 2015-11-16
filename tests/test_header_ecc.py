@@ -6,9 +6,12 @@ import hashlib
 import sys
 
 import shutil
+from StringIO import StringIO
 
 from pyFileFixity import header_ecc as hecc
-from .aux_tests import check_eq_files, check_eq_dir, path_sample_files, tamper_file, find_next_entry, create_dir_if_not_exist, get_marker
+from ..lib.aux_funcs import get_next_entry
+from ..lib.eccman import compute_ecc_params, ECCMan
+from .aux_tests import check_eq_files, check_eq_dir, path_sample_files, tamper_file, find_next_entry, create_dir_if_not_exist, get_marker, dummy_ecc_file_gen
 
 def setup_module():
     """ Initialize the tests by emptying the out directory """
@@ -91,3 +94,45 @@ def test_algo():
     startpos1 = find_next_entry(filedb[0], get_marker(type=1)).next()
     startpos2 = find_next_entry(fileres, get_marker(type=1)).next()
     assert check_eq_files(filedb[0], fileres, startpos1=startpos1, startpos2=startpos2)
+
+def test_entry_fields():
+    """ hecc: test internal: entry_fields() """
+    ecc = dummy_ecc_file_gen(3)
+    eccf = StringIO(ecc)
+    ecc_entry = get_next_entry(eccf, get_marker(1), only_coord=False)
+    assert hecc.entry_fields(ecc_entry, field_delim=get_marker(2)) == {'ecc_field': 'hash-ecc-entry_hash-ecc-entry_hash-ecc-entry_', 'filesize_ecc': 'filesize1_ecc', 'relfilepath_ecc': 'relfilepath1_ecc', 'relfilepath': 'file1.ext', 'filesize': 0}
+    ecc_entry = get_next_entry(eccf, get_marker(1), only_coord=False)
+    assert hecc.entry_fields(ecc_entry, field_delim=get_marker(2)) == {'ecc_field': 'hash-ecc-entry_hash-ecc-entry_hash-ecc-entry_hash-ecc-entry_hash-ecc-entry_hash-ecc-entry_', 'filesize_ecc': 'filesize2_ecc', 'relfilepath_ecc': 'relfilepath2_ecc', 'relfilepath': 'file2.ext', 'filesize': 0}
+
+def test_entry_assemble():
+    """ hecc: test internal: entry_assemble() """
+    class Hasher(object):
+        """ Dummy Hasher """
+        def __len__(self):
+            return 32
+    tempfile = path_sample_files('output', 'hecc_entry_assemble.txt')
+    with open(tempfile, 'wb') as tfile:
+        tfile.write("Lorem ipsum\nAnd stuff and stuff and stuff\n"*20)
+    ecc = dummy_ecc_file_gen(3)
+    eccf = StringIO(ecc)
+    ecc_entry = get_next_entry(eccf, get_marker(1), only_coord=False)
+    entry_fields = hecc.entry_fields(ecc_entry, field_delim=get_marker(2))
+    ecc_params = compute_ecc_params(255, 0.5, Hasher())
+    assert hecc.entry_assemble(entry_fields, ecc_params, 10, tempfile, fileheader=None) == [{'ecc': 'sh-ecc-entry_', 'message': 'Lorem ipsu', 'hash': 'hash-ecc-entry_hash-ecc-entry_ha'}]
+    # TODO: check that several blocks can be assembled, currently we only check one block
+
+def test_compute_ecc_hash():
+    """ hecc: test internal: compute_ecc_hash() """
+    class Hasher(object):
+        """ Dummy Hasher """
+        def hash(self, mes):
+            return "dummyhsh"
+        def __len__(self):
+            return 8
+    n = 20
+    k = 11
+    instring = "hello world!"*20
+    header_size = 1024
+    eccman = ECCMan(n, k, algo=3)
+    assert hecc.compute_ecc_hash(eccman, Hasher(), instring[:1024], 255, 0.5, message_size=None, as_string=False) == [['dummyhsh', b'\x9b\x18\xeb\xc9z\x01c\xf2\x07'], ['dummyhsh', b'\xa2Q\xc0Y\xae\xc3b\xd5\x81']]
+    assert hecc.compute_ecc_hash(eccman, Hasher(), instring[:1024], 255, 0.5, message_size=None, as_string=True) == ['dummyhsh\x9b\x18\xeb\xc9z\x01c\xf2\x07', 'dummyhsh\xa2Q\xc0Y\xae\xc3b\xd5\x81']
