@@ -912,7 +912,7 @@ generate an ecc file):
    `QR Backup (again another) <http://git.pictorii.com/index.php?p=qrbackup.git&a=summary>`_,
    `QR Backup (again) <http://hansmi.ch/software/qrbackup>`_,
    `and finally a related paper <http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.303.3101&rep=rep1&type=pdf>`_.
-- AVPreserve tools, most notably `fixity <https://github.com/avpreserve/fixity>`_ 
+-  AVPreserve tools, most notably `fixity <https://github.com/avpreserve/fixity>`_ 
    to monitor for file changes (similarly to rfigc, but actively as a daemon)
    and `interstitial <https://github.com/avpreserve/interstitial>`_ to detect
    interstitial errors in audio digitization workflows (great to ensure you
