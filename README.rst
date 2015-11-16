@@ -439,7 +439,8 @@ script uses relative paths so that you can easily compute and check the
 same redundant data copied on different mediums (hard drives, optical
 discs, etc.). This script is not meant for system files corruption
 notification, but is more meant to be used from times-to-times to check
-up on your data archives integrity.
+up on your data archives integrity (if you need this kind of application,
+see `avpreserve's fixity <https://github.com/avpreserve/fixity>`_).
 
 This script was made for Python 2.7.6, but it should be easily adaptable
 to run on Python 3.x.
@@ -911,6 +912,11 @@ generate an ecc file):
    `QR Backup (again another) <http://git.pictorii.com/index.php?p=qrbackup.git&a=summary>`_,
    `QR Backup (again) <http://hansmi.ch/software/qrbackup>`_,
    `and finally a related paper <http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.303.3101&rep=rep1&type=pdf>`_.
+- AVPreserve tools, most notably `fixity <https://github.com/avpreserve/fixity>`_ 
+   to monitor for file changes (similarly to rfigc, but actively as a daemon)
+   and `interstitial <https://github.com/avpreserve/interstitial>`_ to detect
+   interstitial errors in audio digitization workflows (great to ensure you
+   correctly digitized a whole audio file into WAV without any error).
 
 FAQ
 ---
