@@ -134,5 +134,5 @@ def test_compute_ecc_hash():
     instring = "hello world!"*20
     header_size = 1024
     eccman = ECCMan(n, k, algo=3)
-    assert hecc.compute_ecc_hash(eccman, Hasher(), instring[:1024], 255, 0.5, message_size=None, as_string=False) == [['dummyhsh', b'\x9b\x18\xeb\xc9z\x01c\xf2\x07'], ['dummyhsh', b'\xa2Q\xc0Y\xae\xc3b\xd5\x81']]
-    assert hecc.compute_ecc_hash(eccman, Hasher(), instring[:1024], 255, 0.5, message_size=None, as_string=True) == ['dummyhsh\x9b\x18\xeb\xc9z\x01c\xf2\x07', 'dummyhsh\xa2Q\xc0Y\xae\xc3b\xd5\x81']
+    assert hecc.compute_ecc_hash(eccman, Hasher(), instring[:header_size], 255, 0.5, message_size=None, as_string=False) == [['dummyhsh', b'\x9b\x18\xeb\xc9z\x01c\xf2\x07'], ['dummyhsh', b'\xa2Q\xc0Y\xae\xc3b\xd5\x81']]
+    assert hecc.compute_ecc_hash(eccman, Hasher(), instring[:header_size], 255, 0.5, message_size=None, as_string=True) == ['dummyhsh\x9b\x18\xeb\xc9z\x01c\xf2\x07', 'dummyhsh\xa2Q\xc0Y\xae\xc3b\xd5\x81']
