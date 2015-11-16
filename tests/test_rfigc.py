@@ -112,3 +112,16 @@ def test_update():
     # Remove all other files from database
     assert rfigc.main('-i "%s" -d "%s" --update --remove --silent' % (fileout_dir, filedb)) == 0
     assert partial_eq(filedb, fileres2)
+
+def test_generate_hashes():
+    """ rfigc: test internal: generate_hashes() """
+    # Test with a file we make on the spot, so this should always be correct!
+    infile0 = path_sample_files('output', 'test_rfigc_generate_hashes.txt')
+    with open(infile0, 'wb') as f0:
+        f0.write("Lorem ipsum etc\n"*20)
+    assert rfigc.generate_hashes(infile0) == ('c6e0c87cbb8eeaca8179f22186384e6b', '6f46949be7cda1437bc3fb61fb827a6552beaf8b')
+    # Test with input files, this may change if we change the files
+    infile1 = path_sample_files('input', 'tux.jpg')
+    infile2 = path_sample_files('input', 'alice.pdf')
+    assert rfigc.generate_hashes(infile1) == ('81e19bbf2efaeb1d6d6473c21c48e4b7', '6e38ea91680ef0f960db0fd6a973cf50ef765369')
+    assert rfigc.generate_hashes(infile2) == ('298aeefe8c00f2d92d660987bee67260', '106e7ad4d3927c5906cd366cc0d5bd887bdc3300')
