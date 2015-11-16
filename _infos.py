@@ -4,7 +4,7 @@ __author__ = 'Stephen Larroque'
 __email__ = 'LRQ3000@gmail.com'
 
 # Definition of the version number
-version_info = 2, 0, 0, 'b1'  # major, minor, patch, extra
+version_info = 2, 0, 0, 'b2'  # major, minor, patch, extra
 
 # Nice string for the version (mimic how IPython composes its version str)
 __version__ = '-'.join(map(str, version_info)).replace('-', '.').strip('-')
