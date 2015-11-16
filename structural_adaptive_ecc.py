@@ -247,7 +247,8 @@ def stream_compute_ecc_hash(ecc_manager, hasher, file, max_block_size, header_si
         curpos = file.tell()
 
 def compute_ecc_hash_from_string(string, ecc_manager, hasher, max_block_size, resilience_rate):
-    '''Generate a concatenated string of ecc stream of hash/ecc blocks, of constant encoding rate, given a string.'''
+    '''Generate a concatenated string of ecc stream of hash/ecc blocks, of constant encoding rate, given a string.
+    NOTE: resilience_rate here is constant, you need to supply only one rate, between 0.0 and 1.0. The encoding rate will then be constant, like in header_ecc.py.'''
     fpfile = StringIO(string)
     ecc_stream = ''.join( [str(x[1]) for x in stream_compute_ecc_hash(ecc_manager, hasher, fpfile, max_block_size, len(string), [resilience_rate])] ) # "hack" the function by tricking it to always use a constant rate, by setting the header_size=len(relfilepath), and supplying the resilience_rate_intra instead of resilience_rate_s1 (the one for header)
     return ecc_stream

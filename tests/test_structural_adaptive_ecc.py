@@ -4,11 +4,13 @@ import itertools
 import hashlib
 
 import sys
-
 import shutil
+from StringIO import StringIO
 
 from pyFileFixity import structural_adaptive_ecc as saecc
-from .aux_tests import check_eq_files, check_eq_dir, path_sample_files, tamper_file, find_next_entry, create_dir_if_not_exist, get_marker
+from pyFileFixity.lib.aux_funcs import get_next_entry
+from ..lib.eccman import ECCMan
+from .aux_tests import check_eq_files, check_eq_dir, path_sample_files, tamper_file, find_next_entry, create_dir_if_not_exist, get_marker, dummy_ecc_file_gen
 
 def setup_module():
     """ Initialize the tests by emptying the out directory """
@@ -93,3 +95,49 @@ def test_algo():
     startpos1 = find_next_entry(filedb[0], get_marker(type=1)).next()
     startpos2 = find_next_entry(fileres, get_marker(type=1)).next()
     assert check_eq_files(filedb[0], fileres, startpos1=startpos1, startpos2=startpos2)
+
+def test_entry_fields():
+    """ saecc: test internal: entry_fields() """
+    ecc = dummy_ecc_file_gen(3)
+    eccf = StringIO(ecc)
+    ecc_entry_pos = get_next_entry(eccf, get_marker(1), only_coord=True)
+    assert saecc.entry_fields(eccf, ecc_entry_pos, field_delim=get_marker(2)) == {'ecc_field_pos': [150, 195], 'filesize_ecc': 'filesize1_ecc', 'relfilepath_ecc': 'relfilepath1_ecc', 'relfilepath': 'file1.ext', 'filesize': 0}
+    ecc_entry_pos = get_next_entry(eccf, get_marker(1), only_coord=True)
+    assert saecc.entry_fields(eccf, ecc_entry_pos, field_delim=get_marker(2)) == {'ecc_field_pos': [272, 362], 'filesize_ecc': 'filesize2_ecc', 'relfilepath_ecc': 'relfilepath2_ecc', 'relfilepath': 'file2.ext', 'filesize': 0}
+
+def test_stream_entry_assemble():
+    """ saecc: test internal: stream_entry_assemble() """
+    class Hasher(object):
+        """ Dummy Hasher """
+        def __len__(self):
+            return 32
+    tempfile = path_sample_files('output', 'saecc_stream_entry_assemble.txt')
+    with open(tempfile, 'wb') as tfile:
+        tfile.write("Lorem ipsum\nAnd stuff and stuff and stuff\n"*20)
+    ecc = dummy_ecc_file_gen(3)
+    eccf = StringIO(ecc)
+    ecc_entry_pos = get_next_entry(eccf, get_marker(1), only_coord=True)
+    entry_fields = saecc.entry_fields(eccf, ecc_entry_pos, field_delim=get_marker(2))
+    with open(tempfile, 'rb') as tfile:
+        assert list( saecc.stream_entry_assemble(Hasher(), tfile, eccf, entry_fields, 255, 10, [0.7, 0.5, 0.3]) ) == [{'ecc': 'sh-ecc-entry_\xfe\xff\xfe\xff\xfe\xff\xfe\xff\xfe\xfffile2.ext\xfa\xff\xfa\xff\xfafilesize2\xfa\xff\xfa\xff\xfarelfilepath2_ecc\xfa\xff\xfa\xff\xfafilesize2_ecc\xfa\xff\xfa\xff\xfahash-ecc-entry_hash-ecc-entry_hash-ecc-entry_hash-ecc-entry', 'curpos': 0L, 'rate': 0.7, 'ecc_params': {'ecc_size': 149, 'hash_size': 32, 'message_size': 106}, 'ecc_curpos': 150, 'hash': 'hash-ecc-entry_hash-ecc-entry_ha', 'message': 'Lorem ipsum\nAnd stuff and stuff and stuff\nLorem ipsum\nAnd stuff and stuff and stuff\nLorem ipsum\nAnd stuff '}]
+    # TODO: check that several blocks can be assembled, currently we only check one block
+
+def test_stream_compute_ecc_hash():
+    """ saecc: test internal: stream_compute_ecc_hash() and compute_ecc_hash_from_string() """
+    class Hasher(object):
+        """ Dummy Hasher """
+        def hash(self, mes):
+            return "dummyhsh"
+        def __len__(self):
+            return 8
+    n = 20 # aka max_block_size
+    k = 11
+    resilience_rates = [0.7, 0.5, 0.3]
+    instring = "hello world!"*10
+    tempfile = path_sample_files('output', 'saecc_stream_compute_ecc_hash.txt')
+    with open(tempfile, 'wb') as tfile:
+        tfile.write(instring)
+    eccman = ECCMan(n, k, algo=3)
+    with open(tempfile, 'rb') as tfile:
+        assert list( saecc.stream_compute_ecc_hash(eccman, Hasher(), tfile, n, int(len(instring)/4), resilience_rates) ) == [['dummyhsh', bytearray(b'\x8f=\xae\x11\xe1\xf7F\x94A\xb8\x00\x8d'), {'ecc_size': 12, 'hash_size': 8, 'message_size': 8}], ['dummyhsh', bytearray(b'\x97\x13\xe8G*\x15\xb5\xb2hn\xdf\x88'), {'ecc_size': 12, 'hash_size': 8, 'message_size': 8}], ['dummyhsh', bytearray(b'r\x9d\xb7#f\xa3=*\xda\x17WC'), {'ecc_size': 12, 'hash_size': 8, 'message_size': 8}], ['dummyhsh', bytearray(b'\x8f=\xae\x11\xe1\xf7F\x94A\xb8\x00\x8d'), {'ecc_size': 12, 'hash_size': 8, 'message_size': 8}], ['dummyhsh', bytearray(b'\xab\x8c\xae\r\xbb\x9b\x93\xbd\xd5\x8f'), {'ecc_size': 10, 'hash_size': 8, 'message_size': 10}], ['dummyhsh', bytearray(b'\xb8S\x1cz\xb2\xeb\x9fu\x19\x83'), {'ecc_size': 10, 'hash_size': 8, 'message_size': 10}], ['dummyhsh', bytearray(b'\x07\xc4\xce\xe2\xdf\x0b\t\x17,'), {'ecc_size': 9, 'hash_size': 8, 'message_size': 11}], ['dummyhsh', bytearray(b'\xd6(og\xb5}\x06\xe3\xd2'), {'ecc_size': 9, 'hash_size': 8, 'message_size': 11}], ['dummyhsh', bytearray(b'v\x9dP\x0c\x01\x03\x83Q!'), {'ecc_size': 9, 'hash_size': 8, 'message_size': 11}], ['dummyhsh', bytearray(b'\xc4\x12q\xd9\x0fq\xef\xc2\xba'), {'ecc_size': 9, 'hash_size': 8, 'message_size': 11}], ['dummyhsh', bytearray(b'6\xd0\xe8\xe9\xfe(y\x13'), {'ecc_size': 8, 'hash_size': 8, 'message_size': 12}], ['dummyhsh', bytearray(b'6\xd0\xe8\xe9\xfe(y\x13'), {'ecc_size': 8, 'hash_size': 8, 'message_size': 12}]]
+    assert saecc.compute_ecc_hash_from_string(instring, eccman, Hasher(), n, resilience_rates[0]) == '\x8f=\xae\x11\xe1\xf7F\x94A\xb8\x00\x8d\x97\x13\xe8G*\x15\xb5\xb2hn\xdf\x88r\x9d\xb7#f\xa3=*\xda\x17WC\x8f=\xae\x11\xe1\xf7F\x94A\xb8\x00\x8d\x97\x13\xe8G*\x15\xb5\xb2hn\xdf\x88r\x9d\xb7#f\xa3=*\xda\x17WC\x8f=\xae\x11\xe1\xf7F\x94A\xb8\x00\x8d\x97\x13\xe8G*\x15\xb5\xb2hn\xdf\x88r\x9d\xb7#f\xa3=*\xda\x17WC\x8f=\xae\x11\xe1\xf7F\x94A\xb8\x00\x8d\x97\x13\xe8G*\x15\xb5\xb2hn\xdf\x88r\x9d\xb7#f\xa3=*\xda\x17WC\x8f=\xae\x11\xe1\xf7F\x94A\xb8\x00\x8d\x97\x13\xe8G*\x15\xb5\xb2hn\xdf\x88r\x9d\xb7#f\xa3=*\xda\x17WC'
