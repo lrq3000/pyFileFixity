@@ -745,5 +745,5 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
             return 1
 
 # Calling main function if the script is directly called (not imported as a library in another program)
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     sys.exit(main())

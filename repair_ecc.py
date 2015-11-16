@@ -363,5 +363,5 @@ Note: An ecc structure repair does NOT allow to recover from more errors on your
         return 0
 
 # Calling main function if the script is directly called (not imported as a library in another program)
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     sys.exit(main())

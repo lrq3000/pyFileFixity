@@ -584,5 +584,5 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
     return retval # return error code if any
 
 # Calling main function if the script is directly called (not imported as a library in another program)
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     sys.exit(main())
