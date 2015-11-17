@@ -146,54 +146,6 @@ def entry_assemble(entry_fields, ecc_params, header_size, filepath, fileheader=N
     # Return a list of fields for each block
     return entry_asm
 
-# TODO: move entries_disambiguate() to replicate_repair.py
-# def entries_disambiguate(entries, field_delim="\xFF", ptee=None): # field_delim is only useful if there are errors
-    # '''Takes a list of ecc entries in string format (not yet assembled) representing the same data (replicated over several entries), and disambiguate by majority vote: for position in string, if the character is not the same accross all entries, we keep the major one. If none, it will be replaced by a null byte (because we can't know if any of the entries are correct about this character).'''
-    # # The idea of replication combined with ECC was a bit inspired by this paper: Friedman, Roy, Yoav Kantor, and Amir Kantor. "Combining Erasure-Code and Replication Redundancy Schemes for Increased Storage and Repair Efficiency in P2P Storage Systems.", 2013, Technion, Computer Science Department, Technical Report CS-2013-03
-
-    # if not entries[0]: return None # if entries is empty (we have reached end of file), just return None
-
-    # final_entry = []
-    # errors = []
-    # if len(entries) == 1:
-        # final_entry = entries[0]
-    # else:
-        # # Walk along each column (imagine the strings being rows in a matrix, then we pick one column at each iteration = all characters at position i of each string), so that we can compare these characters easily
-        # for i in xrange(len(entries[0])):
-            # hist = {} # kind of histogram, we just memorize how many times a character is presented at the position i in each string
-            # # Extract the character at position i of each string and compute the histogram at the same time (number of time this character appear among all strings at this position i)
-            # for e in entries:
-                # key = str(ord(e[i])) # convert to the ascii value to avoid any funky problem with encoding in dict keys
-                # hist[key] = hist.get(key, 0) + 1
-            # # If there's only one character (it's the same accross all strings at position i), then it's an exact match, we just save the character and we can skip to the next iteration
-            # if len(hist) == 1:
-                # final_entry.append(chr(int(hist.iterkeys().next())))
-                # continue
-            # # Else, the character is different among different entries, we will pick the major one (mode)
-            # elif len(hist) > 1:
-                # # Sort the dict by value (and reverse because we want the most frequent first)
-                # skeys = sorted(hist, key=hist.get, reverse=True)
-                # # If each entries present a different character (thus the major has only an occurrence of 1), then it's too ambiguous and we just set a null byte to signal that
-                # if hist[skeys[0]] == 1:
-                    # final_entry.append("\x00")
-                    # errors.append(i) # Print an error indicating the characters that failed
-                # # Else if there is a tie (at least two characters appear with the same frequency), then we just pick one of them
-                # elif hist[skeys[0]] == hist[skeys[1]]:
-                    # final_entry.append(chr(int(skeys[0]))) # TODO: find a way to account for both characters. Maybe return two different strings that will both have to be tested? (eg: maybe one has a tampered hash, both will be tested and if one correction pass the hash then it's ok we found the correct one)
-                # # Else we have a clear major character that appear in more entries than any other character, then we keep this one
-                # else:
-                    # final_entry.append(chr(int(skeys[0]))) # alternative one-liner: max(hist.iteritems(), key=operator.itemgetter(1))[0]
-                # continue
-        # # Concatenate to a string (this is faster than using a string from the start and concatenating at each iteration because Python strings are immutable so Python has to copy over the whole string, it's in O(n^2)
-        # final_entry = ''.join(final_entry)
-        # # Errors signaling
-        # if errors:
-            # if ptee:
-                # ptee.write("Unrecoverable corruptions in a ecc entry on characters: %s. Ecc entry:\n%s" % (errors, final_entry)) # Signal to user that this file has unrecoverable corruptions (he may try to fix the bits manually or with his own script)
-            # else:
-                # print("Unrecoverable corruptions in a ecc entry on characters: %s. Ecc entry:\n%s" % (errors, final_entry))
-    # return final_entry
-
 def compute_ecc_hash(ecc_manager, hasher, buf, max_block_size, rate, message_size=None, as_string=False):
     '''Split a string in blocks given max_block_size and compute the hash and ecc for each block, and then return a nice list with both for easy processing.'''
     result = []
