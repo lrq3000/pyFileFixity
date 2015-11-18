@@ -76,6 +76,11 @@ def path2unix(path, fromwinpath=False):
     else:
         return posixpath.join(*list(PurePath(path).parts))
 
+def create_dir_if_not_exist(path):
+    '''Create a directory if it does not already exist, else nothing is done and no error is return'''
+    if not os.path.exists(path):
+        os.makedirs(path)
+
 def get_next_entry(file, entrymarker="\xFE\xFF\xFE\xFF\xFE\xFF\xFE\xFF\xFE\xFF", only_coord=True, blocksize=65535):
     '''Find or real the next ecc entry in a given ecc file.
     Call this function multiple times with the same file handle to get subsequent markers positions (this is not a generator but it works very similarly).

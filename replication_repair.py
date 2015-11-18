@@ -39,8 +39,8 @@ thispathname = os.path.dirname(sys.argv[0])
 sys.path.append(os.path.join(thispathname, 'lib'))
 
 # Import necessary libraries
-import os
-from lib.aux_funcs import recwalk, path2unix, fullpath, is_dir_or_file, is_dir, is_file
+import shutil
+from lib.aux_funcs import recwalk, path2unix, fullpath, is_dir_or_file, is_dir, is_file, create_dir_if_not_exist
 import lib.argparse as argparse
 import datetime, time
 import lib.tqdm as tqdm
@@ -59,13 +59,14 @@ from lib.tee import Tee # Redirect print output to the terminal as well as in a 
 #***********************************
 
 def relpath_posix(recwalk_result, pardir):
-    """ helper function to convert all paths to relative posix like paths (to ease comparison) """
-    return recwalk_result[0], path2unix(os.path.join(os.path.relpath(recwalk_result[0], pardir),recwalk_result[1]))
+    ''' Helper function to convert all paths to relative posix like paths (to ease comparison) '''
+    return recwalk_result[0], os.path.split(path2unix(os.path.join(os.path.relpath(recwalk_result[0], pardir),recwalk_result[1])))
 
 #def checkAllEqual(lst):
 #    return not lst or [lst[0]]*len(lst) == lst
 
-def sort_group(d):
+def sort_group(d, return_only_first=False):
+    ''' Sort a dictionary of relative paths and cluster equal paths together at the same time '''
     d_sort = sorted(d.items(), key=lambda x: x[1])
     lst = []
     base_elt = (-1, None)
@@ -81,25 +82,39 @@ def sort_group(d):
                     if elt[1] == base_elt[1]:
                         lst[-1].append(elt)
                     else:
+                        if return_only_first: break
                         lst.append([elt])
                         base_elt = elt
         return lst
 
-def majority_vote_byte_scan(filename, fileslist, outpath, blocksize=65535, default_char_null=False):
-    '''Takes a list of files in string format representing the same data, and disambiguate by majority vote: for position in string, if the character is not the same accross all entries, we keep the major one. If none, it will be replaced by a null byte (because we can't know if any of the entries are correct about this character).'''
+def majority_vote_byte_scan(relfilepath, fileslist, outpath, blocksize=65535, default_char_null=False):
+    '''Takes a list of files in string format representing the same data, and disambiguate by majority vote: for position in string, if the character is not the same accross all entries, we keep the major one. If none, it will be replaced by a null byte (because we can't know if any of the entries are correct about this character).
+    relfilepath is the filename or the relative file path relative to the parent directory (ie, this is the relative path so that we can compare the files from several directories).'''
     # The idea of replication combined with ECC was a bit inspired by this paper: Friedman, Roy, Yoav Kantor, and Amir Kantor. "Combining Erasure-Code and Replication Redundancy Schemes for Increased Storage and Repair Efficiency in P2P Storage Systems.", 2013, Technion, Computer Science Department, Technical Report CS-2013-03
     # But it is a very well known concept in redundancy engineering, usually called triple-modular redundancy (which is here extended to n-modular since we can supply any number of files we want, not just three).
+    # Preference in case of ambiguity is always given to the file of the first folder.
 
     fileshandles = []
     for filepath in fileslist:
         fileshandles.append(open(filepath, 'rb'))
 
-    outpathfull = os.path.join(outpath, filename)
+    outpathfull = os.path.join(outpath, relfilepath)
     pardir = os.path.dirname(outpathfull)
     if not os.path.exists(pardir):
         os.makedirs(pardir)
 
-    #if not entries[0]: return None # if entries is empty (we have reached end of file), just return None
+    # Cannot vote if there's not at least 3 files!
+    # In this case, just copy the file from the first folder, verbatim
+    if len(fileslist) < 3:
+        # If there's at least one input file, then copy it verbatim to the output folder
+        if fileslist:
+            create_dir_if_not_exist(os.path.dirname(outpathfull))
+            with open(outpathfull, 'wb') as outfile:
+                buf = 1
+                while (buf):
+                    buf = fileshandles[0].read()
+                    outfile.write(buf)
+        return (1, "Error with file %s: only %i copies available, cannot vote (need at least 3)! Copied the first file from the first folder, verbatim." % (relfilepath, len(fileslist)))
 
     errors = []
     with open(outpathfull, 'wb') as outfile:
@@ -149,7 +164,7 @@ def majority_vote_byte_scan(filename, fileslist, outpath, blocksize=65535, defau
 
     # Errors signaling
     if errors:
-        error_msg = "Unrecoverable corruptions (because of ambiguity) in file %s on characters: %s." % (filename, [hex(x) for x in errors]) # Signal to user that this file has unrecoverable corruptions (he may try to fix the bits manually or with his own script)
+        error_msg = "Unrecoverable corruptions (because of ambiguity) in file %s on characters: %s." % (relfilepath, [hex(x) for x in errors]) # Signal to user that this file has unrecoverable corruptions (he may try to fix the bits manually or with his own script)
         return (1, error_msg) # return an error
     # Close all input files
     for fh in fileshandles:
@@ -178,9 +193,8 @@ def synchronize_files(inputpaths, outpath, tqdm_bar=None, ptee=None):
 
     # Files lists alignment loop
     while recgen_exhausted_count < nbpaths:
-        if tqdm_bar: tqdm_bar.update()
         #print curfiles # debug
-        curfiles_grouped = sort_group(curfiles)
+        curfiles_grouped = sort_group(curfiles, True)
         to_process = curfiles_grouped[0]
         #print to_process # debug
 
@@ -188,15 +202,20 @@ def synchronize_files(inputpaths, outpath, tqdm_bar=None, ptee=None):
         fileslist = []
         for elt in to_process:
             i = elt[0]
-            fileslist.append(os.path.join(inputpaths[i], elt[1]))
-        filename = to_process[0][1]
-        errcode, errmsg = majority_vote_byte_scan(filename, fileslist, outpath)
-        if errcode:
-            if ptee:
-                ptee.write(errmsg)
-            else:
-                print(errmsg)
-            retcode = 1
+            fileslist.append(os.path.join(inputpaths[i], os.path.join(*elt[1])))
+        relfilepath = os.path.join(*to_process[0][1])
+        if len(curfiles_grouped) == 1:
+            outpathfull = os.path.join(outpath, relfilepath)
+            create_dir_if_not_exist(os.path.dirname(outpathfull))
+            shutil.copyfile(fileslist[0], outpathfull)
+        else:
+            errcode, errmsg = majority_vote_byte_scan(relfilepath, fileslist, outpath)
+            if errcode:
+                if ptee:
+                    ptee.write(errmsg)
+                else:
+                    print(errmsg)
+                retcode = 1
 
         # Update files lists alignment
         for elt in to_process:
@@ -208,6 +227,8 @@ def synchronize_files(inputpaths, outpath, tqdm_bar=None, ptee=None):
                 curfiles[i] = None
                 recgen_exhausted[i] = True
                 recgen_exhausted_count += 1
+        if tqdm_bar: tqdm_bar.update()
+    if tqdm_bar: tqdm_bar.close()
 
     return retcode
 
