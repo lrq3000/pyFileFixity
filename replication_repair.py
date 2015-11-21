@@ -39,6 +39,7 @@ thispathname = os.path.dirname(sys.argv[0])
 sys.path.append(os.path.join(thispathname, 'lib'))
 
 # Import necessary libraries
+import rfigc # optional
 import shutil
 from lib.aux_funcs import recwalk, path2unix, fullpath, is_dir_or_file, is_dir, is_file, create_dir_if_not_exist
 import lib.argparse as argparse
@@ -67,24 +68,33 @@ def relpath_posix(recwalk_result, pardir):
 
 def sort_group(d, return_only_first=False):
     ''' Sort a dictionary of relative paths and cluster equal paths together at the same time '''
+    # First, sort the paths in order (this must be a couple: (parent_dir, filename), so that there's no ambiguity because else a file at root will be considered as being after a folder/file since the ordering is done alphabetically without any notion of tree structure).
     d_sort = sorted(d.items(), key=lambda x: x[1])
-    lst = []
+    # Pop the first item in the ordered list
     base_elt = (-1, None)
     while (base_elt[1] is None and d_sort):
         base_elt = d_sort.pop(0)
+    # No element, then we just return
     if base_elt[1] is None:
         return None
+    # Else, we will now group equivalent files together (remember we are working on multiple directories, so we can have multiple equivalent relative filepaths, but of course the absolute filepaths are different).
     else:
+        # Init by creating the first group and pushing the first ordered filepath into the first group
+        lst = []
         lst.append([base_elt])
         if d_sort:
+            # For each subsequent filepath
             for elt in d_sort:
+                # If the filepath is not empty (generator died)
                 if elt[1] is not None:
+                    # If the filepath is the same to the latest grouped filepath, we add it to the same group
                     if elt[1] == base_elt[1]:
                         lst[-1].append(elt)
+                    # Else the filepath is different: we create a new group, add the filepath to this group, and replace the latest grouped filepath
                     else:
-                        if return_only_first: break
+                        if return_only_first: break  # break here if we only need the first group
                         lst.append([elt])
-                        base_elt = elt
+                        base_elt = elt # replace the latest grouped filepath
         return lst
 
 def majority_vote_byte_scan(relfilepath, fileslist, outpath, blocksize=65535, default_char_null=False):
@@ -118,21 +128,27 @@ def majority_vote_byte_scan(relfilepath, fileslist, outpath, blocksize=65535, de
 
     errors = []
     with open(outpathfull, 'wb') as outfile:
-        entries = [1]*len(fileshandles)
+        final_entry = []
+        entries = [1]*len(fileshandles)  # init with 0 to start the while loop
         while (entries.count('') == 0):
+            # Read a block from all input files into memory
             for i in xrange(len(fileshandles)):
                 entries[i] = fileshandles[i].read(blocksize)
-            final_entry = []
+            # If there's only one file, just copy the file's content over
             if len(entries) == 1:
                 final_entry = entries[0]
+
+            # Else, do the majority vote
             else:
                 # Walk along each column (imagine the strings being rows in a matrix, then we pick one column at each iteration = all characters at position i of each string), so that we can compare these characters easily
                 for i in xrange(len(entries[0])):
-                    hist = {} # kind of histogram, we just memorize how many times a character is presented at the position i in each string
+                    hist = {} # kind of histogram, we just memorize how many times a character is presented at the position i in each string TODO: use collections.Counter instead of dict()?
                     # Extract the character at position i of each string and compute the histogram at the same time (number of time this character appear among all strings at this position i)
                     for e in entries:
-                        key = str(ord(e[i])) # convert to the ascii value to avoid any funky problem with encoding in dict keys
-                        hist[key] = hist.get(key, 0) + 1
+                        if i < len(e): # TODO: check this line, this should allow the vote to continue even if some files are shorter than others
+                            # TODO: add warning message when one file is not of the same size as the others
+                            key = str(ord(e[i])) # convert to the ascii value to avoid any funky problem with encoding in dict keys
+                            hist[key] = hist.get(key, 0) + 1
                     # If there's only one character (it's the same accross all strings at position i), then it's an exact match, we just save the character and we can skip to the next iteration
                     if len(hist) == 1:
                         final_entry.append(chr(int(hist.iterkeys().next())))
@@ -171,19 +187,36 @@ def majority_vote_byte_scan(relfilepath, fileslist, outpath, blocksize=65535, de
         fh.close()
     return (0, None)
 
-def synchronize_files(inputpaths, outpath, tqdm_bar=None, ptee=None, verbose=False):
+def synchronize_files(inputpaths, outpath, database=None, tqdm_bar=None, ptee=None, verbose=False):
     ''' Main function to synchronize files contents by majority vote
     The main job of this function is to walk through the input folders and align the files, so that we can compare every files across every folders, one by one.'''
+    # (Generator) Files Synchronization Algorithm:
+    # Needs a function stable_dir_walking, which will walk through directories recursively but in always the same order on all platforms (same order for files but also for folders), whatever order it is, as long as it is stable.
+    # Until there's no file in any of the input folders to be processed:
+    # - curfiles <- load first file for each folder by using stable_dir_walking on each input folder.
+    # - curfiles_grouped <- group curfiles_ordered:
+    #    * curfiles_ordered <- order curfiles alphabetically (need to separate the relative parent directory and the filename, to account for both without ambiguity)
+    #    * curfiles_grouped <- empty list
+    #    * curfiles_grouped[0] = add first element in curfiles_ordered
+    #    * last_group = 0
+    #    * for every subsequent element nextelt in curfiles_ordered:
+    #        . if nextelt == curfiles_grouped[last_group][0]: add nextelt into curfiles_grouped[last_group] (the latest group in curfiles_grouped)
+    #        . else: create a new group in curfiles_grouped (last_group += 1) and add nextelt into curfiles_grouped[last_group]
+    # At this stage, curfiles_grouped[0] should contain a group of files with the same relative filepath from different input folders, and since we used stable_dir_walking, we are guaranteed that this file is the next to be processed in alphabetical order.
+    # - Majority vote byte-by-byte for each of curfiles_grouped[0], and output winning byte to the output file.
+    # - Update files list alignment: we will now ditch files in curfiles_grouped[0] from curfiles, and replace by the next files respectively from each respective folder. Since we processed in alphabetical (or whatever) order, the next loaded files will match the files in other curfiles_grouped groups that we could not process before.
+    # At this point (after the loop), all input files have been processed in order, without maintaining the whole files list in memory, just one file per input folder.
+
     recgen = [recwalk(path, sorting=True) for path in inputpaths]
     curfiles = {}
     recgen_exhausted = {}
     recgen_exhausted_count = 0
     nbpaths = len(inputpaths)
     retcode = 0
-    
+
     if not ptee: ptee = sys.stdout
 
-    # Init
+    # Initialization: load the first batch of files, one for each folder
     for i in xrange(len(recgen)):
         recgen_exhausted[i] = False
         try:
@@ -195,16 +228,22 @@ def synchronize_files(inputpaths, outpath, tqdm_bar=None, ptee=None, verbose=Fal
 
     # Files lists alignment loop
     while recgen_exhausted_count < nbpaths:
+        # -- Group equivalent relative filepaths together
         #print curfiles # debug
         curfiles_grouped = sort_group(curfiles, True)
+
+        # -- Extract first group of equivalent filepaths (this allows us to process with the same alphabetical order on all platforms)
+        # Note that the remaining files in other groups will be processed later, because their alphabetical order is higher to the first group, this means that the first group is to be processed now
         to_process = curfiles_grouped[0]
         #print to_process # debug
 
-        # Byte-by-byte majority vote
+        # -- Byte-by-byte majority vote on the first group of files
+        # Initialize the list of absolute filepaths
         fileslist = []
         for elt in to_process:
             i = elt[0]
             fileslist.append(os.path.join(inputpaths[i], os.path.join(*elt[1])))
+        # Need the relative filepath also (note that there's only one since it's a group of equivalent relative filepaths, only the absolute path is different between files of a same group)
         relfilepath = os.path.join(*to_process[0][1])
         if verbose: ptee.write("- Processing file %s." % relfilepath)
         # If there's only one file, just copy it over
@@ -219,12 +258,14 @@ def synchronize_files(inputpaths, outpath, tqdm_bar=None, ptee=None, verbose=Fal
                 ptee.write(errmsg)
                 retcode = 1
 
-        # Update files lists alignment
-        for elt in to_process:
+        # -- Update files lists alignment (ie, retrieve new files but while trying to keep the alignment)
+        for elt in to_process:  # for files of the first group (the ones we processed)
             i = elt[0]
+            # Walk their respective folders and load up the next file
             try:
                 if not recgen_exhausted.get(i, False):
                     curfiles[i] = relpath_posix(recgen[i].next(), inputpaths[i])[1]
+            # If there's no file left in this folder, mark this input folder as exhausted and continue with the others
             except StopIteration:
                 curfiles[i] = None
                 recgen_exhausted[i] = True
@@ -371,7 +412,7 @@ This script can also take advantage of a database generated by rfigc.py to make 
         raise NameError('Specified output path %s already exists! Use --force if you want to overwrite.' % outputpath)
 
     if database and not os.path.isfile(database):
-        raise NameError('Specified database ecc file %s does not exist!' % database)
+        raise NameError('Specified rfigc database file %s does not exist!' % database)
 
     # -- Configure the log file if enabled (ptee.write() will write to both stdout/console and to the log file)
     if args.log:
@@ -424,7 +465,7 @@ This script can also take advantage of a database generated by rfigc.py to make 
     else:
         tqdm_bar = tqdm.tqdm(total=filescount, file=ptee, leave=True, unit="files")
     # Call the main function to synchronize files using majority vote
-    errcode = synchronize_files(inputpaths, outputpath, tqdm_bar=tqdm_bar, ptee=ptee, verbose=verbose)
+    errcode = synchronize_files(inputpaths, outputpath, database=database, tqdm_bar=tqdm_bar, ptee=ptee, verbose=verbose)
     #ptee.write("All done! Stats:\n- Total files processed: %i\n- Total files corrupted: %i\n- Total files repaired completely: %i\n- Total files repaired partially: %i\n- Total files corrupted but not repaired at all: %i\n- Total files skipped: %i" % (files_count, files_corrupted, files_repaired_completely, files_repaired_partially, files_corrupted - (files_repaired_partially + files_repaired_completely), files_skipped) )
     tqdm_bar.close()
     ptee.write("All done!")

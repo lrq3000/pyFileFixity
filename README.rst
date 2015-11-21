@@ -867,7 +867,10 @@ generate an ecc file):
    single block of data, thus if you lose one block, you lose more
    data), but if it's really necessary to you, you can still maintain
    high chances of recovering your files by using block-based
-   encryption/compression.
+   encryption/compression (note: block-based encryption can
+   be seen as the equivalent of non-solid archives for compression,
+   because the data is compressed/encrypted in independent blocks,
+   thus allowing partial uncompression/decryption).
 -  `SnapRAID <http://snapraid.sourceforge.net/>`__
 -  `par2ools <https://github.com/jmoiron/par2ools>`__: a set of
    additional tools to manage par2 archives
