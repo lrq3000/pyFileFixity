@@ -253,10 +253,32 @@ def synchronize_files(inputpaths, outpath, database=None, tqdm_bar=None, ptee=No
             shutil.copyfile(fileslist[0], outpathfull)
         # Else, merge by majority vote
         else:
-            errcode, errmsg = majority_vote_byte_scan(relfilepath, fileslist, outpath)
-            if errcode:
-                ptee.write(errmsg)
-                retcode = 1
+            # Before-merge check using rfigc database, if provided
+            # If one of the files in the input folders is already correct, just copy it over
+            correct_file = None
+            if database:
+                for filepath in fileslist:
+                    if rfigc.main("-i %s -d %s" % (filepath, database)) == 0:
+                        correct_file = filepath
+            # If one correct file was found, copy it over
+            if correct_file:
+                outpathfull = os.path.join(outpath, relfilepath)
+                create_dir_if_not_exist(os.path.dirname(outpathfull))
+                shutil.copyfile(correct_file, outpathfull)                
+            # Else, we need to do the majority vote merge
+            else:
+                # Do the majority vote merge
+                errcode, errmsg = majority_vote_byte_scan(relfilepath, fileslist, outpath)
+                # After-merge check using rfigc database, if provided
+                if database:
+                    if rfigc.main("-i %s -d %s" % (filepath, database)) == 1:
+                        errcode = 1
+                        if not errmsg: errmsg = ''
+                        errmsg += "File could not be totally repaired according to rfigc database."
+                # Display errors if any
+                if errcode:
+                    ptee.write(errmsg)
+                    retcode = 1
 
         # -- Update files lists alignment (ie, retrieve new files but while trying to keep the alignment)
         for elt in to_process:  # for files of the first group (the ones we processed)
