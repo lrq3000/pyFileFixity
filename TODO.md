@@ -85,7 +85,7 @@ Normal: to-fill = dict toujours sorté descendant (highest first) et la key est l
                 * sort to-fill if not an automatic ordering structure
     * (Original note: Implement multi-files ecc, which would be a generalization of PAR2: set a new configurable parameter split_stream which would fetch the stream of characters from the specified number of files. We could for example set 3 to use 1/3 of characters from each 3 files, 10 to compose the message block from 10 different files, etc. This would allow to make an ecc file that could recreate lost files from files that are still available (this also fix a bit the issue of directory tree meta-data truncation).
 8. Post stable release, and post on reddit and https://groups.google.com/forum/#!forum/digital-curation
-9. Use six for Python 3 compatibility? (And in the future, try to avoid six and make really compatible code).
+9. Use six for Python 3 compatibility? (And in the future, try to avoid six and make really compatible code, or directly use [futurize](http://python-future.org/overview.html#automatic-conversion-to-py2-3-compatible-code) to generate a first Py3-compatible draft and then refine it manually).
 
 10. (maybe) implement file_scraping option in header_ecc.py and structural_adaptive_ecc.py: at repair, walk through each files (instead of walking from the database entries), and check each database entry to see if the file corresponds to an ecc track: we try to decode each ecc block against the file, and if there's some number of ecc blocks that perfectly match the file, or can be repaired without any error, then we will know this is the correct ecc entry and we can even rename the file. The threshold could be the ratio of matching/repairable ecc blocks over the total number of ecc blocks. By default, ratio would be 100% (perfect match required to rename the file), but can be specified as commandline parameter (eg: --filescrape without value == 100%, --filescrape 50 == 50% threshold). Could also check by filesize. See: https://github.com/Parchive/par2cmdline#misnamed-and-incomplete-data-files
 11. Branch coverage 100%
@@ -100,7 +100,7 @@ http://www.mathworks.com/matlabcentral/fileexchange/5841-chinese-remainder-theor
 MAYBE
 ----------
 
-- Move from argparse to [docopt](https://github.com/docopt/docopt) to generate a beautiful and more usable command-line interface (with clear modes, because right now the relevant options are not grouped together and it can be quite confusing).
+- Move from argparse to [docopt](https://github.com/docopt/docopt) or [click](http://click.pocoo.org/) to generate a beautiful and more usable command-line interface (with clear modes, because right now the relevant options are not grouped together and it can be quite confusing).
 
 - High priority: parallelize eccman.py to encode faster in a generic fashion (ie, using any codec). It would call n parallel instances of the ecc codec, to compute n ecc blocks in parallel. This should give us at least a 10x speedup (if compatible with PyPy, this would make us reach 10MB/s!).
 
