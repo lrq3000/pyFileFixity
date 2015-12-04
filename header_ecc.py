@@ -452,7 +452,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
             # Write ECC file header identifier (unique string + version)
             db.write("**PYHEADERECCv%s**\n" % (''.join([x * 3 for x in __version__]))) # each character in the version will be repeated 3 times, so that in case of tampering, a majority vote can try to disambiguate
             # Write the parameters (they are NOT reloaded automatically, you have to specify them at commandline! It's the user role to memorize those parameters (using any means: own brain memory, keep a copy on paper, on email, etc.), so that the parameters are NEVER tampered. The parameters MUST be ultra reliable so that errors in the ECC file can be more efficiently recovered.
-            for i in xrange(3): db.write("** Parameters: "+" ".join(sys.argv[1:]) + "\n") # copy them 3 times just to be redundant in case of ecc file corruption
+            for i in xrange(3): db.write("** Parameters: "+" ".join(argv) + "\n") # copy them 3 times just to be redundant in case of ecc file corruption
             db.write("** Generated under %s\n" % ecc_manager.description())
             # NOTE: there's NO HEADER for the ecc file! Ecc entries are all independent of each others, you just need to supply the decoding arguments at commandline, and the ecc entries can be decoded. This is done on purpose to be remove the risk of critical spots in ecc file.
 
@@ -581,10 +581,11 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
                             relfilepath_correct.append(e["message"])
                             fpcorrected = False
                 # Join all the blocks into one string to build the final filepath
+                if isinstance(relfilepath_correct[0], bytearray): relfilepath_correct = [str(x) for x in relfilepath_correct] # workaround when using --ecc_algo 3 or 4, because we get a list of bytearrays instead of str
                 relfilepath = ''.join(relfilepath_correct)
                 # Report errors
                 if fpcorrupted:
-                    if fpcorrected: ptee.write("\n- Fixed error in metadata field at offset %i filepath %s." % (entry_pos[0], relfilepath))
+                    if fpcorrected: ptee.write("\n- Fixed error in metadata field at offset %i filepath %s." % (db.tell()-len(entry), relfilepath))
                     else: ptee.write("\n- Error in filepath, could not correct completely metadata field at offset %i with value: %s. Please fix manually by editing the ecc file or set the corrupted characters to null bytes and --enable_erasures." % (entry_pos[0], relfilepath))
                 # -- End of intra-ecc on filepath
 
