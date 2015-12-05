@@ -158,14 +158,24 @@ def remove_if_exist(path):  # pragma: no cover
             return True
     return False
 
-def copy_any(src, dst):  # pragma: no cover
+def copy_any(src, dst, only_missing=False):  # pragma: no cover
     """Copy a file or a directory tree, deleting the destination before processing"""
-    remove_if_exist(dst)
+    if not only_missing:
+        remove_if_exist(dst)
     if os.path.exists(src):
         if os.path.isdir(src):
-            shutil.copytree(src, dst, symlinks=False, ignore=None)
+            if not only_missing:
+                shutil.copytree(src, dst, symlinks=False, ignore=None)
+            else:
+                for dirpath, filepath in recwalk(src):
+                    srcfile = os.path.join(dirpath, filepath)
+                    relpath = os.path.relpath(srcfile, src)
+                    dstfile = os.path.join(dst, relpath)
+                    if not os.path.exists(dstfile):
+                        shutil.copyfile(srcfile, dstfile)
+                        shutil.copystat(srcfile, dstfile)
             return True
-        elif os.path.isfile(src):
+        elif os.path.isfile(src) and (not only_missing or not os.path.exists(dst)):
             shutil.copyfile(src, dst)
             shutil.copystat(src, dst)
             return True
