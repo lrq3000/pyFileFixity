@@ -128,27 +128,33 @@ def majority_vote_byte_scan(relfilepath, fileslist, outpath, blocksize=65535, de
 
     errors = []
     with open(outpathfull, 'wb') as outfile:
-        final_entry = []
         entries = [1]*len(fileshandles)  # init with 0 to start the while loop
-        while (entries.count('') == 0):
+        while (entries.count('') < len(fileslist)):
+            final_entry = []
             # Read a block from all input files into memory
             for i in xrange(len(fileshandles)):
                 entries[i] = fileshandles[i].read(blocksize)
-            # If there's only one file, just copy the file's content over
-            if len(entries) == 1:
+
+            # End of file for all files, we exit
+            if entries.count('') == len(fileslist):
+                break
+            # Else if there's only one file, just copy the file's content over
+            elif len(entries) == 1:
                 final_entry = entries[0]
 
             # Else, do the majority vote
             else:
                 # Walk along each column (imagine the strings being rows in a matrix, then we pick one column at each iteration = all characters at position i of each string), so that we can compare these characters easily
-                for i in xrange(len(entries[0])):
+                for i in xrange(max(len(entry) for entry in entries)):
                     hist = {} # kind of histogram, we just memorize how many times a character is presented at the position i in each string TODO: use collections.Counter instead of dict()?
                     # Extract the character at position i of each string and compute the histogram at the same time (number of time this character appear among all strings at this position i)
-                    for e in entries:
-                        if i < len(e): # TODO: check this line, this should allow the vote to continue even if some files are shorter than others
+                    for entry in entries:
+                        # Check if we are not beyond the current entry's length
+                        if i < len(entry): # TODO: check this line, this should allow the vote to continue even if some files are shorter than others
+                            # Extract the character and use it to contribute to the histogram
                             # TODO: add warning message when one file is not of the same size as the others
-                            key = str(ord(e[i])) # convert to the ascii value to avoid any funky problem with encoding in dict keys
-                            hist[key] = hist.get(key, 0) + 1
+                            key = str(ord(entry[i])) # convert to the ascii value to avoid any funky problem with encoding in dict keys
+                            hist[key] = hist.get(key, 0) + 1 # increment histogram for this value. If it does not exists, use 0. (essentially equivalent to hist[key] += 1 but with exception management if key did not already exists)
                     # If there's only one character (it's the same accross all strings at position i), then it's an exact match, we just save the character and we can skip to the next iteration
                     if len(hist) == 1:
                         final_entry.append(chr(int(hist.iterkeys().next())))
@@ -160,10 +166,20 @@ def majority_vote_byte_scan(relfilepath, fileslist, outpath, blocksize=65535, de
                         # Ambiguity! If each entries present a different character (thus the major has only an occurrence of 1), then it's too ambiguous and we just set a null byte to signal that
                         if hist[skeys[0]] == 1:
                             if default_char_null:
-                                final_entry.append("\x00")
+                                if default_char_null is True:
+                                    final_entry.append("\x00")
+                                else:
+                                    final_entry.append(default_char_null)
                             else:
                                 # Use the entry of the first file that is still open
-                                final_entry.append(chr(int(skeys[0]))) # TODO: check that it's correct order - always the first (else maybe should use -1)
+                                first_char = ''
+                                for entry in entries:
+                                    # Found the first file that has a character at this position: store it and break loop
+                                    if i < len(entry):
+                                        first_char = entry[i]
+                                        break
+                                # Use this character in spite of ambiguity
+                                final_entry.append(first_char)
                             errors.append(outfile.tell() + i) # Print an error indicating the characters that failed
                         # Else if there is a tie (at least two characters appear with the same frequency), then we just pick one of them
                         elif hist[skeys[0]] == hist[skeys[1]]:
