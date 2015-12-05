@@ -639,6 +639,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
                             relfilepath_correct.append(e["message"])
                             fpcorrected = False
                 # Join all the blocks into one string to build the final filepath
+                if isinstance(relfilepath_correct[0], bytearray): relfilepath_correct = [str(x) for x in relfilepath_correct] # workaround when using --ecc_algo 3 or 4, because we get a list of bytearrays instead of str
                 relfilepath = ''.join(relfilepath_correct)
                 # Report errors
                 if fpcorrupted:
