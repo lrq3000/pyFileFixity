@@ -340,6 +340,9 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
                     filescount = filescount + 1
                     filepath = os.path.join(rootfolderpath, row['path']) # Build the absolute file path
 
+                    # Single-file mode: skip if this is not the file we are looking for
+                    if inputpath != rootfolderpath and inputpath != filepath: continue
+
                     if verbose: ptee.write("\n- Processing file %s" % row['path'])
                     errors = []
                     if not os.path.isfile(filepath):
@@ -530,6 +533,9 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
             for row in tqdm.tqdm(dbfile, file=ptee, total=filestodocount, leave=True):
                 filescount = filescount + 1
                 filepath = os.path.join(rootfolderpath, row['path'])
+
+                # Single-file mode: skip if this is not the file we are looking for
+                if inputpath != rootfolderpath and inputpath != filepath: continue
 
                 if verbose: ptee.write("\n- Processing file %s" % row['path'])
                 errors = []
