@@ -8,6 +8,7 @@ import os
 import argparse
 from pathlib2 import PurePath, PureWindowsPath, PurePosixPath # opposite operation of os.path.join (split a path into parts)
 import posixpath # to generate unix paths
+import shutil
 
 try:
     from scandir import walk # use the faster scandir module if available (Python >= 3.5), see https://github.com/benhoyt/scandir
@@ -82,10 +83,11 @@ def create_dir_if_not_exist(path):
         os.makedirs(path)
 
 def get_next_entry(file, entrymarker="\xFE\xFF\xFE\xFF\xFE\xFF\xFE\xFF\xFE\xFF", only_coord=True, blocksize=65535):
-    '''Find or real the next ecc entry in a given ecc file.
-    Call this function multiple times with the same file handle to get subsequent markers positions (this is not a generator but it works very similarly).
+    '''Find or read the next ecc entry in a given ecc file.
+    Call this function multiple times with the same file handle to get subsequent markers positions (this is not a generator but it works very similarly, because it will continue reading from the file's current cursor position -- this can be used advantageously if you want to read only a specific entry by seeking before supplying the file handle).
     This will read any string length between two entrymarkers.
-    The reading is very tolerant, so it will always return any valid entry (but also scrambled entries if any, but the decoding will ensure everything's ok).'''
+    The reading is very tolerant, so it will always return any valid entry (but also scrambled entries if any, but the decoding will ensure everything's ok).
+    `file` is a file handle, not the path to the file.'''
     found = False
     start = None # start and end vars are the relative position of the starting/ending entrymarkers in the current buffer
     end = None
@@ -139,3 +141,42 @@ def get_next_entry(file, entrymarker="\xFE\xFF\xFE\xFF\xFE\xFF\xFE\xFF\xFE\xFF",
     else:
         # Nothing found (or no new entry to find, we've already found them all), so we return None
         return None
+
+def create_dir_if_not_exist(path):  # pragma: no cover
+    """Create a directory if it does not already exist, else nothing is done and no error is return"""
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+def remove_if_exist(path):  # pragma: no cover
+    """Delete a file or a directory recursively if it exists, else no exception is raised"""
+    if os.path.exists(path):
+        if os.path.isdir(path):
+            shutil.rmtree(path)
+            return True
+        elif os.path.isfile(path):
+            os.remove(path)
+            return True
+    return False
+
+def copy_any(src, dst, only_missing=False):  # pragma: no cover
+    """Copy a file or a directory tree, deleting the destination before processing"""
+    if not only_missing:
+        remove_if_exist(dst)
+    if os.path.exists(src):
+        if os.path.isdir(src):
+            if not only_missing:
+                shutil.copytree(src, dst, symlinks=False, ignore=None)
+            else:
+                for dirpath, filepath in recwalk(src):
+                    srcfile = os.path.join(dirpath, filepath)
+                    relpath = os.path.relpath(srcfile, src)
+                    dstfile = os.path.join(dst, relpath)
+                    if not os.path.exists(dstfile):
+                        shutil.copyfile(srcfile, dstfile)
+                        shutil.copystat(srcfile, dstfile)
+            return True
+        elif os.path.isfile(src) and (not only_missing or not os.path.exists(dst)):
+            shutil.copyfile(src, dst)
+            shutil.copystat(src, dst)
+            return True
+    return False

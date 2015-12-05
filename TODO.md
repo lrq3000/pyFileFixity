@@ -19,10 +19,10 @@ Canonic format:
     <entry_marker>/path/to/my-first-file.txt<field_delim>231<field_delim><ecc-of-filepath><field_delim><ecc-of-size><field_delim><hash-of-chunk1><ecc-of-chunk1><hash-of-chunk2><ecc-of-chunk2> etc...
     ```
 
-3. compute redundancy rate(n, k) et inverse
+3. compute redundancy rate(n, k) and the opposite, and show in precomputation stats in header_ecc.py and structural_adaptive_ecc.py.
 http://stackoverflow.com/questions/24421305/overhead-of-error-correcting-codes-as-the-error-rate-increases?rq=1
 Difference between resiliency rate and redundancy rate: resiliency rate is the number of errors you can correct in the original message (ie: 0.3% means that you can correct 30% of your original message), while redundancy rate is the number of errors you can correct in the whole codeword (ie: 30% means that you can correct 30% over the original message + ecc symbols, thus if you just want to correct errors in the original message, it's a lot less than 30%). That's why resiliency rate can easily attain 100% (which means that you can correct errors in every symbols of the original message) and even beyond, while 100% is the unachievable limit of redundancy rate (because 100% means that you can correct errors in every symbols of the whole codeword, which would mean that you use only ecc symbols and no symbols from the original message at all, which is impossible since you need at least one original message's symbol to compute an ecc code, thus you can only attain 99.9...% at maximum).
-4. eccman if decoding fails and k <= floor(n/2) then try to decode with erasures considering input as all erasures (useful for index backup, path strings, etc.).
+4. eccman add a new method to decode more robustly: if decoding fails and k <= floor(n/2) then try to decode with erasures considering input as all erasures (useful for index backup, path strings, etc.). And inversely! If erasures enabled, then try without erasures (maybe too much false positives).
 Put that as a new method in eccman which will call self.decode() and if self.check not ok and k <= n//2 then try erasures only!
 5. replication_repair.py : --input "folder1" "folder2" "folder3" or --input_files "file1", "file2", "file3" and --output "folder" or "file". Will streamingly read a buffer of bytes from files, and then major vote, and write to output. At the beginning, assign a number to each input, and say for each block which was chosen. If ambiguity, choose the original (but print). If one file size is lesser than replications, continue to the biggest one by default. Can be applicable to both ecc files and to just any file. The goal is to use this script to take advantage of the storage of your archived files into multiple locations: you will necessarily make replications, so why just not use them for repair?
     * replication can repair r-2 errors because of vote (you need at least 2 blocks for majority vote to work), where r is the number of replications: if r=3, you get a redundancy rate of 1/3, if r=4, rate is 2/4, etc.
@@ -68,7 +68,8 @@ Put that as a new method in eccman which will call self.decode() and if self.che
         * Compute average of stats and display them.
         * (Note: at the end, the latest generated files will be kept on disk on purpose, so that the user can try to open the files for himself and see if they work.)
 7. multi-file support (with file recreation, even if can only be partially recovered, missing file will be replaced by null bytes on-the-fly)
-if multi supplied, intra-fields will be encoded in compact json, else only one string.
+if multi supplied, intra-fields "filepath" and "filesize" will be joined with "|" separator. The generation and decoding of intra-fields ecc does not change (it's still considered to be one field for eccman).
+Weak spot is the number of files per ecc track, that's why it won't be stored in an intra-field, but supplied by user in commandline argument. This means that the number of files per ecc track will be fixed, if there's one missing then an empty file will be used (thus the existing files for this ecc track, the last ecc track, will be more resilient than necessary, but anyway it will impact the files with the lowest size overall given our clustering strategies so the overhead won't be much).
 Two modes: simple and normal. Simple will just group together files (order by size) without trying to fill the gaps.
 Normal: to-fill = dict toujours sorté descendant (highest first) et la key est la taille à remplir pour tel couple (cluster, groupe).
     * For each file:
@@ -85,7 +86,7 @@ Normal: to-fill = dict toujours sorté descendant (highest first) et la key est l
                 * sort to-fill if not an automatic ordering structure
     * (Original note: Implement multi-files ecc, which would be a generalization of PAR2: set a new configurable parameter split_stream which would fetch the stream of characters from the specified number of files. We could for example set 3 to use 1/3 of characters from each 3 files, 10 to compose the message block from 10 different files, etc. This would allow to make an ecc file that could recreate lost files from files that are still available (this also fix a bit the issue of directory tree meta-data truncation).
 8. Post stable release, and post on reddit and https://groups.google.com/forum/#!forum/digital-curation
-9. Use six for Python 3 compatibility? (And in the future, try to avoid six and make really compatible code).
+9. Use six for Python 3 compatibility? (And in the future, try to avoid six and make really compatible code, or directly use [futurize](http://python-future.org/overview.html#automatic-conversion-to-py2-3-compatible-code) to generate a first Py3-compatible draft and then refine it manually).
 
 10. (maybe) implement file_scraping option in header_ecc.py and structural_adaptive_ecc.py: at repair, walk through each files (instead of walking from the database entries), and check each database entry to see if the file corresponds to an ecc track: we try to decode each ecc block against the file, and if there's some number of ecc blocks that perfectly match the file, or can be repaired without any error, then we will know this is the correct ecc entry and we can even rename the file. The threshold could be the ratio of matching/repairable ecc blocks over the total number of ecc blocks. By default, ratio would be 100% (perfect match required to rename the file), but can be specified as commandline parameter (eg: --filescrape without value == 100%, --filescrape 50 == 50% threshold). Could also check by filesize. See: https://github.com/Parchive/par2cmdline#misnamed-and-incomplete-data-files
 11. Branch coverage 100%
@@ -100,7 +101,7 @@ http://www.mathworks.com/matlabcentral/fileexchange/5841-chinese-remainder-theor
 MAYBE
 ----------
 
-- Move from argparse to [docopt](https://github.com/docopt/docopt) to generate a beautiful and more usable command-line interface (with clear modes, because right now the relevant options are not grouped together and it can be quite confusing).
+- Move from argparse to [docopt](https://github.com/docopt/docopt) or [click](http://click.pocoo.org/) to generate a beautiful and more usable command-line interface (with clear modes, because right now the relevant options are not grouped together and it can be quite confusing).
 
 - High priority: parallelize eccman.py to encode faster in a generic fashion (ie, using any codec). It would call n parallel instances of the ecc codec, to compute n ecc blocks in parallel. This should give us at least a 10x speedup (if compatible with PyPy, this would make us reach 10MB/s!).
 

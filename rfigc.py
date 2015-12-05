@@ -461,7 +461,8 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
 
         if len(dbrows) == 0:
             ptee.write("Nothing to do, there's no md5 nor sha1 hashes in the database file!")
-            return(1) # return with an error
+            del ptee
+            return 1 # return with an error
 
         # Counting the total number of files that we will have to process
         ptee.write("Counting total number of files to process, please wait...")
@@ -581,6 +582,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
         ptee.write("All files checked: Total: %i - Files with errors: %i.\n\n" % (filescount, errorscount))
         retval = (errorscount > 0)
 
+    del ptee
     return retval # return error code if any
 
 # Calling main function if the script is directly called (not imported as a library in another program)

@@ -438,7 +438,9 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
         ptee.write("Total ECC size estimation: %s = %g%% of total files size %s." % (sizeof_fmt(sizeheaders), total_pred_percentage, sizeof_fmt(sizetotal)))
         ptee.write("Details: resiliency of %i%%: For the header (first %i characters) of each file: each block of %i chars will get an ecc of %i chars (%i errors or %i erasures)." % (resilience_rate*100, header_size, ecc_params["message_size"], ecc_params["ecc_size"], int(ecc_params["ecc_size"] / 2), ecc_params["ecc_size"]))
 
-    if stats_only: return 0
+    if stats_only:
+        del ptee
+        return 0
 
     # == Generation mode
     # Generate an ecc file, containing ecc entries for every files recursively in the specified root folder.
@@ -452,7 +454,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
             # Write ECC file header identifier (unique string + version)
             db.write("**PYHEADERECCv%s**\n" % (''.join([x * 3 for x in __version__]))) # each character in the version will be repeated 3 times, so that in case of tampering, a majority vote can try to disambiguate
             # Write the parameters (they are NOT reloaded automatically, you have to specify them at commandline! It's the user role to memorize those parameters (using any means: own brain memory, keep a copy on paper, on email, etc.), so that the parameters are NEVER tampered. The parameters MUST be ultra reliable so that errors in the ECC file can be more efficiently recovered.
-            for i in xrange(3): db.write("** Parameters: "+" ".join(sys.argv[1:]) + "\n") # copy them 3 times just to be redundant in case of ecc file corruption
+            for i in xrange(3): db.write("** Parameters: "+" ".join(argv) + "\n") # copy them 3 times just to be redundant in case of ecc file corruption
             db.write("** Generated under %s\n" % ecc_manager.description())
             # NOTE: there's NO HEADER for the ecc file! Ecc entries are all independent of each others, you just need to supply the decoding arguments at commandline, and the ecc entries can be decoded. This is done on purpose to be remove the risk of critical spots in ecc file.
 
@@ -506,6 +508,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
                             dbidx.write(str(item))
                 files_done += 1
         ptee.write("All done! Total number of files processed: %i, skipped: %i" % (files_done, files_skipped))
+        del ptee
         return 0
 
     # == Error Correction (and checking by hash) mode
@@ -581,10 +584,11 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
                             relfilepath_correct.append(e["message"])
                             fpcorrected = False
                 # Join all the blocks into one string to build the final filepath
+                if isinstance(relfilepath_correct[0], bytearray): relfilepath_correct = [str(x) for x in relfilepath_correct] # workaround when using --ecc_algo 3 or 4, because we get a list of bytearrays instead of str
                 relfilepath = ''.join(relfilepath_correct)
                 # Report errors
                 if fpcorrupted:
-                    if fpcorrected: ptee.write("\n- Fixed error in metadata field at offset %i filepath %s." % (entry_pos[0], relfilepath))
+                    if fpcorrected: ptee.write("\n- Fixed error in metadata field at offset %i filepath %s." % (db.tell()-len(entry), relfilepath))
                     else: ptee.write("\n- Error in filepath, could not correct completely metadata field at offset %i with value: %s. Please fix manually by editing the ecc file or set the corrupted characters to null bytes and --enable_erasures." % (entry_pos[0], relfilepath))
                 # -- End of intra-ecc on filepath
 
@@ -691,6 +695,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
         # All ecc entries processed for checking and potentally repairing, we're done correcting!
         bardisp.close() # at the end, the bar may not be 100% because of the headers that are skipped by get_next_entry() and are not accounted in bardisp.
         ptee.write("All done! Stats:\n- Total files processed: %i\n- Total files corrupted: %i\n- Total files repaired completely: %i\n- Total files repaired partially: %i\n- Total files corrupted but not repaired at all: %i\n- Total files skipped: %i" % (files_count, files_corrupted, files_repaired_completely, files_repaired_partially, files_corrupted - (files_repaired_partially + files_repaired_completely), files_skipped) )
+        del ptee
         if files_corrupted == 0 or files_repaired_completely == files_corrupted:
             return 0
         else:
