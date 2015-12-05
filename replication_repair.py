@@ -187,7 +187,7 @@ def majority_vote_byte_scan(relfilepath, fileslist, outpath, blocksize=65535, de
         fh.close()
     return (0, None)
 
-def synchronize_files(inputpaths, outpath, database=None, tqdm_bar=None, ptee=None, verbose=False):
+def synchronize_files(inputpaths, outpath, database=None, tqdm_bar=None, report_file=None, ptee=None, verbose=False):
     ''' Main function to synchronize files contents by majority vote
     The main job of this function is to walk through the input folders and align the files, so that we can compare every files across every folders, one by one.'''
     # (Generator) Files Synchronization Algorithm:
@@ -216,6 +216,14 @@ def synchronize_files(inputpaths, outpath, database=None, tqdm_bar=None, ptee=No
 
     if not ptee: ptee = sys.stdout
 
+    # Open report file and write header
+    if report_file is not None:
+        rfile = open(report_file, 'wb')
+        r_writer = csv.writer(rfile, delimiter='|', lineterminator='\n', quotechar='"')
+        r_header = ["filepath"] + ["dir%i" % (i+1) for i in xrange(nbpaths)] + ["hash-correct"] + ["errors"]
+        r_length = len(r_header)
+        r_writer.writerow(r_header)
+
     # Initialization: load the first batch of files, one for each folder
     for i in xrange(len(recgen)):
         recgen_exhausted[i] = False
@@ -228,6 +236,9 @@ def synchronize_files(inputpaths, outpath, database=None, tqdm_bar=None, ptee=No
 
     # Files lists alignment loop
     while recgen_exhausted_count < nbpaths:
+        # Init a new report's row
+        if report_file: r_row = ["-"] * r_length
+
         # -- Group equivalent relative filepaths together
         #print curfiles # debug
         curfiles_grouped = sort_group(curfiles, True)
@@ -238,14 +249,16 @@ def synchronize_files(inputpaths, outpath, database=None, tqdm_bar=None, ptee=No
         #print to_process # debug
 
         # -- Byte-by-byte majority vote on the first group of files
+        # Need the relative filepath also (note that there's only one since it's a group of equivalent relative filepaths, only the absolute path is different between files of a same group)
+        relfilepath = os.path.join(*to_process[0][1])
+        if report_file: r_row[0] = relfilepath
+        if verbose: ptee.write("- Processing file %s." % relfilepath)
         # Initialize the list of absolute filepaths
         fileslist = []
         for elt in to_process:
             i = elt[0]
             fileslist.append(os.path.join(inputpaths[i], os.path.join(*elt[1])))
-        # Need the relative filepath also (note that there's only one since it's a group of equivalent relative filepaths, only the absolute path is different between files of a same group)
-        relfilepath = os.path.join(*to_process[0][1])
-        if verbose: ptee.write("- Processing file %s." % relfilepath)
+            if report_file: r_row[i+1] = 'X' # put an X in the report file below each folder that contains this file
         # If there's only one file, just copy it over
         if len(curfiles_grouped) == 1:
             outpathfull = os.path.join(outpath, relfilepath)
@@ -257,14 +270,17 @@ def synchronize_files(inputpaths, outpath, database=None, tqdm_bar=None, ptee=No
             # If one of the files in the input folders is already correct, just copy it over
             correct_file = None
             if database:
-                for filepath in fileslist:
+                for id, filepath in enumerate(fileslist):
                     if rfigc.main("-i %s -d %s" % (filepath, database)) == 0:
                         correct_file = filepath
+                        correct_id = id
+                        break
             # If one correct file was found, copy it over
             if correct_file:
                 outpathfull = os.path.join(outpath, relfilepath)
                 create_dir_if_not_exist(os.path.dirname(outpathfull))
-                shutil.copyfile(correct_file, outpathfull)                
+                shutil.copyfile(correct_file, outpathfull)
+                if report_file: r_row[id+1] = "O"
             # Else, we need to do the majority vote merge
             else:
                 # Do the majority vote merge
@@ -277,8 +293,17 @@ def synchronize_files(inputpaths, outpath, database=None, tqdm_bar=None, ptee=No
                         errmsg += "File could not be totally repaired according to rfigc database."
                 # Display errors if any
                 if errcode:
+                    if report_file:
+                        r_row[-2] = "KO"
+                        r_row[-1] = errmsg
                     ptee.write(errmsg)
                     retcode = 1
+                else:
+                    if report_file: r_row[-2] = "OK"
+
+        # Save current report's row
+        if report_file:
+            r_writer.writerow(r_row)
 
         # -- Update files lists alignment (ie, retrieve new files but while trying to keep the alignment)
         for elt in to_process:  # for files of the first group (the ones we processed)
@@ -295,6 +320,7 @@ def synchronize_files(inputpaths, outpath, database=None, tqdm_bar=None, ptee=No
         if tqdm_bar: tqdm_bar.update()
     if tqdm_bar: tqdm_bar.close()
 
+    if report_file: rfile.close()
     return retcode
 
 
@@ -487,10 +513,11 @@ This script can also take advantage of a database generated by rfigc.py to make 
     else:
         tqdm_bar = tqdm.tqdm(total=filescount, file=ptee, leave=True, unit="files")
     # Call the main function to synchronize files using majority vote
-    errcode = synchronize_files(inputpaths, outputpath, database=database, tqdm_bar=tqdm_bar, ptee=ptee, verbose=verbose)
+    errcode = synchronize_files(inputpaths, outputpath, database=database, tqdm_bar=tqdm_bar, report_file=report_file, ptee=ptee, verbose=verbose)
     #ptee.write("All done! Stats:\n- Total files processed: %i\n- Total files corrupted: %i\n- Total files repaired completely: %i\n- Total files repaired partially: %i\n- Total files corrupted but not repaired at all: %i\n- Total files skipped: %i" % (files_count, files_corrupted, files_repaired_completely, files_repaired_partially, files_corrupted - (files_repaired_partially + files_repaired_completely), files_skipped) )
     tqdm_bar.close()
     ptee.write("All done!")
+    if report_file: ptee.write("Saved replication repair results in report file: %s" % report_file)
     del ptee
     return errcode
 
