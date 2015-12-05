@@ -485,7 +485,9 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
         ptee.write("- Resiliency stage3 of %i%%: progressively towards the end, the parameters will gradually become: each block of %i chars will get an ecc of %i chars (%i errors or %i erasures)." % (resilience_rate_s3*100, ecc_params_s3["message_size"], ecc_params_s3["ecc_size"], int(ecc_params_s3["ecc_size"] / 2), ecc_params_s3["ecc_size"]))
         if max_block_size > 100: ptee.write("Note: current max_block_size (size of message+ecc blocks) is %i. Consider using a smaller value to greatly speedup the processing (because Reed-Solomon encoding complexity is about O(max_block_size^2)) at the expense of generating a bigger ecc file and less burst error resiliency (because the ecc blocks will be smaller)." % max_block_size)
 
-    if stats_only: return 0
+    if stats_only:
+        del ptee
+        return 0
 
     # == Generation mode
     # Generate an ecc file, containing ecc entries for every files recursively in the specified root folder.
@@ -557,6 +559,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
         if bardisp.n > bardisp.total: bardisp.total = bardisp.n # small workaround because n may be higher than total (because of files ending before 'message_size', thus the message is padded and in the end, we have outputted and processed a bit more characters than are really in the files, thus why total can be below n). Doing this allows to keep the trace of the progression bar.
         bardisp.close()
         ptee.write("All done! Total number of files processed: %i, skipped: %i" % (files_done, files_skipped))
+        del ptee
         return 0
 
     # == Error Correction (and checking by hash) mode
@@ -752,6 +755,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
         # All ecc entries processed for checking and potentally repairing, we're done correcting!
         bardisp.close() # at the end, the bar may not be 100% because of the headers that are skipped by read_next_entry() and are not accounted in bardisp.
         ptee.write("All done! Stats:\n- Total files processed: %i\n- Total files corrupted: %i\n- Total files repaired completely: %i\n- Total files repaired partially: %i\n- Total files corrupted but not repaired at all: %i\n- Total files skipped: %i" % (files_count, files_corrupted, files_repaired_completely, files_repaired_partially, files_corrupted - (files_repaired_partially + files_repaired_completely), files_skipped) )
+        del ptee
         if files_corrupted == 0 or files_repaired_completely == files_corrupted:
             return 0
         else:

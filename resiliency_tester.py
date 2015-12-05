@@ -99,7 +99,7 @@ def interpolate_dict(s, interp_args={}):
     # String interpolate the command to fill in the variables if necessary
     return s.format(**interp_args)
 
-def execute_command(cmd, verbose=False):
+def execute_command(cmd, ptee=None, verbose=False):
     # Parse string in a shell-like fashion
     # (incl quoted strings and comments)
     parsed_cmd = shlex.split(cmd, comments=True)
@@ -107,6 +107,7 @@ def execute_command(cmd, verbose=False):
     if parsed_cmd:
         if verbose:
             print("Running command: " + cmd)
+        #if ptee: ptee.disable()
         if parsed_cmd[0].lower().startswith('python'):
             mod = import_module(get_filename_no_ext(parsed_cmd[1]))
             if mod and hasattr(mod, 'main'):
@@ -116,6 +117,7 @@ def execute_command(cmd, verbose=False):
         else:
             # Launch the command and wait to finish (synchronized call)
             subprocess.check_call(parsed_cmd)
+        #if ptee: ptee.enable()
 
 ######## Diff functions ########
 
@@ -506,7 +508,7 @@ Also note that the test folder will not be removed at the end, so that you can s
         for i, cmd in enumerate(commands["before_tamper"]):
             scmd = interpolate_dict(cmd, interp_args={"inputdir": origpath, "dbdir": dbdir})
             ptee.write("Executing command: %s" % scmd)
-            execute_command(scmd)
+            execute_command(scmd, ptee=ptee)
         copy_any(dbdir, origdbdir) # make a copy because we may tamper the db files
 
         # Tampering
@@ -515,14 +517,14 @@ Also note that the test folder will not be removed at the end, so that you can s
         for i, cmd in enumerate(commands["tamper"]):
             scmd = interpolate_dict(cmd, interp_args={"inputdir": tamperdir, "dbdir": dbdir})
             ptee.write("- RTEST: Executing command: %s" % scmd)
-            execute_command(scmd)
+            execute_command(scmd, ptee=ptee)
 
         # After tampering
         ptee.write("=== AFTER TAMPERING ===")
         for i, cmd in enumerate(commands["after_tamper"]):
             scmd = interpolate_dict(cmd, interp_args={"inputdir": tamperdir, "dbdir": dbdir})
             ptee.write("- RTEST: Executing command: %s" % scmd)
-            execute_command(scmd)
+            execute_command(scmd, ptee=ptee)
 
         # Repairing
         ptee.write("=== REPAIRING ===")
@@ -533,7 +535,7 @@ Also note that the test folder will not be removed at the end, so that you can s
             scmd = interpolate_dict(cmd, interp_args={"inputdir": indir, "dbdir": dbdir, "outputdir": outdir})
             ptee.write("- RTEST: Executing command: %s" % scmd)
             create_dir_if_not_exist(outdir)
-            execute_command(scmd)
+            execute_command(scmd, ptee=ptee)
             copy_any(indir, outdir, only_missing=True) # copy the files that did not need any repair (or could not be repaired at all!)
             finalrepairdir = outdir
             # If parallel, do not reuse the previous repair resulting files, repair from the tampered files directly

@@ -359,7 +359,7 @@ Note: An ecc structure repair does NOT allow to recover from more errors on your
 
         #print(markers_pos)
         ptee.write("Done. Hamming heuristic with threshold %i%% repaired %i entrymarkers and %i field_delim (%i total) and %i were already valid.\n" % (round(distance_threshold*100, 0), len(markers_pos[0]), len(markers_pos[1]), len(markers_pos[0])+len(markers_pos[1]), already_valid) )
-
+        del ptee
         return 0
 
 # Calling main function if the script is directly called (not imported as a library in another program)
