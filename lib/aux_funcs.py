@@ -175,3 +175,209 @@ def copy_any(src, dst, only_missing=False):  # pragma: no cover
             shutil.copystat(src, dst)
             return True
     return False
+
+#### MULTIFILES AUX FUNCTIONS ####
+# Here are the aux functions to cluster files of similar sizes in order to generate multifiles ecc tracks in header_ecc.py and structural_variable_ecc.py
+# TODO in hecc and saecc:
+#  * make intra-fields filepath with multiple files paths, separated by "|" (eg: "filepath1|filepath2|filepath3"
+#  * make intra-fields multiple file sizes, just like filepaths: "filesize1|filesize2|filesize3"
+#  * intra-ecc should work just the same
+#  * adapt stream encoding and decoding to dispatch the bytes to the corresponding files.
+#  * stream encoding/decoding should be robust: when a file ecc track is either ended (file was smaller than the others) or corrupted, then fill with null bytes, the rest should work the same (at decoding, maybe can use erasures decoding to double the recovery rate, at encoding maybe try to not store the null bytes? But how? Normally, the files in a group should be in descending size order, so the first file will always have a track, but if the other files are smaller then nvm their ecc just won't be appended, thus we end up with a shorter ecc track, but we know that and we can just computationally append the missing null bytes, no harm and no risk of corruption since these bytes aren't stored! So at encoding this doubles the recovery rate towards the end of the file for the bigger file)..
+# TODO in group_files_by_size: try to use sortedcontainers.SortedList() ? https://pypi.python.org/pypi/sortedcontainers
+
+from collections import OrderedDict
+from lib.sortedcontainers import SortedList
+from random import randint
+from itertools import izip_longest
+
+def grouper(n, iterable, fillvalue=None):
+    "grouper(3, 'ABCDEFG', 'x') --> ABC DEF Gxx"
+    args = [iter(iterable)] * n
+    return izip_longest(fillvalue=fillvalue, *args)
+
+def group_files_by_size(fileslist, multi):  # pragma: no cover
+    ''' Cluster files into the specified number of groups, where each groups total size is as close as possible to each other.
+
+    Pseudo-code (O(n^g) time complexity):
+    Input: number of groups G per cluster, list of files F with respective sizes
+    - Order F by descending size
+    - Until F is empty:
+        - Create a cluster X
+        - A = Pop first item in F
+        - Put A in X[0] (X[0] is thus the first group in cluster X)
+        For g in 1..len(G)-1 :
+            - B = Pop first item in F
+            - Put B in X[g]
+            - group_size := size(B)
+            If group_size != size(A):
+                While group_size < size(A):
+                    - Find next item C in F which size(C) <= size(A) - group_size
+                    - Put C in X[g]
+                    - group_size := group_size + size(C)
+    '''
+    flord = OrderedDict(sorted(fileslist.items(), key=lambda x: x[1], reverse=True))
+    if multi <= 1:
+        fgrouped = {}
+        i = 0
+        for x in flord.keys():
+            i += 1
+            fgrouped[i] = [[x]]
+        return fgrouped
+
+    fgrouped = {}
+    i = 0
+    while flord:
+        i += 1
+        fgrouped[i] = []
+        big_key, big_value = flord.popitem(0)
+        fgrouped[i].append([big_key])
+        for j in xrange(multi-1):
+            cluster = []
+            if not flord: break
+            child_key, child_value = flord.popitem(0)
+            cluster.append(child_key)
+            if child_value == big_value:
+                fgrouped[i].append(cluster)
+                continue
+            else:
+                diff = big_value - child_value
+                for key, value in flord.iteritems():
+                    if value <= diff:
+                        cluster.append(key)
+                        del flord[key]
+                        if value == diff:
+                            break
+                        else:
+                            child_value += value
+                            diff = big_value - child_value
+                fgrouped[i].append(cluster)
+    return fgrouped
+
+def group_files_by_size_fast(fileslist, nbgroups, mode=1):  # pragma: no cover
+    '''Given a files list with sizes, output a list where the files are grouped in nbgroups per cluster.
+
+    Pseudo-code for algorithm in O(n log(g)) (thank's to insertion sort or binary search trees)
+    See for more infos: http://cs.stackexchange.com/questions/44406/fast-algorithm-for-clustering-groups-of-elements-given-their-size-time/44614#44614
+    For each file:
+        - If to-fill list is empty or file.size > first-key(to-fill):
+          * Create cluster c with file in first group g1
+          * Add to-fill[file.size].append([c, g2], [c, g3], ..., [c, gn])
+        - Else:
+          * ksize = first-key(to-fill)
+          * c, g = to-fill[ksize].popitem(0)
+          * Add file to cluster c in group g
+          * nsize = ksize - file.size
+          * if nsize > 0:
+            . to-fill[nsize].append([c, g])
+            . sort to-fill if not an automatic ordering structure
+        '''
+    ftofill = SortedList()
+    ftofill_pointer = {}
+    fgrouped = [] # [] or {}
+    ford = sorted(fileslist.iteritems(), key=lambda x: x[1])
+    last_cid = -1
+    while ford:
+        fname, fsize = ford.pop()
+        #print "----\n"+fname, fsize
+        #if ftofill: print "beforebranch", fsize, ftofill[-1]
+        #print ftofill
+        if not ftofill or fsize > ftofill[-1]:
+            last_cid += 1
+            #print "Branch A: create cluster %i" % last_cid
+            fgrouped.append([])
+            #fgrouped[last_cid] = []
+            fgrouped[last_cid].append([fname])
+            if mode==0:
+                for g in xrange(nbgroups-1, 0, -1):
+                    fgrouped[last_cid].append([])
+                    if not fsize in ftofill_pointer:
+                        ftofill_pointer[fsize] = []
+                    ftofill_pointer[fsize].append((last_cid, g))
+                    ftofill.add(fsize)
+            else:
+                for g in xrange(1, nbgroups):
+                    try:
+                        fgname, fgsize = ford.pop()
+                        #print "Added to group %i: %s %i" % (g, fgname, fgsize)
+                    except IndexError:
+                        break
+                    fgrouped[last_cid].append([fgname])
+                    diff_size = fsize - fgsize
+                    if diff_size > 0:
+                        if not diff_size in ftofill_pointer:
+                            ftofill_pointer[diff_size] = []
+                        ftofill_pointer[diff_size].append((last_cid, g))
+                        ftofill.add(diff_size)
+        else:
+            #print "Branch B"
+            ksize = ftofill.pop()
+            c, g = ftofill_pointer[ksize].pop()
+            #print "Assign to cluster %i group %i" % (c, g)
+            fgrouped[c][g].append(fname)
+            nsize = ksize - fsize
+            if nsize > 0:
+                if not nsize in ftofill_pointer:
+                    ftofill_pointer[nsize] = []
+                ftofill_pointer[nsize].append((c, g))
+                ftofill.add(nsize)
+    return fgrouped
+
+def group_files_by_size_simple(fileslist, nbgroups):  # pragma: no cover
+    """ Simple and fast files grouping strategy: just order by size, and group files n-by-n, so that files with the closest sizes are grouped together.
+    In this strategy, there is only one file per subgroup, and thus there will often be remaining space left because there is no filling strategy here, but it's very fast. """
+    ford = sorted(fileslist.iteritems(), key=lambda x: x[1], reverse=True)
+    ford = [[x[0]] for x in ford]
+    return [group for group in grouper(nbgroups, ford)]
+
+def grouped_count_sizes(fileslist, fgrouped):  # pragma: no cover
+    '''Compute the total size per group and total number of files. Useful to check that everything is OK.'''
+    fsizes = {}
+    total_files = 0
+    allitems = None
+    if isinstance(fgrouped, dict):
+        allitems = fgrouped.iteritems()
+    elif isinstance(fgrouped, list):
+        allitems = enumerate(fgrouped)
+    for fkey, cluster in allitems:
+        fsizes[fkey] = []
+        for subcluster in cluster:
+            tot = 0
+            if subcluster is not None:
+                for fname in subcluster:
+                    tot += fileslist[fname]
+                    total_files += 1
+            fsizes[fkey].append(tot)
+    return fsizes, total_files
+
+def gen_rand_fileslist(nbfiles=100, maxvalue=100):  # pragma: no cover
+    fileslist = {}
+    for i in xrange(nbfiles):
+        fileslist["file_%i" % i] = randint(1, maxvalue)
+    return fileslist
+
+def gen_rand_fileslist2(nbfiles=100, maxvalue=100):  # pragma: no cover
+    fileslist = []
+    for i in xrange(nbfiles):
+        fileslist.append( ("file_%i" % i, randint(1, maxvalue)) )
+    return fileslist
+
+def grouped_test(nbfiles=100, nbgroups=3):  # pragma: no cover
+    fileslist = gen_rand_fileslist(nbfiles)
+    fgrouped = group_files_by_size(fileslist, nbgroups)
+    fsizes, total_files = grouped_count_sizes(fileslist, fgrouped)
+    return [fgrouped, fsizes, total_files]
+
+def grouped_fast_test(nbfiles=100, nbgroups=3, mode=1):  # pragma: no cover
+    nbfiles = 100
+    nbgroups = 3
+    fileslist = gen_rand_fileslist(nbfiles)
+    fgrouped = group_files_by_size_fast(fileslist, nbgroups, mode=mode)
+    fsizes, total_files = grouped_count_sizes(fileslist, fgrouped)
+    return [fgrouped, fsizes, total_files]
+
+def grouped_simple_test(nbfiles=100, nbgroups=3):  # pragma: no cover
+    fileslist = gen_rand_fileslist(nbfiles)
+    fgrouped = group_files_by_size_simple(fileslist, nbgroups)
+    fsizes, total_files = grouped_count_sizes(fileslist, fgrouped)
+    return [fgrouped, fsizes, total_files]
