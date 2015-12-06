@@ -340,7 +340,17 @@ def synchronize_files(inputpaths, outpath, database=None, tqdm_bar=None, report_
         if tqdm_bar: tqdm_bar.update()
     if tqdm_bar: tqdm_bar.close()
 
-    if report_file: rfile.close()
+    # Closing report file
+    if report_file:
+        # Write list of directories and legend
+        rfile.write("\n=> Input directories:")
+        for id, ipath in enumerate(inputpaths):
+            rfile.write("\n\t- dir%i = %s" % ((id+1), ipath))
+        rfile.write("\n=> Output directory: %s" % outpath)
+        rfile.write("\n=> Legend: X=existing/selected for majority vote, O=only used this file, - = not existing, OK = check correct, KO = check incorrect (file was not recovered)\n")
+        # Close the report file handle
+        rfile.close()
+
     return retcode
 
 
