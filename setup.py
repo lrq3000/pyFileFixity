@@ -195,7 +195,7 @@ setup(
     py_modules = [os.path.splitext(f)[0] for f in os.listdir('.') if os.path.isfile(f) and f.endswith('.py')], # list all python files in current folder
     long_description = open("README.rst", "r").read(),
     classifiers=[  # Trove classifiers, see https://pypi.python.org/pypi?%3Aaction=list_classifiers
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'License :: OSI Approved :: MIT License',
         'Environment :: Console',
         'Operating System :: Microsoft :: Windows',
