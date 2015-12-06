@@ -82,6 +82,18 @@ Note: this also works for a single file, just replace "your_folder" by "your_fil
 
 ``python repair_ecc.py -i "ecc.txt" -o "ecc_repaired.txt" -l "log.txt" -v -f -t 0.4``
 
+- To repair your files using multiple copies that you have stored on different mediums:
+
+``replication_repair.py -i "path/to/dir1" "path/to/dir2" "path/to/dir3" -o "path/to/output" --report "rlog.csv" -f -v``
+
+- If you have previously generated a rfigc database, you can use it to enhance the replication repair:
+
+``replication_repair.py -i "path/to/dir1" "path/to/dir2" "path/to/dir3" -o "path/to/output" -d "dbhash.csv" --report "rlog.csv" -f -v``
+
+- To run tests on your recovery tools, you can make a Makefile-like configuration file and use:
+
+``resiliency_tester.py -i "your_folder" -o "test_folder" -c "resiliency_tester_config.txt" -m 3 -l "testlog.txt" -f``
+
 - To get more options for any tool, use ``--help``.
 
 - To use the GUI with any tool, use ``--gui`` and do not supply any other argument, eg: ``python rfigc.py --gui``.
@@ -293,33 +305,34 @@ The project currently include the following pure-python applications:
    are cross-platform and that an alternative pure-python implementation
    is also available).
 
--  (soon) replication\_merge.py takes advantage of your multiple copies
+-  replication\_repair.py takes advantage of your multiple copies
    (replications) of your data over several storage mediums to recover
-   your data in case it gets corrupted. Indeed, it's good practice to
-   keep several identical copies of your data on several storage
-   mediums, but in case a corruption happens, usually you will just drop
-   the corrupted copies and keep the intacts ones. However, if all
-   copies are partially corrupted, you're stuck. This script aims to
-   take advantage of these multiple copies to recover your data, without
-   generating a prior ecc file. It works simply by reading through all
-   your different copies of your data, and it casts a majority vote over
-   each byte: the one that is the most often occuring will be kept. In
-   engineering, this is a very common strategy used for very reliable
-   systems such as space rockets, and is called "triple-modular
-   redundancy", because you need at least 3 copies of your data for the
-   majority vote to work (but the more the better).
+   your data in case it gets corrupted. The goal is to take advantage of
+   the storage of your archived files into multiple locations: you will
+   necessarily make replications, so why not use them for repair?
+   Indeed, it's good practice to keep several identical copies of your data
+   on several storage mediums, but in case a corruption happens,
+   usually you will just drop the corrupted copies and keep the intacts ones.
+   However, if all copies are partially corrupted, you're stuck. This script
+   aims to take advantage of these multiple copies to recover your data,
+   without generating a prior ecc file. It works simply by reading through all
+   your different copies of your data, and it casts a majority vote over each
+   byte: the one that is the most often occuring will be kept. In engineering,
+   this is a very common strategy used for very reliable systems such as
+   space rockets, and is called "triple-modular redundancy", because you need
+   at least 3 copies of your data for the majority vote to work (but the more the
+   better).
 
--  (soon) resiliency\_tester.py allows you to test the robustness of the
+-  resiliency\_tester.py allows you to test the robustness of the
    corruption correction of the scripts provided here (or any other
-   command-line app). You just have to copy the files you want to test
-   inside a folder, and then the script will automatically corrupt the
-   files randomly (you can change the parameters like block burst and
-   others), then it will run the file repair command-lines that you
-   supply and finally some stats about the repairing power will be
-   generated. This allows you to easily and objectively compare
-   different set of parameters, or even different file repair solutions,
-   on the very data that is important to you, so that you can pick the
-   best option for you.
+   command-line app). You just have to copy the files you want to test inside a
+   folder, and then the script will copy the files into a test tree, then it
+   will automatically corrupt the files randomly (you can change the parameters
+   like block burst and others), then it will run the file repair command-lines
+   you supply and finally some stats about the repairing power will be
+   generated. This allows you to easily and objectively compare different set
+   of parameters, or even different file repair solutions, on the very data
+   that matters to you, so that you can pick the best option for you.
 
 Note that all tools are primarily made for command-line usage (type
 script.py --help to get extended info about the accepted arguments), but

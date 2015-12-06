@@ -24,49 +24,12 @@ http://stackoverflow.com/questions/24421305/overhead-of-error-correcting-codes-a
 Difference between resiliency rate and redundancy rate: resiliency rate is the number of errors you can correct in the original message (ie: 0.3% means that you can correct 30% of your original message), while redundancy rate is the number of errors you can correct in the whole codeword (ie: 30% means that you can correct 30% over the original message + ecc symbols, thus if you just want to correct errors in the original message, it's a lot less than 30%). That's why resiliency rate can easily attain 100% (which means that you can correct errors in every symbols of the original message) and even beyond, while 100% is the unachievable limit of redundancy rate (because 100% means that you can correct errors in every symbols of the whole codeword, which would mean that you use only ecc symbols and no symbols from the original message at all, which is impossible since you need at least one original message's symbol to compute an ecc code, thus you can only attain 99.9...% at maximum).
 4. eccman add a new method to decode more robustly: if decoding fails and k <= floor(n/2) then try to decode with erasures considering input as all erasures (useful for index backup, path strings, etc.). And inversely! If erasures enabled, then try without erasures (maybe too much false positives).
 Put that as a new method in eccman which will call self.decode() and if self.check not ok and k <= n//2 then try erasures only!
-5. replication_repair.py : --input "folder1" "folder2" "folder3" or --input_files "file1", "file2", "file3" and --output "folder" or "file". Will streamingly read a buffer of bytes from files, and then major vote, and write to output. At the beginning, assign a number to each input, and say for each block which was chosen. If ambiguity, choose the original (but print). If one file size is lesser than replications, continue to the biggest one by default. Can be applicable to both ecc files and to just any file. The goal is to use this script to take advantage of the storage of your archived files into multiple locations: you will necessarily make replications, so why just not use them for repair?
-    * replication can repair r-2 errors because of vote (you need at least 2 blocks for majority vote to work), where r is the number of replications: if r=3, you get a redundancy rate of 1/3, if r=4, rate is 2/4, etc.
-    * Algo:
-        * copy header_ecc.py for gui
-        * walk through ALL dirs and merge lists of all files
-        * for each file, open it from each dir. If one dir miss the file, show a warning.
-        * streaming repair each symbol.
-        * check if the dir with the file with the last modif repair is significantly different. If true, then warning (the folder may contain a newer version of the file but it was not the majority!).
-    * end of script: display stats of the merge, and from which folder A, B, C, etc if not merged by vote.
-        * total nb of files
-        * total different (1 = one or more copies of a specific file were different)
-        * total merged by vote
-        * total non merged by vote (vote inconclusive) but selected from main folder
-        * total nb of files taken as-is (no difference)
-        * for each folder: number of files selected from each folder.
-    * option to save stats in a csv file for details of the choice for each file:
-    ```
-    relfilepath, X, X, -, , error message (if any)
-    Legend: X = chosen, - = not chosen, empty = does not exist.
-    ```
-    Having the detailed stats for each file will allow users to later postprocess the files, if in any case the selected files for output were not the best ones (in this case, the user can look through the log and try other versions of the file, or retry the merging process using a different order of folders).
-    * USE COUNTER (or just dict like before, but counter should be more efficient, and can always try and except failsafe to dict if not available): https://docs.python.org/2/library/collections.html#collections.Counter
-    * option to use rfigc database if available: would automatically call rfigc.py and read the database, and will check each file if exist in database, this would allow to find one version of the file that is guaranteed to be correct, in this case no need to replication_repair, we would just copy the correct version of the file. If no correct version can be found, then replication_repair and check the final reconstructed file against the rfigc database: if matching the hashes, then we're sure the reconstructed file was recovered, if not, maybe the hash is wrong so still keep the reconstructed file but output an error (and write in csv).
+5. replication_repair.py :
+    * Use collections.counter() for the `hist` variable (or just keep it a dict? But counter should be more efficient, and can always try and except failsafe to dict if not available): https://docs.python.org/2/library/collections.html#collections.Counter
+    * Last modification date: show a warning if not same last modif date? (but should be able to disable with cmdline argument).
+    * Last modification date: allow to give more weight to the most recent files? Or even oldest files?
 6. resiliency tester script:
-    * from an input folder, randomly filetamper the files and then try to repair, using the provided commandline tools and argument.
-    * Byte-by-byte stats + files stats:
-        * At the end, a byte-by-byte comparison between the input and the tampered files will display the ratio of corruption, and then another comparison between input and repaired output will tell the difference ratio, and finally a comparison between file tampered and output will tell the repairing ratio. So we would have 3 ratio of how many bytes were damaged/repaired/unchanged over the total bytes for all files.
-        * For the file stats, we simply compute the total number of fully repaired files, partially repaired files, and non repaired files.
-        * Compute stats after each repair command? (compare what was enhanced by the current command, so the input would be the output of each previous command) + 1 final stat against the input and final output (ie, computing the total repair after all repair commands)?
-    * Use a system similar to the Makefile for the configuration of commandline arguments?
-    * Don't forget to delete files in result folders before restarting the test!
-    * crossvalidation? (run several times the same test with randomization in filetamper stage, and compute the averaged stats + variance?).
-    * Call flow: always call filetamper.py to generate tampered copies of the input, then the user commands to repair.
-    * Algo:
-        * User places files in a folder, and give the folder's name as argument.
-        * For i in crossvalidation:
-            * Delete all files in previously created folders
-            * Walk each file and filetamper.py it (tampering parameters configurable by user). Store the tampered copies in a folder created by script.
-            * Repair and stats loop:
-                * Run each repair command specified by user (JSON file? Makefile type file?).
-                * Compute stats compared to the input at this stage.
-        * Compute average of stats and display them.
-        * (Note: at the end, the latest generated files will be kept on disk on purpose, so that the user can try to open the files for himself and see if they work.)
+    * add support for replication_repair.py simulation? (ie, automatically make duplicated folders and then run replication_repair.py)
 7. multi-file support (with file recreation, even if can only be partially recovered, missing file will be replaced by null bytes on-the-fly)
 if multi supplied, intra-fields "filepath" and "filesize" will be joined with "|" separator. The generation and decoding of intra-fields ecc does not change (it's still considered to be one field for eccman).
 Weak spot is the number of files per ecc track, that's why it won't be stored in an intra-field, but supplied by user in commandline argument. This means that the number of files per ecc track will be fixed, if there's one missing then an empty file will be used (thus the existing files for this ecc track, the last ecc track, will be more resilient than necessary, but anyway it will impact the files with the lowest size overall given our clustering strategies so the overhead won't be much).
