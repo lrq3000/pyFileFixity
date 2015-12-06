@@ -4,10 +4,7 @@ PyFileFixity Todo
 TODO
 --------
 
-1. intra-ecc for size and use this size instead of real size of file at decoding.
-compute_ecc_from_string(string, *args, **kwargs) qui va juste transformer string en StringIO
-decode_ecc_from_string(string, ptee=ptee, et tous les args necessaires)
-2. hello world en en tete commentaire, pour que les gens puissent s'entrainer avec les paramètres Reed Solomon donnés (avec rate de moitié comme ca ils savent k et n, et le mettre juste avant).
+2. hello world in ecc file header as a comment, so that user can detect Reed-Solomon parameters even if commandline arguments are forgotten (using half rate so that k and n is known: k = n/2).
 Canonic format:
 
     ```
@@ -48,6 +45,7 @@ Normal: to-fill = dict toujours sorté descendant (highest first) et la key est l
                 * to-fill[nsize].append([c, g])
                 * sort to-fill if not an automatic ordering structure
     * (Original note: Implement multi-files ecc, which would be a generalization of PAR2: set a new configurable parameter split_stream which would fetch the stream of characters from the specified number of files. We could for example set 3 to use 1/3 of characters from each 3 files, 10 to compose the message block from 10 different files, etc. This would allow to make an ecc file that could recreate lost files from files that are still available (this also fix a bit the issue of directory tree meta-data truncation).
+    * Note: already done the algorithms in lib/aux_lib.py, only need to encode the list of files in the ecc file intra-fields (need to modify filepath and filesize intra-fields), and then use that to encode/decode properly by joining the blocks of each file.
 8. Post stable release, and post on reddit and https://groups.google.com/forum/#!forum/digital-curation
 9. Use six for Python 3 compatibility? (And in the future, try to avoid six and make really compatible code, or directly use [futurize](http://python-future.org/overview.html#automatic-conversion-to-py2-3-compatible-code) to generate a first Py3-compatible draft and then refine it manually).
 
