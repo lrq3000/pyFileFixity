@@ -1,12 +1,15 @@
 from __future__ import print_function
 
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
 import shutil
-import os, sys
 from StringIO import StringIO
 
 from .aux_tests import get_marker, dummy_ecc_file_gen, check_eq_files, check_eq_dir, path_sample_files, tamper_file, find_next_entry, create_dir_if_not_exist, remove_if_exist
 
-from ..lib.tee import Tee
+from lib.tee import Tee
 
 def setup_module():
     """ Initialize the tests by emptying the out directory """

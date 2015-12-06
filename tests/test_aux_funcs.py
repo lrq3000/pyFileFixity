@@ -2,14 +2,17 @@ from __future__ import print_function
 
 from nose.tools import assert_raises
 
-from StringIO import StringIO
+import sys
 import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
+from StringIO import StringIO
 import shutil
 
 from .aux_tests import get_marker, dummy_ecc_file_gen, path_sample_files, create_dir_if_not_exist
 
-from ..lib import aux_funcs as auxf
-from ..lib.argparse import ArgumentTypeError
+from lib import aux_funcs as auxf
+from lib.argparse import ArgumentTypeError
 
 def setup_module():
     """ Initialize the tests by emptying the out directory """

@@ -1,16 +1,18 @@
 from __future__ import print_function
 
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
 import itertools
 import hashlib
-
-import sys
 
 import shutil
 from StringIO import StringIO
 
-from pyFileFixity import header_ecc as hecc
-from ..lib.aux_funcs import get_next_entry
-from ..lib.eccman import compute_ecc_params, ECCMan
+import header_ecc as hecc
+from lib.aux_funcs import get_next_entry
+from lib.eccman import compute_ecc_params, ECCMan
 from .aux_tests import check_eq_files, check_eq_dir, path_sample_files, tamper_file, find_next_entry, create_dir_if_not_exist, get_marker, dummy_ecc_file_gen
 
 def setup_module():

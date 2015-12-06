@@ -4,9 +4,14 @@ include Makefile
 include README.md
 include README.rst
 include TODO.md
+include resiliency_tester_config.txt
 
 # Libraries
 recursive-include lib *.py
+recursive-include lib *.pyx # Cython files
 
 # Test suite
-#recursive-include tests *.py
+recursive-include tests *.py
+recursive-include tests/files *.*
+recursive-include tests/results *.*
+include tox.ini
