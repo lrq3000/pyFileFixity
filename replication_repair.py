@@ -106,7 +106,12 @@ def majority_vote_byte_scan(relfilepath, fileslist, outpath, blocksize=65535, de
 
     fileshandles = []
     for filepath in fileslist:
-        fileshandles.append(open(filepath, 'rb'))
+        # Already a file handle? Just store it in the fileshandles list
+        if hasattr(filepath, 'read'):
+            fileshandles.append(filepath)
+        # Else it's a string filepath, open the file
+        else:
+            fileshandles.append(open(filepath, 'rb'))
 
     outpathfull = os.path.join(outpath, relfilepath)
     pardir = os.path.dirname(outpathfull)
@@ -115,28 +120,28 @@ def majority_vote_byte_scan(relfilepath, fileslist, outpath, blocksize=65535, de
 
     # Cannot vote if there's not at least 3 files!
     # In this case, just copy the file from the first folder, verbatim
-    if len(fileslist) < 3:
+    if len(fileshandles) < 3:
         # If there's at least one input file, then copy it verbatim to the output folder
-        if fileslist:
+        if fileshandles:
             create_dir_if_not_exist(os.path.dirname(outpathfull))
             with open(outpathfull, 'wb') as outfile:
                 buf = 1
                 while (buf):
                     buf = fileshandles[0].read()
                     outfile.write(buf)
-        return (1, "Error with file %s: only %i copies available, cannot vote (need at least 3)! Copied the first file from the first folder, verbatim." % (relfilepath, len(fileslist)))
+        return (1, "Error with file %s: only %i copies available, cannot vote (need at least 3)! Copied the first file from the first folder, verbatim." % (relfilepath, len(fileshandles)))
 
     errors = []
     with open(outpathfull, 'wb') as outfile:
         entries = [1]*len(fileshandles)  # init with 0 to start the while loop
-        while (entries.count('') < len(fileslist)):
+        while (entries.count('') < len(fileshandles)):
             final_entry = []
             # Read a block from all input files into memory
             for i in xrange(len(fileshandles)):
                 entries[i] = fileshandles[i].read(blocksize)
 
             # End of file for all files, we exit
-            if entries.count('') == len(fileslist):
+            if entries.count('') == len(fileshandles):
                 break
             # Else if there's only one file, just copy the file's content over
             elif len(entries) == 1:
@@ -236,7 +241,7 @@ def synchronize_files(inputpaths, outpath, database=None, tqdm_bar=None, report_
     if report_file is not None:
         rfile = open(report_file, 'wb')
         r_writer = csv.writer(rfile, delimiter='|', lineterminator='\n', quotechar='"')
-        r_header = ["filepath"] + ["dir%i" % (i+1) for i in xrange(nbpaths)] + ["hash-correct"] + ["errors"]
+        r_header = ["filepath"] + ["dir%i" % (i+1) for i in xrange(nbpaths)] + ["hash-correct", "error_code", "errors"]
         r_length = len(r_header)
         r_writer.writerow(r_header)
 
@@ -252,6 +257,9 @@ def synchronize_files(inputpaths, outpath, database=None, tqdm_bar=None, report_
 
     # Files lists alignment loop
     while recgen_exhausted_count < nbpaths:
+        errcode = 0
+        errmsg = None
+
         # Init a new report's row
         if report_file: r_row = ["-"] * r_length
 
@@ -294,32 +302,37 @@ def synchronize_files(inputpaths, outpath, database=None, tqdm_bar=None, report_
                         correct_file = filepath
                         correct_id = id
                         break
+
             # If one correct file was found, copy it over
             if correct_file:
                 create_dir_if_not_exist(os.path.dirname(outpathfull))
                 shutil.copyfile(correct_file, outpathfull)
                 if report_file:
                     r_row[id+1] = "O"
-                    r_row[-2] = "OK"
+                    r_row[-3] = "OK"
             # Else, we need to do the majority vote merge
             else:
                 # Do the majority vote merge
                 errcode, errmsg = majority_vote_byte_scan(relfilepath, fileslist, outpath)
-                # After-merge check using rfigc database, if provided
-                if database:
-                    if rfigc.main("-i \"%s\" -d \"%s\" -m --silent" % (outpathfull, database)) == 1:
-                        errcode = 1
-                        if not errmsg: errmsg = ''
-                        errmsg += "File could not be totally repaired according to rfigc database."
-                # Display errors if any
-                if errcode:
-                    if report_file:
-                        r_row[-2] = "KO"
-                        r_row[-1] = errmsg
-                    ptee.write(errmsg)
-                    retcode = 1
-                else:
-                    if report_file: r_row[-2] = "OK"
+
+        # After-merge/move check using rfigc database, if provided
+        if database:
+            if rfigc.main("-i \"%s\" -d \"%s\" -m --silent" % (outpathfull, database)) == 1:
+                errcode = 1
+                if not errmsg: errmsg = ''
+                errmsg += "File could not be totally repaired according to rfigc database."
+            else:
+                if report_file: r_row[-3] = "OK"
+
+        # Display errors if any
+        if errcode:
+            if report_file:
+                r_row[-2] = "KO"
+                r_row[-1] = errmsg
+            ptee.write(errmsg)
+            retcode = 1
+        else:
+            if report_file: r_row[-2] = "OK"
 
         # Save current report's row
         if report_file:
@@ -415,7 +428,12 @@ def main(argv=None):
     desc = '''Replication Repair
 Description: Given a set of directories (or files), try to repair your files by scanning each byte, cast a majority vote among all copies, and then output the winning byte. This process is usually called triple-modular redundancy (but here it should be called n-modular redundancy since you can use as many copies as you have).
 It is recommended for long term storage to store several copies of your files on different storage mediums. Everything's fine until all your copies are partially corrupted. In this case, this script can help you, by taking advantage of your multiple copies, without requiring a pregenerated ecc file. Just specify the path to every copies, and the script will try to recover them.
-This script can also take advantage of a database generated by rfigc.py to make sure that the recovered files are correct.
+Replication can repair exactly r-2 errors using majority vote (you need at least 2 blocks for majority vote to work), where r is the number of replications: if r=3, you get a redundancy rate of 1/3, if r=4, rate is 2/4, etc.
+This script can also take advantage of a database generated by rfigc.py to make sure that the recovered files are correct, or to select files that are already correct.
+
+Note: in case the end result is not what you expected, you can try a different order of input directories: in case of ambiguity, the first input folder has precedence over subsequent folders.
+Note2: in case some files with the same names are of different length, the merging will continue until the longest file is exhausted.
+Note3: last modification date is not (yet) accounted for.
     '''
     ep = '''Use --gui as the first argument to use with a GUI (via Gooey).
 '''
