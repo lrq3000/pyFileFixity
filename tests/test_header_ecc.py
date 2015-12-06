@@ -100,9 +100,9 @@ def test_entry_fields():
     ecc = dummy_ecc_file_gen(3)
     eccf = StringIO(ecc)
     ecc_entry = get_next_entry(eccf, get_marker(1), only_coord=False)
-    assert hecc.entry_fields(ecc_entry, field_delim=get_marker(2)) == {'ecc_field': 'hash-ecc-entry_hash-ecc-entry_hash-ecc-entry_', 'filesize_ecc': 'filesize1_ecc', 'relfilepath_ecc': 'relfilepath1_ecc', 'relfilepath': 'file1.ext', 'filesize': 0}
+    assert hecc.entry_fields(ecc_entry, field_delim=get_marker(2)) == {'ecc_field': 'hash-ecc-entry_hash-ecc-entry_hash-ecc-entry_', 'filesize_ecc': 'filesize1_ecc', 'relfilepath_ecc': 'relfilepath1_ecc', 'relfilepath': 'file1.ext', 'filesize': 'filesize1'}
     ecc_entry = get_next_entry(eccf, get_marker(1), only_coord=False)
-    assert hecc.entry_fields(ecc_entry, field_delim=get_marker(2)) == {'ecc_field': 'hash-ecc-entry_hash-ecc-entry_hash-ecc-entry_hash-ecc-entry_hash-ecc-entry_hash-ecc-entry_', 'filesize_ecc': 'filesize2_ecc', 'relfilepath_ecc': 'relfilepath2_ecc', 'relfilepath': 'file2.ext', 'filesize': 0}
+    assert hecc.entry_fields(ecc_entry, field_delim=get_marker(2)) == {'ecc_field': 'hash-ecc-entry_hash-ecc-entry_hash-ecc-entry_hash-ecc-entry_hash-ecc-entry_hash-ecc-entry_', 'filesize_ecc': 'filesize2_ecc', 'relfilepath_ecc': 'relfilepath2_ecc', 'relfilepath': 'file2.ext', 'filesize': 'filesize2'}
 
 def test_entry_assemble():
     """ hecc: test internal: entry_assemble() """

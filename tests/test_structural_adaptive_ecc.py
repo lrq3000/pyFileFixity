@@ -101,9 +101,9 @@ def test_entry_fields():
     ecc = dummy_ecc_file_gen(3)
     eccf = StringIO(ecc)
     ecc_entry_pos = get_next_entry(eccf, get_marker(1), only_coord=True)
-    assert saecc.entry_fields(eccf, ecc_entry_pos, field_delim=get_marker(2)) == {'ecc_field_pos': [150, 195], 'filesize_ecc': 'filesize1_ecc', 'relfilepath_ecc': 'relfilepath1_ecc', 'relfilepath': 'file1.ext', 'filesize': 0}
+    assert saecc.entry_fields(eccf, ecc_entry_pos, field_delim=get_marker(2)) == {'ecc_field_pos': [150, 195], 'filesize_ecc': 'filesize1_ecc', 'relfilepath_ecc': 'relfilepath1_ecc', 'relfilepath': 'file1.ext', 'filesize': 'filesize1'}
     ecc_entry_pos = get_next_entry(eccf, get_marker(1), only_coord=True)
-    assert saecc.entry_fields(eccf, ecc_entry_pos, field_delim=get_marker(2)) == {'ecc_field_pos': [272, 362], 'filesize_ecc': 'filesize2_ecc', 'relfilepath_ecc': 'relfilepath2_ecc', 'relfilepath': 'file2.ext', 'filesize': 0}
+    assert saecc.entry_fields(eccf, ecc_entry_pos, field_delim=get_marker(2)) == {'ecc_field_pos': [272, 362], 'filesize_ecc': 'filesize2_ecc', 'relfilepath_ecc': 'relfilepath2_ecc', 'relfilepath': 'file2.ext', 'filesize': 'filesize2'}
 
 def test_stream_entry_assemble():
     """ saecc: test internal: stream_entry_assemble() """
