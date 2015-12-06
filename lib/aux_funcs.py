@@ -187,7 +187,7 @@ def copy_any(src, dst, only_missing=False):  # pragma: no cover
 # TODO in group_files_by_size: try to use sortedcontainers.SortedList() ? https://pypi.python.org/pypi/sortedcontainers
 
 from collections import OrderedDict
-from lib.sortedcontainers import SortedList
+from sortedcontainers import SortedList
 from random import randint
 from itertools import izip_longest
 
