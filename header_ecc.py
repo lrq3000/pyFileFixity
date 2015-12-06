@@ -185,6 +185,7 @@ def ecc_correct_intra(ecc_manager_intra, ecc_params_intra, field, ecc, enable_er
             field_correct.append(e["message"])
         else: # Else this block is corrupted, we will try to fix it using the ecc
             fcorrupted = True
+            # Repair the message block and the ecc
             try:
                 repaired_block, repaired_ecc = ecc_manager_intra.decode(e["message"], e["ecc"], enable_erasures=enable_erasures, erasures_char=erasures_char, only_erasures=only_erasures)
             except (ReedSolomonError, RSCodecError), exc: # the reedsolo lib may raise an exception when it can't decode. We ensure that we can still continue to decode the rest of the file, and the other files.
@@ -619,7 +620,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
 
                 # Update entry_p
                 entry_p["filesize"] = filesize # need to update entry_p because various funcs will directly access filesize this way...
-                # -- End of intra-ecc on filepath
+                # -- End of intra-ecc on filesize
 
                 # Build the absolute file path
                 filepath = os.path.join(rootfolderpath, relfilepath) # Get full absolute filepath from given input folder (because the files may be specified in any folder, in the ecc file the paths are relative, so that the files can be moved around or burnt on optical discs)

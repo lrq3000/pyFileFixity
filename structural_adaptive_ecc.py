@@ -129,7 +129,7 @@ def entry_fields(file, entry_pos, field_delim="\xFF"):
     except Exception, e:
         print("Exception when trying to detect the filesize in ecc field (it may be corrupted), skipping: ")
         print(e)
-        filesize = 0
+        #filesize = 0 # avoid setting to 0, we keep as an int so that we can try to fix using intra-ecc
 
     # entries = [ {"message":, "ecc":, "hash":}, etc.]
     return {"relfilepath": relfilepath, "relfilepath_ecc": relfilepath_ecc, "filesize": filesize, "filesize_ecc": filesize_ecc, "ecc_field_pos": ecc_field_pos}
@@ -201,6 +201,43 @@ def compute_ecc_hash_from_string(string, ecc_manager, hasher, max_block_size, re
     fpfile = StringIO(string)
     ecc_stream = ''.join( [str(x[1]) for x in stream_compute_ecc_hash(ecc_manager, hasher, fpfile, max_block_size, len(string), [resilience_rate])] ) # "hack" the function by tricking it to always use a constant rate, by setting the header_size=len(relfilepath), and supplying the resilience_rate_intra instead of resilience_rate_s1 (the one for header)
     return ecc_stream
+
+def ecc_correct_intra_stream(ecc_manager_intra, ecc_params_intra, hasher_intra, resilience_rate_intra, field, ecc, enable_erasures=False, erasures_char="\x00", only_erasures=False, max_block_size=65535):
+    """ Correct an intra-field with its corresponding intra-ecc if necessary """
+    # convert strings to StringIO object so that we can trick our ecc reading functions that normally works only on files
+    fpfile = StringIO(field)
+    fpfile_ecc = StringIO(ecc)
+    fpentry_p = {"ecc_field_pos": [0, len(field)]} # create a fake entry_pos so that the ecc reading function works correctly
+    # Prepare variables
+    field_correct = [] # will store each block of the corrected (or already correct) filepath
+    fcorrupted = False # check if field was corrupted
+    fcorrected = True # check if field was corrected (if it was corrupted)
+    errmsg = ''
+    # Decode each block of the filepath
+    for e in stream_entry_assemble(hasher_intra, fpfile, fpfile_ecc, fpentry_p, max_block_size, len(field), [resilience_rate_intra], constantmode=True):
+        # Check if this block of the filepath is OK, if yes then we just copy it over
+        if ecc_manager_intra.check(e["message"], e["ecc"]):
+            field_correct.append(e["message"])
+        else: # Else this block is corrupted, we will try to fix it using the ecc
+            fcorrupted = True
+            # Repair the message block and the ecc
+            try:
+                repaired_block, repaired_ecc = ecc_manager_intra.decode(e["message"], e["ecc"], enable_erasures=enable_erasures, erasures_char=erasures_char, only_erasures=only_erasures)
+            except (ReedSolomonError, RSCodecError), exc: # the reedsolo lib may raise an exception when it can't decode. We ensure that we can still continue to decode the rest of the file, and the other files.
+                repaired_block = None
+                repaired_ecc = None
+                errmsg += "- Error: metadata field at offset %i: %s\n" % (entry_pos[0], exc)
+            # Check if the block was successfully repaired: if yes then we copy the repaired block...
+            if repaired_block is not None and ecc_manager_intra.check(repaired_block, repaired_ecc):
+                field_correct.append(repaired_block)
+            else: # ... else it failed, then we copy the original corrupted block and report an error later
+                field_correct.append(e["message"])
+                fcorrected = False
+    # Join all the blocks into one string to build the final filepath
+    if isinstance(field_correct[0], bytearray): field_correct = [str(x) for x in field_correct] # workaround when using --ecc_algo 3 or 4, because we get a list of bytearrays instead of str
+    field = ''.join(field_correct)
+    # Report errors
+    return (field, fcorrupted, fcorrected, errmsg)
 
 
 
@@ -614,41 +651,30 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
 
                 # -- Get file path, check its correctness and correct it by using intra-ecc if necessary
                 relfilepath = entry_p["relfilepath"] # Relative file path, given in the ecc fields
-                # convert strings to StringIO object so that we can trick our ecc reading functions that normally works only on files
-                fpfile = StringIO(relfilepath)
-                fpfile_ecc = StringIO(entry_p["relfilepath_ecc"])
-                fpentry_p = {"ecc_field_pos": [0, len(relfilepath)]} # create a fake entry_pos so that the ecc reading function works correctly
-                relfilepath_correct = [] # will store each block of the corrected (or already correct) filepath
-                fpcorrupted = False # check if filepath was corrupted
-                fpcorrected = True # check if filepath was corrected (if it was corrupted)
-                # Decode each block of the filepath
-                for e in stream_entry_assemble(hasher_intra, fpfile, fpfile_ecc, fpentry_p, max_block_size, len(relfilepath), [resilience_rate_intra], constantmode=True):
-                    # Check if this block of the filepath is OK, if yes then we just copy it over
-                    if ecc_manager_intra.check(e["message"], e["ecc"]):
-                        relfilepath_correct.append(e["message"])
-                    else: # Else this block is corrupted, we will try to fix it using the ecc
-                        fpcorrupted = True
-                        # Repair the message block and the ecc
-                        try:
-                            repaired_block, repaired_ecc = ecc_manager_intra.decode(e["message"], e["ecc"], enable_erasures=enable_erasures, erasures_char=erasure_symbol, only_erasures=only_erasures)
-                        except (ReedSolomonError, RSCodecError), exc: # the reedsolo lib may raise an exception when it can't decode. We ensure that we can still continue to decode the rest of the file, and the other files.
-                            repaired_block = None
-                            repaired_ecc = None
-                            print("Error: metadata field at offset %i: %s" % (entry_pos[0], exc))
-                        # Check if the block was successfully repaired: if yes then we copy the repaired block...
-                        if repaired_block is not None and ecc_manager_intra.check(repaired_block, repaired_ecc):
-                            relfilepath_correct.append(repaired_block)
-                        else: # ... else it failed, then we copy the original corrupted block and report an error later
-                            relfilepath_correct.append(e["message"])
-                            fpcorrected = False
-                # Join all the blocks into one string to build the final filepath
-                if isinstance(relfilepath_correct[0], bytearray): relfilepath_correct = [str(x) for x in relfilepath_correct] # workaround when using --ecc_algo 3 or 4, because we get a list of bytearrays instead of str
-                relfilepath = ''.join(relfilepath_correct)
+                relfilepath, fpcorrupted, fpcorrected, fperrmsg = ecc_correct_intra_stream(ecc_manager_intra, ecc_params_intra, hasher_intra, resilience_rate_intra, relfilepath, entry_p["relfilepath_ecc"], enable_erasures=enable_erasures, erasures_char=erasure_symbol, only_erasures=only_erasures, max_block_size=max_block_size)
                 # Report errors
                 if fpcorrupted:
                     if fpcorrected: ptee.write("\n- Fixed error in metadata field at offset %i filepath %s." % (entry_pos[0], relfilepath))
                     else: ptee.write("\n- Error in filepath, could not correct completely metadata field at offset %i with value: %s. Please fix manually by editing the ecc file or set the corrupted characters to null bytes and --enable_erasures." % (entry_pos[0], relfilepath))
+                ptee.write(fperrmsg)
                 # -- End of intra-ecc on filepath
+
+                # -- Get file size, check its correctness and correct it by using intra-ecc if necessary
+                filesize = str(entry_p["filesize"])
+                filesize, fscorrupted, fscorrected, fserrmsg = ecc_correct_intra_stream(ecc_manager_intra, ecc_params_intra, hasher_intra, resilience_rate_intra, filesize, entry_p["filesize_ecc"], enable_erasures=enable_erasures, erasures_char=erasure_symbol, only_erasures=only_erasures, max_block_size=max_block_size)
+
+                # Report errors
+                if fscorrupted:
+                    if fscorrected: ptee.write("\n- Fixed error in metadata field at offset %i filesize %s." % (entry_pos[0], filesize))
+                    else: ptee.write("\n- Error in filesize, could not correct completely metadata field at offset %i with value: %s. Please fix manually by editing the ecc file or set the corrupted characters to null bytes and --enable_erasures." % (entry_pos[0], filesize))
+                ptee.write(fserrmsg)
+
+                # Convert filesize intra-field into an int
+                filesize = int(filesize)
+
+                # Update entry_p
+                entry_p["filesize"] = filesize # need to update entry_p because various funcs will directly access filesize this way...
+                # -- End of intra-ecc on filesize
 
                 # Build the absolute file path
                 filepath = os.path.join(rootfolderpath, relfilepath) # Get full absolute filepath from given input folder (because the files may be specified in any folder, in the ecc file the paths are relative, so that the files can be moved around or burnt on optical discs)
@@ -669,12 +695,12 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
                     continue
 
                 # -- Checking file size: if the size has changed, the blocks may not match anymore!
-                filesize = os.stat(filepath).st_size
-                if entry_p["filesize"] != filesize:
+                real_filesize = os.stat(filepath).st_size
+                if filesize != real_filesize:
                     if ignore_size:
-                        ptee.write("Warning: file %s has a different size: %s (before: %s). Will still try to correct it (but the blocks may not match!)." % (relfilepath, filesize, entry_p["filesize"]))
+                        ptee.write("Warning: file %s has a different size: %s (before: %s). Will still try to correct it (but the blocks may not match!)." % (relfilepath, real_filesize, filesize))
                     else:
-                        ptee.write("Error: file %s has a different size: %s (before: %s). Skipping the file correction because blocks may not match (you can set --ignore_size to still correct even if size is different, maybe just the entry was corrupted)." % (relfilepath, filesize, entry_p["filesize"]))
+                        ptee.write("Error: file %s has a different size: %s (before: %s). Skipping the file correction because blocks may not match (you can set --ignore_size to still correct even if size is different, maybe just the entry was corrupted)." % (relfilepath, real_filesize, filesize))
                         files_skipped += 1
                         continue
 
