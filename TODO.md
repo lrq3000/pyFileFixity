@@ -67,6 +67,7 @@ MAYBE
 - Move from argparse to [docopt](https://github.com/docopt/docopt) or [click](http://click.pocoo.org/) to generate a beautiful and more usable command-line interface (with clear modes, because right now the relevant options are not grouped together and it can be quite confusing).
 
 - High priority: parallelize eccman.py to encode faster in a generic fashion (ie, using any codec). It would call n parallel instances of the ecc codec, to compute n ecc blocks in parallel. This should give us at least a 10x speedup (if compatible with PyPy, this would make us reach 10MB/s!).
+maybe with: https://github.com/XericZephyr/Pythine ?
 
 - Extend pyFileFixity to encode multiple characters into one, and then use higher galois fields like 2^16, 2^32 or even 2^128 (allows to be more resilient against huge, adversarial bursts): for example, instead of having one character ranging from value [0,255], we would have two characters encoded in one in range [0,65535] and then we could use GF(2^16) and encode blocks of 65535 characters instead of 255. This may also help us encode faster (since we would process bigger ecc blocks at once, but we'd have to see if the computational complexity of RS doesn't cancel this benefit...). We could also maybe use optimization tricks in: Luo, Jianqiang, et al. "Efficient software implementations of large finite fields GF (2 n) for secure storage applications." ACM Transactions on Storage (TOS) 8.1 (2012): 2.
 
