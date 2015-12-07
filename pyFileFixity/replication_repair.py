@@ -218,7 +218,7 @@ def majority_vote_byte_scan(relfilepath, fileslist, outpath, blocksize=65535, de
 
     # Errors signaling
     if errors:
-        error_msg = "Unrecoverable corruptions (because of ambiguity) in file %s on characters: %s." % (relfilepath, [hex(x) for x in errors]) # Signal to user that this file has unrecoverable corruptions (he may try to fix the bits manually or with his own script)
+        error_msg = "Unrecoverable corruptions (because of ambiguity) in file %s on characters: %s." % (relfilepath, [hex(int(x)) for x in errors]) # Signal to user that this file has unrecoverable corruptions (he may try to fix the bits manually or with his own script)
         return (1, error_msg) # return an error
     # Close all input files
     for fh in fileshandles:

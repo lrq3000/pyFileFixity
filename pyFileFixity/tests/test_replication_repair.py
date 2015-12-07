@@ -265,7 +265,7 @@ def test_synchronize_files():
     tamper_file(fileout2[2], 0, "A")
 
     # Replication repair using rfigc database to check results
-    res3 = "filepath|dir1|dir2|dir3|dir4|hash-correct|error_code|errors\ntestaa.txt|X|X|-|X|KO|KO| File could not be totally repaired according to rfigc database.\ntuxsmall.jpg|X|X|X|X|OK|KO|Unrecoverable corruptions (because of ambiguity) in file tuxsmall.jpg on characters: ['0xaL']. But merged file is correct according to rfigc database.\nsub/testsub.txt|-|-|O|-|OK|OK|-\n"
+    res3 = "filepath|dir1|dir2|dir3|dir4|hash-correct|error_code|errors\ntestaa.txt|X|X|-|X|KO|KO| File could not be totally repaired according to rfigc database.\ntuxsmall.jpg|X|X|X|X|OK|KO|Unrecoverable corruptions (because of ambiguity) in file tuxsmall.jpg on characters: ['0xa']. But merged file is correct according to rfigc database.\nsub/testsub.txt|-|-|O|-|OK|OK|-\n"
     ptee = StringIO()
     errcode = rep.synchronize_files(inputpaths, outpath, database=filedb, report_file=report_file, ptee=ptee)
     assert errcode == 1
