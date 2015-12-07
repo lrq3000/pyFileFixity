@@ -215,7 +215,10 @@ def diff_count_dir(dir1, dir2):
 ######## Stats functions ########
 
 def compute_repair_power(new_error, old_error):
-    return (1 - (new_error / old_error)) * 100
+    if old_error != 0.0:
+        return (1 - (new_error / old_error)) * 100
+    else:
+        return new_error
 
 def compute_diff_stats(orig, dir1, dir2):
     stats = OrderedDict()

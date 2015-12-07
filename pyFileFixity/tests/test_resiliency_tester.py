@@ -149,6 +149,7 @@ def test_compute_repair_power():
     assert restest.compute_repair_power(0.3, 0.5) == 40.0
     assert restest.compute_repair_power(0.2, 0.8) == 75.0
     assert restest.compute_repair_power(0.6, 0.3) == -100.0
+    assert restest.compute_repair_power(0.6, 0.0) == 0.6
 
 def test_compute_diff_stats():
     """ restest: test internal: compute_diff_stats() """
@@ -180,13 +181,16 @@ def test_stats_running_average():
 
 def test_main():
     """ restest: test main() """
+    # Change directory so that the config's commands can access pyFileFixity scripts
     thispathname = os.path.dirname(__file__)
     sys.path.append(os.path.join(thispathname, '..'))
+    # Setup paths
     dirin = path_sample_files('input')
     dirout = path_sample_files('output', 'restest/fulltest')
     configfile = path_sample_files('results', 'resiliency_tester_config_easy.cfg')
     configfile_hard = path_sample_files('results', 'resiliency_tester_config_hard.cfg')
     # Should be no error with the easy scenario (repair should be successful)
-    assert restest.main("-i \"%s\" -o \"%s\" -c \"%s\" -m 2 -f --silent" % (dirin, dirout, configfile)) == 0
+    assert restest.main("-i \"%s\" -o \"%s\" -c \"%s\" -f --silent" % (dirin, dirout, configfile)) == 0
     # Should be error with the hard scenario
-    assert restest.main("-i \"%s\" -o \"%s\" -c \"%s\" -f --silent" % (dirin, dirout, configfile_hard)) == 1
+    assert restest.main("-i \"%s\" -o \"%s\" -c \"%s\" -m 2 -f --silent" % (dirin, dirout, configfile_hard)) == 1
+    # TODO: catch sys.stdout and check for the end stats?
