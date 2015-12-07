@@ -25,16 +25,18 @@ def setup_module():
 
 def test_relpath_posix():
     """ repli: test internal: relpath_posix()"""
-    recwalk_result = [r'C:\test\some\path', r'relative\path\file.ext']
-    pardir = r'C:\test\some'
-    print(rep.relpath_posix(recwalk_result, pardir, True))
-    assert rep.relpath_posix(recwalk_result, pardir, True) == ('C:\\test\\some\\path', ['path', 'relative', 'path', 'file.ext'])
     recwalk_result = [r'/test/some/path', r'relative/path/file.ext']
     pardir = r'/test/some'
     assert rep.relpath_posix(recwalk_result, pardir, False) == ('/test/some/path', ['path', 'relative', 'path', 'file.ext'])
-    recwalk_result = [r'/test/some/path', r'relative\path\file.ext']
-    pardir = r'/test/some'
-    assert rep.relpath_posix(recwalk_result, pardir, True) == ('/test/some/path', ['path', 'relative', 'path', 'file.ext'])
+    
+    # Can only test the following on a Windows machine, because relpath_posix() uses os.path.relpath to remove the parent directory from the relative path, but Windows path delimiters aren't recognized on a Linux machine, and there's no way to specify the delimiter as an argument...
+    if os.name == 'nt':
+        recwalk_result = [r'C:\test\some\path', r'relative\path\file.ext']
+        pardir = r'C:\test\some'
+        assert rep.relpath_posix(recwalk_result, pardir, True) == ('C:\\test\\some\\path', ['path', 'relative', 'path', 'file.ext'])
+        recwalk_result = [r'/test/some/path', r'relative\path\file.ext']
+        pardir = r'/test/some'
+        assert rep.relpath_posix(recwalk_result, pardir, True) == ('/test/some/path', ['path', 'relative', 'path', 'file.ext'])
 
 def test_sort_dict_of_paths():
     d = {0: ['testoo.TXT'], 1: ['testoo.TXT'], 2: ['testbb-more.TXT'], 3: ['sub', 'testsub.TXT']}
