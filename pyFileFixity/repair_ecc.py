@@ -25,7 +25,9 @@
 #
 #
 
-from _infos import __version__
+from __future__ import print_function
+
+from pyFileFixity import __version__
 
 # Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
 import sys, os
@@ -275,15 +277,15 @@ Note: An ecc structure repair does NOT allow to recover from more errors on your
                     current_marker = db.read(len(markers[marker_type-1])) # read the current marker (potentially corrupted)
                     db.seek(marker_pos[0])
                     if verbose:
-                        print "- Found marker by index file: type=%i content=" % (marker_type)
-                        print db.read(len(markers[marker_type-1])+4)
+                        ptee.write("- Found marker by index file: type=%i content=" % (marker_type))
+                        ptee.write(db.read(len(markers[marker_type-1])+4))
                         db.seek(marker_pos[0]) # replace the reading cursor back in place before the marker
                     if current_marker != markers[marker_type-1]: # check if we really need to repair this marker
                         # Rewrite the marker over the ecc file
                         db.write(markers[marker_type-1])
                         markers_repaired[marker_type-1] += 1
                     else:
-                        print "skipped, no need to repair"
+                        ptee.write("skipped, no need to repair")
             # Done the index backup repair
             if bardisp.n > bardisp.total: bardisp.n = bardisp.total # just a workaround in case there's one byte more than the predicted total
             bardisp.close()

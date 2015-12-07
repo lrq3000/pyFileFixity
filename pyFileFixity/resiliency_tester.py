@@ -33,7 +33,7 @@
 
 from __future__ import division
 
-from _infos import __version__
+from pyFileFixity import __version__
 
 # Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
 import sys, os
@@ -41,6 +41,7 @@ thispathname = os.path.dirname(__file__)
 sys.path.append(os.path.join(thispathname, 'lib'))
 
 # Import necessary libraries
+from lib._compat import _StringIO
 import ConfigParser
 import subprocess # to execute commands
 import itertools
@@ -51,7 +52,6 @@ import lib.tqdm as tqdm
 #import operator # to get the max out of a dict
 import csv # to process the database file from rfigc.py
 import shlex # for string parsing as argv argument to main(), unnecessary otherwise
-from StringIO import StringIO
 from lib.tee import Tee # Redirect print output to the terminal as well as in a log file
 from collections import OrderedDict
 #import pprint # Unnecessary, used only for debugging purposes
@@ -82,7 +82,7 @@ def parse_configfile(filepath):
     ini_str = ini_str + fd.read().replace('\t@', '\t').\
         replace('\t+', '\t').replace('\tmake ', '\t')
     if fd != filepath: fd.close()
-    ini_fp = StringIO(ini_str)
+    ini_fp = _StringIO(ini_str)
     # Parse using ConfigParser
     config = ConfigParser.RawConfigParser()
     config.readfp(ini_fp)

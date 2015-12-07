@@ -6,12 +6,13 @@ import itertools
 import hashlib
 
 import shutil
-from StringIO import StringIO
 
 from .. import header_ecc as hecc
 from ..lib.aux_funcs import get_next_entry
 from ..lib.eccman import compute_ecc_params, ECCMan
 from .aux_tests import check_eq_files, check_eq_dir, path_sample_files, tamper_file, find_next_entry, create_dir_if_not_exist, get_marker, dummy_ecc_file_gen
+
+from ..lib._compat import _StringIO
 
 def setup_module():
     """ Initialize the tests by emptying the out directory """
@@ -98,7 +99,7 @@ def test_algo():
 def test_entry_fields():
     """ hecc: test internal: entry_fields() """
     ecc = dummy_ecc_file_gen(3)
-    eccf = StringIO(ecc)
+    eccf = _StringIO(ecc)
     ecc_entry = get_next_entry(eccf, get_marker(1), only_coord=False)
     assert hecc.entry_fields(ecc_entry, field_delim=get_marker(2)) == {'ecc_field': 'hash-ecc-entry_hash-ecc-entry_hash-ecc-entry_', 'filesize_ecc': 'filesize1_ecc', 'relfilepath_ecc': 'relfilepath1_ecc', 'relfilepath': 'file1.ext', 'filesize': 'filesize1'}
     ecc_entry = get_next_entry(eccf, get_marker(1), only_coord=False)
@@ -114,7 +115,7 @@ def test_entry_assemble():
     with open(tempfile, 'wb') as tfile:
         tfile.write("Lorem ipsum\nAnd stuff and stuff and stuff\n"*20)
     ecc = dummy_ecc_file_gen(3)
-    eccf = StringIO(ecc)
+    eccf = _StringIO(ecc)
     ecc_entry = get_next_entry(eccf, get_marker(1), only_coord=False)
     entry_fields = hecc.entry_fields(ecc_entry, field_delim=get_marker(2))
     ecc_params = compute_ecc_params(255, 0.5, Hasher())

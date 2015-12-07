@@ -6,12 +6,13 @@ import itertools
 import hashlib
 
 import shutil
-from StringIO import StringIO
 
 from .. import structural_adaptive_ecc as saecc
 from ..lib.aux_funcs import get_next_entry
 from ..lib.eccman import ECCMan
 from .aux_tests import check_eq_files, check_eq_dir, path_sample_files, tamper_file, find_next_entry, create_dir_if_not_exist, get_marker, dummy_ecc_file_gen
+
+from ..lib._compat import _StringIO
 
 def setup_module():
     """ Initialize the tests by emptying the out directory """
@@ -100,7 +101,7 @@ def test_algo():
 def test_entry_fields():
     """ saecc: test internal: entry_fields() """
     ecc = dummy_ecc_file_gen(3)
-    eccf = StringIO(ecc)
+    eccf = _StringIO(ecc)
     ecc_entry_pos = get_next_entry(eccf, get_marker(1), only_coord=True)
     assert saecc.entry_fields(eccf, ecc_entry_pos, field_delim=get_marker(2)) == {'ecc_field_pos': [150, 195], 'filesize_ecc': 'filesize1_ecc', 'relfilepath_ecc': 'relfilepath1_ecc', 'relfilepath': 'file1.ext', 'filesize': 'filesize1'}
     ecc_entry_pos = get_next_entry(eccf, get_marker(1), only_coord=True)
@@ -116,7 +117,7 @@ def test_stream_entry_assemble():
     with open(tempfile, 'wb') as tfile:
         tfile.write("Lorem ipsum\nAnd stuff and stuff and stuff\n"*20)
     ecc = dummy_ecc_file_gen(3)
-    eccf = StringIO(ecc)
+    eccf = _StringIO(ecc)
     ecc_entry_pos = get_next_entry(eccf, get_marker(1), only_coord=True)
     entry_fields = saecc.entry_fields(eccf, ecc_entry_pos, field_delim=get_marker(2))
     with open(tempfile, 'rb') as tfile:

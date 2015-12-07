@@ -56,7 +56,7 @@ def check_eq_dir(path1, path2):
 
 def fullpath(relpath):
     '''Relative path to absolute'''
-    if (type(relpath) is object or type(relpath) is file):
+    if (type(relpath) is object or hasattr(relpath, 'read')): # relpath is either an object or file-like, try to get its name
         relpath = relpath.name
     return os.path.abspath(os.path.expanduser(relpath))
 

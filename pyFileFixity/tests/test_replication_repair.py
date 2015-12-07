@@ -4,11 +4,12 @@ import sys
 import os
 
 import shutil
-from StringIO import StringIO
 
 from .. import replication_repair as rep
 from .. import rfigc
 from .aux_tests import check_eq_files, check_eq_dir, path_sample_files, tamper_file, find_next_entry, create_dir_if_not_exist, get_marker
+
+from ..lib._compat import _StringIO
 
 
 def change_letter(s, index, new_char):
@@ -72,7 +73,7 @@ def test_majority_vote_byte_scan():
     """ repli: test internal: majority_vote_byte_scan()"""
     
     def make_filehandles(fileslist):
-        return [StringIO(f) for f in fileslist]
+        return [_StringIO(f) for f in fileslist]
     
     # Necessary variables
     relfilepath = 'relative/path/file.ext'
@@ -84,7 +85,7 @@ def test_majority_vote_byte_scan():
     files.append(change_letter(s[:-1], 4, 'W'))
     files.append(s)
     fileshandles = make_filehandles(files)
-    outfile = StringIO()
+    outfile = _StringIO()
 
     errcode, errmsg = rep.majority_vote_byte_scan(relfilepath, fileshandles, outfile, blocksize=10, default_char_null=False)
     assert errcode == 0
@@ -101,7 +102,7 @@ def test_majority_vote_byte_scan():
     files.append(change_letter(s, 2, 'W'))
 
     # First run: the original string will take precedence since it's first in the list
-    outfile = StringIO()
+    outfile = _StringIO()
     fileshandles = make_filehandles(files)
     errcode, errmsg = rep.majority_vote_byte_scan(relfilepath, fileshandles, outfile, blocksize=10, default_char_null=False)
     assert errcode == 1
@@ -112,7 +113,7 @@ def test_majority_vote_byte_scan():
     # Second run: put the original string last, now we will have the tampered string taking precedence
     files.append(files.pop(0))
     fileshandles = make_filehandles(files)
-    outfile = StringIO()
+    outfile = _StringIO()
     errcode, errmsg = rep.majority_vote_byte_scan(relfilepath, fileshandles, outfile, blocksize=10, default_char_null=False)
     assert errcode == 1
     outfile.seek(0)
@@ -122,7 +123,7 @@ def test_majority_vote_byte_scan():
     # Do the same, the third (tampered) string will take precedence
     files.append(files.pop(0))
     fileshandles = make_filehandles(files)
-    outfile = StringIO()
+    outfile = _StringIO()
     errcode, errmsg = rep.majority_vote_byte_scan(relfilepath, fileshandles, outfile, blocksize=10, default_char_null=False)
     assert errcode == 1
     outfile.seek(0)
@@ -132,7 +133,7 @@ def test_majority_vote_byte_scan():
     # Set a default char this time
     files.append(files.pop(0))
     fileshandles = make_filehandles(files)
-    outfile = StringIO()
+    outfile = _StringIO()
     errcode, errmsg = rep.majority_vote_byte_scan(relfilepath, fileshandles, outfile, blocksize=10, default_char_null=True)
     assert errcode == 1
     outfile.seek(0)
@@ -142,7 +143,7 @@ def test_majority_vote_byte_scan():
     # Set a custom default char
     files.append(files.pop(0))
     fileshandles = make_filehandles(files)
-    outfile = StringIO()
+    outfile = _StringIO()
     errcode, errmsg = rep.majority_vote_byte_scan(relfilepath, fileshandles, outfile, blocksize=10, default_char_null="A")
     assert errcode == 1
     outfile.seek(0)
@@ -158,7 +159,7 @@ def test_majority_vote_byte_scan():
     files.append(change_letter(s, -2, 'X'))
 
     # First run: the original string will take precedence since it's first in the list
-    outfile = StringIO()
+    outfile = _StringIO()
     fileshandles = make_filehandles(files)
     errcode, errmsg = rep.majority_vote_byte_scan(relfilepath, fileshandles, outfile, blocksize=10, default_char_null=False)
     assert errcode == 1
@@ -169,7 +170,7 @@ def test_majority_vote_byte_scan():
     # Move the original string to the last, and see if the tampered string takes precedence (skipping the ended string)
     files.append(files.pop(0))
     fileshandles = make_filehandles(files)
-    outfile = StringIO()
+    outfile = _StringIO()
     errcode, errmsg = rep.majority_vote_byte_scan(relfilepath, fileshandles, outfile, blocksize=10, default_char_null=False)
     assert errcode == 1
     outfile.seek(0)
@@ -266,7 +267,7 @@ def test_synchronize_files():
 
     # Replication repair using rfigc database to check results
     res3 = "filepath|dir1|dir2|dir3|dir4|hash-correct|error_code|errors\ntestaa.txt|X|X|-|X|KO|KO| File could not be totally repaired according to rfigc database.\ntuxsmall.jpg|X|X|X|X|OK|KO|Unrecoverable corruptions (because of ambiguity) in file tuxsmall.jpg on characters: ['0xa']. But merged file is correct according to rfigc database.\nsub/testsub.txt|-|-|O|-|OK|OK|-\n"
-    ptee = StringIO()
+    ptee = _StringIO()
     errcode = rep.synchronize_files(inputpaths, outpath, database=filedb, report_file=report_file, ptee=ptee)
     assert errcode == 1
     with open(report_file, 'rb') as rfile:

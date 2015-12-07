@@ -54,7 +54,7 @@
 # - Also backup folders meta-data? (to reconstruct the tree in case a folder is truncated by bit rot)
 #
 
-from _infos import __version__
+from pyFileFixity import __version__
 
 # Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
 import sys, os
@@ -62,6 +62,7 @@ thispathname = os.path.dirname(__file__)
 sys.path.append(os.path.join(thispathname, 'lib'))
 
 # Import necessary libraries
+from lib._compat import _StringIO # to support intra-ecc
 from lib.aux_funcs import get_next_entry, is_dir, is_dir_or_file, fullpath, recwalk, sizeof_fmt, path2unix
 import lib.argparse as argparse
 import datetime, time
@@ -72,7 +73,6 @@ import math
 import csv # to process the errors_file from rfigc.py
 import shlex # for string parsing as argv argument to main(), unnecessary otherwise
 from lib.tee import Tee # Redirect print output to the terminal as well as in a log file
-from StringIO import StringIO # to support intra-ecc
 import struct # to support indexes backup file
 #import pprint # Unnecessary, used only for debugging purposes
 
@@ -168,7 +168,7 @@ def stream_compute_ecc_hash(ecc_manager, hasher, file, max_block_size, header_si
     '''Generate a stream of hash/ecc blocks, of variable encoding rate and size, given a file.'''
     curpos = file.tell() # init the reading cursor at the beginning of the file
     # Find the total size to know when to stop
-    #size = os.fstat(file.fileno()).st_size # old way of doing it, doesn't work with StringIO objects
+    #size = os.fstat(file.fileno()).st_size # old way of doing it, doesn't work with _StringIO objects
     file.seek(0, os.SEEK_END) # alternative way of finding the total size: go to the end of the file
     size = file.tell()
     file.seek(0, curpos) # place the reading cursor back at the beginning of the file
@@ -198,15 +198,15 @@ def stream_compute_ecc_hash(ecc_manager, hasher, file, max_block_size, header_si
 def compute_ecc_hash_from_string(string, ecc_manager, hasher, max_block_size, resilience_rate):
     '''Generate a concatenated string of ecc stream of hash/ecc blocks, of constant encoding rate, given a string.
     NOTE: resilience_rate here is constant, you need to supply only one rate, between 0.0 and 1.0. The encoding rate will then be constant, like in header_ecc.py.'''
-    fpfile = StringIO(string)
+    fpfile = _StringIO(string)
     ecc_stream = ''.join( [str(x[1]) for x in stream_compute_ecc_hash(ecc_manager, hasher, fpfile, max_block_size, len(string), [resilience_rate])] ) # "hack" the function by tricking it to always use a constant rate, by setting the header_size=len(relfilepath), and supplying the resilience_rate_intra instead of resilience_rate_s1 (the one for header)
     return ecc_stream
 
 def ecc_correct_intra_stream(ecc_manager_intra, ecc_params_intra, hasher_intra, resilience_rate_intra, field, ecc, enable_erasures=False, erasures_char="\x00", only_erasures=False, max_block_size=65535):
     """ Correct an intra-field with its corresponding intra-ecc if necessary """
-    # convert strings to StringIO object so that we can trick our ecc reading functions that normally works only on files
-    fpfile = StringIO(field)
-    fpfile_ecc = StringIO(ecc)
+    # convert strings to _StringIO object so that we can trick our ecc reading functions that normally works only on files
+    fpfile = _StringIO(field)
+    fpfile_ecc = _StringIO(ecc)
     fpentry_p = {"ecc_field_pos": [0, len(field)]} # create a fake entry_pos so that the ecc reading function works correctly
     # Prepare variables
     field_correct = [] # will store each block of the corrected (or already correct) filepath
@@ -568,7 +568,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
                 with open(os.path.join(rootfolderpath, filepath), 'rb') as file:
                     entrymarker_pos = db.tell() # backup the position of the start of this ecc entry
                     # -- Intra-ecc generation: Compute an ecc for the filepath, to avoid a critical spot here (so that we don't care that the filepath gets corrupted, we have an ecc to fix it!)
-                    fpfile = StringIO(relfilepath)
+                    fpfile = _StringIO(relfilepath)
                     relfilepath_ecc = compute_ecc_hash_from_string(relfilepath, ecc_manager_intra, hasher_intra, max_block_size, resilience_rate_intra)
                     filesize_ecc = compute_ecc_hash_from_string(str(filesize), ecc_manager_intra, hasher_intra, max_block_size, resilience_rate_intra)
                     db.write(("%s%s%s%s%s%s%s%s%s") % (entrymarker, relfilepath, field_delim, filesize, field_delim, relfilepath_ecc, field_delim, filesize_ecc, field_delim)) # first save the file's metadata (filename, filesize, ecc for filename, ...), separated with field_delim

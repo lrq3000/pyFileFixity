@@ -31,7 +31,7 @@
 #=================================
 #
 
-from _infos import __version__
+from pyFileFixity import __version__
 
 # Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
 import sys, os
@@ -39,7 +39,7 @@ thispathname = os.path.dirname(__file__)
 sys.path.append(os.path.join(thispathname, 'lib'))
 
 # Import necessary libraries
-import rfigc # optional
+from . import rfigc # optional
 import shutil
 from lib.aux_funcs import recwalk, path2unix, fullpath, is_dir_or_file, is_dir, is_file, create_dir_if_not_exist
 import lib.argparse as argparse

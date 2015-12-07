@@ -56,7 +56,7 @@
 
 from __future__ import with_statement
 
-from _infos import __version__
+from pyFileFixity import __version__
 
 # Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
 import sys, os
