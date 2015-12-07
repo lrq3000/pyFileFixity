@@ -58,7 +58,7 @@ from _infos import __version__
 
 # Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
 import sys, os
-thispathname = os.path.dirname(sys.argv[0])
+thispathname = os.path.dirname(__file__)
 sys.path.append(os.path.join(thispathname, 'lib'))
 
 # Import necessary libraries
