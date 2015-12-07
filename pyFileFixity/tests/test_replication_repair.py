@@ -27,30 +27,44 @@ def test_relpath_posix():
     """ repli: test internal: relpath_posix()"""
     recwalk_result = [r'C:\test\some\path', r'relative\path\file.ext']
     pardir = r'C:\test\some'
-    assert rep.relpath_posix(recwalk_result, pardir, True) == ('C:\\test\\some\\path', ('path/relative/path', 'file.ext'))
+    print(rep.relpath_posix(recwalk_result, pardir, True))
+    assert rep.relpath_posix(recwalk_result, pardir, True) == ('C:\\test\\some\\path', ['path', 'relative', 'path', 'file.ext'])
     recwalk_result = [r'/test/some/path', r'relative/path/file.ext']
     pardir = r'/test/some'
-    assert rep.relpath_posix(recwalk_result, pardir, False) == ('/test/some/path', ('path/relative/path', 'file.ext'))
+    assert rep.relpath_posix(recwalk_result, pardir, False) == ('/test/some/path', ['path', 'relative', 'path', 'file.ext'])
     recwalk_result = [r'/test/some/path', r'relative\path\file.ext']
     pardir = r'/test/some'
-    assert rep.relpath_posix(recwalk_result, pardir, True) == ('/test/some/path', ('path/relative/path', 'file.ext'))
+    assert rep.relpath_posix(recwalk_result, pardir, True) == ('/test/some/path', ['path', 'relative', 'path', 'file.ext'])
+
+def test_sort_dict_of_paths():
+    d = {0: ['testoo.TXT'], 1: ['testoo.TXT'], 2: ['testbb-more.TXT'], 3: ['sub', 'testsub.TXT']}
+    d_sort = rep.sort_dict_of_paths(d)
+    assert d_sort == [(2, ['', 'testbb-more.TXT']),
+                      (0, ['', 'testoo.TXT']),
+                      (1, ['', 'testoo.TXT']),
+                      (3, ['sub', 'testsub.TXT'])]
 
 def test_sort_group():
     """ repli: test internal: sort_group()"""
+    # Generate an artificial tree, with some relative paths being the same across multiple folders,
+    # and some others in different tree depth (very import to check that it works OK!)
     curfiles = {
-                0: ('relative/path', 'file.ext'),
-                1: ('relative/path', 'file.ext'),
-                2: ('relative/path', 'zzzz.ext'),
-                3: ('relative/path', 'zzzz.ext'),
-                4: ('relative/path', 'bbbb.ext'),
+                0: ['relative', 'path', 'file.ext'],
+                1: ['relative', 'path', 'file.ext'],
+                2: ['relative', 'aaa', 'zzzz.ext'],
+                3: ['zzzz.ext'],
+                4: ['relative', 'zzzz.ext'],
+                5: ['relative', 'path', 'bbbb.ext'],
                }
     assert rep.sort_group(curfiles, return_only_first=False) == \
               [
-               [(4, ('relative/path', 'bbbb.ext'))],
-               [(0, ('relative/path', 'file.ext')), (1, ('relative/path', 'file.ext'))],
-               [(2, ('relative/path', 'zzzz.ext')), (3, ('relative/path', 'zzzz.ext'))]
+               [(3, ['', '', 'zzzz.ext'])],
+               [(4, ['', 'relative', 'zzzz.ext'])],
+               [(2, ['relative', 'aaa', 'zzzz.ext'])],
+               [(5, ['relative', 'path', 'bbbb.ext'])],
+               [(0, ['relative', 'path', 'file.ext']), (1, ['relative', 'path', 'file.ext'])]
               ]
-    assert rep.sort_group(curfiles, return_only_first=True) == [[(4, ('relative/path', 'bbbb.ext'))]]
+    assert rep.sort_group(curfiles, return_only_first=True) == [[(3, ['', '', 'zzzz.ext'])]]
 
 def test_majority_vote_byte_scan():
     """ repli: test internal: majority_vote_byte_scan()"""

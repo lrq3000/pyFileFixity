@@ -61,15 +61,27 @@ from lib.tee import Tee # Redirect print output to the terminal as well as in a 
 
 def relpath_posix(recwalk_result, pardir, fromwinpath=False):
     ''' Helper function to convert all paths to relative posix like paths (to ease comparison) '''
-    return recwalk_result[0], os.path.split(path2unix(os.path.join(os.path.relpath(recwalk_result[0], pardir),recwalk_result[1]), fromwinpath=fromwinpath))
+    return recwalk_result[0], path2unix(os.path.join(os.path.relpath(recwalk_result[0], pardir),recwalk_result[1]), nojoin=True, fromwinpath=fromwinpath)
 
 #def checkAllEqual(lst):
 #    return not lst or [lst[0]]*len(lst) == lst
 
+def sort_dict_of_paths(d):
+    """ Sort a dict containing paths parts (ie, paths divided in parts and stored as a list). Top paths will be given precedence over deeper paths. """
+    # Find the path that is the deepest, and count the number of parts
+    max_rec = max(len(x) if x else 0 for x in d.values())
+    # Pad other paths with empty parts to fill in, so that all paths will have the same number of parts (necessary to compare correctly, else deeper paths may get precedence over top ones, since the folder name will be compared to filenames!)
+    for key in d.keys():
+        if d[key]:
+            d[key] = ['']*(max_rec-len(d[key])) + d[key]
+    # Sort the dict relatively to the paths alphabetical order
+    d_sort = sorted(d.items(), key=lambda x: x[1])
+    return d_sort
+
 def sort_group(d, return_only_first=False):
     ''' Sort a dictionary of relative paths and cluster equal paths together at the same time '''
     # First, sort the paths in order (this must be a couple: (parent_dir, filename), so that there's no ambiguity because else a file at root will be considered as being after a folder/file since the ordering is done alphabetically without any notion of tree structure).
-    d_sort = sorted(d.items(), key=lambda x: x[1])
+    d_sort = sort_dict_of_paths(d)
     # Pop the first item in the ordered list
     base_elt = (-1, None)
     while (base_elt[1] is None and d_sort):
@@ -219,7 +231,9 @@ def majority_vote_byte_scan(relfilepath, fileslist, outpath, blocksize=65535, de
 
 def synchronize_files(inputpaths, outpath, database=None, tqdm_bar=None, report_file=None, ptee=None, verbose=False):
     ''' Main function to synchronize files contents by majority vote
-    The main job of this function is to walk through the input folders and align the files, so that we can compare every files across every folders, one by one.'''
+    The main job of this function is to walk through the input folders and align the files, so that we can compare every files across every folders, one by one.
+    The whole trick here is to align files, so that we don't need to memorize all the files in memory and we compare all equivalent files together: to do that, we ensure that we walk through the input directories in alphabetical order, and we pick the relative filepath at the top of the alphabetical order, this ensures the alignment of files between different folders, without memorizing  the whole trees structures.
+    '''
     # (Generator) Files Synchronization Algorithm:
     # Needs a function stable_dir_walking, which will walk through directories recursively but in always the same order on all platforms (same order for files but also for folders), whatever order it is, as long as it is stable.
     # Until there's no file in any of the input folders to be processed:
