@@ -192,6 +192,7 @@ setup(
     maintainer=__author__,
     maintainer_email=__email__,
     platforms = ["any"],
+    packages=['pyFileFixity'],
     long_description = open("README.rst", "r").read(),
     classifiers=[  # Trove classifiers, see https://pypi.python.org/pypi?%3Aaction=list_classifiers
         'Development Status :: 5 - Production/Stable',

@@ -1,17 +1,23 @@
 # Misc
+include .coveragerc
 include LICENSE
 include Makefile
 include README.md
 include README.rst
 include TODO.md
-include resiliency_tester_config.txt
+
+# 
+
+# Non-python files
+include pyFileFixity/ecc_specification.txt
+include pyFileFixity/resiliency_tester_config.txt
 
 # Libraries
-recursive-include lib *.py
-recursive-include lib *.pyx # Cython files
+recursive-include pyFileFixity/lib *.py
+recursive-include pyFileFixity/lib *.pyx # Cython files
 
 # Test suite
-recursive-include tests *.py
-recursive-include tests/files *.*
-recursive-include tests/results *.*
+recursive-include pyFileFixity/tests *.py
+recursive-include pyFileFixity/tests/files *.*
+recursive-include pyFileFixity/tests/results *.*
 include tox.ini
