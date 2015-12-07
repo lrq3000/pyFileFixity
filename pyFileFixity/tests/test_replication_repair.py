@@ -27,13 +27,13 @@ def test_relpath_posix():
     """ repli: test internal: relpath_posix()"""
     recwalk_result = [r'C:\test\some\path', r'relative\path\file.ext']
     pardir = r'C:\test\some'
-    assert rep.relpath_posix(recwalk_result, pardir) == ('C:\\test\\some\\path', ('path/relative/path', 'file.ext'))
+    assert rep.relpath_posix(recwalk_result, pardir, True) == ('C:\\test\\some\\path', ('path/relative/path', 'file.ext'))
     recwalk_result = [r'/test/some/path', r'relative/path/file.ext']
     pardir = r'/test/some'
-    assert rep.relpath_posix(recwalk_result, pardir) == ('/test/some/path', ('path/relative/path', 'file.ext'))
+    assert rep.relpath_posix(recwalk_result, pardir, False) == ('/test/some/path', ('path/relative/path', 'file.ext'))
     recwalk_result = [r'/test/some/path', r'relative\path\file.ext']
     pardir = r'/test/some'
-    assert rep.relpath_posix(recwalk_result, pardir) == ('/test/some/path', ('path/relative/path', 'file.ext'))
+    assert rep.relpath_posix(recwalk_result, pardir, True) == ('/test/some/path', ('path/relative/path', 'file.ext'))
 
 def test_sort_group():
     """ repli: test internal: sort_group()"""
@@ -206,7 +206,7 @@ def test_synchronize_files():
     # 3rd file: no tamper, there's just one file, check that the file is just copied
     
     # 1- Majority vote!
-    res1 = "filepath|dir1|dir2|dir3|dir4|hash-correct|error_code|errors\ntestaa.txt|X|X|-|X|-|OK|-\ntuxsmall.jpg|X|X|X|X|-|OK|-\nsub\\testsub.txt|-|-|O|-|-|OK|-\n"
+    res1 = "filepath|dir1|dir2|dir3|dir4|hash-correct|error_code|errors\ntestaa.txt|X|X|-|X|-|OK|-\ntuxsmall.jpg|X|X|X|X|-|OK|-\nsub/testsub.txt|-|-|O|-|-|OK|-\n"
     errcode = rep.synchronize_files(inputpaths, outpath, report_file=report_file)
     assert errcode == 0
     with open(report_file, 'rb') as rfile:
@@ -220,7 +220,7 @@ def test_synchronize_files():
     assert res1 in rout
 
     # 2- rfigc database interfacing!
-    res2 = "filepath|dir1|dir2|dir3|dir4|hash-correct|error_code|errors\ntestaa.txt|X|X|-|O|OK|OK|-\ntuxsmall.jpg|X|X|X|X|OK|OK|-\nsub\\testsub.txt|-|-|O|-|OK|OK|-\n"
+    res2 = "filepath|dir1|dir2|dir3|dir4|hash-correct|error_code|errors\ntestaa.txt|X|X|-|O|OK|OK|-\ntuxsmall.jpg|X|X|X|X|OK|OK|-\nsub/testsub.txt|-|-|O|-|OK|OK|-\n"
     # Generate rfigc database against original files
     assert rfigc.main('-i "%s" -d "%s" -g -f --silent' % (dirorig, filedb)) == 0
     # Replication repair using rfigc database to check results
@@ -249,7 +249,7 @@ def test_synchronize_files():
     tamper_file(fileout2[2], 0, "A")
 
     # Replication repair using rfigc database to check results
-    res3 = "filepath|dir1|dir2|dir3|dir4|hash-correct|error_code|errors\ntestaa.txt|X|X|-|X|KO|KO| File could not be totally repaired according to rfigc database.\ntuxsmall.jpg|X|X|X|X|OK|KO|Unrecoverable corruptions (because of ambiguity) in file tuxsmall.jpg on characters: ['0xaL']. But merged file is correct according to rfigc database.\nsub\\testsub.txt|-|-|O|-|OK|OK|-\n"
+    res3 = "filepath|dir1|dir2|dir3|dir4|hash-correct|error_code|errors\ntestaa.txt|X|X|-|X|KO|KO| File could not be totally repaired according to rfigc database.\ntuxsmall.jpg|X|X|X|X|OK|KO|Unrecoverable corruptions (because of ambiguity) in file tuxsmall.jpg on characters: ['0xaL']. But merged file is correct according to rfigc database.\nsub/testsub.txt|-|-|O|-|OK|OK|-\n"
     ptee = StringIO()
     errcode = rep.synchronize_files(inputpaths, outpath, database=filedb, report_file=report_file, ptee=ptee)
     assert errcode == 1

@@ -59,9 +59,9 @@ from lib.tee import Tee # Redirect print output to the terminal as well as in a 
 #     AUXILIARY FUNCTIONS
 #***********************************
 
-def relpath_posix(recwalk_result, pardir):
+def relpath_posix(recwalk_result, pardir, fromwinpath=False):
     ''' Helper function to convert all paths to relative posix like paths (to ease comparison) '''
-    return recwalk_result[0], os.path.split(path2unix(os.path.join(os.path.relpath(recwalk_result[0], pardir),recwalk_result[1])))
+    return recwalk_result[0], os.path.split(path2unix(os.path.join(os.path.relpath(recwalk_result[0], pardir),recwalk_result[1]), fromwinpath=fromwinpath))
 
 #def checkAllEqual(lst):
 #    return not lst or [lst[0]]*len(lst) == lst
@@ -284,7 +284,7 @@ def synchronize_files(inputpaths, outpath, database=None, tqdm_bar=None, report_
 
         # -- Byte-by-byte majority vote on the first group of files
         # Need the relative filepath also (note that there's only one since it's a group of equivalent relative filepaths, only the absolute path is different between files of a same group)
-        relfilepath = os.path.join(*to_process[0][1])
+        relfilepath = path2unix(os.path.join(*to_process[0][1]))
         if report_file: r_row[0] = relfilepath
         if verbose: ptee.write("- Processing file %s." % relfilepath)
         # Generate output path
