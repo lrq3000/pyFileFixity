@@ -4,14 +4,12 @@ from nose.tools import assert_raises
 
 import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-
 import shutil
 from StringIO import StringIO
 
 from .aux_tests import get_marker, dummy_ecc_file_gen, check_eq_files, check_eq_dir, path_sample_files, tamper_file, find_next_entry, create_dir_if_not_exist, remove_if_exist
 
-from lib.eccman import ECCMan, compute_ecc_params, detect_reedsolomon_parameters
+from ..lib.eccman import ECCMan, compute_ecc_params, detect_reedsolomon_parameters
 
 def setup_module():
     """ Initialize the tests by emptying the out directory """

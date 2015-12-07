@@ -73,10 +73,11 @@ def path_sample_files(type=None, path=None, createdir=False):
         subdir = 'out'
 
     dirpath = ''
+    scriptpath = os.path.dirname(os.path.realpath(__file__))
     if path:
-        dirpath = fullpath(os.path.join('tests', subdir, path))
+        dirpath = fullpath(os.path.join(scriptpath, subdir, path))
     else:
-        dirpath = fullpath(os.path.join('tests', subdir))
+        dirpath = fullpath(os.path.join(scriptpath, subdir))
 
     if createdir:
         create_dir_if_not_exist(dirpath)

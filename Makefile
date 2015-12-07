@@ -24,7 +24,7 @@ test:
 	tox --skip-missing-interpreters
 
 testnose:
-	nosetests tests/ -d -v
+	nosetests pyFileFixity/tests/ -d -v
 
 testsetup:
 	python setup.py check --restructuredtext --strict
@@ -32,7 +32,7 @@ testsetup:
 
 testcoverage:
 	rm -f .coverage  # coverage erase
-	nosetests tests/ --with-coverage --cover-package=pyFileFixity -d -v
+	nosetests pyFileFixity/tests/ --with-coverage --cover-package=pyFileFixity -d -v
 
 installdev:
 	python setup.py develop --uninstall

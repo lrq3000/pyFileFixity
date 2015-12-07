@@ -4,13 +4,11 @@ from nose.tools import assert_raises
 
 import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-
 import shutil
 
 from .aux_tests import path_sample_files, create_dir_if_not_exist
 
-from lib.hasher import Hasher
+from ..lib.hasher import Hasher
 
 def setup_module():
     """ Initialize the tests by emptying the out directory """

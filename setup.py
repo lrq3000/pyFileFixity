@@ -127,9 +127,9 @@ except ImportError:
 ext = '.pyx' if USE_CYTHON else '.c'
 
 extensions = [
-                        Extension('lib.brownanrs.cff', [os.path.join('lib', 'brownanrs', 'cff'+ext)]),
-                        Extension('lib.brownanrs.cpolynomial', [os.path.join('lib', 'brownanrs', 'cpolynomial'+ext)]),
-                        Extension('lib.reedsolomon.creedsolo', [os.path.join('lib', 'reedsolomon', 'creedsolo'+ext)]),
+                        Extension('pyFileFixity.lib.brownanrs.cff', [os.path.join('pyFileFixity', 'lib', 'brownanrs', 'cff'+ext)]),
+                        Extension('pyFileFixity.lib.brownanrs.cpolynomial', [os.path.join('pyFileFixity', 'lib', 'brownanrs', 'cpolynomial'+ext)]),
+                        Extension('pyFileFixity.lib.reedsolomon.creedsolo', [os.path.join('pyFileFixity', 'lib', 'reedsolomon', 'creedsolo'+ext)]),
                     ]
 
 if USE_CYTHON: extensions = cythonize(extensions)
@@ -140,7 +140,7 @@ if USE_CYTHON: extensions = cythonize(extensions)
 
 # Get version from __init__.py
 __version__ = None
-version_file = os.path.join(os.path.dirname(__file__), '_infos.py')
+version_file = os.path.join(os.path.dirname(__file__), 'pyFileFixity', '_infos.py')
 for line in open(version_file).readlines():
     if (line.startswith('version_info') or line.startswith('__version__') or line.startswith('__author__') or line.startswith('__email__')):
         exec(line.strip())
@@ -192,7 +192,6 @@ setup(
     maintainer=__author__,
     maintainer_email=__email__,
     platforms = ["any"],
-    py_modules = [os.path.splitext(f)[0] for f in os.listdir('.') if os.path.isfile(f) and f.endswith('.py')], # list all python files in current folder
     long_description = open("README.rst", "r").read(),
     classifiers=[  # Trove classifiers, see https://pypi.python.org/pypi?%3Aaction=list_classifiers
         'Development Status :: 5 - Production/Stable',
@@ -219,8 +218,8 @@ setup(
     ],
     keywords = 'file repair monitor change reed-solomon error correction',
     ext_modules = extensions,
-    #test_suite='nose.collector',
-    #tests_require=['nose', 'coverage'],
+    test_suite='nose.collector',
+    tests_require=['nose', 'coverage'],
 )
 
 # Use pypandoc to convert the Markdown readme into ReStructuredText for PyPi package generation

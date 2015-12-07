@@ -622,7 +622,7 @@ feedback about this would be greatly appreciated!).
 ECC Algorithms
 --------------
 
-You can specify different ecc algorithms using the ``--ecc\_algo`` switch.
+You can specify different ecc algorithms using the ``--ecc_algo`` switch.
 
 For the moment, only Reed-Solomon is implemented, but it's universal
 so you can modify its parameters in lib/eccman.py.
@@ -630,12 +630,12 @@ so you can modify its parameters in lib/eccman.py.
 Two Reed-Solomon codecs are available, they are functionally equivalent
 and thoroughly unit tested.
 
--  --ecc\_algo 1: use the first Reed-Solomon codec in galois field 2^8 of root 3 with fcr=1.
+-  ``--ecc_algo 1``: use the first Reed-Solomon codec in galois field 2^8 of root 3 with fcr=1.
    This is the slowest implementation (but also the most easy code to understand).
--  --ecc\_algo 2: same as algo 1 but with a faster functions.
--  --ecc\_algo 3: use the second codec, which is the fastest.
+-  ``--ecc_algo 2``: same as algo 1 but with a faster functions.
+-  ``--ecc_algo 3``: use the second codec, which is the fastest.
    The generated ECC will be compatible with algo 1 and 2.
--  --ecc\_algo 4: also use the second, fastest RS codec, but
+-  ``--ecc_algo 4``: also use the second, fastest RS codec, but
    with different parameters (US FAA ADSB UAT RS FEC norm),
    thus the generated ECC won't be compatible with algo 1 to 3.
    But do not be scared, the ECC will work just the same.
@@ -653,7 +653,7 @@ It should provide C-speed for all scripts (as long as you use
 implementation is used by default, but it can be useful if you want to
 encode big datasets of several hundred of GB.
 
-If you want to build it the C/Cython implementation, do the following:
+If you want to build the C/Cython implementation, do the following:
 
 1- Install a C compiler for your platform. On Linux, gcc should already
 be installed. On Windows, you need to use the Visual Studio C compiler
@@ -663,7 +663,7 @@ make it work if you have Python < 2.7.10:
 
 https://github.com/cython/cython/wiki/CythonExtensionsOnWindows
 
-2- cd to this folder (where PyFileFixity resides), and execute the
+2- cd to this folder (where pyFileFixity resides), and execute the
 following command:
 
 ``python setup.py build_ext --inplace --compiler=msvc``

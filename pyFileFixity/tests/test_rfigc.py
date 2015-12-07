@@ -2,15 +2,13 @@ from __future__ import print_function, with_statement
 
 import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-
 import itertools
 import hashlib
 
 import shutil
 
-import rfigc
-from lib.aux_funcs import recwalk
+from .. import rfigc
+from ..lib.aux_funcs import recwalk
 from .aux_tests import check_eq_files, check_eq_dir, path_sample_files, tamper_file, create_dir_if_not_exist
 
 def partial_eq(file, file_partial):

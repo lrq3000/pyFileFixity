@@ -1,20 +1,22 @@
 [run]
 branch = True
 omit =
-    tests/*
-    __init__.py
-    easy_profiler.py
-    ecc_speedtest.py
-    filetamper.py
+    pyFileFixity/tests/*
+    pyFileFixity/__init__.py
+    pyFileFixity/easy_profiler.py
+    pyFileFixity/ecc_speedtest.py
+    pyFileFixity/filetamper.py
     pycleaner.py
     setup.py
 include = 
-    lib/aux_funcs.py
-    lib/eccman.py
-    lib/hasher.py
-    lib/tee.py
-    _infos.py
-    header_ecc.py
-    repair_ecc.py
-    rfigc.py
-    structural_adaptive_ecc.py
+    pyFileFixity/lib/aux_funcs.py
+    pyFileFixity/lib/eccman.py
+    pyFileFixity/lib/hasher.py
+    pyFileFixity/lib/tee.py
+    pyFileFixity/_infos.py
+    pyFileFixity/header_ecc.py
+    pyFileFixity/repair_ecc.py
+    pyFileFixity/replication_repair.py
+    pyFileFixity/resiliency_tester.py
+    pyFileFixity/rfigc.py
+    pyFileFixity/structural_adaptive_ecc.py
