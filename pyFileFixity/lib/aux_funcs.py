@@ -167,6 +167,7 @@ def copy_any(src, dst, only_missing=False):  # pragma: no cover
                     relpath = os.path.relpath(srcfile, src)
                     dstfile = os.path.join(dst, relpath)
                     if not os.path.exists(dstfile):
+                        create_dir_if_not_exist(os.path.dirname(dstfile))
                         shutil.copyfile(srcfile, dstfile)
                         shutil.copystat(srcfile, dstfile)
             return True

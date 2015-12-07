@@ -125,14 +125,17 @@ def tamper_file(filepath, mode='e', proba=0.03, block_proba=None, blocksize=6553
 
 def tamper_dir(inputpath, *args, **kwargs):
     """ Randomly tamper the files content in a directory tree, recursively """
+    silent = kwargs.get('silent', False)
+    if 'silent' in kwargs: del kwargs['silent']
+
     filescount = 0
-    for _ in tqdm(recwalk(inputpath), desc='Precomputing'):
+    for _ in tqdm(recwalk(inputpath), desc='Precomputing', disable=silent):
         filescount += 1
 
     files_tampered = 0
     tamper_count = 0
     total_size = 0
-    for dirname, filepath in tqdm(recwalk(inputpath), total=filescount, leave=True, desc='Tamper file n.'):
+    for dirname, filepath in tqdm(recwalk(inputpath), total=filescount, leave=True, desc='Tamper file n.', disable=silent):
         tcount, tsize = tamper_file(os.path.join(dirname, filepath), *args, **kwargs)
         if tcount > 0:
             tamper_count += tcount
@@ -281,12 +284,12 @@ WARNING: this will tamper the file you specify. Please ensure you keep a copy of
         # -- Tampering a file
         if os.path.isfile(filepath):
             ptee.write('Tampering the file %s, please wait...' % os.path.basename(filepath))
-            tcount, tsize = tamper_file(filepath, mode=mode, proba=proba, block_proba=block_proba, blocksize=blocksize, burst_length=burst_length, header=header)
+            tcount, tsize = tamper_file(filepath, mode=mode, proba=proba, block_proba=block_proba, blocksize=blocksize, burst_length=burst_length, header=header, silent=silent)
             ptee.write("Tampering done: %i/%i (%.2f%%) characters tampered." % (tcount, tsize, tcount / max(1, tsize) * 100))
         # -- Tampering a directory tree recursively
         elif os.path.isdir(filepath):
             ptee.write('Tampering all files in directory %s, please wait...' % filepath)
-            files_tampered, filescount, tcount, tsize = tamper_dir(filepath, mode=mode, proba=proba, block_proba=block_proba, blocksize=blocksize, burst_length=burst_length, header=header)
+            files_tampered, filescount, tcount, tsize = tamper_dir(filepath, mode=mode, proba=proba, block_proba=block_proba, blocksize=blocksize, burst_length=burst_length, header=header, silent=silent)
             ptee.write("Tampering done: %i/%i files tampered and overall %i/%i (%.2f%%) characters were tampered." % (files_tampered, filescount, tcount, tsize, tcount / max(1, tsize) * 100))
 
     del ptee

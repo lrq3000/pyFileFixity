@@ -31,7 +31,7 @@
 #=================================
 #
 
-from __future__ import division, absolute_import
+from __future__ import division
 
 from _infos import __version__
 
@@ -75,9 +75,13 @@ def parse_configfile(filepath):
     # -- Parsing the Makefile using ConfigParser
     # Adding a fake section to make the Makefile a valid Ini file
     ini_str = '[root]\n'
-    with open(filepath, 'r') as fd:
-        ini_str = ini_str + fd.read().replace('\t@', '\t').\
-            replace('\t+', '\t').replace('\tmake ', '\t')
+    if not hasattr(filepath, 'read'):
+        fd = open(filepath, 'r')
+    else:
+        fd = filepath
+    ini_str = ini_str + fd.read().replace('\t@', '\t').\
+        replace('\t+', '\t').replace('\tmake ', '\t')
+    if fd != filepath: fd.close()
     ini_fp = StringIO(ini_str)
     # Parse using ConfigParser
     config = ConfigParser.RawConfigParser()
@@ -99,7 +103,7 @@ def interpolate_dict(s, interp_args={}):
     # String interpolate the command to fill in the variables if necessary
     return s.format(**interp_args)
 
-def execute_command(cmd, ptee=None, verbose=False):
+def execute_command(cmd, ptee=None, verbose=False):  # pragma: no cover
     # Parse string in a shell-like fashion
     # (incl quoted strings and comments)
     parsed_cmd = shlex.split(cmd, comments=True)
@@ -113,16 +117,16 @@ def execute_command(cmd, ptee=None, verbose=False):
             if mod and hasattr(mod, 'main'):
                 mod.main(parsed_cmd[2:])
             else:
-                subprocess.check_call(parsed_cmd)
+                return subprocess.check_call(parsed_cmd)
         else:
             # Launch the command and wait to finish (synchronized call)
-            subprocess.check_call(parsed_cmd)
+            return subprocess.check_call(parsed_cmd)
         #if ptee: ptee.enable()
 
 ######## Diff functions ########
 
 def diff_bytes_files(path1, path2, blocksize=65535, startpos1=0, startpos2=0):
-    """ Return True if both files are identical, False otherwise """
+    """ Compare two files byte-wise, and return the total number of differing bytes """
     diff_count = 0
     total_size = 0
     with open(path1, 'rb') as f1, open(path2, 'rb') as f2:
@@ -213,11 +217,7 @@ def diff_count_dir(dir1, dir2):
 def compute_repair_power(new_error, old_error):
     return (1 - (new_error / old_error)) * 100
 
-def compute_diff_stats(orig, dir1, dir2, dir1power=None, dir2power=None):
-    if not dir1power:
-        dir1power = dir1
-    if not dir2power:
-        dir2power = dir2
+def compute_diff_stats(orig, dir1, dir2):
     stats = OrderedDict()
     stats["diff_bytes"] = diff_bytes_dir(orig, dir2)
     stats["diff_count"] = diff_count_dir(orig, dir2)
@@ -251,7 +251,7 @@ def compute_all_diff_stats(commands, origpath, tamperdir, repairdir, finalrepair
 
     return stats
 
-def pretty_print_stats(stat):
+def pretty_print_stats(stat):  # pragma: no cover
     out = ''
     for key, value in stat.iteritems():
         if key == 'diff_bytes':
@@ -294,7 +294,7 @@ def stats_running_average(stats, new_stats, weight):
 
 ######## Helper functions (importing, path construction, etc.) ########
 
-def import_module(module_name):
+def import_module(module_name):  # pragma: no cover
     ''' Reliable import, courtesy of Armin Ronacher '''
     try:
         __import__(module_name)
