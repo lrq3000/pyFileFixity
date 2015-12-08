@@ -330,7 +330,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
                 csv_writer = csv.writer(dbfilerem, lineterminator='\n', delimiter='|', quotechar='"')
 
                 # Printing CSV headers
-                csv_headers = ['path', 'md5', 'sha1', 'last_modification_timestamp', 'last_modification_date', 'size', 'ext']
+                csv_headers = [b'path', b'md5', b'sha1', b'last_modification_timestamp', b'last_modification_date', b'size', b'ext']
                 csv_writer.writerow(csv_headers)
 
                 dbf.seek(0)

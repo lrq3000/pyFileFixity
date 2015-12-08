@@ -266,7 +266,7 @@ def synchronize_files(inputpaths, outpath, database=None, tqdm_bar=None, report_
     if report_file is not None:
         rfile = open(report_file, 'wb')
         r_writer = csv.writer(rfile, delimiter='|', lineterminator='\n', quotechar='"')
-        r_header = ["filepath"] + ["dir%i" % (i+1) for i in _range(nbpaths)] + ["hash-correct", "error_code", "errors"]
+        r_header = [b"filepath"] + [b"dir%i" % (i+1) for i in _range(nbpaths)] + [b"hash-correct", b"error_code", b"errors"]
         r_length = len(r_header)
         r_writer.writerow(r_header)
 
