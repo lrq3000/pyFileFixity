@@ -49,6 +49,7 @@ thispathname = os.path.dirname(__file__)
 sys.path.append(os.path.join(thispathname))
 
 # Import necessary libraries
+from lib._compat import _str
 from lib.aux_funcs import is_dir, is_dir_or_file, fullpath, recwalk, path2unix
 import lib.argparse as argparse
 import os, datetime, time, sys
@@ -164,7 +165,7 @@ def AutoGooey(fn):  # pragma: no cover
 def main(argv=None):
     if argv is None: # if argv is empty, fetch from the commandline
         argv = sys.argv[1:]
-    elif isinstance(argv, basestring): # else if argv is supplied but it's a simple string, we need to parse it to a list of arguments before handing to argparse or any other argument parser
+    elif isinstance(argv, _str): # else if argv is supplied but it's a simple string, we need to parse it to a list of arguments before handing to argparse or any other argument parser
         argv = shlex.split(argv) # Parse string just like argv using shlex
 
     #==== COMMANDLINE PARSER ====

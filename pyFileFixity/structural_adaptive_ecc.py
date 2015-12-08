@@ -62,7 +62,7 @@ thispathname = os.path.dirname(__file__)
 sys.path.append(os.path.join(thispathname))
 
 # Import necessary libraries
-from lib._compat import _StringIO # to support intra-ecc
+from lib._compat import _str, _range, _StringIO # to support intra-ecc
 from lib.aux_funcs import get_next_entry, is_dir, is_dir_or_file, fullpath, recwalk, sizeof_fmt, path2unix
 import lib.argparse as argparse
 import datetime, time
@@ -292,7 +292,7 @@ def AutoGooey(fn):  # pragma: no cover
 def main(argv=None):
     if argv is None: # if argv is empty, fetch from the commandline
         argv = sys.argv[1:]
-    elif isinstance(argv, basestring): # else if argv is supplied but it's a simple string, we need to parse it to a list of arguments before handing to argparse or any other argument parser
+    elif isinstance(argv, _str): # else if argv is supplied but it's a simple string, we need to parse it to a list of arguments before handing to argparse or any other argument parser
         argv = shlex.split(argv) # Parse string just like argv using shlex
 
     #==== COMMANDLINE PARSER ====
@@ -538,13 +538,13 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
             # Write ECC file header identifier (unique string + version)
             db.write("**PYSTRUCTADAPTECCv%s**\n" % (''.join([x * 3 for x in __version__]))) # each character in the version will be repeated 3 times, so that in case of tampering, a majority vote can try to disambiguate)
             # Write the parameters (they are NOT reloaded automatically, you have to specify them at commandline! It's the user role to memorize those parameters (using any means: own brain memory, keep a copy on paper, on email, etc.), so that the parameters are NEVER tampered. The parameters MUST be ultra reliable so that errors in the ECC file can be more efficiently recovered.
-            for i in xrange(3): db.write("** Parameters: "+" ".join(argv) + "\n") # copy them 3 times just to be redundant in case of ecc file corruption
+            for i in _range(3): db.write("** Parameters: "+" ".join(argv) + "\n") # copy them 3 times just to be redundant in case of ecc file corruption
             db.write("** Generated under %s\n" % ecc_manager_variable.description())
             # NOTE: there's NO HEADER for the ecc file! Ecc entries are all independent of each others, you just need to supply the decoding arguments at commandline, and the ecc entries can be decoded. This is done on purpose to be remove the risk of critical spots in ecc file.
 
             # Compile the list of files to put in the header
             #filesheader = [':'.join([str(i), str(item[0]), str(item[1])]) for i, item in enumerate(itertools.izip(fileslist, filessizes))]
-            #for i in xrange(4): # replicate the headers several times as a safeguard for corruption
+            #for i in _range(4): # replicate the headers several times as a safeguard for corruption
                 #db.write("**" + '|'.join(filesheader) + "**\n")
 
             # Processing ecc on files
@@ -639,7 +639,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
                 # -- Disambiguation/Replication management: if replication rate was used, then fetch all entries for the same file at once, and then disambiguate by majority vote
                 # else: # TODO: replication not ready yet
                     # entries_pos = []
-                    # for i in xrange(replication_rate):
+                    # for i in _range(replication_rate):
                         # entries_pos.append(get_next_entry(db, entrymarker))
                     # entry_pos = entries_disambiguate(entries_pos, field_delim, ptee)
                     # if entry_pos: bardisp.update((entry_pos[1]-entry_pos[0]+len(entrymarker))*replication_rate) # update progress bar

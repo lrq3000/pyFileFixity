@@ -41,7 +41,7 @@ thispathname = os.path.dirname(__file__)
 sys.path.append(os.path.join(thispathname))
 
 # Import necessary libraries
-from lib._compat import _StringIO
+from lib._compat import _str, _range, _StringIO
 import subprocess # to execute commands
 import itertools
 from lib.aux_funcs import recwalk, path2unix, fullpath, is_dir_or_file, is_dir, is_file, fullpath, copy_any, create_dir_if_not_exist, remove_if_exist
@@ -244,7 +244,7 @@ def compute_all_diff_stats(commands, origpath, tamperdir, repairdir, finalrepair
 
     # - tampered/result0,1,... in loop
     indir = tamperdir
-    for i in xrange(len(commands["repair"])):
+    for i in _range(len(commands["repair"])):
         outdir = "%s%i" % (repairdir, i)
         stats["repair%i"%i] = compute_diff_stats(origpath, indir, outdir)
         if i == 0:
@@ -295,7 +295,7 @@ def stats_running_average(stats, new_stats, weight):
                         #nstats[stage][key] = [[x, y] for x,y in itertools.izip(stats[stage][key], new_stats[stage][key])]
 
                     # Scalar
-                    elif not hasattr(stats[stage][key], '__len__') and (not isinstance(stats[stage][key], basestring)):
+                    elif not hasattr(stats[stage][key], '__len__') and (not isinstance(stats[stage][key], _str)):
                         nstats[stage][key] = running_average(stats[stage][key], new_stats[stage][key], weight)
 
     return nstats
@@ -372,7 +372,7 @@ def AutoGooey(fn):  # pragma: no cover
 def main(argv=None):
     if argv is None: # if argv is empty, fetch from the commandline
         argv = sys.argv[1:]
-    elif isinstance(argv, basestring): # else if argv is supplied but it's a simple string, we need to parse it to a list of arguments before handing to argparse or any other argument parser
+    elif isinstance(argv, _str): # else if argv is supplied but it's a simple string, we need to parse it to a list of arguments before handing to argparse or any other argument parser
         argv = shlex.split(argv) # Parse string just like argv using shlex
 
     #==== COMMANDLINE PARSER ====
@@ -492,7 +492,7 @@ Also note that the test folder will not be removed at the end, so that you can s
     ptee.write("Testing folder %s into test folder %s for %i run(s)." % (origpath, outputpath, multiple))
 
     fstats = {}
-    for m in xrange(multiple):
+    for m in _range(multiple):
         run_nb = m + 1
 
         ptee.write("===== Resiliency tester: starting run %i =====" % run_nb)

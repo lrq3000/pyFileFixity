@@ -33,6 +33,7 @@ thispathname = os.path.dirname(__file__)
 sys.path.append(os.path.join(thispathname))
 
 # ECC and hashing facade libraries
+from lib._compat import _range
 from lib.aux_funcs import sizeof_fmt
 from lib.eccman import ECCMan, compute_ecc_params
 from lib.hasher import Hasher
@@ -51,7 +52,7 @@ def gen_random_string(n, size):
     # Init length of string (this will be used to convert the bigint to a string)
     hexstr = '%0'+str(size)+'x'
 
-    for _ in xrange(n):
+    for _ in _range(n):
         # Generate a random string
         yield hexstr % random.randrange(16**size) # Generate a random bigint of the size we require, and convert to a string
 
@@ -111,7 +112,7 @@ def main(argv=None):
 
             # Then tamper it randomly
             # First generate a list of random indices where we will tamper
-            tamper_idx = random.sample(xrange(ecc_params["message_size"]), int(math.floor(ecc_params["ecc_size"] * tamper_rate)))
+            tamper_idx = random.sample(_range(ecc_params["message_size"]), int(math.floor(ecc_params["ecc_size"] * tamper_rate)))
             # Convert to bytearray to easily modify characters in the message
             msg_tampered = bytearray(msg)
             # Tamper the characters

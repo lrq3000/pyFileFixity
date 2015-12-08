@@ -35,6 +35,7 @@ thispathname = os.path.dirname(__file__)
 sys.path.append(os.path.join(thispathname))
 
 # Import necessary libraries
+from lib._compat import _str, _range
 from lib.aux_funcs import fullpath
 import lib.argparse as argparse
 import datetime, time
@@ -107,7 +108,7 @@ def AutoGooey(fn):  # pragma: no cover
 def main(argv=None):
     if argv is None: # if argv is empty, fetch from the commandline
         argv = sys.argv[1:]
-    elif isinstance(argv, basestring): # else if argv is supplied but it's a simple string, we need to parse it to a list of arguments before handing to argparse or any other argument parser
+    elif isinstance(argv, _str): # else if argv is supplied but it's a simple string, we need to parse it to a list of arguments before handing to argparse or any other argument parser
         argv = shlex.split(argv) # Parse string just like argv using shlex
 
     #==== COMMANDLINE PARSER ====
@@ -303,7 +304,7 @@ Note: An ecc structure repair does NOT allow to recover from more errors on your
         already_valid = 0 # stat counter
         db.seek(0) # seek to the beginning of the database file
         buf = 1 # init the buffer to 1 to initiate the while loop
-        markers_pos = [[] for i in xrange(len(markers))] # will contain the list of positions where a corrupted marker has been detected (not valid markers, they will be skipped)
+        markers_pos = [[] for i in _range(len(markers))] # will contain the list of positions where a corrupted marker has been detected (not valid markers, they will be skipped)
         distance_thresholds = [round(len(x)*distance_threshold, 0) for x in markers] # calculate the number of characters maximum for distance
         skip_until = -1 # when a valid marker (non corrupted) is found, we use this variable to skip to after the marker length (to avoid detecting partial parts of this marker, which will have a hamming distance even if the marker is completely valid because the reading window will be after the beginning of the marker)
         bardisp = tqdm.tqdm(total=ecc_size, file=ptee, leave=True, desc='DBREAD', unit='B', unit_scale=True) # display progress bar based on reading the database file (since we don't know how many files we will process beforehand nor how many total entries we have)
@@ -316,11 +317,11 @@ Note: An ecc structure repair does NOT allow to recover from more errors on your
             if not buf: break # reached EOF? quitting here
 
             # Scan the buffer, by splitting the buffer into substrings the length of the ecc markers
-            for i in xrange(len(buf)-max(len(entrymarker),len(field_delim))):
+            for i in _range(len(buf)-max(len(entrymarker),len(field_delim))):
                 # If we just came accross a non corrupted ecc marker, we skip until we are after this ecc marker (to avoid misdetections)
                 if i < skip_until: continue
                 # Compare each ecc marker type to this substring and compute the Hamming distance
-                for m in xrange(len(markers)):
+                for m in _range(len(markers)):
                     d = hamming(buf[i:i+len(markers[m])], markers[m]) # Compute the Hamming distance (simply the number of different characters)
                     mcurpos = curpos+i # current absolute position of this ecc marker
                     
@@ -351,7 +352,7 @@ Note: An ecc structure repair does NOT allow to recover from more errors on your
         bardisp.close()
 
         # Committing the repair into the ecc file
-        for m in xrange(len(markers)): # for each type of markers
+        for m in _range(len(markers)): # for each type of markers
             marker = markers[m]
             if len(markers_pos[m]) > 0: # If there is any detected marker to repair for this type
                 for pos in markers_pos[m]: # for each detected marker to repair, we rewrite it over into the file at the detected position

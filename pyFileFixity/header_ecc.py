@@ -64,6 +64,7 @@ thispathname = os.path.dirname(__file__)
 sys.path.append(os.path.join(thispathname))
 
 # Import necessary libraries
+from lib._compat import _str, _range
 from lib.aux_funcs import get_next_entry, is_dir, is_dir_or_file, fullpath, recwalk, sizeof_fmt, path2unix
 import lib.argparse as argparse
 import datetime, time
@@ -136,7 +137,7 @@ def entry_assemble(entry_fields, ecc_params, header_size, filepath, fileheader=N
 
     # Cut the header and the ecc entry into blocks, and then assemble them so that we can easily process block by block
     entry_asm = []
-    for i, j in itertools.izip(xrange(0, len(fileheader), ecc_params["message_size"]), xrange(0, len(entry_fields["ecc_field"]), ecc_params["hash_size"] + ecc_params["ecc_size"])):
+    for i, j in itertools.izip(_range(0, len(fileheader), ecc_params["message_size"]), _range(0, len(entry_fields["ecc_field"]), ecc_params["hash_size"] + ecc_params["ecc_size"])):
         # Extract each fields from each block
         mes = fileheader[i:i+ecc_params["message_size"]]
         hash = entry_fields["ecc_field"][j:j+ecc_params["hash_size"]]
@@ -154,7 +155,7 @@ def compute_ecc_hash(ecc_manager, hasher, buf, max_block_size, rate, message_siz
         ecc_params = compute_ecc_params(max_block_size, rate, hasher)
         message_size = ecc_params["message_size"]
     # Split the buffer string in blocks (necessary for Reed-Solomon encoding because it's limited to 255 characters max)
-    for i in xrange(0, len(buf), message_size):
+    for i in _range(0, len(buf), message_size):
         # Compute the message block
         mes = buf[i:i+message_size]
         # Compute the ecc
@@ -258,7 +259,7 @@ def AutoGooey(fn):  # pragma: no cover
 def main(argv=None):
     if argv is None: # if argv is empty, fetch from the commandline
         argv = sys.argv[1:]
-    elif isinstance(argv, basestring): # else if argv is supplied but it's a simple string, we need to parse it to a list of arguments before handing to argparse or any other argument parser
+    elif isinstance(argv, _str): # else if argv is supplied but it's a simple string, we need to parse it to a list of arguments before handing to argparse or any other argument parser
         argv = shlex.split(argv) # Parse string just like argv using shlex
 
     #==== COMMANDLINE PARSER ====
@@ -487,7 +488,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
             # Write ECC file header identifier (unique string + version)
             db.write("**PYHEADERECCv%s**\n" % (''.join([x * 3 for x in __version__]))) # each character in the version will be repeated 3 times, so that in case of tampering, a majority vote can try to disambiguate
             # Write the parameters (they are NOT reloaded automatically, you have to specify them at commandline! It's the user role to memorize those parameters (using any means: own brain memory, keep a copy on paper, on email, etc.), so that the parameters are NEVER tampered. The parameters MUST be ultra reliable so that errors in the ECC file can be more efficiently recovered.
-            for i in xrange(3): db.write("** Parameters: "+" ".join(argv) + "\n") # copy them 3 times just to be redundant in case of ecc file corruption
+            for i in _range(3): db.write("** Parameters: "+" ".join(argv) + "\n") # copy them 3 times just to be redundant in case of ecc file corruption
             db.write("** Generated under %s\n" % ecc_manager.description())
             # NOTE: there's NO HEADER for the ecc file! Ecc entries are all independent of each others, you just need to supply the decoding arguments at commandline, and the ecc entries can be decoded. This is done on purpose to be remove the risk of critical spots in ecc file.
 
@@ -581,7 +582,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
                 # -- Disambiguation/Replication management: if replication rate was used, then fetch all entries for the same file at once, and then disambiguate by majority vote
                 # else:
                     # entries = []
-                    # for i in xrange(replication_rate):
+                    # for i in _range(replication_rate):
                         # entries.append(get_next_entry(db, entrymarker, False))
                     # entry = entries_disambiguate(entries, field_delim, ptee)
                     # if entry: bardisp.update(len(entry)*replication_rate) # update progress bar

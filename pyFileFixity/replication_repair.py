@@ -39,6 +39,7 @@ thispathname = os.path.dirname(__file__)
 sys.path.append(os.path.join(thispathname))
 
 # Import necessary libraries
+from lib._compat import _str, _range
 from . import rfigc # optional
 import shutil
 from lib.aux_funcs import recwalk, path2unix, fullpath, is_dir_or_file, is_dir, is_file, create_dir_if_not_exist
@@ -154,7 +155,7 @@ def majority_vote_byte_scan(relfilepath, fileslist, outpath, blocksize=65535, de
     while (entries.count('') < len(fileshandles)):
         final_entry = []
         # Read a block from all input files into memory
-        for i in xrange(len(fileshandles)):
+        for i in _range(len(fileshandles)):
             entries[i] = fileshandles[i].read(blocksize)
 
         # End of file for all files, we exit
@@ -167,7 +168,7 @@ def majority_vote_byte_scan(relfilepath, fileslist, outpath, blocksize=65535, de
         # Else, do the majority vote
         else:
             # Walk along each column (imagine the strings being rows in a matrix, then we pick one column at each iteration = all characters at position i of each string), so that we can compare these characters easily
-            for i in xrange(max(len(entry) for entry in entries)):
+            for i in _range(max(len(entry) for entry in entries)):
                 hist = {} # kind of histogram, we just memorize how many times a character is presented at the position i in each string TODO: use collections.Counter instead of dict()?
                 # Extract the character at position i of each string and compute the histogram at the same time (number of time this character appear among all strings at this position i)
                 for entry in entries:
@@ -265,12 +266,12 @@ def synchronize_files(inputpaths, outpath, database=None, tqdm_bar=None, report_
     if report_file is not None:
         rfile = open(report_file, 'wb')
         r_writer = csv.writer(rfile, delimiter='|', lineterminator='\n', quotechar='"')
-        r_header = ["filepath"] + ["dir%i" % (i+1) for i in xrange(nbpaths)] + ["hash-correct", "error_code", "errors"]
+        r_header = ["filepath"] + ["dir%i" % (i+1) for i in _range(nbpaths)] + ["hash-correct", "error_code", "errors"]
         r_length = len(r_header)
         r_writer.writerow(r_header)
 
     # Initialization: load the first batch of files, one for each folder
-    for i in xrange(len(recgen)):
+    for i in _range(len(recgen)):
         recgen_exhausted[i] = False
         try:
             if curfiles.get(i, None) is None:
@@ -446,7 +447,7 @@ def AutoGooey(fn):  # pragma: no cover
 def main(argv=None):
     if argv is None: # if argv is empty, fetch from the commandline
         argv = sys.argv[1:]
-    elif isinstance(argv, basestring): # else if argv is supplied but it's a simple string, we need to parse it to a list of arguments before handing to argparse or any other argument parser
+    elif isinstance(argv, _str): # else if argv is supplied but it's a simple string, we need to parse it to a list of arguments before handing to argparse or any other argument parser
         argv = shlex.split(argv) # Parse string just like argv using shlex
 
     #==== COMMANDLINE PARSER ====

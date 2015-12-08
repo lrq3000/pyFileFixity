@@ -43,6 +43,7 @@ thispathname = os.path.dirname(__file__)
 sys.path.append(os.path.join(thispathname))
 
 # Import necessary libraries
+from lib._compat import _str, _range
 from lib.aux_funcs import fullpath, recwalk, is_dir, is_file, is_dir_or_file
 import lib.argparse as argparse
 import os, sys, random
@@ -91,7 +92,7 @@ def tamper_file(filepath, mode='e', proba=0.03, block_proba=None, blocksize=6553
                 pos2tamper = []
                 burst_remain = 0 # if burst is enabled and corruption probability is triggered, then we will here store the remaining number of characters to corrupt (the length is uniformly sampled over the range specified in arguments)
                 # Create the list of bits to tamper (it's a lot more efficient to precompute the list of characters to corrupt, and then modify in the file the characters all at once)
-                for i in xrange(len(buf)):
+                for i in _range(len(buf)):
                     if burst_remain > 0 or (random.random() < proba): # Corruption probability: corrupt only if below the bit-flip proba
                         pos2tamper.append(i) # keep this character's position in the to-be-corrupted list
                         if burst_remain > 0: # if we're already in a burst, we minus one and continue onto the next character
@@ -194,7 +195,7 @@ def AutoGooey(fn):  # pragma: no cover
 def main(argv=None):
     if argv is None: # if argv is empty, fetch from the commandline
         argv = sys.argv[1:]
-    elif isinstance(argv, basestring): # else if argv is supplied but it's a simple string, we need to parse it to a list of arguments before handing to argparse or any other argument parser
+    elif isinstance(argv, _str): # else if argv is supplied but it's a simple string, we need to parse it to a list of arguments before handing to argparse or any other argument parser
         argv = shlex.split(argv) # Parse string just like argv using shlex
 
     #==== COMMANDLINE PARSER ====
