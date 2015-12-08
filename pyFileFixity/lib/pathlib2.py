@@ -40,6 +40,10 @@ else:
     else:
         supports_symlinks = False
         _getfinalpathname = None
+try:
+    os.symlink
+except AttributeError:
+    supports_symlinks = False
 
 
 __all__ = [

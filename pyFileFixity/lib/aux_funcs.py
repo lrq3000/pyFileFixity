@@ -194,7 +194,10 @@ def copy_any(src, dst, only_missing=False):  # pragma: no cover
 from collections import OrderedDict
 from sortedcontainers import SortedList
 from random import randint
-from itertools import izip_longest
+try:
+    from itertools import izip_longest
+except ImportError:
+    from itertools import zip_longest as izip_longest
 
 def grouper(n, iterable, fillvalue=None):
     "grouper(3, 'ABCDEFG', 'x') --> ABC DEF Gxx"
