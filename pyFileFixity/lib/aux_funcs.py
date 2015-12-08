@@ -5,10 +5,11 @@
 #
 
 import os
-import argparse
-from pathlib2 import PurePath, PureWindowsPath, PurePosixPath # opposite operation of os.path.join (split a path into parts)
 import posixpath # to generate unix paths
 import shutil
+
+from .argparse import ArgumentTypeError
+from .pathlib2 import PurePath, PureWindowsPath, PurePosixPath # opposite operation of os.path.join (split a path into parts)
 
 try:
     from scandir import walk # use the faster scandir module if available (Python >= 3.5), see https://github.com/benhoyt/scandir
@@ -20,7 +21,7 @@ def is_file(dirname):
     '''Checks if a path is an actual file that exists'''
     if not os.path.isfile(dirname):
         msg = "{0} is not an existing file".format(dirname)
-        raise argparse.ArgumentTypeError(msg)
+        raise ArgumentTypeError(msg)
     else:
         return dirname
 
@@ -28,7 +29,7 @@ def is_dir(dirname):
     '''Checks if a path is an actual directory that exists'''
     if not os.path.isdir(dirname):
         msg = "{0} is not a directory".format(dirname)
-        raise argparse.ArgumentTypeError(msg)
+        raise ArgumentTypeError(msg)
     else:
         return dirname
 
@@ -36,7 +37,7 @@ def is_dir_or_file(dirname):
     '''Checks if a path is an actual directory that exists or a file'''
     if not os.path.isdir(dirname) and not os.path.isfile(dirname):
         msg = "{0} is not a directory nor a file".format(dirname)
-        raise argparse.ArgumentTypeError(msg)
+        raise ArgumentTypeError(msg)
     else:
         return dirname
 
