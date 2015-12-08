@@ -25,7 +25,7 @@
 # THE SOFTWARE.
 
 # Compatibility with Python 3
-from _compat import _str
+from _compat import _str, _range
 
 from .distance.distance import hamming
 
@@ -68,8 +68,8 @@ def detect_reedsolomon_parameters(message, mesecc_orig, gen_list=[2, 3, 5], c_ex
     n = len(mesecc_orig)
     k = len(message)
     field_charac = int((2**c_exp) - 1)
-    maxval1 = max([ord(x) if isinstance(x, basestring) else x for x in message ])
-    maxval2 = max([ord(x) if isinstance(x, basestring) else x for x in mesecc_orig])
+    maxval1 = max([ord(x) if isinstance(x, _str) else x for x in message ])
+    maxval2 = max([ord(x) if isinstance(x, _str) else x for x in mesecc_orig])
     maxval = max([maxval1, maxval2])
     if (maxval > field_charac):
         raise ValueError("The specified field's exponent is wrong, the message contains values (%i) above the field's cardinality (%i)!" % (maxval, field_charac))
@@ -82,7 +82,7 @@ def detect_reedsolomon_parameters(message, mesecc_orig, gen_list=[2, 3, 5], c_ex
         prim_list = reedsolop.find_prime_polys(generator=gen_nb, c_exp=c_exp, fast_primes=False, single=False)
         for prim in prim_list:
             reedsolop.init_tables(prim)
-            for fcr in xrange(field_charac):
+            for fcr in _range(field_charac):
                 #g = reedsolop.rs_generator_poly_all(n, fcr=fcr, generator=gen_nb)
                 # Generate a RS code from the sample message using the current combination of RS parameters
                 mesecc = reedsolop.rs_encode_msg(message, n-k, fcr=fcr)
@@ -183,7 +183,7 @@ class ECCMan(object):
             # Convert char to a int (because we use a bytearray)
             if isinstance(erasures_char, _str): erasures_char = ord(erasures_char)
             # Find the positions of the erased characters
-            erasures_pos = [i for i in xrange(len(mesecc)) if mesecc[i] == erasures_char]
+            erasures_pos = [i for i in _range(len(mesecc)) if mesecc[i] == erasures_char]
             # Failing case: no erasures could be found and we want to only correct erasures, then we return the message as-is
             if only_erasures and not erasures_pos: return message, ecc
 
@@ -222,7 +222,7 @@ class ECCMan(object):
         if len(message) < k:
             #pad = "\x00" * (k-len(message))
             pad = bytearray(k-len(message))
-            message = pad + message
+            message = pad + bytearray(message)
         return [message, pad]
 
     def rpad(self, ecc, k=None):
@@ -233,7 +233,7 @@ class ECCMan(object):
             print("Warning: the ecc field may have been truncated (entrymarker or field_delim misdetection?).")
             #pad = "\x00" * (self.n-k-len(ecc))
             pad = bytearray(self.n-k-len(ecc))
-            ecc = ecc + pad
+            ecc = bytearray(ecc) + pad
         return [ecc, pad]
 
     def check(self, message, ecc, k=None):

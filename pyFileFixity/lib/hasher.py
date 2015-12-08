@@ -24,7 +24,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+import sys
 import hashlib
+from base64 import b64encode, b64decode
 #import zlib
 
 class Hasher(object):
@@ -50,16 +52,18 @@ class Hasher(object):
 
     def hash(self, mes):
         # use hashlib.algorithms_guaranteed to list algorithms
+        if sys.version_info > (3, 0):
+            mes = mes.encode()
         if self.algo == "md5":
             return hashlib.md5(mes).hexdigest()
         elif self.algo == "shortmd5": # from: http://www.peterbe.com/plog/best-hashing-function-in-python
-            return hashlib.md5(mes).hexdigest().encode('base64')[:8]
+            return b64encode(hashlib.md5(mes).hexdigest())[:8]
         elif self.algo == "shortsha256":
-            return hashlib.sha256(mes).hexdigest().encode('base64')[:8]
+            return b64encode(hashlib.sha256(mes).hexdigest())[:8]
         elif self.algo == "minimd5":
-            return hashlib.md5(mes).hexdigest().encode('base64')[:4]
+            return b64encode(hashlib.md5(mes).hexdigest())[:4]
         elif self.algo == "minisha256":
-            return hashlib.sha256(mes).hexdigest().encode('base64')[:4]
+            return b64encode(hashlib.sha256(mes).hexdigest())[:4]
         elif self.algo == "none":
             return ''
         else:

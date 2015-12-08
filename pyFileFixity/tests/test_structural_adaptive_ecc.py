@@ -121,7 +121,7 @@ def test_stream_entry_assemble():
     ecc_entry_pos = get_next_entry(eccf, get_marker(1), only_coord=True)
     entry_fields = saecc.entry_fields(eccf, ecc_entry_pos, field_delim=get_marker(2))
     with open(tempfile, 'rb') as tfile:
-        assert list( saecc.stream_entry_assemble(Hasher(), tfile, eccf, entry_fields, 255, 10, [0.7, 0.5, 0.3]) ) == [{'ecc': 'sh-ecc-entry_\xfe\xff\xfe\xff\xfe\xff\xfe\xff\xfe\xfffile2.ext\xfa\xff\xfa\xff\xfafilesize2\xfa\xff\xfa\xff\xfarelfilepath2_ecc\xfa\xff\xfa\xff\xfafilesize2_ecc\xfa\xff\xfa\xff\xfahash-ecc-entry_hash-ecc-entry_hash-ecc-entry_hash-ecc-entry', 'curpos': 0L, 'rate': 0.7, 'ecc_params': {'ecc_size': 149, 'hash_size': 32, 'message_size': 106}, 'ecc_curpos': 150, 'hash': 'hash-ecc-entry_hash-ecc-entry_ha', 'message': 'Lorem ipsum\nAnd stuff and stuff and stuff\nLorem ipsum\nAnd stuff and stuff and stuff\nLorem ipsum\nAnd stuff '}]
+        assert list( saecc.stream_entry_assemble(Hasher(), tfile, eccf, entry_fields, 255, 10, [0.7, 0.5, 0.3]) ) == [{'ecc': 'sh-ecc-entry_\xfe\xff\xfe\xff\xfe\xff\xfe\xff\xfe\xfffile2.ext\xfa\xff\xfa\xff\xfafilesize2\xfa\xff\xfa\xff\xfarelfilepath2_ecc\xfa\xff\xfa\xff\xfafilesize2_ecc\xfa\xff\xfa\xff\xfahash-ecc-entry_hash-ecc-entry_hash-ecc-entry_hash-ecc-entry', 'curpos': 0, 'rate': 0.7, 'ecc_params': {'ecc_size': 149, 'hash_size': 32, 'message_size': 106}, 'ecc_curpos': 150, 'hash': 'hash-ecc-entry_hash-ecc-entry_ha', 'message': 'Lorem ipsum\nAnd stuff and stuff and stuff\nLorem ipsum\nAnd stuff and stuff and stuff\nLorem ipsum\nAnd stuff '}]
     # TODO: check that several blocks can be assembled, currently we only check one block
 
 def test_stream_compute_ecc_hash():

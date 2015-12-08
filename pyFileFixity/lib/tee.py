@@ -27,9 +27,11 @@ class Tee(object):
     def write(self, data, end="\n", flush=True):
         """ Output data to stdout and/or file """
         if not self.nostdout:
-            self.stdout.write(data+end)
+            self.stdout.write(data)
+            self.stdout.write(end.encode())
         if self.file is not None:
-            self.file.write(data+end)
+            self.file.write(data)
+            self.file.write(end.encode())
         if flush:
             self.flush()
 

@@ -126,7 +126,7 @@ def entry_fields(file, entry_pos, field_delim="\xFF"):
     # Try to convert to an int, an error may happen
     try:
         filesize = int(filesize)
-    except Exception, e:
+    except Exception as e:
         print("Exception when trying to detect the filesize in ecc field (it may be corrupted), skipping: ")
         print(e)
         #filesize = 0 # avoid setting to 0, we keep as an int so that we can try to fix using intra-ecc
@@ -223,7 +223,7 @@ def ecc_correct_intra_stream(ecc_manager_intra, ecc_params_intra, hasher_intra, 
             # Repair the message block and the ecc
             try:
                 repaired_block, repaired_ecc = ecc_manager_intra.decode(e["message"], e["ecc"], enable_erasures=enable_erasures, erasures_char=erasures_char, only_erasures=only_erasures)
-            except (ReedSolomonError, RSCodecError), exc: # the reedsolo lib may raise an exception when it can't decode. We ensure that we can still continue to decode the rest of the file, and the other files.
+            except (ReedSolomonError, RSCodecError) as exc: # the reedsolo lib may raise an exception when it can't decode. We ensure that we can still continue to decode the rest of the file, and the other files.
                 repaired_block = None
                 repaired_ecc = None
                 errmsg += "- Error: metadata field at offset %i: %s\n" % (entry_pos[0], exc)
@@ -739,7 +739,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
                                     ptee.write("File %s: corruption in block %i. Trying to fix it." % (relfilepath, i))
                                     try:
                                         repaired_block, repaired_ecc = ecc_manager_variable.decode(e["message"], e["ecc"], k=e["ecc_params"]["message_size"], enable_erasures=enable_erasures, erasures_char=erasure_symbol, only_erasures=only_erasures)
-                                    except (ReedSolomonError, RSCodecError), exc: # the reedsolo lib may raise an exception when it can't decode. We ensure that we can still continue to decode the rest of the file, and the other files.
+                                    except (ReedSolomonError, RSCodecError) as exc: # the reedsolo lib may raise an exception when it can't decode. We ensure that we can still continue to decode the rest of the file, and the other files.
                                         repaired_block = None
                                         repaired_ecc = None
                                         print("Error: file %s: block %i: %s" % (relfilepath, i, exc))

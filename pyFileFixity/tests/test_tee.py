@@ -18,8 +18,8 @@ def setup_module():
 
 def test_tee_file():
     """ tee: test tee file output """
-    instring1 = "First line\nSecond line\n"
-    instring2 = "Third line\n"
+    instring1 = b"First line\nSecond line\n"
+    instring2 = b"Third line\n"
     filelog = path_sample_files('output', 'tee1.log')
     remove_if_exist(filelog)
     # Write first string
@@ -27,13 +27,15 @@ def test_tee_file():
     t.write(instring1, end='')
     del t # deleting Tee should close the file
     with open(filelog, 'rb') as fl:
-        assert fl.read() == instring1
+        res1 = fl.read()
+    assert res1 == instring1
     # Write second string while appending
     t2 = Tee(filelog, 'ab', nostdout=True)
     t2.write(instring2, end='')
     del t2 # deleting Tee should close the file
     with open(filelog, 'rb') as fl:
-        assert fl.read() == instring1+instring2
+        res2 = fl.read()
+    assert res2 == instring1+instring2
 
 def test_tee_stdout():
     """ tee: test tee stdout """
