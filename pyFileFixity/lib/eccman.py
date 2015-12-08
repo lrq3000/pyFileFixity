@@ -76,6 +76,9 @@ def detect_reedsolomon_parameters(message, mesecc_orig, gen_list=[2, 3, 5], c_ex
 
     # Prepare the variable that will store the result
     best_match = {"hscore": -1, "params": [{"gen_nb": 0, "prim": 0, "fcr": 0}]}
+    
+    if isinstance(message, _str):
+        message = message.encode()
 
     # Exhaustively search by generating every combination of values for the RS parameters and test the Hamming distance
     for gen_nb in gen_list:

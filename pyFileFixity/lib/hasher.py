@@ -26,7 +26,8 @@
 
 import sys
 import hashlib
-from base64 import b64encode, b64decode
+from base64 import b64encode, b64decode  # using b64encode is about 3x faster than using encode('base64_codec')
+# alternative to base64: from codecs import encode
 #import zlib
 
 class Hasher(object):
@@ -55,15 +56,15 @@ class Hasher(object):
         if sys.version_info > (3, 0):
             mes = mes.encode()
         if self.algo == "md5":
-            return hashlib.md5(mes).hexdigest()
+            return hashlib.md5(mes).hexdigest().encode()
         elif self.algo == "shortmd5": # from: http://www.peterbe.com/plog/best-hashing-function-in-python
-            return b64encode(hashlib.md5(mes).hexdigest())[:8]
+            return b64encode(hashlib.md5(mes).hexdigest().encode())[:8]
         elif self.algo == "shortsha256":
-            return b64encode(hashlib.sha256(mes).hexdigest())[:8]
+            return b64encode(hashlib.sha256(mes).hexdigest().encode())[:8]
         elif self.algo == "minimd5":
-            return b64encode(hashlib.md5(mes).hexdigest())[:4]
+            return b64encode(hashlib.md5(mes).hexdigest().encode())[:4]
         elif self.algo == "minisha256":
-            return b64encode(hashlib.sha256(mes).hexdigest())[:4]
+            return b64encode(hashlib.sha256(mes).hexdigest().encode())[:4]
         elif self.algo == "none":
             return ''
         else:
