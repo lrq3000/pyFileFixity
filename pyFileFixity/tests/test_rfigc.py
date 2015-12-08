@@ -105,7 +105,7 @@ def test_update():
     # Create a new file in another folder
     create_dir_if_not_exist(fileout_dir)
     with open(fileout, 'wb') as fh:
-        fh.write('abcdefABCDEF\n1234598765')
+        fh.write(b'abcdefABCDEF\n1234598765')
     # Append file in database
     assert rfigc.main('-i "%s" -d "%s" --update --append --silent' % (fileout_dir, filedb)) == 0
     assert partial_eq(filedb, fileres1)
@@ -118,7 +118,7 @@ def test_generate_hashes():
     # Test with a file we make on the spot, so this should always be correct!
     infile0 = path_sample_files('output', 'test_rfigc_generate_hashes.txt')
     with open(infile0, 'wb') as f0:
-        f0.write("Lorem ipsum etc\n"*20)
+        f0.write(b"Lorem ipsum etc\n"*20)
     assert rfigc.generate_hashes(infile0) == ('c6e0c87cbb8eeaca8179f22186384e6b', '6f46949be7cda1437bc3fb61fb827a6552beaf8b')
     # Test with input files, this may change if we change the files
     infile1 = path_sample_files('input', 'tux.jpg')
