@@ -38,11 +38,10 @@ from pyFileFixity import __version__
 # Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
 import sys, os
 thispathname = os.path.dirname(__file__)
-sys.path.append(os.path.join(thispathname, 'lib'))
+sys.path.append(os.path.join(thispathname))
 
 # Import necessary libraries
 from lib._compat import _StringIO
-import ConfigParser
 import subprocess # to execute commands
 import itertools
 from lib.aux_funcs import recwalk, path2unix, fullpath, is_dir_or_file, is_dir, is_file, fullpath, copy_any, create_dir_if_not_exist, remove_if_exist
@@ -55,6 +54,12 @@ import shlex # for string parsing as argv argument to main(), unnecessary otherw
 from lib.tee import Tee # Redirect print output to the terminal as well as in a log file
 from collections import OrderedDict
 #import pprint # Unnecessary, used only for debugging purposes
+
+# To read the config file
+try:
+    import configparser as ConfigParser
+except ImportError:
+    import ConfigParser
 
 
 

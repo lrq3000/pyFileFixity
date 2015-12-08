@@ -30,7 +30,7 @@ from pyFileFixity import __version__
 # Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
 import sys, os
 thispathname = os.path.dirname(__file__)
-sys.path.append(os.path.join(thispathname, 'lib'))
+sys.path.append(os.path.join(thispathname))
 
 # ECC and hashing facade libraries
 from lib.aux_funcs import sizeof_fmt
