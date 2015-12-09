@@ -43,3 +43,13 @@ if sys.version_info < (3,):
 else:
     def _open_csv(x, mode='r'):
         return open(x, mode+'t', newline='')
+
+if sys.version_info < (3,):
+    def _ord(x):
+        return ord(x)
+else:
+    def _ord(x):
+        if isinstance(x, int):
+            return x
+        else:
+            return ord(x)
