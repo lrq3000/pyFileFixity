@@ -5,6 +5,8 @@ from __future__ import with_statement
 import os
 import shutil
 
+from ..lib._compat import _range, b
+
 def check_eq_files(path1, path2, blocksize=65535, startpos1=0, startpos2=0):
     """ Return True if both files are identical, False otherwise """
     flag = True
@@ -45,7 +47,7 @@ def check_eq_dir(path1, path2):
     # Else we need to compare the files contents
     else:
         flag = True
-        for i in xrange(len(files1)):
+        for i in _range(len(files1)):
             #print("files: %s %s" % (files1[i], files2[i]))  # debug
             # If the files contents are different, we fail
             if not check_eq_files(os.path.join(path1, files1[i]), os.path.join(path2, files2[i])):
@@ -94,7 +96,7 @@ def tamper_file(path, pos=0, replace_str=None):
                 fsize = os.fstat(fh.fileno()).st_size
                 pos = fsize + pos
             fh.seek(pos)
-            fh.write(replace_str)
+            fh.write(b(replace_str))
     except IOError:
         return False
     finally:

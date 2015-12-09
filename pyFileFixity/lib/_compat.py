@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import sys
+
 try: # compatibility with Python 3+
     _range = xrange
 except NameError:
@@ -23,3 +25,21 @@ try:
     _str = basestring
 except NameError:
     _str = str
+
+if sys.version_info < (3,):
+    def b(x):
+        return x
+else:
+    import codecs
+    def b(x):
+        if isinstance(x, _str):
+            return codecs.latin_1_encode(x)[0]
+        else:
+            return x
+
+if sys.version_info < (3,):
+    def _open_csv(x, mode='r'):
+        return open(x, mode+'b')
+else:
+    def _open_csv(x, mode='r'):
+        return open(x, mode+'t', newline='')
