@@ -169,7 +169,7 @@ def compute_ecc_hash(ecc_manager, hasher, buf, max_block_size, rate, message_siz
         if as_string:
             result.append(b(hash)+b(ecc))
         else:
-            result.append([hash, ecc])
+            result.append([b(hash), b(ecc)])
     return result
 
 def ecc_correct_intra(ecc_manager_intra, ecc_params_intra, field, ecc, entry_pos, enable_erasures=False, erasures_char="\x00", only_erasures=False):
@@ -518,7 +518,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
                     ecc_stream = compute_ecc_hash(ecc_manager, hasher, buf, max_block_size, resilience_rate, ecc_params["message_size"], True) # then compute the ecc/hash entry for this file's header (this will be a chain of multiple ecc/hash fields per block of data, because Reed-Solomon is limited to a maximum of 255 bytes, including the original_message+ecc!)
                     # -- Build the ecc entry
                     # First put the ecc metadata
-                    ecc_entry = b''.join([b(entrymarker), b(relfilepath), b(field_delim), b(str(filesize)), b(field_delim), relfilepath_ecc, b(field_delim), filesize_ecc, b(field_delim)]) # first save the file's metadata (filename, filesize, filepath ecc, ...)
+                    ecc_entry = b''.join([b(entrymarker), b(relfilepath), b(field_delim), b(str(filesize)), b(field_delim), b(relfilepath_ecc), b(field_delim), b(filesize_ecc), b(field_delim)]) # first save the file's metadata (filename, filesize, filepath ecc, ...)
                     # Then put the ecc stream (the ecc blocks for the file's data)
                     for es in ecc_stream:
                         ecc_entry += es

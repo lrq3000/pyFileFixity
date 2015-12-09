@@ -139,6 +139,6 @@ def test_compute_ecc_hash():
     header_size = 1024
     eccman = ECCMan(n, k, algo=3)
     out1 = hecc.compute_ecc_hash(eccman, Hasher(), instring[:header_size], 255, 0.5, message_size=None, as_string=False)
-    assert out1 == [['dummyhsh', b'\x9b\x18\xeb\xc9z\x01c\xf2\x07'], ['dummyhsh', b'\xa2Q\xc0Y\xae\xc3b\xd5\x81']]
+    assert out1 == [[b'dummyhsh', b'\x9b\x18\xeb\xc9z\x01c\xf2\x07'], [b'dummyhsh', b'\xa2Q\xc0Y\xae\xc3b\xd5\x81']]
     out2 = hecc.compute_ecc_hash(eccman, Hasher(), instring[:header_size], 255, 0.5, message_size=None, as_string=True)
     assert out2 == [b('dummyhsh\x9b\x18\xeb\xc9z\x01c\xf2\x07'), b('dummyhsh\xa2Q\xc0Y\xae\xc3b\xd5\x81')]
