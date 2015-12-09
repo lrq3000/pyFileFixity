@@ -25,7 +25,7 @@
 # THE SOFTWARE.
 
 # Compatibility with Python 3
-from _compat import _str, _range, b
+from _compat import _str, _range, b, _bytes
 
 from .distance.distance import hamming
 
@@ -166,7 +166,7 @@ class ECCMan(object):
             #mesecc = rs_encode_msg_precomp(message, self.n-k, fcr=self.fcr, gen=self.g[self.n-k])
 
         ecc = mesecc[len(message):]
-        return ecc
+        return _bytes(ecc)
 
     def decode(self, message, ecc, k=None, enable_erasures=False, erasures_char="\x00", only_erasures=False):
         '''Repair a message and its ecc also, given the message and its ecc (both can be corrupted, we will still try to fix both of them)'''
@@ -217,7 +217,7 @@ class ECCMan(object):
 
         if pad: # Strip the null bytes if we padded the message before decoding
             msg_repaired = msg_repaired[len(pad):len(msg_repaired)]
-        return msg_repaired, ecc_repaired
+        return _bytes(msg_repaired), _bytes(ecc_repaired)
 
     def pad(self, message, k=None):
         '''Automatically left pad with null bytes a message if too small, or leave unchanged if not necessary. This allows to keep track of padding and strip the null bytes after decoding reliably with binary data. Equivalent to shortening (shortened reed-solomon code).'''
@@ -226,7 +226,7 @@ class ECCMan(object):
         if len(message) < k:
             #pad = "\x00" * (k-len(message))
             pad = bytearray(k-len(message))
-            message = pad + bytearray(message)
+            message = pad + bytearray(b(message))
         return [message, pad]
 
     def rpad(self, ecc, k=None):

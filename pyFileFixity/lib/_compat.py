@@ -53,3 +53,16 @@ else:
             return x
         else:
             return ord(x)
+
+if sys.version_info < (3,):
+    def _bytes(x):
+        return bytes(x)
+else:
+    def _bytes(x):
+        return bytes(x, 'latin-1')
+
+try:
+    from itertools import izip
+    _izip = izip
+except ImportError:
+    _izip = zip

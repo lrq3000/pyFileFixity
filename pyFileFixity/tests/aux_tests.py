@@ -15,7 +15,7 @@ def check_eq_files(path1, path2, blocksize=65535, startpos1=0, startpos2=0):
         buf2 = 1
         f1.seek(startpos1)
         f2.seek(startpos2)
-        while 1:
+        while buf1 and buf2:
             buf1 = f1.read(blocksize)
             buf2 = f2.read(blocksize)
             if buf1 != buf2 or (buf1 and not buf2) or (buf2 and not buf1):
@@ -117,7 +117,7 @@ def find_next_entry(path, marker="\xFF\xFF\xFF\xFF", initpos=0):
     # Enumerate all markers in a generator
     while (buf):
         # Read a long block at once, we will readjust the file cursor after
-        buf = infile.read(blocksize)
+        buf = bytearray(infile.read(blocksize))
         # Find the start marker
         start = buf.find(marker); # relative position of the starting marker in the currently read string
         if start >= 0: # assign startcursor only if it's empty (meaning that we did not find the starting entrymarker, else if found we are only looking for 
@@ -147,17 +147,17 @@ def remove_if_exist(path):
 def get_marker(type=1):
     """Helper function to store the usual entry and fields markers in ecc files"""
     if type == 1:
-        return "\xFE\xFF\xFE\xFF\xFE\xFF\xFE\xFF\xFE\xFF"
+        return b"\xFE\xFF\xFE\xFF\xFE\xFF\xFE\xFF\xFE\xFF"
     elif type == 2:
-        return "\xFA\xFF\xFA\xFF\xFA"
+        return b"\xFA\xFF\xFA\xFF\xFA"
     else:
-        return ''
+        return b''
 
 def dummy_ecc_file_gen(nb_files=1):
     """ Generate a dummy ecc file, following the specs (of course the ecc tracks are fake!) """
     # Create header comments
-    fcontent = '''**SCRIPT_CODE_NAMEv111...000...000**\n** Comment 2\n** Yet another comment\n'''
+    fcontent = b'''**SCRIPT_CODE_NAMEv111...000...000**\n** Comment 2\n** Yet another comment\n'''
     # Create files entries
     for i in range(1, nb_files+1):
-        fcontent += get_marker(1)+("file%i.ext"%i)+get_marker(2)+("filesize%i"%i)+get_marker(2)+("relfilepath%i_ecc"%i)+get_marker(2)+("filesize%i_ecc"%i)+get_marker(2)+"hash-ecc-entry_"*(i*3)
+        fcontent += get_marker(1)+(b"file"+b(str(i))+b".ext")+get_marker(2)+(b"filesize"+b(str(i)))+get_marker(2)+(b"relfilepath"+b(str(i))+b"_ecc")+get_marker(2)+(b"filesize"+b(str(i))+b"_ecc")+get_marker(2)+b"hash-ecc-entry_"*(i*3)
     return fcontent

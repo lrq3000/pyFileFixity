@@ -55,8 +55,7 @@ class Hasher(object):
 
     def hash(self, mes):
         # use hashlib.algorithms_guaranteed to list algorithms
-        if sys.version_info > (3, 0):
-            mes = mes.encode()
+        mes = b(mes)
         if self.algo == "md5":
             return b(hashlib.md5(mes).hexdigest())
         elif self.algo == "shortmd5": # from: http://www.peterbe.com/plog/best-hashing-function-in-python

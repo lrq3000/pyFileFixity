@@ -8,6 +8,8 @@ import os
 import posixpath # to generate unix paths
 import shutil
 
+from ._compat import b
+
 from .argparse import ArgumentTypeError
 from .pathlib2 import PurePath, PureWindowsPath, PurePosixPath # opposite operation of os.path.join (split a path into parts)
 
@@ -88,6 +90,9 @@ def get_next_entry(file, entrymarker="\xFE\xFF\xFE\xFF\xFE\xFF\xFE\xFF\xFE\xFF",
     This will read any string length between two entrymarkers.
     The reading is very tolerant, so it will always return any valid entry (but also scrambled entries if any, but the decoding will ensure everything's ok).
     `file` is a file handle, not the path to the file.'''
+    # TODO: use mmap native module instead of manually reading using blocksize?
+
+    entrymarker = bytearray(b(entrymarker))
     found = False
     start = None # start and end vars are the relative position of the starting/ending entrymarkers in the current buffer
     end = None
@@ -99,7 +104,7 @@ def get_next_entry(file, entrymarker="\xFE\xFF\xFE\xFF\xFE\xFF\xFE\xFF\xFE\xFF",
     # Continue the search as long as we did not find at least one starting marker and one ending marker (or end of file)
     while (not found and buf):
         # Read a long block at once, we will readjust the file cursor after
-        buf = file.read(blocksize)
+        buf = bytearray(file.read(blocksize))
         # Find the start marker (if not found already)
         if start is None or start == -1:
             start = buf.find(entrymarker); # relative position of the starting marker in the currently read string

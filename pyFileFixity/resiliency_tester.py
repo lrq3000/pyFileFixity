@@ -41,7 +41,7 @@ thispathname = os.path.dirname(__file__)
 sys.path.append(os.path.join(thispathname))
 
 # Import necessary libraries
-from lib._compat import _str, _range, _StringIO
+from lib._compat import _str, _range, _StringIO, _izip
 import subprocess # to execute commands
 import itertools
 from lib.aux_funcs import recwalk, path2unix, fullpath, is_dir_or_file, is_dir, is_file, fullpath, copy_any, create_dir_if_not_exist, remove_if_exist
@@ -158,7 +158,7 @@ def diff_bytes_files(path1, path2, blocksize=65535, startpos1=0, startpos2=0):
                 # End of file for both files
                 break
             else:
-                for char1, char2 in itertools.izip(buf1, buf2):
+                for char1, char2 in _izip(buf1, buf2):
                     if char1 != char2:
                         diff_count += 1
                     total_size += 1
@@ -291,8 +291,8 @@ def stats_running_average(stats, new_stats, weight):
                 if key in new_stats[stage]:
                     # List
                     if isinstance(stats[stage][key], (list, tuple)):
-                        nstats[stage][key] = [running_average(x, y, weight) for x,y in itertools.izip(stats[stage][key], new_stats[stage][key])]
-                        #nstats[stage][key] = [[x, y] for x,y in itertools.izip(stats[stage][key], new_stats[stage][key])]
+                        nstats[stage][key] = [running_average(x, y, weight) for x,y in _izip(stats[stage][key], new_stats[stage][key])]
+                        #nstats[stage][key] = [[x, y] for x,y in _izip(stats[stage][key], new_stats[stage][key])]
 
                     # Scalar
                     elif not hasattr(stats[stage][key], '__len__') and (not isinstance(stats[stage][key], _str)):
