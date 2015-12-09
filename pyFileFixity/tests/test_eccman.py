@@ -10,7 +10,7 @@ from .aux_tests import get_marker, dummy_ecc_file_gen, check_eq_files, check_eq_
 
 from ..lib.eccman import ECCMan, compute_ecc_params, detect_reedsolomon_parameters
 
-from ..lib._compat import _StringIO
+from ..lib._compat import _StringIO, b
 
 def setup_module():
     """ Initialize the tests by emptying the out directory """
@@ -20,7 +20,7 @@ def setup_module():
 
 def test_eccman_detect_rs_param():
     """ eccman: test reedsolomon param detection """
-    message = "hello world"
+    message = b("hello world")
     mesecc_orig = [104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 187, 161, 157, 88, 92, 175, 116, 251, 116]
     mesecc_orig_tampered = [104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 187, 161, 157, 88, 0, 175, 116, 251, 116]
     n = len(mesecc_orig)
@@ -61,18 +61,18 @@ def test_eccman_codecs():
         [206, 234, 144, 153, 141, 196, 170, 96, 62],
         [187, 161, 157, 88, 92, 175, 116, 251, 116]
     ]
-    message = "hello world"
-    message_eras = "h\x00ll\x00 world"
-    message_noise = "h\x00ll\x00 worla"
+    message = b("hello world")
+    message_eras = b("h\x00ll\x00 world")
+    message_noise = b("h\x00ll\x00 worla")
     n = 20
     k = 11
     for i in range(1,5):
         eccman = ECCMan(n, k, algo=i)
-        ecc = str(eccman.encode(message))
-        assert [ord(x) for x in ecc] == expected[i-1]
-        assert eccman.decode(message_eras, ecc)[0] == message
-        assert eccman.decode(message_eras, ecc, enable_erasures=True)[0] == message
-        assert eccman.decode(message_eras, ecc, enable_erasures=True, only_erasures=True)[0] == message
+        ecc = bytearray(b(eccman.encode(message)))
+        assert list(ecc) == expected[i-1]
+        assert b(eccman.decode(message_eras, ecc)[0]) == message
+        assert b(eccman.decode(message_eras, ecc, enable_erasures=True)[0]) == message
+        assert b(eccman.decode(message_eras, ecc, enable_erasures=True, only_erasures=True)[0]) == message
         #eccman.decode(message_noise, ecc, enable_erasures=True, only_erasures=True)[0]
         assert eccman.check(message, ecc)
         assert not eccman.check(message_eras, ecc)
@@ -86,28 +86,28 @@ def test_eccman_codecs():
 
 def test_eccman_pad():
     """ eccman: test ecc padding """
-    message = "hello world"
-    ecc = ''.join([chr(x) for x in [206, 234, 144, 153, 141, 196, 170, 96, 62]])
+    message = b("hello world")
+    ecc = b(''.join([chr(x) for x in [206, 234, 144, 153, 141, 196, 170, 96, 62]]))
     # Oversize parameters compared to the message and ecc
     n = 22 # should be 20
     k = 13 # should be 11, but we add +2, which bytes we will pad onto the ecc and the decoding should still work!
     eccman = ECCMan(n, k, algo=3)
     # Test left padding (the input message)
     pmessage = eccman.pad(message)
-    assert pmessage == [b'\x00\x00hello world', b'\x00\x00'] # format: [padded_message, padonly]
+    assert pmessage == [b('\x00\x00hello world'), b('\x00\x00')] # format: [padded_message, padonly]
     assert eccman.check(pmessage[0], ecc)
     # Test right padding (the ecc block)
     pecc = eccman.rpad(ecc, 11)
-    assert pecc == [b'\xce\xea\x90\x99\x8d\xc4\xaa`>\x00\x00', b'\x00\x00']
+    assert pecc == [b('\xce\xea\x90\x99\x8d\xc4\xaa`>\x00\x00'), b('\x00\x00')]
     assert eccman.check(message, pecc[0])
     # Test decoding with both padding!
     assert eccman.check(pmessage[0], pecc[0])
 
 def test_eccman_lpad_decoding():
     """ eccman: test ecc decoding when message needs left padding """
-    message = "hello world"
-    ecc = ''.join([chr(x) for x in [206, 234, 144, 153, 141, 196, 170, 96, 62]])
-    message_eras = "h\x00ll\x00 world"
+    message = b("hello world")
+    ecc = b(''.join([chr(x) for x in [206, 234, 144, 153, 141, 196, 170, 96, 62]]))
+    message_eras = b("h\x00ll\x00 world")
     # Oversize parameters compared to the message and ecc
     n = 22 # should be 20
     k = 13 # should be 11, but we add +2, which bytes we will pad onto the ecc and the decoding should still work!
@@ -117,9 +117,9 @@ def test_eccman_lpad_decoding():
 
 def test_eccman_rpad_decoding():
     """ eccman: test ecc decoding when right padding """
-    message = "hello world"
-    ecc = ''.join([chr(x) for x in [206, 234, 144, 153, 141, 196, 170, 96, 62]])
-    message_eras = "h\x00ll\x00 world"
+    message = b("hello world")
+    ecc = b(''.join([chr(x) for x in [206, 234, 144, 153, 141, 196, 170, 96, 62]]))
+    message_eras = b("h\x00ll\x00 world")
     # Oversize parameters compared to the message and ecc
     n = 20 # should be 20
     k = 11 # should be 11, but we add +2, which bytes we will pad onto the ecc and the decoding should still work!

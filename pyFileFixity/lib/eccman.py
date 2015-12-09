@@ -25,7 +25,7 @@
 # THE SOFTWARE.
 
 # Compatibility with Python 3
-from _compat import _str, _range
+from _compat import _str, _range, b
 
 from .distance.distance import hamming
 
@@ -76,9 +76,9 @@ def detect_reedsolomon_parameters(message, mesecc_orig, gen_list=[2, 3, 5], c_ex
 
     # Prepare the variable that will store the result
     best_match = {"hscore": -1, "params": [{"gen_nb": 0, "prim": 0, "fcr": 0}]}
-    
+
     if isinstance(message, _str):
-        message = message.encode()
+        message = b(message)
 
     # Exhaustively search by generating every combination of values for the RS parameters and test the Hamming distance
     for gen_nb in gen_list:
@@ -156,7 +156,7 @@ class ECCMan(object):
     def encode(self, message, k=None):
         '''Encode one message block (up to 255) into an ecc'''
         if not k: k = self.k
-        message, _ = self.pad(message, k=k)
+        message, _ = self.pad(b(message), k=k)
         if self.algo == 1:
             mesecc = self.ecc_manager.encode(message, k=k)
         elif self.algo == 2:
@@ -175,6 +175,7 @@ class ECCMan(object):
         # Optimization, use bytearray
         if isinstance(message, _str):
             message = bytearray([ord(x) for x in message])
+        if isinstance(ecc, _str):
             ecc = bytearray([ord(x) for x in ecc])
 
         # Detect erasures positions and replace with null bytes (replacing erasures with null bytes is necessary for correct syndrome computation)
