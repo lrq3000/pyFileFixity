@@ -38,7 +38,7 @@ repair:
     '''
     fconfig = _StringIO(config)
     parsed = restest.parse_configfile(fconfig)
-    assert parsed == {'tamper': ['cmd3', 'cmd4'], 'after_tamper': ['cmd5', 'cmd6', '# a comment'], 'before_tamper': ['cmd1 -i "arg1" -o "arg2"', 'cmd2'], 'repair': ['cmd7', 'cmd8']}
+    assert parsed == {'tamper': ['cmd3', 'cmd4'], 'after_tamper': ['cmd5', 'cmd6'], 'before_tamper': ['cmd1 -i "arg1" -o "arg2"', 'cmd2'], 'repair': ['cmd7', 'cmd8']}
 
 def test_get_filename_no_ext():
     """ restest: test internal: get_filename_no_ext() """

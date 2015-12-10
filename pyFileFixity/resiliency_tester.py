@@ -69,7 +69,7 @@ except ImportError:
 
 ######## Config parsing and command execution ########
 
-def parse_configfile(filepath):
+def parse_configfile(filepath, comments_prefix='#'):
     '''
     Parse a makefile to find commands and substitute variables. Expects a
     makefile with only aliases and a line return between each command.
@@ -97,8 +97,11 @@ def parse_configfile(filepath):
     # -- Extracting commands for each alias
     commands = {}
     for alias in aliases:
+        commands[alias] = []
         # strip the first line return, and then split by any line return
-        commands[alias] = config.get('root', alias).lstrip('\n').split('\n')
+        for cmd in config.get('root', alias).lstrip('\n').split('\n'):
+            if not cmd.startswith(comments_prefix):
+                commands[alias].append(cmd)
     return commands
 
 def get_filename_no_ext(filepath):
@@ -261,7 +264,7 @@ def compute_all_diff_stats(commands, origpath, tamperdir, repairdir, finalrepair
 
 def pretty_print_stats(stat):  # pragma: no cover
     out = ''
-    for key, value in stat.iteritems():
+    for key, value in stat.items():
         if key == 'diff_bytes':
             out += "\t- Differing bytes from original: %i/%i\n" % (value[0], value[1])
         elif key == 'diff_bytes_prev':
@@ -284,10 +287,10 @@ def stats_running_average(stats, new_stats, weight):
         return (old*weight + new) / (weight+1)
 
     nstats = {}
-    for stage in stats.iterkeys():
+    for stage in stats.keys():
         if stage in new_stats:
             nstats[stage] = {}
-            for key in stats[stage].iterkeys():
+            for key in stats[stage].keys():
                 if key in new_stats[stage]:
                     # List
                     if isinstance(stats[stage][key], (list, tuple)):
@@ -552,7 +555,7 @@ Also note that the test folder will not be removed at the end, so that you can s
         # Stats
         stats = compute_all_diff_stats(commands, origpath, tamperdir, repairdir, finalrepairdir)
         ptee.write("========== Resiliency tester results for run %i ==========" % run_nb)
-        for key, stat in stats.iteritems():
+        for key, stat in stats.items():
             ptee.write("=> Stage: %s" % key)
             ptee.write(pretty_print_stats(stat))
 
@@ -564,7 +567,7 @@ Also note that the test folder will not be removed at the end, so that you can s
     ptee.write("============================")
     ptee.write("RESILIENCY TESTER FINAL AVERAGED RESULTS OVER %i RUNS" % multiple)
     ptee.write("============================")
-    for key, stat in fstats.iteritems():
+    for key, stat in fstats.items():
         ptee.write("=> Stage: %s" % key)
         ptee.write(pretty_print_stats(stat))
 
