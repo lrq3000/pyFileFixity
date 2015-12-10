@@ -59,7 +59,7 @@ if sys.version_info < (3,):
         return bytes(x)
 else:
     def _bytes(x):
-        if isinstance(x, bytes):
+        if isinstance(x, (bytes, bytearray)):
             return x
         else:
             return bytes(x, 'latin-1')
