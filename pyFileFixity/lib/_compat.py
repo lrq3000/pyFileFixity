@@ -59,7 +59,10 @@ if sys.version_info < (3,):
         return bytes(x)
 else:
     def _bytes(x):
-        return bytes(x, 'latin-1')
+        if isinstance(x, bytes):
+            return x
+        else:
+            return bytes(x, 'latin-1')
 
 try:
     from itertools import izip
