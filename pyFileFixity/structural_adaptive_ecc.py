@@ -587,7 +587,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
                     # Couple each marker's position with its type and with its ecc, and write them all consecutively into the index backup file
                     for items in zip(markers_types,markers_pos,markers_pos_ecc):
                         for item in items:
-                            dbidx.write(b(str(item)))
+                            dbidx.write(b(item))
                     # -- Hash/Ecc encoding of file's content (everything is managed inside stream_compute_ecc_hash)
                     for ecc_entry in stream_compute_ecc_hash(ecc_manager_variable, hasher, file, max_block_size, header_size, resilience_rates): # then compute the ecc/hash entry for this file's header (each value will be a block, a string of hash+ecc per block of data, because Reed-Solomon is limited to a maximum of 255 bytes, including the original_message+ecc! And in addition we want to use a variable rate for RS that is decreasing along the file)
                         db.write( b''.join([b(ecc_entry[0]), b(ecc_entry[1])]) ) # note that there's no separator between consecutive blocks, but by calculating the ecc parameters, we will know when decoding the size of each block!
@@ -652,7 +652,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
                 ptee.write(fperrmsg)
 
                 # Convert to str (so that we can use os.path funcs)
-                relfilepath = relfilepath.decode()
+                relfilepath = relfilepath.decode('latin-1')
                 # Update entry_p
                 entry_p["relfilepath"] = relfilepath
                 # -- End of intra-ecc on filepath

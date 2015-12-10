@@ -35,7 +35,7 @@ thispathname = os.path.dirname(__file__)
 sys.path.append(os.path.join(thispathname))
 
 # Import necessary libraries
-from lib._compat import _str, _range
+from lib._compat import _str, _range, b
 from lib.aux_funcs import fullpath
 import lib.argparse as argparse
 import datetime, time
@@ -233,7 +233,7 @@ Note: An ecc structure repair does NOT allow to recover from more errors on your
             idx_corrupted = 0
             idx_corrected = 0
             idx_total = 0
-            markers_repaired = [0] * len(markers)
+            markers_repaired = [0] * len(markers) # create one list for each marker type
             bardisp = tqdm.tqdm(total=idx_size, file=ptee, leave=True, desc='IDXREAD', unit='B', unit_scale=True) # display progress bar based on reading the database file (since we don't know how many files we will process beforehand nor how many total entries we have)
             with open(indexpath, 'rb') as dbidx:
                 buf = 1
@@ -272,7 +272,7 @@ Note: An ecc structure repair does NOT allow to recover from more errors on your
                     if not marker_str: continue
 
                     # Repair ecc file's marker using our correct (or repaired) marker's infos
-                    marker_type = int(marker_str[0]) # marker's type is always stored on the first byte/character
+                    marker_type = int(chr(marker_str[0]) if isinstance(marker_str[0], int) else marker_str[0]) # marker's type is always stored on the first byte/character
                     marker_pos = struct.unpack('>Q', marker_str[1:]) # marker's position is encoded as a big-endian unsigned long long, in a 8 bytes/chars string
                     db.seek(marker_pos[0]) # move the ecc reading cursor to the beginning of the marker
                     current_marker = db.read(len(markers[marker_type-1])) # read the current marker (potentially corrupted)
@@ -283,7 +283,7 @@ Note: An ecc structure repair does NOT allow to recover from more errors on your
                         db.seek(marker_pos[0]) # replace the reading cursor back in place before the marker
                     if current_marker != markers[marker_type-1]: # check if we really need to repair this marker
                         # Rewrite the marker over the ecc file
-                        db.write(markers[marker_type-1])
+                        db.write(b(markers[marker_type-1]))
                         markers_repaired[marker_type-1] += 1
                     else:
                         ptee.write("skipped, no need to repair")
@@ -322,7 +322,7 @@ Note: An ecc structure repair does NOT allow to recover from more errors on your
                 if i < skip_until: continue
                 # Compare each ecc marker type to this substring and compute the Hamming distance
                 for m in _range(len(markers)):
-                    d = hamming(buf[i:i+len(markers[m])], markers[m]) # Compute the Hamming distance (simply the number of different characters)
+                    d = hamming(b(buf[i:i+len(markers[m])]), b(markers[m])) # Compute the Hamming distance (simply the number of different characters)
                     mcurpos = curpos+i # current absolute position of this ecc marker
                     
                     # If there's no difference, then it's a valid, non-corrupted ecc marker
@@ -358,7 +358,7 @@ Note: An ecc structure repair does NOT allow to recover from more errors on your
                 for pos in markers_pos[m]: # for each detected marker to repair, we rewrite it over into the file at the detected position
                     if verbose: ptee.write("- Detected marker type %i at position %i with distance %i (%i%%): repairing." % (m+1, pos[0], pos[1], (float(pos[1])/len(markers[m]))*100) )
                     db.seek(pos[0])
-                    db.write(marker)
+                    db.write(b(marker))
 
         #print(markers_pos)
         ptee.write("Done. Hamming heuristic with threshold %i%% repaired %i entrymarkers and %i field_delim (%i total) and %i were already valid.\n" % (round(distance_threshold*100, 0), len(markers_pos[0]), len(markers_pos[1]), len(markers_pos[0])+len(markers_pos[1]), already_valid) )

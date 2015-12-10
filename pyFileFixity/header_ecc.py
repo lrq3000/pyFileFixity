@@ -540,7 +540,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
                     # Couple each marker's position with its type and with its ecc, and write them all consecutively into the index backup file
                     for items in _izip(markers_types,markers_pos,markers_pos_ecc):
                         for item in items:
-                            dbidx.write(b(str(item)))
+                            dbidx.write(b(item))
                 files_done += 1
         ptee.write("All done! Total number of files processed: %i, skipped: %i" % (files_done, files_skipped))
         del ptee
@@ -600,7 +600,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
                 ptee.write(fperrmsg)
 
                 # Convert to str (so that we can use os.path funcs)
-                relfilepath = relfilepath.decode()
+                relfilepath = relfilepath.decode('latin-1')
                 # Update entry_p
                 entry_p["relfilepath"] = relfilepath
                 # -- End of intra-ecc on filepath
