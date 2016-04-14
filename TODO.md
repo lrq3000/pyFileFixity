@@ -4,6 +4,8 @@ PyFileFixity Todo
 TODO
 --------
 
+1. Check if accentuated characters work. If not, use recwalk(unicode(rootfolderpath)) instead of recwalk(rootfolderpath)
+
 2. hello world in ecc file header as a comment, so that user can detect Reed-Solomon parameters even if commandline arguments are forgotten (using half rate so that k and n is known: k = n/2).
 Canonic format:
 
@@ -66,6 +68,9 @@ MAYBE
 
 - High priority: parallelize eccman.py to encode faster in a generic fashion (ie, using any codec). It would call n parallel instances of the ecc codec, to compute n ecc blocks in parallel. This should give us at least a 10x speedup (if compatible with PyPy, this would make us reach 10MB/s!).
 maybe with: https://github.com/XericZephyr/Pythine ?
+or maybe with [joblib](http://blog.rtwilson.com/my-top-5-new-python-modules-of-2015/comment-page-1/#comment-170352)?
+
+- FFT to get O(nlogn) encoding instead of O(nk) (quadratic)? Like [this project](https://github.com/alexbeutel/Error-Correcting-Codes).
 
 - Extend pyFileFixity to encode multiple characters into one, and then use higher galois fields like 2^16, 2^32 or even 2^128 (allows to be more resilient against huge, adversarial bursts): for example, instead of having one character ranging from value [0,255], we would have two characters encoded in one in range [0,65535] and then we could use GF(2^16) and encode blocks of 65535 characters instead of 255. This may also help us encode faster (since we would process bigger ecc blocks at once, but we'd have to see if the computational complexity of RS doesn't cancel this benefit...). We could also maybe use optimization tricks in: Luo, Jianqiang, et al. "Efficient software implementations of large finite fields GF (2 n) for secure storage applications." ACM Transactions on Storage (TOS) 8.1 (2012): 2.
 
