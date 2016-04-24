@@ -64,7 +64,7 @@ http://www.mathworks.com/matlabcentral/fileexchange/5841-chinese-remainder-theor
 MAYBE
 ----------
 
-- Move from argparse to [docopt](https://github.com/docopt/docopt) or [click](http://click.pocoo.org/) to generate a beautiful and more usable command-line interface (with clear modes, because right now the relevant options are not grouped together and it can be quite confusing).
+- Move from argparse to [argopt](https://github.com/casperdcl/argopt) (would probably be the best choice! Just need to make sure it would work with my AutoGooey wrapper) or [docopt](https://github.com/docopt/docopt) or [click](http://click.pocoo.org/) to generate a beautiful and more usable command-line interface (with clear modes, because right now the relevant options are not grouped together and it can be quite confusing).
 
 - High priority: parallelize eccman.py to encode faster in a generic fashion (ie, using any codec). It would call n parallel instances of the ecc codec, to compute n ecc blocks in parallel. This should give us at least a 10x speedup (if compatible with PyPy, this would make us reach 10MB/s!).
 maybe with: https://github.com/XericZephyr/Pythine ?
