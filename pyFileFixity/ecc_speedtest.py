@@ -25,8 +25,6 @@
 #
 #
 
-from pyFileFixity import __version__
-
 # Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
 import sys, os
 thispathname = os.path.dirname(__file__)
@@ -73,11 +71,15 @@ def main(argv=None):
     tamper_rate = 0.4 # tamper rate is relative to the number of ecc bytes, not the whole message (not like the resilience_rate)
     tamper_mode = 'noise' # noise or erasure
     no_decoding = True
+    subchunking = False
+    subchunk_size = 50
 
     # Precompute some parameters and load up ecc manager objects (big optimization as g_exp and g_log tables calculation is done only once)
     hasher_none = Hasher('none') # for index ecc we don't use any hash
     ecc_params = compute_ecc_params(max_block_size, resilience_rate, hasher_none)
+    ecc_params_subchunk = compute_ecc_params(subchunk_size, resilience_rate, hasher_none)
     ecc_manager = ECCMan(max_block_size, ecc_params["message_size"], algo=ecc_algo)
+    ecc_manager_subchunk = ECCMan(subchunk_size, ecc_params_subchunk["message_size"], algo=ecc_algo)
 
     # == Main loop
     print("====================================")
@@ -94,7 +96,11 @@ def main(argv=None):
     # Generate a random string and encode it
     for msg in gen_random_string(msg_nb, k):
         start = time.clock()
-        ecc_manager.encode(msg)
+        if subchunking:
+            for i in xrange(0, len(msg), subchunk_size):
+                ecc_manager_subchunk.encode(msg[i:i+subchunk_size])
+        else:
+            ecc_manager.encode(msg)
         total_time += time.clock() - start
         bardisp.update(max_block_size)
     bardisp.close()
