@@ -27,8 +27,6 @@
 
 from __future__ import print_function
 
-from pyFileFixity import __version__
-
 # Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
 import sys, os
 thispathname = os.path.dirname(__file__)
@@ -147,7 +145,7 @@ Note: An ecc structure repair does NOT allow to recover from more errors on your
     main_parser.add_argument('-o', '--output', metavar='eccfile_repaired.txt', type=str, required=True, #type=argparse.FileType('rt')
                         help='Output path where to save the repaired ecc file.', **widget_filesave)
     main_parser.add_argument('-t', '--threshold', type=float, default=0.3, required=False,
-                        help='Distance threshold for the heuristic hamming distance repair. This must be a float, eg, 0.2 means that if there are 20% characters different between an ecc marker and a substring in the ecc file, it will be detected as a marker and corrected.', **widget_text)
+                        help='Distance threshold for the heuristic hamming distance repair. This must be a float, eg, 0.2 means that if there are 20%% characters different between an ecc marker and a substring in the ecc file, it will be detected as a marker and corrected.', **widget_text)
 
     # Optional general arguments
     main_parser.add_argument('--index', metavar='eccfile.txt.idx', type=str, required=False,
@@ -362,7 +360,7 @@ Note: An ecc structure repair does NOT allow to recover from more errors on your
 
         #print(markers_pos)
         ptee.write("Done. Hamming heuristic with threshold %i%% repaired %i entrymarkers and %i field_delim (%i total) and %i were already valid.\n" % (round(distance_threshold*100, 0), len(markers_pos[0]), len(markers_pos[1]), len(markers_pos[0])+len(markers_pos[1]), already_valid) )
-        del ptee
+        ptee.close()
         return 0
 
 # Calling main function if the script is directly called (not imported as a library in another program)

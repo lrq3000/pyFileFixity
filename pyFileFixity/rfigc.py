@@ -41,8 +41,6 @@
 # NOTE: this software is similar in purpose to the (more advanced) MD5deep / HashDeep for hash set auditing: http://md5deep.sourceforge.net/
 #
 
-from pyFileFixity import __version__
-
 # Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
 import sys, os
 thispathname = os.path.dirname(__file__)
@@ -465,7 +463,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
 
         if len(dbrows) == 0:
             ptee.write("Nothing to do, there's no md5 nor sha1 hashes in the database file!")
-            del ptee
+            ptee.close()
             return 1 # return with an error
 
         # Counting the total number of files that we will have to process
@@ -589,7 +587,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
         ptee.write("All files checked: Total: %i - Files with errors: %i.\n\n" % (filescount, errorscount))
         retval = (errorscount > 0)
 
-    del ptee
+    ptee.close()
     return retval # return error code if any
 
 # Calling main function if the script is directly called (not imported as a library in another program)

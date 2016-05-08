@@ -20,7 +20,7 @@ class Tee(object):
             self.filemode = mode
             self.file = open(name, mode)
 
-    def __del__(self):
+    def close(self):
         """ Restore stdout and close file when Tee is closed """
         self.flush() # commit all latest changes before exiting
         if not self.nostdout and hasattr(self, 'stdout'):

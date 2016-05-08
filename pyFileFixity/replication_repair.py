@@ -599,7 +599,7 @@ Note3: last modification date is not (yet) accounted for.
     if tqdm_bar: tqdm_bar.close()
     ptee.write("All done!")
     if report_file: ptee.write("Saved replication repair results in report file: %s" % report_file)
-    del ptee
+    ptee.close()
     return errcode
 
 # Calling main function if the script is directly called (not imported as a library in another program)

@@ -54,7 +54,7 @@
 # - Also backup folders meta-data? (to reconstruct the tree in case a folder is truncated by bit rot)
 #
 
-from pyFileFixity import __version__
+from ._infos import __version__
 
 # Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
 import sys, os
@@ -344,7 +344,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
     main_parser.add_argument('-s', '--size', type=int, default=1024, required=False,
                         help='Headers block size to protect with resilience rate stage 1 (eg: 1024 meants that the first 1k of each file will be protected by stage 1).', **widget_text)
     main_parser.add_argument('-r1', '--resilience_rate_stage1', type=float, default=0.3, required=False,
-                        help='Resilience rate for files headers (eg: 0.3 = 30% of errors can be recovered but size of codeword will be 60% of the data block).', **widget_text)
+                        help='Resilience rate for files headers (eg: 0.3 = 30%% of errors can be recovered but size of codeword will be 60%% of the data block).', **widget_text)
     main_parser.add_argument('-r2', '--resilience_rate_stage2', type=float, default=0.2, required=False,
                         help='Resilience rate for stage 2 (after headers, this is the starting rate applied to the rest of the file, which will be gradually lessened towards the end of the file to the stage 3 rate).', **widget_text)
     main_parser.add_argument('-r3', '--resilience_rate_stage3', type=float, default=0.1, required=False,
@@ -376,7 +376,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
     main_parser.add_argument('--skip_missing', action='store_true', required=False, default=False,
                         help='Skip missing files (no warning).')
     main_parser.add_argument('--enable_erasures', action='store_true', required=False, default=False,
-                        help='Enable errors-and-erasures correction. Reed-Solomon can correct twice more erasures than errors (eg, if resilience rate is 0.3, then you can correct 30% errors and 60% erasures and any combination of errors and erasures between 30%-60% corruption). An erasure is a corrupted symbol where we know the position, while errors are not known at all. To find erasures, we will find any symbol that is equal to --erasure_symbol and flag it as an erasure. This is particularly useful if the software you use (eg, a disk scraper) can mark bad sectors with a constant character (eg, null byte). Misdetected erasures will just eat one ecc symbol, and won\'t change the decoded message.')
+                        help='Enable errors-and-erasures correction. Reed-Solomon can correct twice more erasures than errors (eg, if resilience rate is 0.3, then you can correct 30%% errors and 60%% erasures and any combination of errors and erasures between 30%%-60%% corruption). An erasure is a corrupted symbol where we know the position, while errors are not known at all. To find erasures, we will find any symbol that is equal to --erasure_symbol and flag it as an erasure. This is particularly useful if the software you use (eg, a disk scraper) can mark bad sectors with a constant character (eg, null byte). Misdetected erasures will just eat one ecc symbol, and won\'t change the decoded message.')
     main_parser.add_argument('--only_erasures', action='store_true', required=False, default=False,
                         help='Enable only erasures correction (no errors). Use this only if you are sure that all corrupted symbols have the same value (eg, if your disk scraper replace bad sectors by null bytes). This will ensure that you can correct up to 2*resilience_rate corrupted symbols.')
     main_parser.add_argument('--erasure_symbol', type=int, default=0, required=False,
@@ -524,7 +524,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
         if max_block_size > 100: ptee.write("Note: current max_block_size (size of message+ecc blocks) is %i. Consider using a smaller value to greatly speedup the processing (because Reed-Solomon encoding complexity is about O(max_block_size^2)) at the expense of generating a bigger ecc file and less burst error resiliency (because the ecc blocks will be smaller)." % max_block_size)
 
     if stats_only:
-        del ptee
+        ptee.close()
         return 0
 
     # == Generation mode
@@ -596,7 +596,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
         if bardisp.n > bardisp.total: bardisp.total = bardisp.n # small workaround because n may be higher than total (because of files ending before 'message_size', thus the message is padded and in the end, we have outputted and processed a bit more characters than are really in the files, thus why total can be below n). Doing this allows to keep the trace of the progression bar.
         bardisp.close()
         ptee.write("All done! Total number of files processed: %i, skipped: %i" % (files_done, files_skipped))
-        del ptee
+        ptee.close()
         return 0
 
     # == Error Correction (and checking by hash) mode
@@ -779,7 +779,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
         # All ecc entries processed for checking and potentally repairing, we're done correcting!
         bardisp.close() # at the end, the bar may not be 100% because of the headers that are skipped by read_next_entry() and are not accounted in bardisp.
         ptee.write("All done! Stats:\n- Total files processed: %i\n- Total files corrupted: %i\n- Total files repaired completely: %i\n- Total files repaired partially: %i\n- Total files corrupted but not repaired at all: %i\n- Total files skipped: %i" % (files_count, files_corrupted, files_repaired_completely, files_repaired_partially, files_corrupted - (files_repaired_partially + files_repaired_completely), files_skipped) )
-        del ptee
+        ptee.close()
         if files_corrupted == 0 or files_repaired_completely == files_corrupted:
             return 0
         else:

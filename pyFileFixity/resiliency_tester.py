@@ -33,8 +33,6 @@
 
 from __future__ import division
 
-from pyFileFixity import __version__
-
 # Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
 import sys, os
 thispathname = os.path.dirname(__file__)
@@ -572,7 +570,7 @@ Also note that the test folder will not be removed at the end, so that you can s
         ptee.write(pretty_print_stats(stat))
 
     # Shutting down
-    del ptee
+    ptee.close()
     # Completely repair all the files? Return OK
     if stats["final"]["error"] == 0:
         return 0

@@ -56,7 +56,7 @@
 
 from __future__ import with_statement
 
-from pyFileFixity import __version__
+from ._infos import __version__
 
 # Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
 import sys, os
@@ -314,7 +314,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
     main_parser.add_argument('-s', '--size', type=int, default=1024, required=False,
                         help='Headers block size to protect with ecc (eg: 1024 meants that the first 1k of each file will be protected).', **widget_text)
     main_parser.add_argument('-r', '--resilience_rate', type=float, default=0.3, required=False,
-                        help='Resilience rate for files headers (eg: 0.3 = 30% of errors can be recovered but size of codeword will be 60% of the data block, thus the ecc file will be about 60% the size of your data).', **widget_text)
+                        help='Resilience rate for files headers (eg: 0.3 = 30%% of errors can be recovered but size of codeword will be 60%% of the data block, thus the ecc file will be about 60%% the size of your data).', **widget_text)
     main_parser.add_argument('-ri', '--resilience_rate_intra', type=float, default=0.5, required=False,
                         help='Resilience rate for intra-ecc (ecc on meta-data, such as filepath, thus this defines the ecc for the critical spots!).', **widget_text)
     main_parser.add_argument('-l', '--log', metavar='/some/folder/filename.log', type=str, nargs=1, required=False,
@@ -342,7 +342,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
     main_parser.add_argument('--skip_missing', action='store_true', required=False, default=False,
                         help='Skip missing files (no warning).')
     main_parser.add_argument('--enable_erasures', action='store_true', required=False, default=False,
-                        help='Enable errors-and-erasures correction. Reed-Solomon can correct twice more erasures than errors (eg, if resilience rate is 0.3, then you can correct 30% errors and 60% erasures and any combination of errors and erasures between 30%-60% corruption). An erasure is a corrupted symbol where we know the position, while errors are not known at all. To find erasures, we will find any symbol that is equal to --erasure_symbol and flag it as an erasure. This is particularly useful if the software you use (eg, a disk scraper) can mark bad sectors with a constant character (eg, null byte). Misdetected erasures will just eat one ecc symbol, and won\'t change the decoded message.')
+                        help='Enable errors-and-erasures correction. Reed-Solomon can correct twice more erasures than errors (eg, if resilience rate is 0.3, then you can correct 30%% errors and 60%% erasures and any combination of errors and erasures between 30%%-60%% corruption). An erasure is a corrupted symbol where we know the position, while errors are not known at all. To find erasures, we will find any symbol that is equal to --erasure_symbol and flag it as an erasure. This is particularly useful if the software you use (eg, a disk scraper) can mark bad sectors with a constant character (eg, null byte). Misdetected erasures will just eat one ecc symbol, and won\'t change the decoded message.')
     main_parser.add_argument('--only_erasures', action='store_true', required=False, default=False,
                         help='Enable only erasures correction (no errors). Use this only if you are sure that all corrupted symbols have the same value (eg, if your disk scraper replace bad sectors by null bytes). This will ensure that you can correct up to 2*resilience_rate corrupted symbols.')
     main_parser.add_argument('--erasure_symbol', type=int, default=0, required=False,
@@ -473,7 +473,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
         ptee.write("Details: resiliency of %i%%: For the header (first %i characters) of each file: each block of %i chars will get an ecc of %i chars (%i errors or %i erasures)." % (resilience_rate*100, header_size, ecc_params["message_size"], ecc_params["ecc_size"], int(ecc_params["ecc_size"] / 2), ecc_params["ecc_size"]))
 
     if stats_only:
-        del ptee
+        ptee.close()
         return 0
 
     # == Generation mode
@@ -543,7 +543,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
                             dbidx.write(b(item))
                 files_done += 1
         ptee.write("All done! Total number of files processed: %i, skipped: %i" % (files_done, files_skipped))
-        del ptee
+        ptee.close()
         return 0
 
     # == Error Correction (and checking by hash) mode
@@ -725,7 +725,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
         # All ecc entries processed for checking and potentally repairing, we're done correcting!
         bardisp.close() # at the end, the bar may not be 100% because of the headers that are skipped by get_next_entry() and are not accounted in bardisp.
         ptee.write("All done! Stats:\n- Total files processed: %i\n- Total files corrupted: %i\n- Total files repaired completely: %i\n- Total files repaired partially: %i\n- Total files corrupted but not repaired at all: %i\n- Total files skipped: %i" % (files_count, files_corrupted, files_repaired_completely, files_repaired_partially, files_corrupted - (files_repaired_partially + files_repaired_completely), files_skipped) )
-        del ptee
+        ptee.close()
         if files_corrupted == 0 or files_repaired_completely == files_corrupted:
             return 0
         else:
@@ -733,4 +733,9 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
 
 # Calling main function if the script is directly called (not imported as a library in another program)
 if __name__ == "__main__":  # pragma: no cover
+    global __package__
+    if __package__ is None:
+        #sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        print('HOHO')
+        __package__ = 'pyFileFixity.header_ecc'
     sys.exit(main())

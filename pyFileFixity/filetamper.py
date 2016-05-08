@@ -35,8 +35,6 @@
 # a result precise floating numbers (instead of truncated int)
 from __future__ import division, absolute_import, with_statement
 
-from pyFileFixity import __version__
-
 # Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
 import sys, os
 thispathname = os.path.dirname(__file__)
@@ -293,7 +291,7 @@ WARNING: this will tamper the file you specify. Please ensure you keep a copy of
             files_tampered, filescount, tcount, tsize = tamper_dir(filepath, mode=mode, proba=proba, block_proba=block_proba, blocksize=blocksize, burst_length=burst_length, header=header, silent=silent)
             ptee.write("Tampering done: %i/%i files tampered and overall %i/%i (%.2f%%) characters were tampered." % (files_tampered, filescount, tcount, tsize, tcount / max(1, tsize) * 100))
 
-    del ptee
+    ptee.close()
     return 0
 
 
