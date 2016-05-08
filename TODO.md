@@ -61,8 +61,13 @@ simply generate all big ints that corresponds to the given remainder up to 2^8 p
 http://mathematica.stackexchange.com/questions/32586/implementation-of-the-polynomial-chinese-remainder-theorem
 http://www.mathworks.com/matlabcentral/fileexchange/5841-chinese-remainder-theorem-for-polynomials
 
+
 MAYBE
 ----------
+
+- Append/remove: just make a list of files from db and compare against real file tree, then just remove entries inexistent, and append at the end the new files. Only if file size and checksum are the same, else remove file and append at the end.
+
+- Filename recovery: compare against filesize: simply extract list of files as dict key and value = file size, then walk through real file tree and make similar db, reorganize both according to filesize, and do a 1-on-1 comparison of decreasing filesize: if one real file match a db filesize, then add it to the dict of correspondance db filename -> real filename. If multiple entries, ask user.
 
 - Move from argparse to [argopt](https://github.com/casperdcl/argopt) (would probably be the best choice! Just need to make sure it would work with my AutoGooey wrapper) or [docopt](https://github.com/docopt/docopt) or [click](http://click.pocoo.org/) to generate a beautiful and more usable command-line interface (with clear modes, because right now the relevant options are not grouped together and it can be quite confusing).
 
