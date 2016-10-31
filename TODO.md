@@ -6,7 +6,7 @@ TODO
 
 0. Put each script as alias like 'pyfilefixity repair' and add commandline bins for all major platforms.
 
-1. Parallelization of encoding: build a list of all files to encode in a multiprocessing.Queue() (or list or dict) to be multiprocessing safe, and then process different files in Pool, each time a job is launched, pop from the shared queue. Each worker will write in its own file, and in the end all files will be concatenated into one. This should speed-up processing, x8 with 8 cores thus we could reach about 10MB/s and thus get reasonable encoding time speed.
+1. Parallelization of encoding: build a list of all files to encode in a multiprocessing.Queue() (or list or dict) to be multiprocessing safe, and then process different files in Pool, each time a job is launched, pop from the shared queue. Each worker will write in its own file, and in the end all files will be concatenated into one. This should speed-up processing, x8 with 8 cores thus we could reach about 10MB/s and thus get reasonable encoding time speed. Try to use [jug](https://github.com/luispedro/jug)! Sharing of data through filesystem, pure python and easy to use, seems like a perfect fit.
 
 2. hello world in ecc file header as a comment, so that user can detect Reed-Solomon parameters even if commandline arguments are forgotten (using half rate so that k and n is known: k = n/2).
 Canonic format:
