@@ -203,7 +203,7 @@ SUMMARY:
 * Use PyPy 5 (with --jit vec=1 if also using numpy)
 * Parallel execution on multiple blocks to get more in memory + IKJ algorithm: apply generator polynomial coefficient on ALL messages in same loop! Then go to 2nd coefficient. WARNING: works only if all messages have same resiliency! Better to compute faster AND then have more resiliency for all! At worst, can just save more resiliency for header, but the rest should be stable!
 * Numpy to process parallel messages by broadcasting: https://stackoverflow.com/questions/19278313/numpy-matrix-multiplication-with-custom-dot-product
-* Erasure detection with orthogonal hash (to lower k and thus computation time)
+* Erasure detection with orthogonal hash and/or use CRC as error detection (to lower k and thus computation time) - also CRC is much faster than other hashing algos to compute
 * After numpy parallelized implementation: Try to use Intel Distribution for Python
 * Implement Hybridization horizontal/vertical coding (by allowing to form messages from multiple files instead of just one)
 * Finish new version with simplified names and Py3 support
