@@ -207,6 +207,7 @@ SUMMARY:
 * After numpy parallelized implementation: Try to use Intel Distribution for Python
 * Implement Hybridization horizontal/vertical coding (by allowing to form messages from multiple files instead of just one)
 * Finish new version with simplified names and Py3 support
+* Try to optimize rs_generator_poly by avoiding polynomial multiplication but directly multiply in a single loop the same coefficient: reuse prime polynomial generator sanity check loop?
 * Port 16bits RSC support from test code to master
 * Later: integrate and potentially port NTT into pure python from Bulat's FastECC
 
