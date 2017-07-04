@@ -4,6 +4,8 @@ PyFileFixity Todo
 TODO
 --------
 
+000. Implement SIMD parallelization (process multiple messages at once) and Numpy. And fix ecc redundancy rate so we can use same coefficient for multiple messages. See the TODO below.
+
 00. Implement fast matrix encoding in Reed-Solomon, see https://github.com/lrq3000/unireedsolomon/issues/2 and BackBlaze tutorial.
 
 0. Put each script as alias like 'pyfilefixity repair' and add commandline bins for all major platforms. In other words, define a _main.py script.
@@ -189,3 +191,106 @@ Note9: new leads:
 Note10: the best, easiest way to attain > 10MB/s is to **parallelize** in eccman.py and/or the structural_adaptive_ecc.stream_compute_ecc_hash() and header_ecc.compute_ecc_hash functions: currently we are at max between 3MB/s and 5MB/s. With parallelized processing of several parts of the same file in an asynchroneous manner, we could not only multiply the speed by the number of cores (with 4 virtual cores on an Intel Duo, you'd get ~12MB/s) + the time spent in I/O trying to read from the file would be asynchroneous thus we would not wait for it anymore, and thus we could gain a huge speed increase here too. See http://nealhughes.net/parallelcomp/
 
 Note11: Fastest Reed-Solomon encoder I have found, in pure Go! Over 1GB/s. https://github.com/klauspost/reedsolomon
+
+------------------
+
+LATEST TODO 2017
+
+ECC PYFILEFIXITY FASTER:
+* read how par2 did it (quickpar, multipar) or reed solomon on RAID
+* BEST: the secret to PAR2 speed is to parallelize to a maximum: at instruction level by using SIMD (so can bitwise XOR lots of bits, up to 128 I think or even more) and then by usng horizontal coding because can fetch source bytes from lots of different files in parallel (and compute their blocks too in parallel)!
+* TODO:
+    SUMMARY:
+        * Use PyPy 5 (with --jit vec=1 if also using numpy)
+        * Parallel execution on multiple blocks to get more in memory + IKJ algorithm: apply generator polynomial coefficient on ALL messages in same loop! Then go to 2nd coefficient. WARNING: works only if all messages have same resiliency! Better to compute faster AND then have more resiliency for all! At worst, can just save more resiliency for header, but the rest should be stable!
+        * Numpy to process parallel messages by broadcasting: https://stackoverflow.com/questions/19278313/numpy-matrix-multiplication-with-custom-dot-product
+        * Erasure detection with orthogonal hash (to lower k and thus computation time)
+        * After numpy parallelized implementation: Try to use Intel Distribution for Python
+        * Implement Hybridization horizontal/vertical coding (by allowing to form messages from multiple files instead of just one)
+        * Finish new version with simplified names and Py3 support
+        * Port 16bits RSC support from test code to master
+        * Later: integrate and potentially port NTT into pure python from Bulat's FastECC
+    0bis. Intel Distribution for Python: https://software.intel.com/en-us/distribution-for-python
+    http://www.techenablement.com/orders-magnitude-performance-intel-distribution-python/
+    Intel Vtune
+    http://zibi.bids.berkeley.edu:7001/download/7
+    Install IDP on Anaconda: http://www.infoworld.com/article/3187484/software/how-does-a-20x-speed-up-in-python-grab-you.html
+    0ter. BEST: Numpy + IDP (Intel Distribution for Python) + Parallel execution on multiple blocks to get more in memory + Custom matrix dot product by broadcasting + Erasure detection with orthogonal hash (to lower k and thus computation time):
+    https://stackoverflow.com/questions/19278313/numpy-matrix-multiplication-with-custom-dot-product
+    0. SIMD IS POSSIBLE with PYPY4!!! See how to implement that! Other name for SIMD: vectorization!!!
+    --jit vec=1
+    https://morepypy.blogspot.be/2015/10/automatic-simd-vectorization-support-in.html
+    Or use NumPyPy?
+    BEST: http://ipython-books.github.io/featured-01/
+    wmic cpu get L2CacheSize, L2CacheSpeed, L3CacheSize, L3CacheSpeed
+    Run at 6MB/s!!! @python.exe structural_adaptive_ecc.py -i "folderimages" -d "ecc.txt" -l "log.txt" -r1 0.1 -r2 0.05 -r3 0.03 -g -f -v --ecc_algo 4 --max_block_size 80
+    1. Implement parallelization, to compute multiple ECC in parallel, will speed up a LOT (because parallel calculation + reading more from the file so less hard disk fetching)
+    BETTER to do parallelization on one file rather than on multiple files (because here we also speed up disk caching).
+    BEST IMPLEMENTATION: provide all messages to the encode function, and apply the same coefficient XOR to ALL messages i-th byte at once! This should be automatically optimized by SIMD in PYPY4! But can also parallelize! Can do this for a HUGE set of blocks!
+    see for inspiration: https://stackoverflow.com/questions/15992630/fast-small-and-repetitive-matrix-multiplication-in-python
+    Alternative: CUDA! http://numba.pydata.org/numba-doc/dev/cuda/examples.html
+    By using IKJ algo + PYPY, should be within 5x slower than numpy! (without BLAS obviously, but then it should still be 50x slower at least than C++...): https://martin-thoma.com/matrix-multiplication-python-java-cpp/
+    and this: http://code.activestate.com/recipes/121574-matrix-vector-multiplication/
+    simple matrix multiply pure python: https://www.programiz.com/python-programming/examples/multiply-matrix
+    TRY: cpmoptimize: https://kukuruku.co/post/automatic-algorithms-optimization-via-fast-matrix-exponentiation/
+    Can also use PyPy Vec: http://pypyvecopt.blogspot.be/2015/08/gsoc-vec-little-brother-of-numpy-array.html
+    2. Double buffering: thread to write to ecc file instead of waiting, so can start next ECC calculation asap.
+    python -m TBB <your>.py
+    http://www.techenablement.com/orders-magnitude-performance-intel-distribution-python/
+    3. Hybrid/horizontal scheme: allow to use multiple files as input. This should allow to be PAR-like if using k files as input, or  hybrid if using bigger blocks.
+    4. for loops instead of while: for gf multiply, it's the number of bytes
+    5. NTT maybe if can implement it fast (and if it's only XOR, would be very nice).
+    6. SIMD in numpypy?
+    http://www.complang.tuwien.ac.at/kps2015/proceedings/KPS_2015_submission_8.pdf
+    https://github.com/planrich/pypy-simd-benchmark
+    7. Orthogonal hashing to enable erasure correction: Implement another scheme for hashing: per file's blocks so we can tag these blocks of bytes as erasures. This is less precise because some bytes will be OK but it will double the recovery rate, so it is a good additional technique. Or in my case, should do per multiple files, or hash of i-th byte per each block, something that is orthogonal to the ecc I use.
+    8. Try to implement Plank matrix multiplication, maybe will be faster for same result? But need to check if equivalent!
+    UNDERSTOOD: using generator matrices (instead of polynomial), we can then inverse, because need to be squared. Then can implement matrix multiplication, which is a bit faster than polynomial division. Then, normally we should multiply by inverse of generator matrix to divide, but since anyway at decoding we will use the inverse, we can inverse at this moment (thus it will be easier to get a square matrix because we just need a k x k matrix, can remove superfluous values). Big advantage is then that SIMD will be effective and can do all matrix multiplication and factoring optimizations like micro slicing etc.
+    BESTTUTO with EXAMPLE!: https://people.cs.clemson.edu/~westall/851/rs-code.pdf
+    ask on StackExchange! Because matrix multiplication = convolution normally, not deconvolution!
+    Also deconvolution = matrix multiplication of inverse = polynomial division?
+    https://web.stanford.edu/class/ee387/handouts/notes09.pdf
+    OR IIR/FIR in pure python if simple enough! see audiolazy or https://rosettacode.org/wiki/Apply_a_digitial_filter_(direct_form_II_transposed)#Perl_6
+    https://stackoverflow.com/questions/19839539/how-to-get-faster-code-than-numpy-dot-for-matrix-multiplication
+    mtimesx : MATLAB multidim matrix multiply: https://nl.mathworks.com/matlabcentral/fileexchange/25977-mtimesx-fast-matrix-multiply-with-multi-dimensional-support
+    9. Try Julia? https://news.ycombinator.com/item?id=7110858
+    Also MIT course on Julia
+    10. Tinyarrays to reimplement fast GF operations? Or GF-complete package (modified by ParPar)?
+* Migrate to erasure detection? How can we encode 4KB blocks instead of 4 bytes?
+* Fast vandermonde/cauchy matrix multiplication (so will get SIMD/MMX optimization by parallelization so will speed up by 2**c_exp!)
+simply numpy.vander([2, 4, 8, 16, etc.], N=256, increasing=True)
+https://github.com/animetosho/ParPar
+BEST: https://www.livebusinesschat.com/smf/index.php?topic=5521.0
+https://docs.scipy.org/doc/numpy/reference/generated/numpy.vander.html
+https://docs.scipy.org/doc/numpy-1.10.0/reference/generated/numpy.polynomial.polynomial.polyvander.html
+ALSO: RS encoding = polynomial interpolation: FastECC project + https://jyyuan.wordpress.com/2014/01/02/polynomial-interpolation-using-vandermonde-matrix-and-least-squares/
+does it mean we can use a regression to find the polynomial interpolation?
+block RS design (unlimited bytes per block!) AND IT'S RS 8bits=256!!!!: https://github.com/catid/longhair
+another tuto block design: http://cgi.di.uoa.gr/~ad/M155/Papers/RS-Tutorial.pdf
+DECODING: https://www.backblaze.com/blog/reed-solomon/
+https://www.youtube.com/watch?v=jgO09opx56o
+BEST: Reliability and Power-Efficiency in Erasure-Coded Storage Systems - Kevin M Greenan + ref 18 for Cauchy reed solo
+BEST PYTHON matrix RS: http://web.mit.edu/~emin/www.old/source_code/py_ecc/
+BESTTUTO: http://web.eecs.utk.edu/~plank/plank/papers/2013-02-11-FAST-Tutorial.pdf
+this is called: horizontal coding (compared to what I did that is vertical coding). Big advantage: can parallelize because each parity file can be computed separately. http://web.eecs.utk.edu/~plank/plank/papers/2013-02-11-FAST-Tutorial.pdf
+My approach is non-systematic (ecc separated) vertical coding.
+BESTTUTO for encoding complexity and decoding: https://www.ietf.org/rfc/rfc5510.txt
+so even if we have more than k, we need to reduce to k elements! To get a square k-k matrix that is invertible!
+speed tweaks: https://github.com/animetosho/ParPar/blob/master/xor_depends/info.md
+* BESTTUTO: fast galos field multiplication in python: http://writes.co.de/2014/01/21/bitwise_galois/
+BESTTUTO: irreducible polynomials = prime numbers powers of 2 (which is not possible outside of GF!): http://lemire.me/blog/2015/10/26/crazily-fast-hashing-with-carry-less-multiplications/
+* For fast calculation, can also use SIMD=parallel computing: http://www.kaymgee.com/Kevin_Greenan/Publications_files/plank-fast2013.pdf
+* lowering max_block_size to 100 or 80 speeds up! + lower resilience rate to 0.05
+* implement CRC32 to error location detect, so increases resilence rate by 2x!
+* FIR and IIR in Python: https://jyyuan.wordpress.com/2014/02/27/finite-impulse-response-fir-digital-filters/
+* Note that the codec is specialized for the m = 1 case and runs very quickly. Due to a happy coincidence the first recovery block is always just an XOR of all the original data, so you can use this codec instead of doing that manually.
+always true if fcr=0 : https://stackoverflow.com/questions/44117632/is-the-first-ecc-of-reed-solomon-always-the-same-as-xor
+https://github.com/catid/longhair
+* implement support for cpp libs such as longhair or fastecc (when it will be done) or wirehair or BETTER: https://github.com/catid/cm256
+* BEST NTT tuto for RS with examples!
+https://tmo.jpl.nasa.gov/progress_report2/42-35/35K.PDF - The fast decoding of reed-solomon codes with number theoretic transform by Reed et al
+* multidim: https://www.youtube.com/watch?v=1_X-7BgHbE0
+* implement micro slice optimization + double buffering? (saving ecc+hash into file in a thread meanwhile launching next calculation?): https://www.livebusinesschat.com/smf/index.php?topic=5877.0
+* IDEA: since 1st ECC symbol always XOR of input message symbols, can use it for quick and dirty error detection! Without CRC!
+* py_ecc approach: horizontal coding but per file: each symbol is stored in a different file. So ecc1 codes all first ecc symbol etc. This is nice because then we have multiple ecc files. We can generalize to multiple files by two ways: either PAR1 like by doing 1 character of each file, so k = number of files, OR do vertical coding by doing k = number of blocks for one file, and the first ecc is always stored in first ECC file, second ecc in 2nd ecc file, etc. And we append to the same ecc files for all files. This way, the ecc files will be as big as there are many files, but no limit to the number of files, and allow partial recovery! But disadvantage is that there is no interleaving and no file recreation (except if resiliency rate at least 25%, then it's possible, but then ecc files as big as the input files!). What about CD-ROM reed-solomon? Does it allow both?
+NO: PAR approach allows partial reconstruction, because can reconstruct only i-th message which can be tampered differently from j-th message (ecc files missing in j-th for example).
