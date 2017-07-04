@@ -197,19 +197,22 @@ Note11: Fastest Reed-Solomon encoder I have found, in pure Go! Over 1GB/s. https
 LATEST TODO 2017
 
 ECC PYFILEFIXITY FASTER:
+
+SUMMARY:
+    * Use PyPy 5 (with --jit vec=1 if also using numpy)
+    * Parallel execution on multiple blocks to get more in memory + IKJ algorithm: apply generator polynomial coefficient on ALL messages in same loop! Then go to 2nd coefficient. WARNING: works only if all messages have same resiliency! Better to compute faster AND then have more resiliency for all! At worst, can just save more resiliency for header, but the rest should be stable!
+    * Numpy to process parallel messages by broadcasting: https://stackoverflow.com/questions/19278313/numpy-matrix-multiplication-with-custom-dot-product
+    * Erasure detection with orthogonal hash (to lower k and thus computation time)
+    * After numpy parallelized implementation: Try to use Intel Distribution for Python
+    * Implement Hybridization horizontal/vertical coding (by allowing to form messages from multiple files instead of just one)
+    * Finish new version with simplified names and Py3 support
+    * Port 16bits RSC support from test code to master
+    * Later: integrate and potentially port NTT into pure python from Bulat's FastECC
+
 * read how par2 did it (quickpar, multipar) or reed solomon on RAID
 * BEST: the secret to PAR2 speed is to parallelize to a maximum: at instruction level by using SIMD (so can bitwise XOR lots of bits, up to 128 I think or even more) and then by usng horizontal coding because can fetch source bytes from lots of different files in parallel (and compute their blocks too in parallel)!
 * TODO:
-    SUMMARY:
-        * Use PyPy 5 (with --jit vec=1 if also using numpy)
-        * Parallel execution on multiple blocks to get more in memory + IKJ algorithm: apply generator polynomial coefficient on ALL messages in same loop! Then go to 2nd coefficient. WARNING: works only if all messages have same resiliency! Better to compute faster AND then have more resiliency for all! At worst, can just save more resiliency for header, but the rest should be stable!
-        * Numpy to process parallel messages by broadcasting: https://stackoverflow.com/questions/19278313/numpy-matrix-multiplication-with-custom-dot-product
-        * Erasure detection with orthogonal hash (to lower k and thus computation time)
-        * After numpy parallelized implementation: Try to use Intel Distribution for Python
-        * Implement Hybridization horizontal/vertical coding (by allowing to form messages from multiple files instead of just one)
-        * Finish new version with simplified names and Py3 support
-        * Port 16bits RSC support from test code to master
-        * Later: integrate and potentially port NTT into pure python from Bulat's FastECC
+
     0bis. Intel Distribution for Python: https://software.intel.com/en-us/distribution-for-python
     http://www.techenablement.com/orders-magnitude-performance-intel-distribution-python/
     Intel Vtune
