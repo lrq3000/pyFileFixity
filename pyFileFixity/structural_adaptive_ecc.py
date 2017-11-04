@@ -343,7 +343,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
     main_parser.add_argument('-s', '--size', type=int, default=1024, required=False,
                         help='Headers block size to protect with resilience rate stage 1 (eg: 1024 meants that the first 1k of each file will be protected by stage 1).', **widget_text)
     main_parser.add_argument('-r1', '--resilience_rate_stage1', type=float, default=0.3, required=False,
-                        help='Resilience rate for files headers (eg: 0.3 = 30% of errors can be recovered but size of codeword will be 60% of the data block).', **widget_text)
+                        help='Resilience rate for files headers (eg: 0.3 = 30%% of errors can be recovered but size of codeword will be 60%% of the data block).', **widget_text)
     main_parser.add_argument('-r2', '--resilience_rate_stage2', type=float, default=0.2, required=False,
                         help='Resilience rate for stage 2 (after headers, this is the starting rate applied to the rest of the file, which will be gradually lessened towards the end of the file to the stage 3 rate).', **widget_text)
     main_parser.add_argument('-r3', '--resilience_rate_stage3', type=float, default=0.1, required=False,
@@ -375,7 +375,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
     main_parser.add_argument('--skip_missing', action='store_true', required=False, default=False,
                         help='Skip missing files (no warning).')
     main_parser.add_argument('--enable_erasures', action='store_true', required=False, default=False,
-                        help='Enable errors-and-erasures correction. Reed-Solomon can correct twice more erasures than errors (eg, if resilience rate is 0.3, then you can correct 30% errors and 60% erasures and any combination of errors and erasures between 30%-60% corruption). An erasure is a corrupted symbol where we know the position, while errors are not known at all. To find erasures, we will find any symbol that is equal to --erasure_symbol and flag it as an erasure. This is particularly useful if the software you use (eg, a disk scraper) can mark bad sectors with a constant character (eg, null byte). Misdetected erasures will just eat one ecc symbol, and won\'t change the decoded message.')
+                        help='Enable errors-and-erasures correction. Reed-Solomon can correct twice more erasures than errors (eg, if resilience rate is 0.3, then you can correct 30%% errors and 60%% erasures and any combination of errors and erasures between 30%%-60%% corruption). An erasure is a corrupted symbol where we know the position, while errors are not known at all. To find erasures, we will find any symbol that is equal to --erasure_symbol and flag it as an erasure. This is particularly useful if the software you use (eg, a disk scraper) can mark bad sectors with a constant character (eg, null byte). Misdetected erasures will just eat one ecc symbol, and won\'t change the decoded message.')
     main_parser.add_argument('--only_erasures', action='store_true', required=False, default=False,
                         help='Enable only erasures correction (no errors). Use this only if you are sure that all corrupted symbols have the same value (eg, if your disk scraper replace bad sectors by null bytes). This will ensure that you can correct up to 2*resilience_rate corrupted symbols.')
     main_parser.add_argument('--erasure_symbol', type=int, default=0, required=False,
