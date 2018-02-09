@@ -4,6 +4,10 @@ PyFileFixity Todo
 TODO
 --------
 
+00000. Implement a fast algorithm for large data encoding (and decoding), see [https://github.com/catid/leopard leopard-RS] for a FFT approach or [https://github.com/Bulat-Ziganshin/FastECC FastECC] for a NTT approach.
+
+0000. Finish the py3 port.
+
 000. Implement SIMD parallelization (process multiple messages at once) and Numpy. And fix ecc redundancy rate so we can use same coefficient for multiple messages. See the TODO below.
 
 00. Implement fast matrix encoding in Reed-Solomon, see https://github.com/lrq3000/unireedsolomon/issues/2 and BackBlaze tutorial.
