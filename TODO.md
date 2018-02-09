@@ -70,6 +70,7 @@ Normal: to-fill = dict toujours sorté descendant (highest first) et la key est 
 simply generate all big ints that corresponds to the given remainder up to 2^8 poly and then check the one that corresponds to the md5 hash. Thus the ecc code will consists of: md5 hash + remainder + ecc for these to correct them in case of bug.
 http://mathematica.stackexchange.com/questions/32586/implementation-of-the-polynomial-chinese-remainder-theorem
 http://www.mathworks.com/matlabcentral/fileexchange/5841-chinese-remainder-theorem-for-polynomials
+16. (maybe) Monte Carlo simulation for resiliency tester: https://www.livebusinesschat.com/smf/index.php?topic=5933.0
 
 MAYBE
 ----------
