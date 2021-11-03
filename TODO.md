@@ -4,9 +4,11 @@ PyFileFixity Todo
 TODO
 --------
 
-00000. Implement a fast algorithm for large data encoding (and decoding), see [https://github.com/catid/leopard leopard-RS] for a FFT approach or [https://github.com/Bulat-Ziganshin/FastECC FastECC] for a NTT approach.
+000000. Implement a fast algorithm for large data encoding (and decoding), see [https://github.com/catid/leopard leopard-RS] for a FFT approach or [https://github.com/Bulat-Ziganshin/FastECC FastECC] for a NTT approach.
 
-0000. Finish the py3 port.
+00000. Finish the py3 port.
+
+0000. Implement robust mode, to skip folders/files that are inaccessible for the current user, eg, System Volume Information on Windows OSes.
 
 000. Implement SIMD parallelization (process multiple messages at once) and Numpy. And fix ecc redundancy rate so we can use same coefficient for multiple messages. See the TODO below.
 
