@@ -5,10 +5,13 @@
 #
 
 import os
-import argparse
-from pathlib2 import PurePath, PureWindowsPath, PurePosixPath # opposite operation of os.path.join (split a path into parts)
 import posixpath # to generate unix paths
 import shutil
+
+from ._compat import b
+
+from .argparse import ArgumentTypeError
+from .pathlib2 import PurePath, PureWindowsPath, PurePosixPath # opposite operation of os.path.join (split a path into parts)
 
 try:
     from scandir import walk # use the faster scandir module if available (Python >= 3.5), see https://github.com/benhoyt/scandir
@@ -20,7 +23,7 @@ def is_file(dirname):
     '''Checks if a path is an actual file that exists'''
     if not os.path.isfile(dirname):
         msg = "{0} is not an existing file".format(dirname)
-        raise argparse.ArgumentTypeError(msg)
+        raise ArgumentTypeError(msg)
     else:
         return dirname
 
@@ -28,7 +31,7 @@ def is_dir(dirname):
     '''Checks if a path is an actual directory that exists'''
     if not os.path.isdir(dirname):
         msg = "{0} is not a directory".format(dirname)
-        raise argparse.ArgumentTypeError(msg)
+        raise ArgumentTypeError(msg)
     else:
         return dirname
 
@@ -36,13 +39,13 @@ def is_dir_or_file(dirname):
     '''Checks if a path is an actual directory that exists or a file'''
     if not os.path.isdir(dirname) and not os.path.isfile(dirname):
         msg = "{0} is not a directory nor a file".format(dirname)
-        raise argparse.ArgumentTypeError(msg)
+        raise ArgumentTypeError(msg)
     else:
         return dirname
 
 def fullpath(relpath):
     '''Relative path to absolute'''
-    if (type(relpath) is object or type(relpath) is file):
+    if (type(relpath) is object or hasattr(relpath, 'read')): # relpath is either an object or file-like, try to get its name
         relpath = relpath.name
     return os.path.abspath(os.path.expanduser(relpath))
 
@@ -87,6 +90,9 @@ def get_next_entry(file, entrymarker="\xFE\xFF\xFE\xFF\xFE\xFF\xFE\xFF\xFE\xFF",
     This will read any string length between two entrymarkers.
     The reading is very tolerant, so it will always return any valid entry (but also scrambled entries if any, but the decoding will ensure everything's ok).
     `file` is a file handle, not the path to the file.'''
+    # TODO: use mmap native module instead of manually reading using blocksize?
+
+    entrymarker = bytearray(b(entrymarker))
     found = False
     start = None # start and end vars are the relative position of the starting/ending entrymarkers in the current buffer
     end = None
@@ -98,7 +104,7 @@ def get_next_entry(file, entrymarker="\xFE\xFF\xFE\xFF\xFE\xFF\xFE\xFF\xFE\xFF",
     # Continue the search as long as we did not find at least one starting marker and one ending marker (or end of file)
     while (not found and buf):
         # Read a long block at once, we will readjust the file cursor after
-        buf = file.read(blocksize)
+        buf = bytearray(file.read(blocksize))
         # Find the start marker (if not found already)
         if start is None or start == -1:
             start = buf.find(entrymarker); # relative position of the starting marker in the currently read string
@@ -194,7 +200,10 @@ def copy_any(src, dst, only_missing=False):  # pragma: no cover
 from collections import OrderedDict
 from sortedcontainers import SortedList
 from random import randint
-from itertools import izip_longest
+try:
+    from itertools import izip_longest
+except ImportError:
+    from itertools import zip_longest as izip_longest
 
 def grouper(n, iterable, fillvalue=None):
     "grouper(3, 'ABCDEFG', 'x') --> ABC DEF Gxx"

@@ -25,14 +25,15 @@
 #
 #
 
-from _infos import __version__
+from __future__ import print_function
 
 # Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
 import sys, os
 thispathname = os.path.dirname(__file__)
-sys.path.append(os.path.join(thispathname, 'lib'))
+sys.path.append(os.path.join(thispathname))
 
 # Import necessary libraries
+from lib._compat import _str, _range, b
 from lib.aux_funcs import fullpath
 import lib.argparse as argparse
 import datetime, time
@@ -105,7 +106,7 @@ def AutoGooey(fn):  # pragma: no cover
 def main(argv=None):
     if argv is None: # if argv is empty, fetch from the commandline
         argv = sys.argv[1:]
-    elif isinstance(argv, basestring): # else if argv is supplied but it's a simple string, we need to parse it to a list of arguments before handing to argparse or any other argument parser
+    elif isinstance(argv, _str): # else if argv is supplied but it's a simple string, we need to parse it to a list of arguments before handing to argparse or any other argument parser
         argv = shlex.split(argv) # Parse string just like argv using shlex
 
     #==== COMMANDLINE PARSER ====
@@ -144,7 +145,7 @@ Note: An ecc structure repair does NOT allow to recover from more errors on your
     main_parser.add_argument('-o', '--output', metavar='eccfile_repaired.txt', type=str, required=True, #type=argparse.FileType('rt')
                         help='Output path where to save the repaired ecc file.', **widget_filesave)
     main_parser.add_argument('-t', '--threshold', type=float, default=0.3, required=False,
-                        help='Distance threshold for the heuristic hamming distance repair. This must be a float, eg, 0.2 means that if there are 20% characters different between an ecc marker and a substring in the ecc file, it will be detected as a marker and corrected.', **widget_text)
+                        help='Distance threshold for the heuristic hamming distance repair. This must be a float, eg, 0.2 means that if there are 20%% characters different between an ecc marker and a substring in the ecc file, it will be detected as a marker and corrected.', **widget_text)
 
     # Optional general arguments
     main_parser.add_argument('--index', metavar='eccfile.txt.idx', type=str, required=False,
@@ -230,7 +231,7 @@ Note: An ecc structure repair does NOT allow to recover from more errors on your
             idx_corrupted = 0
             idx_corrected = 0
             idx_total = 0
-            markers_repaired = [0] * len(markers)
+            markers_repaired = [0] * len(markers) # create one list for each marker type
             bardisp = tqdm.tqdm(total=idx_size, file=ptee, leave=True, desc='IDXREAD', unit='B', unit_scale=True) # display progress bar based on reading the database file (since we don't know how many files we will process beforehand nor how many total entries we have)
             with open(indexpath, 'rb') as dbidx:
                 buf = 1
@@ -269,21 +270,21 @@ Note: An ecc structure repair does NOT allow to recover from more errors on your
                     if not marker_str: continue
 
                     # Repair ecc file's marker using our correct (or repaired) marker's infos
-                    marker_type = int(marker_str[0]) # marker's type is always stored on the first byte/character
+                    marker_type = int(chr(marker_str[0]) if isinstance(marker_str[0], int) else marker_str[0]) # marker's type is always stored on the first byte/character
                     marker_pos = struct.unpack('>Q', marker_str[1:]) # marker's position is encoded as a big-endian unsigned long long, in a 8 bytes/chars string
                     db.seek(marker_pos[0]) # move the ecc reading cursor to the beginning of the marker
                     current_marker = db.read(len(markers[marker_type-1])) # read the current marker (potentially corrupted)
                     db.seek(marker_pos[0])
                     if verbose:
-                        print "- Found marker by index file: type=%i content=" % (marker_type)
-                        print db.read(len(markers[marker_type-1])+4)
+                        ptee.write("- Found marker by index file: type=%i content=" % (marker_type))
+                        ptee.write(db.read(len(markers[marker_type-1])+4))
                         db.seek(marker_pos[0]) # replace the reading cursor back in place before the marker
                     if current_marker != markers[marker_type-1]: # check if we really need to repair this marker
                         # Rewrite the marker over the ecc file
-                        db.write(markers[marker_type-1])
+                        db.write(b(markers[marker_type-1]))
                         markers_repaired[marker_type-1] += 1
                     else:
-                        print "skipped, no need to repair"
+                        ptee.write("skipped, no need to repair")
             # Done the index backup repair
             if bardisp.n > bardisp.total: bardisp.n = bardisp.total # just a workaround in case there's one byte more than the predicted total
             bardisp.close()
@@ -301,7 +302,7 @@ Note: An ecc structure repair does NOT allow to recover from more errors on your
         already_valid = 0 # stat counter
         db.seek(0) # seek to the beginning of the database file
         buf = 1 # init the buffer to 1 to initiate the while loop
-        markers_pos = [[] for i in xrange(len(markers))] # will contain the list of positions where a corrupted marker has been detected (not valid markers, they will be skipped)
+        markers_pos = [[] for i in _range(len(markers))] # will contain the list of positions where a corrupted marker has been detected (not valid markers, they will be skipped)
         distance_thresholds = [round(len(x)*distance_threshold, 0) for x in markers] # calculate the number of characters maximum for distance
         skip_until = -1 # when a valid marker (non corrupted) is found, we use this variable to skip to after the marker length (to avoid detecting partial parts of this marker, which will have a hamming distance even if the marker is completely valid because the reading window will be after the beginning of the marker)
         bardisp = tqdm.tqdm(total=ecc_size, file=ptee, leave=True, desc='DBREAD', unit='B', unit_scale=True) # display progress bar based on reading the database file (since we don't know how many files we will process beforehand nor how many total entries we have)
@@ -314,12 +315,12 @@ Note: An ecc structure repair does NOT allow to recover from more errors on your
             if not buf: break # reached EOF? quitting here
 
             # Scan the buffer, by splitting the buffer into substrings the length of the ecc markers
-            for i in xrange(len(buf)-max(len(entrymarker),len(field_delim))):
+            for i in _range(len(buf)-max(len(entrymarker),len(field_delim))):
                 # If we just came accross a non corrupted ecc marker, we skip until we are after this ecc marker (to avoid misdetections)
                 if i < skip_until: continue
                 # Compare each ecc marker type to this substring and compute the Hamming distance
-                for m in xrange(len(markers)):
-                    d = hamming(buf[i:i+len(markers[m])], markers[m]) # Compute the Hamming distance (simply the number of different characters)
+                for m in _range(len(markers)):
+                    d = hamming(b(buf[i:i+len(markers[m])]), b(markers[m])) # Compute the Hamming distance (simply the number of different characters)
                     mcurpos = curpos+i # current absolute position of this ecc marker
                     
                     # If there's no difference, then it's a valid, non-corrupted ecc marker
@@ -349,17 +350,17 @@ Note: An ecc structure repair does NOT allow to recover from more errors on your
         bardisp.close()
 
         # Committing the repair into the ecc file
-        for m in xrange(len(markers)): # for each type of markers
+        for m in _range(len(markers)): # for each type of markers
             marker = markers[m]
             if len(markers_pos[m]) > 0: # If there is any detected marker to repair for this type
                 for pos in markers_pos[m]: # for each detected marker to repair, we rewrite it over into the file at the detected position
                     if verbose: ptee.write("- Detected marker type %i at position %i with distance %i (%i%%): repairing." % (m+1, pos[0], pos[1], (float(pos[1])/len(markers[m]))*100) )
                     db.seek(pos[0])
-                    db.write(marker)
+                    db.write(b(marker))
 
         #print(markers_pos)
         ptee.write("Done. Hamming heuristic with threshold %i%% repaired %i entrymarkers and %i field_delim (%i total) and %i were already valid.\n" % (round(distance_threshold*100, 0), len(markers_pos[0]), len(markers_pos[1]), len(markers_pos[0])+len(markers_pos[1]), already_valid) )
-        del ptee
+        ptee.close()
         return 0
 
 # Calling main function if the script is directly called (not imported as a library in another program)

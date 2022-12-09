@@ -41,14 +41,13 @@
 # NOTE: this software is similar in purpose to the (more advanced) MD5deep / HashDeep for hash set auditing: http://md5deep.sourceforge.net/
 #
 
-from _infos import __version__
-
 # Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
 import sys, os
 thispathname = os.path.dirname(__file__)
-sys.path.append(os.path.join(thispathname, 'lib'))
+sys.path.append(os.path.join(thispathname))
 
 # Import necessary libraries
+from lib._compat import _str, b, _open_csv
 from lib.aux_funcs import is_dir, is_dir_or_file, fullpath, recwalk, path2unix
 import lib.argparse as argparse
 import os, datetime, time, sys
@@ -164,7 +163,7 @@ def AutoGooey(fn):  # pragma: no cover
 def main(argv=None):
     if argv is None: # if argv is empty, fetch from the commandline
         argv = sys.argv[1:]
-    elif isinstance(argv, basestring): # else if argv is supplied but it's a simple string, we need to parse it to a list of arguments before handing to argparse or any other argument parser
+    elif isinstance(argv, _str): # else if argv is supplied but it's a simple string, we need to parse it to a list of arguments before handing to argparse or any other argument parser
         argv = shlex.split(argv) # Parse string just like argv using shlex
 
     #==== COMMANDLINE PARSER ====
@@ -320,12 +319,12 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
 
         # Precompute the total number of lines to process (this should be fairly quick)
         filestodocount = 0
-        with open(database, 'rb') as dbf:
+        with _open_csv(database, 'r') as dbf:
             for row in csv.DictReader(dbf, lineterminator='\n', delimiter='|', quotechar='"'):
                 filestodocount = filestodocount + 1
 
             # Preparing CSV writer for the temporary file that will have the lines removed
-            with open(database+'.rem', 'wb') as dbfilerem:
+            with _open_csv(database+'.rem', 'w') as dbfilerem:
                 csv_writer = csv.writer(dbfilerem, lineterminator='\n', delimiter='|', quotechar='"')
 
                 # Printing CSV headers
@@ -364,10 +363,10 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
             raise NameError('Database file already exists. Please choose another name to generate your database file.')
 
         if generate:
-            dbmode = 'wb'
+            dbmode = 'w'
         elif (update and append):
-            dbmode = 'ab'
-        with open(database, dbmode) as dbfile: # Must open in write + binary, because on Windows it will do weird things otherwise (at least with Python 2.7)
+            dbmode = 'a'
+        with _open_csv(database, dbmode) as dbfile: # Must open in write + binary, because on Windows it will do weird things otherwise (at least with Python 2.7)
             ptee.write("====================================")
             if generate:
                 ptee.write("RIFGC Database Generation started on %s" % datetime.datetime.now().isoformat())
@@ -386,7 +385,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
             if (update and append):
                 # Extract all paths already stored in database to avoid readding them
                 db_paths = {}
-                with open(database, 'rb') as dbf:
+                with _open_csv(database, 'r') as dbf:
                     for row in csv.DictReader(dbf, lineterminator='\n', delimiter='|', quotechar='"'):
                         db_paths[row['path']] = True
 
@@ -453,7 +452,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
         sha1list = {}
         dbrows = {} # TODO: instead of memorizing everything in memory, store just the reading cursor position at the beginning of the line with the size and then just read when necessary from the db file directly
         id = 0
-        with open(database, 'rb') as db:
+        with _open_csv(database, 'r') as db:
             for row in csv.DictReader(db, lineterminator='\n', delimiter='|', quotechar='"'):
                 id += 1
                 if (len(row['md5']) > 0 and len(row['sha1']) > 0):
@@ -464,7 +463,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
 
         if len(dbrows) == 0:
             ptee.write("Nothing to do, there's no md5 nor sha1 hashes in the database file!")
-            del ptee
+            ptee.close()
             return 1 # return with an error
 
         # Counting the total number of files that we will have to process
@@ -515,12 +514,12 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
 
         # Open errors file if supplied (where we will store every errors in a formatted csv so that it can later be easily processed by other softwares, such as repair softwares)
         if errors_file is not None:
-            efile = open(errors_file, 'wb')
+            efile = _open_csv(errors_file, 'w')
             e_writer = csv.writer(efile, delimiter='|', lineterminator='\n', quotechar='"')
 
         # Precompute the total number of lines to process (this should be fairly quick)
         filestodocount = 0
-        with open(database, 'rb') as dbf:
+        with _open_csv(database, 'r') as dbf:
             for row in csv.DictReader(dbf, lineterminator='\n', delimiter='|', quotechar='"'):
                 filestodocount = filestodocount + 1
 
@@ -588,7 +587,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
         ptee.write("All files checked: Total: %i - Files with errors: %i.\n\n" % (filescount, errorscount))
         retval = (errorscount > 0)
 
-    del ptee
+    ptee.close()
     return retval # return error code if any
 
 # Calling main function if the script is directly called (not imported as a library in another program)

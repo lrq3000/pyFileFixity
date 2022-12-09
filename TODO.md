@@ -18,6 +18,8 @@ TODO
 
 1. Parallelization of encoding: build a list of all files to encode in a multiprocessing.Queue() (or list or dict) to be multiprocessing safe, and then process different files in Pool, each time a job is launched, pop from the shared queue. Each worker will write in its own file, and in the end all files will be concatenated into one. This should speed-up processing, x8 with 8 cores thus we could reach about 10MB/s and thus get reasonable encoding time speed. Try to use [jug](https://github.com/luispedro/jug)! Sharing of data through filesystem, pure python and easy to use, seems like a perfect fit. Or [dask](http://dask.pydata.org/en/latest/) (pydata project, pandas authors).
 
+1bis. Check if accentuated characters work. If not, use recwalk(unicode(rootfolderpath)) instead of recwalk(rootfolderpath)
+
 2. hello world in ecc file header as a comment, so that user can detect Reed-Solomon parameters even if commandline arguments are forgotten (using half rate so that k and n is known: k = n/2).
 Canonic format:
 
@@ -74,13 +76,21 @@ http://mathematica.stackexchange.com/questions/32586/implementation-of-the-polyn
 http://www.mathworks.com/matlabcentral/fileexchange/5841-chinese-remainder-theorem-for-polynomials
 16. (maybe) Monte Carlo simulation for resiliency tester: https://www.livebusinesschat.com/smf/index.php?topic=5933.0
 
+
 MAYBE
 ----------
 
-- Move from argparse to [docopt](https://github.com/docopt/docopt) or [click](http://click.pocoo.org/) to generate a beautiful and more usable command-line interface (with clear modes, because right now the relevant options are not grouped together and it can be quite confusing).
+- Append/remove: just make a list of files from db and compare against real file tree, then just remove entries inexistent, and append at the end the new files. Only if file size and checksum are the same, else remove file and append at the end.
+
+- Filename recovery: compare against filesize: simply extract list of files as dict key and value = file size, then walk through real file tree and make similar db, reorganize both according to filesize, and do a 1-on-1 comparison of decreasing filesize: if one real file match a db filesize, then add it to the dict of correspondance db filename -> real filename. If multiple entries, ask user.
+
+- Move from argparse to [argopt](https://github.com/casperdcl/argopt) (would probably be the best choice! Just need to make sure it would work with my AutoGooey wrapper) or [docopt](https://github.com/docopt/docopt) or [click](http://click.pocoo.org/) to generate a beautiful and more usable command-line interface (with clear modes, because right now the relevant options are not grouped together and it can be quite confusing).
 
 - High priority: parallelize eccman.py to encode faster in a generic fashion (ie, using any codec). It would call n parallel instances of the ecc codec, to compute n ecc blocks in parallel. This should give us at least a 10x speedup (if compatible with PyPy, this would make us reach 10MB/s!).
 maybe with: https://github.com/XericZephyr/Pythine ?
+or maybe with [joblib](http://blog.rtwilson.com/my-top-5-new-python-modules-of-2015/comment-page-1/#comment-170352)?
+
+- FFT to get O(nlogn) encoding instead of O(nk) (quadratic)? Like [this project](https://github.com/alexbeutel/Error-Correcting-Codes).
 
 - Extend pyFileFixity to encode multiple characters into one, and then use higher galois fields like 2^16, 2^32 or even 2^128 (allows to be more resilient against huge, adversarial bursts): for example, instead of having one character ranging from value [0,255], we would have two characters encoded in one in range [0,65535] and then we could use GF(2^16) and encode blocks of 65535 characters instead of 255. This may also help us encode faster (since we would process bigger ecc blocks at once, but we'd have to see if the computational complexity of RS doesn't cancel this benefit...). We could also maybe use optimization tricks in: Luo, Jianqiang, et al. "Efficient software implementations of large finite fields GF (2 n) for secure storage applications." ACM Transactions on Storage (TOS) 8.1 (2012): 2.
 

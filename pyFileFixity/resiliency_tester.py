@@ -33,15 +33,13 @@
 
 from __future__ import division
 
-from _infos import __version__
-
 # Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
 import sys, os
 thispathname = os.path.dirname(__file__)
-sys.path.append(os.path.join(thispathname, 'lib'))
+sys.path.append(os.path.join(thispathname))
 
 # Import necessary libraries
-import ConfigParser
+from lib._compat import _str, _range, _StringIO, _izip
 import subprocess # to execute commands
 import itertools
 from lib.aux_funcs import recwalk, path2unix, fullpath, is_dir_or_file, is_dir, is_file, fullpath, copy_any, create_dir_if_not_exist, remove_if_exist
@@ -51,10 +49,15 @@ import lib.tqdm as tqdm
 #import operator # to get the max out of a dict
 import csv # to process the database file from rfigc.py
 import shlex # for string parsing as argv argument to main(), unnecessary otherwise
-from StringIO import StringIO
 from lib.tee import Tee # Redirect print output to the terminal as well as in a log file
 from collections import OrderedDict
 #import pprint # Unnecessary, used only for debugging purposes
+
+# To read the config file
+try:
+    import configparser as ConfigParser
+except ImportError:
+    import ConfigParser
 
 
 
@@ -64,7 +67,7 @@ from collections import OrderedDict
 
 ######## Config parsing and command execution ########
 
-def parse_configfile(filepath):
+def parse_configfile(filepath, comments_prefix='#'):
     '''
     Parse a makefile to find commands and substitute variables. Expects a
     makefile with only aliases and a line return between each command.
@@ -82,7 +85,7 @@ def parse_configfile(filepath):
     ini_str = ini_str + fd.read().replace('\t@', '\t').\
         replace('\t+', '\t').replace('\tmake ', '\t')
     if fd != filepath: fd.close()
-    ini_fp = StringIO(ini_str)
+    ini_fp = _StringIO(ini_str)
     # Parse using ConfigParser
     config = ConfigParser.RawConfigParser()
     config.readfp(ini_fp)
@@ -92,8 +95,11 @@ def parse_configfile(filepath):
     # -- Extracting commands for each alias
     commands = {}
     for alias in aliases:
+        commands[alias] = []
         # strip the first line return, and then split by any line return
-        commands[alias] = config.get('root', alias).lstrip('\n').split('\n')
+        for cmd in config.get('root', alias).lstrip('\n').split('\n'):
+            if not cmd.startswith(comments_prefix):
+                commands[alias].append(cmd)
     return commands
 
 def get_filename_no_ext(filepath):
@@ -153,7 +159,7 @@ def diff_bytes_files(path1, path2, blocksize=65535, startpos1=0, startpos2=0):
                 # End of file for both files
                 break
             else:
-                for char1, char2 in itertools.izip(buf1, buf2):
+                for char1, char2 in _izip(buf1, buf2):
                     if char1 != char2:
                         diff_count += 1
                     total_size += 1
@@ -239,7 +245,7 @@ def compute_all_diff_stats(commands, origpath, tamperdir, repairdir, finalrepair
 
     # - tampered/result0,1,... in loop
     indir = tamperdir
-    for i in xrange(len(commands["repair"])):
+    for i in _range(len(commands["repair"])):
         outdir = "%s%i" % (repairdir, i)
         stats["repair%i"%i] = compute_diff_stats(origpath, indir, outdir)
         if i == 0:
@@ -256,7 +262,7 @@ def compute_all_diff_stats(commands, origpath, tamperdir, repairdir, finalrepair
 
 def pretty_print_stats(stat):  # pragma: no cover
     out = ''
-    for key, value in stat.iteritems():
+    for key, value in stat.items():
         if key == 'diff_bytes':
             out += "\t- Differing bytes from original: %i/%i\n" % (value[0], value[1])
         elif key == 'diff_bytes_prev':
@@ -279,18 +285,18 @@ def stats_running_average(stats, new_stats, weight):
         return (old*weight + new) / (weight+1)
 
     nstats = {}
-    for stage in stats.iterkeys():
+    for stage in stats.keys():
         if stage in new_stats:
             nstats[stage] = {}
-            for key in stats[stage].iterkeys():
+            for key in stats[stage].keys():
                 if key in new_stats[stage]:
                     # List
                     if isinstance(stats[stage][key], (list, tuple)):
-                        nstats[stage][key] = [running_average(x, y, weight) for x,y in itertools.izip(stats[stage][key], new_stats[stage][key])]
-                        #nstats[stage][key] = [[x, y] for x,y in itertools.izip(stats[stage][key], new_stats[stage][key])]
+                        nstats[stage][key] = [running_average(x, y, weight) for x,y in _izip(stats[stage][key], new_stats[stage][key])]
+                        #nstats[stage][key] = [[x, y] for x,y in _izip(stats[stage][key], new_stats[stage][key])]
 
                     # Scalar
-                    elif not hasattr(stats[stage][key], '__len__') and (not isinstance(stats[stage][key], basestring)):
+                    elif not hasattr(stats[stage][key], '__len__') and (not isinstance(stats[stage][key], _str)):
                         nstats[stage][key] = running_average(stats[stage][key], new_stats[stage][key], weight)
 
     return nstats
@@ -306,7 +312,7 @@ def import_module(module_name):  # pragma: no cover
         tb = tb_root
         while tb is not None:
             if tb.tb_frame.f_globals.get('__name__') == module_name:
-                raise exc_type, exc_value, tb_root
+                raise(exc_type, exc_value, tb_root)
             tb = tb.tb_next
         return None
     return sys.modules[module_name]
@@ -367,7 +373,7 @@ def AutoGooey(fn):  # pragma: no cover
 def main(argv=None):
     if argv is None: # if argv is empty, fetch from the commandline
         argv = sys.argv[1:]
-    elif isinstance(argv, basestring): # else if argv is supplied but it's a simple string, we need to parse it to a list of arguments before handing to argparse or any other argument parser
+    elif isinstance(argv, _str): # else if argv is supplied but it's a simple string, we need to parse it to a list of arguments before handing to argparse or any other argument parser
         argv = shlex.split(argv) # Parse string just like argv using shlex
 
     #==== COMMANDLINE PARSER ====
@@ -487,7 +493,7 @@ Also note that the test folder will not be removed at the end, so that you can s
     ptee.write("Testing folder %s into test folder %s for %i run(s)." % (origpath, outputpath, multiple))
 
     fstats = {}
-    for m in xrange(multiple):
+    for m in _range(multiple):
         run_nb = m + 1
 
         ptee.write("===== Resiliency tester: starting run %i =====" % run_nb)
@@ -547,7 +553,7 @@ Also note that the test folder will not be removed at the end, so that you can s
         # Stats
         stats = compute_all_diff_stats(commands, origpath, tamperdir, repairdir, finalrepairdir)
         ptee.write("========== Resiliency tester results for run %i ==========" % run_nb)
-        for key, stat in stats.iteritems():
+        for key, stat in stats.items():
             ptee.write("=> Stage: %s" % key)
             ptee.write(pretty_print_stats(stat))
 
@@ -559,12 +565,12 @@ Also note that the test folder will not be removed at the end, so that you can s
     ptee.write("============================")
     ptee.write("RESILIENCY TESTER FINAL AVERAGED RESULTS OVER %i RUNS" % multiple)
     ptee.write("============================")
-    for key, stat in fstats.iteritems():
+    for key, stat in fstats.items():
         ptee.write("=> Stage: %s" % key)
         ptee.write(pretty_print_stats(stat))
 
     # Shutting down
-    del ptee
+    ptee.close()
     # Completely repair all the files? Return OK
     if stats["final"]["error"] == 0:
         return 0

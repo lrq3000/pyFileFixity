@@ -24,8 +24,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+from ._compat import b
+
+import sys
 import hashlib
 #import zlib
+from base64 import b64encode, b64decode  # using b64encode is about 3x faster than using encode('base64_codec')
+# alternative to base64: from codecs import encode
 
 class Hasher(object):
     '''Class to provide a hasher object with various hashing algorithms. What's important is to provide the __len__ so that we can easily compute the block size of ecc entries. Must only use fixed size hashers for the rest of the script to work properly.'''
@@ -50,16 +55,17 @@ class Hasher(object):
 
     def hash(self, mes):
         # use hashlib.algorithms_guaranteed to list algorithms
+        mes = b(mes)
         if self.algo == "md5":
-            return hashlib.md5(mes).hexdigest()
+            return b(hashlib.md5(mes).hexdigest())
         elif self.algo == "shortmd5": # from: http://www.peterbe.com/plog/best-hashing-function-in-python
-            return hashlib.md5(mes).hexdigest().encode('base64')[:8]
+            return b64encode(b(hashlib.md5(mes).hexdigest()))[:8]
         elif self.algo == "shortsha256":
-            return hashlib.sha256(mes).hexdigest().encode('base64')[:8]
+            return b64encode(b(hashlib.sha256(mes).hexdigest()))[:8]
         elif self.algo == "minimd5":
-            return hashlib.md5(mes).hexdigest().encode('base64')[:4]
+            return b64encode(b(hashlib.md5(mes).hexdigest()))[:4]
         elif self.algo == "minisha256":
-            return hashlib.sha256(mes).hexdigest().encode('base64')[:4]
+            return b64encode(b(hashlib.sha256(mes).hexdigest()))[:4]
         elif self.algo == "none":
             return ''
         else:

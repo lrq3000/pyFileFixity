@@ -7,7 +7,10 @@ branches:  # remove travis double-check on pull requests in main repo
     - /^\d\.\d+$/
 env:
   - TOXENV=py27
+  - TOXENV=py32
+  - TOXENV=py34
   - TOXENV=pypy
+  - TOXENV=pypy3
 before_install:
   - pip install codecov
 install:

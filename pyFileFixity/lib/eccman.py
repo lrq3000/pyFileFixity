@@ -25,7 +25,7 @@
 # THE SOFTWARE.
 
 # Compatibility with Python 3
-from _compat import _str
+from _compat import _str, _range, b, _bytes
 
 from .distance.distance import hamming
 
@@ -68,8 +68,8 @@ def detect_reedsolomon_parameters(message, mesecc_orig, gen_list=[2, 3, 5], c_ex
     n = len(mesecc_orig)
     k = len(message)
     field_charac = int((2**c_exp) - 1)
-    maxval1 = max([ord(x) if isinstance(x, basestring) else x for x in message ])
-    maxval2 = max([ord(x) if isinstance(x, basestring) else x for x in mesecc_orig])
+    maxval1 = max([ord(x) if isinstance(x, _str) else x for x in message ])
+    maxval2 = max([ord(x) if isinstance(x, _str) else x for x in mesecc_orig])
     maxval = max([maxval1, maxval2])
     if (maxval > field_charac):
         raise ValueError("The specified field's exponent is wrong, the message contains values (%i) above the field's cardinality (%i)!" % (maxval, field_charac))
@@ -77,12 +77,15 @@ def detect_reedsolomon_parameters(message, mesecc_orig, gen_list=[2, 3, 5], c_ex
     # Prepare the variable that will store the result
     best_match = {"hscore": -1, "params": [{"gen_nb": 0, "prim": 0, "fcr": 0}]}
 
+    if isinstance(message, _str):
+        message = b(message)
+
     # Exhaustively search by generating every combination of values for the RS parameters and test the Hamming distance
     for gen_nb in gen_list:
         prim_list = reedsolop.find_prime_polys(generator=gen_nb, c_exp=c_exp, fast_primes=False, single=False)
         for prim in prim_list:
             reedsolop.init_tables(prim)
-            for fcr in xrange(field_charac):
+            for fcr in _range(field_charac):
                 #g = reedsolop.rs_generator_poly_all(n, fcr=fcr, generator=gen_nb)
                 # Generate a RS code from the sample message using the current combination of RS parameters
                 mesecc = reedsolop.rs_encode_msg(message, n-k, fcr=fcr)
@@ -153,7 +156,7 @@ class ECCMan(object):
     def encode(self, message, k=None):
         '''Encode one message block (up to 255) into an ecc'''
         if not k: k = self.k
-        message, _ = self.pad(message, k=k)
+        message, _ = self.pad(b(message), k=k)
         if self.algo == 1:
             mesecc = self.ecc_manager.encode(message, k=k)
         elif self.algo == 2:
@@ -163,7 +166,7 @@ class ECCMan(object):
             #mesecc = rs_encode_msg_precomp(message, self.n-k, fcr=self.fcr, gen=self.g[self.n-k])
 
         ecc = mesecc[len(message):]
-        return ecc
+        return _bytes(ecc)
 
     def decode(self, message, ecc, k=None, enable_erasures=False, erasures_char="\x00", only_erasures=False):
         '''Repair a message and its ecc also, given the message and its ecc (both can be corrupted, we will still try to fix both of them)'''
@@ -172,6 +175,7 @@ class ECCMan(object):
         # Optimization, use bytearray
         if isinstance(message, _str):
             message = bytearray([ord(x) for x in message])
+        if isinstance(ecc, _str):
             ecc = bytearray([ord(x) for x in ecc])
 
         # Detect erasures positions and replace with null bytes (replacing erasures with null bytes is necessary for correct syndrome computation)
@@ -183,7 +187,7 @@ class ECCMan(object):
             # Convert char to a int (because we use a bytearray)
             if isinstance(erasures_char, _str): erasures_char = ord(erasures_char)
             # Find the positions of the erased characters
-            erasures_pos = [i for i in xrange(len(mesecc)) if mesecc[i] == erasures_char]
+            erasures_pos = [i for i in _range(len(mesecc)) if mesecc[i] == erasures_char]
             # Failing case: no erasures could be found and we want to only correct erasures, then we return the message as-is
             if only_erasures and not erasures_pos: return message, ecc
 
@@ -213,7 +217,7 @@ class ECCMan(object):
 
         if pad: # Strip the null bytes if we padded the message before decoding
             msg_repaired = msg_repaired[len(pad):len(msg_repaired)]
-        return msg_repaired, ecc_repaired
+        return _bytes(msg_repaired), _bytes(ecc_repaired)
 
     def pad(self, message, k=None):
         '''Automatically left pad with null bytes a message if too small, or leave unchanged if not necessary. This allows to keep track of padding and strip the null bytes after decoding reliably with binary data. Equivalent to shortening (shortened reed-solomon code).'''
@@ -222,7 +226,7 @@ class ECCMan(object):
         if len(message) < k:
             #pad = "\x00" * (k-len(message))
             pad = bytearray(k-len(message))
-            message = pad + message
+            message = pad + bytearray(b(message))
         return [message, pad]
 
     def rpad(self, ecc, k=None):
@@ -233,7 +237,7 @@ class ECCMan(object):
             print("Warning: the ecc field may have been truncated (entrymarker or field_delim misdetection?).")
             #pad = "\x00" * (self.n-k-len(ecc))
             pad = bytearray(self.n-k-len(ecc))
-            ecc = ecc + pad
+            ecc = bytearray(ecc) + pad
         return [ecc, pad]
 
     def check(self, message, ecc, k=None):

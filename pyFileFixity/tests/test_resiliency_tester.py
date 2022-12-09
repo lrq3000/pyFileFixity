@@ -4,10 +4,11 @@ import sys
 import os
 
 import shutil
-from StringIO import StringIO
 
 from .. import resiliency_tester as restest
 from .aux_tests import path_sample_files, tamper_file, create_dir_if_not_exist, remove_if_exist
+
+from ..lib._compat import _StringIO
 
 def setup_module():
     """ Initialize the tests by emptying the out directory """
@@ -35,9 +36,9 @@ repair:
     cmd7
     cmd8
     '''
-    fconfig = StringIO(config)
+    fconfig = _StringIO(config)
     parsed = restest.parse_configfile(fconfig)
-    assert parsed == {'tamper': ['cmd3', 'cmd4'], 'after_tamper': ['cmd5', 'cmd6', '# a comment'], 'before_tamper': ['cmd1 -i "arg1" -o "arg2"', 'cmd2'], 'repair': ['cmd7', 'cmd8']}
+    assert parsed == {'tamper': ['cmd3', 'cmd4'], 'after_tamper': ['cmd5', 'cmd6'], 'before_tamper': ['cmd1 -i "arg1" -o "arg2"', 'cmd2'], 'repair': ['cmd7', 'cmd8']}
 
 def test_get_filename_no_ext():
     """ restest: test internal: get_filename_no_ext() """

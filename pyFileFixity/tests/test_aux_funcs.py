@@ -4,13 +4,14 @@ from nose.tools import assert_raises
 
 import sys
 import os
-from StringIO import StringIO
 import shutil
 
 from .aux_tests import get_marker, dummy_ecc_file_gen, path_sample_files, create_dir_if_not_exist
 
 from ..lib import aux_funcs as auxf
 from ..lib.argparse import ArgumentTypeError
+
+from io import BytesIO
 
 def setup_module():
     """ Initialize the tests by emptying the out directory """
@@ -21,8 +22,8 @@ def setup_module():
 def test_get_next_entry():
     """ aux: test detection of next entry """
     entries = [
-            '''file1.ext\xfa\xff\xfa\xff\xfafilesize1\xfa\xff\xfa\xff\xfarelfilepath1_ecc\xfa\xff\xfa\xff\xfafilesize1_ecc\xfa\xff\xfa\xff\xfahash-ecc-entry_hash-ecc-entry_hash-ecc-entry_''',
-            '''file2.ext\xfa\xff\xfa\xff\xfafilesize2\xfa\xff\xfa\xff\xfarelfilepath2_ecc\xfa\xff\xfa\xff\xfafilesize2_ecc\xfa\xff\xfa\xff\xfahash-ecc-entry_hash-ecc-entry_hash-ecc-entry_hash-ecc-entry_hash-ecc-entry_hash-ecc-entry_'''
+            b'''file1.ext\xfa\xff\xfa\xff\xfafilesize1\xfa\xff\xfa\xff\xfarelfilepath1_ecc\xfa\xff\xfa\xff\xfafilesize1_ecc\xfa\xff\xfa\xff\xfahash-ecc-entry_hash-ecc-entry_hash-ecc-entry_''',
+            b'''file2.ext\xfa\xff\xfa\xff\xfafilesize2\xfa\xff\xfa\xff\xfarelfilepath2_ecc\xfa\xff\xfa\xff\xfafilesize2_ecc\xfa\xff\xfa\xff\xfahash-ecc-entry_hash-ecc-entry_hash-ecc-entry_hash-ecc-entry_hash-ecc-entry_hash-ecc-entry_'''
           ]
     entries_pos = [
                     [83, 195],
@@ -30,12 +31,12 @@ def test_get_next_entry():
                   ]
 
     filecontent = dummy_ecc_file_gen(2)
-    fp1 = StringIO(filecontent)
+    fp1 = BytesIO(filecontent)
     entry = auxf.get_next_entry(fp1, entrymarker=get_marker(1), only_coord=False, blocksize=len(get_marker(1))+1)
     assert entry == entries[0]
     entry = auxf.get_next_entry(fp1, entrymarker=get_marker(1), only_coord=False, blocksize=len(get_marker(1))+1)
     assert entry == entries[1]
-    fp2 = StringIO(filecontent)
+    fp2 = BytesIO(filecontent)
     entry = auxf.get_next_entry(fp2, entrymarker=get_marker(1), only_coord=True, blocksize=len(get_marker(1))+1)
     assert entry == entries_pos[0]
     entry = auxf.get_next_entry(fp2, entrymarker=get_marker(1), only_coord=True, blocksize=len(get_marker(1))+1)

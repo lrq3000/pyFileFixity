@@ -20,11 +20,11 @@ def test_hasher():
     """ hasher: test hashes """
     instring = "Lorem ipsum and some more stuff\nThe answer to the question of life, universe and everything is... 42."
     # Put all hashing algo results here (format: "algo_name": [length, result_for_instring])
-    algo_params = {"md5": [32, '173efbe0280ce506ddbfbfc9aeb44a1a'],
-                   "shortmd5": [8, 'MTczZWZi'],
-                   "shortsha256": [8, 'NjgzMjRk'],
-                   "minimd5":  [4, 'MTcz'],
-                   "minisha256": [4, 'Njgz'],
+    algo_params = {"md5": [32, b'173efbe0280ce506ddbfbfc9aeb44a1a'],
+                   "shortmd5": [8, b'MTczZWZi'],
+                   "shortsha256": [8, b'NjgzMjRk'],
+                   "minimd5":  [4, b'MTcz'],
+                   "minisha256": [4, b'Njgz'],
                    "none": [0, ''],
                   }
     # For each hashing algo, produce a hash and check the length and hash

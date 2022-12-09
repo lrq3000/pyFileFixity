@@ -7,6 +7,8 @@ import hashlib
 
 import shutil
 
+from ..lib._compat import b
+
 from .. import rfigc
 from ..lib.aux_funcs import recwalk
 from .aux_tests import check_eq_files, check_eq_dir, path_sample_files, tamper_file, create_dir_if_not_exist
@@ -15,8 +17,8 @@ def partial_eq(file, file_partial):
     """ Do a partial comparison, line by line, we compare only using "line2 in line1", where line2 is from file_partial """
     flag = True
     with open(file, 'rb') as outf, open(file_partial, 'rb') as expectedf:
-        out = outf.read().strip('\n')
-        expected = expectedf.read().strip('\n').split('\n')
+        out = outf.read().strip(b('\n'))
+        expected = expectedf.read().strip(b('\n')).split(b('\n'))
         for exp in expected:
             if not exp in out:
                 flag = False
@@ -41,8 +43,8 @@ def test_one_file():
     # Check database file is the same as the pregenerated result
     with open(filedb, 'rb') as outf, open(fileres, 'rb') as expectedf:
         # Because of differing timestamps between local and git repo, we must only do a partial comparison (we compare the beginning of the file up to the timestamp)
-        expected = expectedf.read().strip("\n")
-        out = outf.read().strip("\n")
+        expected = expectedf.read().strip(b("\n"))
+        out = outf.read().strip(b("\n"))
         assert expected in out
 
 def test_dir():
@@ -105,7 +107,7 @@ def test_update():
     # Create a new file in another folder
     create_dir_if_not_exist(fileout_dir)
     with open(fileout, 'wb') as fh:
-        fh.write('abcdefABCDEF\n1234598765')
+        fh.write(b'abcdefABCDEF\n1234598765')
     # Append file in database
     assert rfigc.main('-i "%s" -d "%s" --update --append --silent' % (fileout_dir, filedb)) == 0
     assert partial_eq(filedb, fileres1)
@@ -118,7 +120,7 @@ def test_generate_hashes():
     # Test with a file we make on the spot, so this should always be correct!
     infile0 = path_sample_files('output', 'test_rfigc_generate_hashes.txt')
     with open(infile0, 'wb') as f0:
-        f0.write("Lorem ipsum etc\n"*20)
+        f0.write(b"Lorem ipsum etc\n"*20)
     assert rfigc.generate_hashes(infile0) == ('c6e0c87cbb8eeaca8179f22186384e6b', '6f46949be7cda1437bc3fb61fb827a6552beaf8b')
     # Test with input files, this may change if we change the files
     infile1 = path_sample_files('input', 'tux.jpg')

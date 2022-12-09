@@ -31,15 +31,14 @@
 #=================================
 #
 
-from _infos import __version__
-
 # Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
 import sys, os
 thispathname = os.path.dirname(__file__)
-sys.path.append(os.path.join(thispathname, 'lib'))
+sys.path.append(os.path.join(thispathname))
 
 # Import necessary libraries
-import rfigc # optional
+from lib._compat import _str, _range, _open_csv, _ord, b
+from . import rfigc # optional
 import shutil
 from lib.aux_funcs import recwalk, path2unix, fullpath, is_dir_or_file, is_dir, is_file, create_dir_if_not_exist
 import lib.argparse as argparse
@@ -68,6 +67,12 @@ def relpath_posix(recwalk_result, pardir, fromwinpath=False):
 
 def sort_dict_of_paths(d):
     """ Sort a dict containing paths parts (ie, paths divided in parts and stored as a list). Top paths will be given precedence over deeper paths. """
+    def nonesorter(a):
+        """ Make None a sortable type (necessary for Python 3) """
+        if not a:
+            return ['']
+        return a
+
     # Find the path that is the deepest, and count the number of parts
     max_rec = max(len(x) if x else 0 for x in d.values())
     # Pad other paths with empty parts to fill in, so that all paths will have the same number of parts (necessary to compare correctly, else deeper paths may get precedence over top ones, since the folder name will be compared to filenames!)
@@ -75,7 +80,7 @@ def sort_dict_of_paths(d):
         if d[key]:
             d[key] = ['']*(max_rec-len(d[key])) + d[key]
     # Sort the dict relatively to the paths alphabetical order
-    d_sort = sorted(d.items(), key=lambda x: x[1])
+    d_sort = sorted(d.items(), key=lambda x: nonesorter(x[1]))
     return d_sort
 
 def sort_group(d, return_only_first=False):
@@ -151,23 +156,23 @@ def majority_vote_byte_scan(relfilepath, fileslist, outpath, blocksize=65535, de
 
     errors = []
     entries = [1]*len(fileshandles)  # init with 0 to start the while loop
-    while (entries.count('') < len(fileshandles)):
+    while (entries.count(b('')) < len(fileshandles)):
         final_entry = []
         # Read a block from all input files into memory
-        for i in xrange(len(fileshandles)):
+        for i in _range(len(fileshandles)):
             entries[i] = fileshandles[i].read(blocksize)
 
         # End of file for all files, we exit
-        if entries.count('') == len(fileshandles):
+        if entries.count(b('')) == len(fileshandles):
             break
         # Else if there's only one file, just copy the file's content over
-        elif len(entries) == 1:
+        elif entries.count(b('')) == (len(fileshandles) - 1):
             final_entry = entries[0]
 
         # Else, do the majority vote
         else:
             # Walk along each column (imagine the strings being rows in a matrix, then we pick one column at each iteration = all characters at position i of each string), so that we can compare these characters easily
-            for i in xrange(max(len(entry) for entry in entries)):
+            for i in _range(max(len(entry) for entry in entries)):
                 hist = {} # kind of histogram, we just memorize how many times a character is presented at the position i in each string TODO: use collections.Counter instead of dict()?
                 # Extract the character at position i of each string and compute the histogram at the same time (number of time this character appear among all strings at this position i)
                 for entry in entries:
@@ -175,11 +180,11 @@ def majority_vote_byte_scan(relfilepath, fileslist, outpath, blocksize=65535, de
                     if i < len(entry): # TODO: check this line, this should allow the vote to continue even if some files are shorter than others
                         # Extract the character and use it to contribute to the histogram
                         # TODO: add warning message when one file is not of the same size as the others
-                        key = str(ord(entry[i])) # convert to the ascii value to avoid any funky problem with encoding in dict keys
+                        key = str(_ord(entry[i])) # convert to the ascii value to avoid any funky problem with encoding in dict keys
                         hist[key] = hist.get(key, 0) + 1 # increment histogram for this value. If it does not exists, use 0. (essentially equivalent to hist[key] += 1 but with exception management if key did not already exists)
                 # If there's only one character (it's the same accross all strings at position i), then it's an exact match, we just save the character and we can skip to the next iteration
                 if len(hist) == 1:
-                    final_entry.append(chr(int(hist.iterkeys().next())))
+                    final_entry.append(int(list(hist.keys())[0]))
                     continue
                 # Else, the character is different among different entries, we will pick the major one (mode)
                 elif len(hist) > 1:
@@ -189,9 +194,9 @@ def majority_vote_byte_scan(relfilepath, fileslist, outpath, blocksize=65535, de
                     if hist[skeys[0]] == 1:
                         if default_char_null:
                             if default_char_null is True:
-                                final_entry.append("\x00")
+                                final_entry.append(0)
                             else:
-                                final_entry.append(default_char_null)
+                                final_entry.append(_ord(default_char_null))
                         else:
                             # Use the entry of the first file that is still open
                             first_char = ''
@@ -201,20 +206,21 @@ def majority_vote_byte_scan(relfilepath, fileslist, outpath, blocksize=65535, de
                                     first_char = entry[i]
                                     break
                             # Use this character in spite of ambiguity
-                            final_entry.append(first_char)
+                            final_entry.append(_ord(first_char))
                         errors.append(outfile.tell() + i) # Print an error indicating the characters that failed
                     # Else if there is a tie (at least two characters appear with the same frequency), then we just pick one of them
                     elif hist[skeys[0]] == hist[skeys[1]]:
-                        final_entry.append(chr(int(skeys[0]))) # TODO: find a way to account for both characters. Maybe return two different strings that will both have to be tested? (eg: maybe one has a tampered hash, both will be tested and if one correction pass the hash then it's ok we found the correct one)
+                        final_entry.append(int(skeys[0])) # TODO: find a way to account for both characters. Maybe return two different strings that will both have to be tested? (eg: maybe one has a tampered hash, both will be tested and if one correction pass the hash then it's ok we found the correct one)
                     # Else we have a clear major character that appear in more entries than any other character, then we keep this one
                     else:
-                        final_entry.append(chr(int(skeys[0]))) # alternative one-liner: max(hist.iteritems(), key=operator.itemgetter(1))[0]
+                        final_entry.append(int(skeys[0])) # alternative one-liner: max(hist.iteritems(), key=operator.itemgetter(1))[0]
                     continue
             # Concatenate to a string (this is faster than using a string from the start and concatenating at each iteration because Python strings are immutable so Python has to copy over the whole string, it's in O(n^2)
-            final_entry = ''.join(final_entry)
-            # Commit to output file
-            outfile.write(final_entry)
-            outfile.flush()
+            final_entry = ''.join([chr(x) for x in final_entry])
+
+        # Commit to output file
+        outfile.write(b(final_entry))
+        outfile.flush()
 
     # Errors signaling
     if errors:
@@ -263,18 +269,18 @@ def synchronize_files(inputpaths, outpath, database=None, tqdm_bar=None, report_
 
     # Open report file and write header
     if report_file is not None:
-        rfile = open(report_file, 'wb')
+        rfile = _open_csv(report_file, 'w')
         r_writer = csv.writer(rfile, delimiter='|', lineterminator='\n', quotechar='"')
-        r_header = ["filepath"] + ["dir%i" % (i+1) for i in xrange(nbpaths)] + ["hash-correct", "error_code", "errors"]
+        r_header = ['filepath'] + ["dir%i" % (i+1) for i in _range(nbpaths)] + ['hash-correct', 'error_code', 'errors']
         r_length = len(r_header)
         r_writer.writerow(r_header)
 
     # Initialization: load the first batch of files, one for each folder
-    for i in xrange(len(recgen)):
+    for i in _range(len(recgen)):
         recgen_exhausted[i] = False
         try:
             if curfiles.get(i, None) is None:
-                curfiles[i] = relpath_posix(recgen[i].next(), inputpaths[i])[1]
+                curfiles[i] = relpath_posix(next(recgen[i]), inputpaths[i])[1]
         except StopIteration:
             recgen_exhausted[i] = True
             recgen_exhausted_count += 1
@@ -371,7 +377,7 @@ def synchronize_files(inputpaths, outpath, database=None, tqdm_bar=None, report_
             # Walk their respective folders and load up the next file
             try:
                 if not recgen_exhausted.get(i, False):
-                    curfiles[i] = relpath_posix(recgen[i].next(), inputpaths[i])[1]
+                    curfiles[i] = relpath_posix(next(recgen[i]), inputpaths[i])[1]
             # If there's no file left in this folder, mark this input folder as exhausted and continue with the others
             except StopIteration:
                 curfiles[i] = None
@@ -446,7 +452,7 @@ def AutoGooey(fn):  # pragma: no cover
 def main(argv=None):
     if argv is None: # if argv is empty, fetch from the commandline
         argv = sys.argv[1:]
-    elif isinstance(argv, basestring): # else if argv is supplied but it's a simple string, we need to parse it to a list of arguments before handing to argparse or any other argument parser
+    elif isinstance(argv, _str): # else if argv is supplied but it's a simple string, we need to parse it to a list of arguments before handing to argparse or any other argument parser
         argv = shlex.split(argv) # Parse string just like argv using shlex
 
     #==== COMMANDLINE PARSER ====
@@ -593,7 +599,7 @@ Note3: last modification date is not (yet) accounted for.
     if tqdm_bar: tqdm_bar.close()
     ptee.write("All done!")
     if report_file: ptee.write("Saved replication repair results in report file: %s" % report_file)
-    del ptee
+    ptee.close()
     return errcode
 
 # Calling main function if the script is directly called (not imported as a library in another program)
