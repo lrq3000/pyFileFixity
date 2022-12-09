@@ -1043,7 +1043,7 @@ Also, you may want to read the following resources:
    :target: https://pypi.org/project/pyfilefixity
 .. |PyPI-Downloads| image:: https://img.shields.io/pypi/dm/pyfilefixity.svg?label=pypi%20downloads&logo=python&logoColor=white
    :target: https://pypi.org/project/pyfilefixity
-.. |Build Status| image:: https://github.com/lrq3000/pyFileFixity/actions/workflows/ci-build.yml/badge.svg?event=push
+.. |Build-Status| image:: https://github.com/lrq3000/pyFileFixity/actions/workflows/ci-build.yml/badge.svg?event=push
    :target: https://github.com/lrq3000/pyFileFixity/actions/workflows/ci-build.yml
 .. |Coverage| image:: https://codecov.io/github/lrq3000/pyFileFixity/coverage.svg?branch=master
    :target: https://codecov.io/github/lrq3000/pyFileFixity?branch=master
