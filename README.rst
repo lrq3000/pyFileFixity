@@ -46,6 +46,10 @@ Quickstart
 
 Runs on Python 3 up to Python 3.11. Both PyPy 3 and PyPy 2 are supported. Older versions such as Python 2.7.10 are still being automatically unit tested with continuous integration but support can be dropped at any moment.
 
+- To install or update:
+
+``pip install --upgrade pyfilefixity``
+
 - To generate a monitoring database (to later check if files were changed, but no possibility of repairing):
 
 ``python rfigc.py -i "your_folder" -d "dbhash.csv" -g -f -l "log.txt"``
