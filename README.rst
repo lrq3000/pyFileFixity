@@ -1,7 +1,9 @@
 pyFileFixity
 ============
 
-|Build Status| |Coverage Status| |PyPi Status| |PyPi Downloads|
+|PyPI-Status| |PyPI-Versions| |PyPI-Downloads|
+
+|Build-Status| |Coverage|
 
 This project aims to provide a set of open source, cross-platform, easy
 to use and easy to maintain (readable code) to protect and manage data
@@ -42,7 +44,7 @@ Of course, you can also protect the whole file, not only the header, using pyFil
 Quickstart
 ----------
 
-Runs on Python 2.7.10 and on PyPy (not yet ported to Python 3 but the libraries are already compatible).
+Runs on Python 3 up to Python 3.12-alpha3. Both PyPy 3 and PyPy 2 are supported. Older versions such as Python 2.7.10 are still being automatically unit tested with continuous integration but support can be dropped at any moment.
 
 - To generate a monitoring database (to later check if files were changed, but no possibility of repairing):
 
@@ -401,8 +403,6 @@ Pros:
    the only freely available parity software that supports erasures.
 -  Display the predicted total ecc file size given your parameters,
    and the total time it will take to encode/decode.
--  No external library needed, only native Python 2.7.x (but with PyPy
-   it will be way faster!).
 -  Opensourced under the very permissive MIT licence, do whatever you
    want!
 
@@ -454,9 +454,6 @@ discs, etc.). This script is not meant for system files corruption
 notification, but is more meant to be used from times-to-times to check
 up on your data archives integrity (if you need this kind of application,
 see `avpreserve's fixity <https://github.com/avpreserve/fixity>`_).
-
-This script was made for Python 2.7.6, but it should be easily adaptable
-to run on Python 3.x.
 
 Example usage
 ~~~~~~~~~~~~~
@@ -646,6 +643,11 @@ Cython implementation
 This section describes how to use the Cython implementation. However,
 you should first try PyPy, as it did give 10x to 100x speedup over
 Cython in our case.
+
+THIS SECTION IS OLD AND DEPRECATED, because the Cython compilation is now
+done directly in the Reed-Solomon submodules, instead of here, so you
+should not need to worry about it, just pip install with the requirements.txt
+and you should be set. The information below is left for historical purposes:
 
 A speedy Cython implementation of the Reed-Solomon library is included.
 It should provide C-speed for all scripts (as long as you use
@@ -1023,18 +1025,25 @@ There are a few studies about the most resilient file formats, such as:
   * `"Analysing the impact of file formats on data integrity" by Volker Heydegger <http://old.hki.uni-koeln.de/people/herrmann/forschung/heydegger_archiving2008_40.pdf>`_.
   * `"A guide to formats", by The UK national archives <http://www.nationalarchives.gov.uk/documents/information-management/guide-to-formats.pdf>`_ (you want to look at the Recoverability entry in each table).
 
--  If you have any question about Reed-Solomon codes, the best place to
-   ask is probably here (with the incredible Dilip Sarwate):
+- What is Reed-Solomon?
+If you have any question about Reed-Solomon codes, the best place to ask is probably here (with the incredible Dilip Sarwate):
    http://www.dsprelated.com/groups/comp.dsp/1.php?searchfor=reed%20solomon
+
+Also, you may want to read the following resources:
+* "`Reed-Solomon codes for coders <https://en.wikiversity.org/wiki/Reed%E2%80%93Solomon_codes_for_coders>`_", free practical beginner's tutorial with Python code examples on WikiVersity. Partially written by one of the authors of the present software.
+* "Algebraic codes for data transmission", Blahut, Richard E., 2003, Cambridge university press. `Readable online on Google Books <https://books.google.fr/books?id=eQs2i-R9-oYC&lpg=PR11&ots=atCPQJm3OJ&dq=%22Algebraic%20codes%20for%20data%20transmission%22%2C%20Blahut%2C%20Richard%20E.%2C%202003%2C%20Cambridge%20university%20press.&lr&hl=fr&pg=PA193#v=onepage&q=%22Algebraic%20codes%20for%20data%20transmission%22,%20Blahut,%20Richard%20E.,%202003,%20Cambridge%20university%20press.&f=false>`_.
+
 
 .. |Example| image:: https://raw.githubusercontent.com/lrq3000/pyFileFixity/master/tux-example.jpg
    :scale: 60 %
    :alt: Image corruption and repair example
-.. |Build Status| image:: https://travis-ci.org/lrq3000/pyFileFixity.svg?branch=master
-   :target: https://travis-ci.org/lrq3000/pyFileFixity
-.. |Coverage Status| image:: https://codecov.io/github/lrq3000/pyFileFixity/coverage.svg?branch=master
+.. |PyPI-Status| image:: https://img.shields.io/pypi/v/pyfilefixity.svg
+   :target: https://pypi.org/project/pyfilefixity
+.. |PyPI-Versions| image:: https://img.shields.io/pypi/pyversions/pyfilefixity.svg?logo=python&logoColor=white
+   :target: https://pypi.org/project/pyfilefixity
+.. |PyPI-Downloads| image:: https://img.shields.io/pypi/dm/pyfilefixity.svg?label=pypi%20downloads&logo=python&logoColor=white
+   :target: https://pypi.org/project/pyfilefixity
+.. |Build Status| image:: https://github.com/lrq3000/pyFileFixity/actions/workflows/ci-build.yml/badge.svg?event=push
+   :target: https://github.com/lrq3000/pyFileFixity/actions/workflows/ci-build.yml
+.. |Coverage| image:: https://codecov.io/github/lrq3000/pyFileFixity/coverage.svg?branch=master
    :target: https://codecov.io/github/lrq3000/pyFileFixity?branch=master
-.. |PyPi Status| image:: https://img.shields.io/pypi/v/pyFileFixity.svg
-   :target: https://pypi.python.org/pypi/pyFileFixity
-.. |PyPi Downloads| image:: https://img.shields.io/pypi/dm/pyFileFixity.svg
-   :target: https://pypi.python.org/pypi/pyFileFixity
