@@ -10,7 +10,7 @@ except ImportError:
     from distutils.core import setup
     from distutils.extension import Extension
 
-import os
+import os, json
 import shlex  # For Makefile parsing
 
 # For Makefile parsing
@@ -118,13 +118,17 @@ def execute_makefile_commands(commands, alias, verbose=False):
 """ Main setup.py config """
 
 
-# Get version from __init__.py
+# Get version from _infos.json
 __version__ = None
-version_file = os.path.join(os.path.dirname(__file__), 'pyFileFixity', '_infos.py')
-for line in open(version_file).readlines():
-    if (line.startswith('version_info') or line.startswith('__version__') or line.startswith('__author__') or line.startswith('__email__')):
-        exec(line.strip())
-
+version_file = os.path.join(os.path.dirname(__file__), 'pyFileFixity', '_infos.json')
+with open(version_file, 'r') as f:
+    _infos = json.load(f)
+# Alternative way when using a _infos.py python file to store the versioning and other package metadata:
+#version_file = os.path.join(os.path.dirname(__file__), 'pyFileFixity', '_infos.py')
+#for line in open(version_file).readlines():
+#    if (line.startswith('version_info') or line.startswith('__version__') or line.startswith('__author__') or line.startswith('__email__')):
+#        exec(line.strip())
+# Then variables like __version__ or __author__ are imported in the global namespace
 
 # Executing makefile commands if specified
 if sys.argv[1].lower().strip() == 'make':
@@ -163,14 +167,14 @@ if sys.argv[1].lower().strip() == 'make':
 # Python module configuration
 setup(
     name = "pyFileFixity",
-    version=__version__,
+    version=_infos['version'],
     description='Helping file fixity (long term storage of data) via redundant error correcting codes and hash auditing.',
     license='MIT License',
-    author=__author__,
-    author_email=__email__,
+    author=_infos['author'],
+    author_email=_infos['email'],
     url='https://github.com/lrq3000/pyFileFixity',
-    maintainer=__author__,
-    maintainer_email=__email__,
+    maintainer=_infos['author'],
+    maintainer_email=_infos['email'],
     platforms = ["any"],
     packages=['pyFileFixity'],
     #packages=setuptools.find_packages(),

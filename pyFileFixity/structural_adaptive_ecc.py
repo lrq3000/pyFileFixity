@@ -54,7 +54,11 @@
 # - Also backup folders meta-data? (to reconstruct the tree in case a folder is truncated by bit rot)
 #
 
-from ._infos import __version__
+# Get PyFileFixity package version, necessary to input in the ECC the version of pyFileFixity we used, this can be helpful to disambiguate in the future which version of the software to use for optimal recovery
+import os, json
+with open(os.path.join(os.path.dirname(__file__), '_infos.json'), 'r') as f:
+    _infos = json.load(f)
+__version__ = _infos['version']
 
 # Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
 import sys, os
