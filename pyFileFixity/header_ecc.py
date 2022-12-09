@@ -66,9 +66,9 @@ sys.path.append(os.path.join(thispathname))
 # Import necessary libraries
 from lib._compat import _str, _range, b, _izip
 from lib.aux_funcs import get_next_entry, is_dir, is_dir_or_file, fullpath, recwalk, sizeof_fmt, path2unix
-import lib.argparse as argparse
+import argparse
 import datetime, time
-import lib.tqdm as tqdm
+import tqdm
 import itertools
 import math
 #import operator # to get the max out of a dict
@@ -81,8 +81,8 @@ import struct # to support indexes backup file
 # ECC and hashing facade libraries
 from lib.eccman import ECCMan, compute_ecc_params
 from lib.hasher import Hasher
-from lib.reedsolomon.reedsolo import ReedSolomonError
-from lib.brownanrs.rs import RSCodecError
+from reedsolo import ReedSolomonError
+from unireedsolomon import RSCodecError
 
 
 
@@ -213,7 +213,7 @@ def ecc_correct_intra(ecc_manager_intra, ecc_params_intra, field, ecc, entry_pos
 
 # Try to import Gooey for GUI display, but manage exception so that we replace the Gooey decorator by a dummy function that will just return the main function as-is, thus keeping the compatibility with command-line usage
 try:  # pragma: no cover
-    import lib.gooey as gooey
+    import gooey
 except ImportError as exc:
     # Define a dummy replacement function for Gooey to stay compatible with command-line usage
     class gooey(object):  # pragma: no cover

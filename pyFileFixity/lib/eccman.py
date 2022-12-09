@@ -31,12 +31,12 @@ from .distance.distance import hamming
 
 # ECC libraries
 try: # Try to automatically load Cython implementations if compiled
-    from .brownanrs import rs as brownanrs
-    from .reedsolomon import creedsolo as reedsolo
+    from unireedsolomon import rs as brownanrs
+    import creedsolo as reedsolo
     #from .brownanrs import crs as brownanrs
 except ImportError:
-    from .brownanrs import rs as brownanrs # Pure python implementation of Reed-Solomon with configurable max_block_size and automatic error detection (you don't have to specify where they are). This is a base 3 implementation that is formally correct and with unit tests.
-    from .reedsolomon import reedsolo as reedsolo # Faster pure python implementation of Reed-Solomon, with a base 3 compatible encoder (but not yet decoder! But you can use brownanrs to decode).
+    from unireedsolomon import rs as brownanrs # Pure python implementation of Reed-Solomon with configurable max_block_size and automatic error detection (you don't have to specify where they are). This is a base 3 implementation that is formally correct and with unit tests.
+    import reedsolo # Faster pure python implementation of Reed-Solomon, with a base 3 compatible encoder (but not yet decoder! But you can use brownanrs to decode).
 
 rs_encode_msg = reedsolo.rs_encode_msg # local reference for small speed boost
 #rs_encode_msg_precomp = reedsolo.rs_encode_msg_precomp

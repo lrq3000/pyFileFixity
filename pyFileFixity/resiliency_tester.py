@@ -43,9 +43,9 @@ from lib._compat import _str, _range, _StringIO, _izip
 import subprocess # to execute commands
 import itertools
 from lib.aux_funcs import recwalk, path2unix, fullpath, is_dir_or_file, is_dir, is_file, fullpath, copy_any, create_dir_if_not_exist, remove_if_exist
-import lib.argparse as argparse
+import argparse
 import datetime, time
-import lib.tqdm as tqdm
+import tqdm
 #import operator # to get the max out of a dict
 import csv # to process the database file from rfigc.py
 import shlex # for string parsing as argv argument to main(), unnecessary otherwise
@@ -327,7 +327,7 @@ def get_dbfile(dbdir, id):
 
 # Try to import Gooey for GUI display, but manage exception so that we replace the Gooey decorator by a dummy function that will just return the main function as-is, thus keeping the compatibility with command-line usage
 try:  # pragma: no cover
-    import lib.gooey as gooey
+    import gooey
 except ImportError as exc:
     # Define a dummy replacement function for Gooey to stay compatible with command-line usage
     class gooey(object):  # pragma: no cover

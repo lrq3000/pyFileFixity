@@ -9,7 +9,7 @@ import shutil
 from .aux_tests import get_marker, dummy_ecc_file_gen, path_sample_files, create_dir_if_not_exist
 
 from ..lib import aux_funcs as auxf
-from ..lib.argparse import ArgumentTypeError
+from argparse import ArgumentTypeError
 
 from io import BytesIO
 

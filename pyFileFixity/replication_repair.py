@@ -41,9 +41,9 @@ from lib._compat import _str, _range, _open_csv, _ord, b
 from . import rfigc # optional
 import shutil
 from lib.aux_funcs import recwalk, path2unix, fullpath, is_dir_or_file, is_dir, is_file, create_dir_if_not_exist
-import lib.argparse as argparse
+import argparse
 import datetime, time
-import lib.tqdm as tqdm
+import tqdm
 import itertools
 import math
 #import operator # to get the max out of a dict
@@ -406,7 +406,7 @@ def synchronize_files(inputpaths, outpath, database=None, tqdm_bar=None, report_
 
 # Try to import Gooey for GUI display, but manage exception so that we replace the Gooey decorator by a dummy function that will just return the main function as-is, thus keeping the compatibility with command-line usage
 try:  # pragma: no cover
-    import lib.gooey as gooey
+    import gooey
 except ImportError as exc:
     # Define a dummy replacement function for Gooey to stay compatible with command-line usage
     class gooey(object):  # pragma: no cover

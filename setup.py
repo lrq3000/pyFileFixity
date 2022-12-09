@@ -115,26 +115,6 @@ def execute_makefile_commands(commands, alias, verbose=False):
             subprocess.check_call(parsed_cmd)
 
 
-""" Cython extensions """
-
-
-try:
-    from Cython.Build import cythonize
-    USE_CYTHON = True
-except ImportError:
-    USE_CYTHON = False
-
-ext = '.pyx' if USE_CYTHON else '.c'
-
-extensions = [
-                        Extension('pyFileFixity.lib.brownanrs.cff', [os.path.join('pyFileFixity', 'lib', 'brownanrs', 'cff'+ext)]),
-                        Extension('pyFileFixity.lib.brownanrs.cpolynomial', [os.path.join('pyFileFixity', 'lib', 'brownanrs', 'cpolynomial'+ext)]),
-                        Extension('pyFileFixity.lib.reedsolomon.creedsolo', [os.path.join('pyFileFixity', 'lib', 'reedsolomon', 'creedsolo'+ext)]),
-                    ]
-
-if USE_CYTHON: extensions = cythonize(extensions)
-
-
 """ Main setup.py config """
 
 
@@ -220,9 +200,9 @@ setup(
         'Intended Audience :: System Administrators',
     ],
     keywords = 'file repair monitor change reed-solomon error correction',
-    ext_modules = extensions,
-    test_suite='nose.collector',
-    tests_require=['nose', 'coverage'],
+    #ext_modules = extensions, # we don't cythonize anymore, this is handled in the respective reedsolomon and unireedsolomon submodules directly
+    test_suite='pytest',
+    tests_require=['pytest', 'coverage'],
 )
 
 # Use pypandoc to convert the Markdown readme into ReStructuredText for PyPi package generation

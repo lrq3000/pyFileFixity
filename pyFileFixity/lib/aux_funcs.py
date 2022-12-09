@@ -10,8 +10,8 @@ import shutil
 
 from ._compat import b
 
-from .argparse import ArgumentTypeError
-from .pathlib2 import PurePath, PureWindowsPath, PurePosixPath # opposite operation of os.path.join (split a path into parts)
+from argparse import ArgumentTypeError
+from pathlib2 import PurePath, PureWindowsPath, PurePosixPath # opposite operation of os.path.join (split a path into parts)
 
 try:
     from scandir import walk # use the faster scandir module if available (Python >= 3.5), see https://github.com/benhoyt/scandir

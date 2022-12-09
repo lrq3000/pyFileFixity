@@ -35,9 +35,9 @@ sys.path.append(os.path.join(thispathname))
 # Import necessary libraries
 from lib._compat import _str, _range, b
 from lib.aux_funcs import fullpath
-import lib.argparse as argparse
+import argparse
 import datetime, time
-import lib.tqdm as tqdm
+import tqdm
 import itertools
 import math
 #import operator # to get the max out of a dict
@@ -45,13 +45,13 @@ import shlex # for string parsing as argv argument to main(), unnecessary otherw
 from lib.tee import Tee # Redirect print output to the terminal as well as in a log file
 import struct # to support indexes backup file
 import shutil
-from lib.distance.distance import hamming
+from distance import hamming
 #import pprint # Unnecessary, used only for debugging purposes
 
 # ECC and hashing facade libraries
 from lib.eccman import ECCMan, compute_ecc_params
 from lib.hasher import Hasher
-from lib.reedsolomon.reedsolo import ReedSolomonError
+from reedsolo import ReedSolomonError
 
 
 
@@ -61,7 +61,7 @@ from lib.reedsolomon.reedsolo import ReedSolomonError
 
 # Try to import Gooey for GUI display, but manage exception so that we replace the Gooey decorator by a dummy function that will just return the main function as-is, thus keeping the compatibility with command-line usage
 try:  # pragma: no cover
-    import lib.gooey as gooey
+    import gooey
 except ImportError as exc:
     # Define a dummy replacement function for Gooey to stay compatible with command-line usage
     class gooey(object):  # pragma: no cover

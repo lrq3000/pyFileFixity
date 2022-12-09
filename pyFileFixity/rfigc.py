@@ -49,11 +49,11 @@ sys.path.append(os.path.join(thispathname))
 # Import necessary libraries
 from lib._compat import _str, b, _open_csv
 from lib.aux_funcs import is_dir, is_dir_or_file, fullpath, recwalk, path2unix
-import lib.argparse as argparse
+import argparse
 import os, datetime, time, sys
 import hashlib
 import csv
-import lib.tqdm as tqdm
+import tqdm
 import shlex # for string parsing as argv argument to main(), unnecessary otherwise
 from lib.tee import Tee # Redirect print output to the terminal as well as in a log file
 #import pprint # Unnecessary, used only for debugging purposes
@@ -118,7 +118,7 @@ def generate_hashes(filepath, blocksize=65536):
 
 # Try to import Gooey for GUI display, but manage exception so that we replace the Gooey decorator by a dummy function that will just return the main function as-is, thus keeping the compatibility with command-line usage
 try:  # pragma: no cover
-    import lib.gooey as gooey
+    import gooey
 except ImportError as exc:
     # Define a dummy replacement function for Gooey to stay compatible with command-line usage
     class gooey(object):  # pragma: no cover

@@ -35,12 +35,12 @@ from lib._compat import _range
 from lib.aux_funcs import sizeof_fmt
 from lib.eccman import ECCMan, compute_ecc_params
 from lib.hasher import Hasher
-from lib.reedsolomon.reedsolo import ReedSolomonError
+from reedsolo import ReedSolomonError
 
 # Import necessary libraries
 import random, math
 import time, datetime
-import lib.tqdm as tqdm
+import tqdm
 
 
 def gen_random_string(n, size):

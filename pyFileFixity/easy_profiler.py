@@ -32,7 +32,7 @@
 
 # Import necessary libraries
 from lib.aux_funcs import fullpath
-import lib.argparse as argparse
+import argparse
 import os, sys
 
 

@@ -1,0 +1,8 @@
+pathlib2
+argparse
+sortedcontainers
+unireedsolomon
+reedsolo
+tqdm
+distance
+gooey
