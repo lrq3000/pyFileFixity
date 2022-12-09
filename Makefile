@@ -13,8 +13,8 @@
 #    ```
 
 alltests:
-	@make testcoverage
-	@make testsetup
+	@+make testcoverage
+	@+make testsetup
 
 all:
 	@make alltests
@@ -31,8 +31,10 @@ testsetup:
 	python setup.py make none
 
 testcoverage:
-	rm -f .coverage  # coverage erase
-	nosetests pyFileFixity/tests/ --with-coverage --cover-package=pyFileFixity -d -v
+	python -c "import shutil; shutil.rmtree('.coverage', True)"
+	#nosetests pyFileFixity/tests/ --with-coverage --cover-package=pyFileFixity -d -v
+    coverage run --branch -m pytest . -v
+    coverage report -m
 
 installdev:
 	python setup.py develop --uninstall
@@ -58,10 +60,7 @@ pypi:
 	twine upload dist/*
 
 buildupload:
-	@make testsetup
-	@make build
-	@make pypimeta
-	@make pypi
-
-none:
-	# used for unit testing
+	@+make testsetup
+	@+make build
+	@+make pypimeta
+	@+make pypi
