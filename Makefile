@@ -21,7 +21,8 @@ all:
 	@make build
 
 test:
-	tox --skip-missing-interpreters
+	#tox --skip-missing-interpreters
+    pytest
 
 testnose:
 	nosetests pyFileFixity/tests/ -d -v

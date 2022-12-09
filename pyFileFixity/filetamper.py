@@ -47,7 +47,7 @@ import argparse
 import os, sys, random
 import shlex # for string parsing as argv argument to main(), unnecessary otherwise
 from lib.tee import Tee # Redirect print output to the terminal as well as in a log file
-from tqdm
+from tqdm import tqdm
 
 
 #***********************************
