@@ -89,7 +89,7 @@ class TestAuxFuncs(unittest.TestCase):
             return [auxf.path2unix(os.path.join(os.path.relpath(x, pardir),y)) for x,y in recwalk_result]
         indir = path_sample_files('input')
         pardir = os.path.dirname(indir)
-        # Compare between sorted and non-sorted path walking (the result should be different if on Windows! but sorted path should always be the same on all platforms!)
+        # Compare between sorted and non-sorted path walking (the result should be different! but sorted path should always be the same on all platforms!)
         res1 = list_paths_posix(auxf.recwalk(indir, sorting=True))
         res2 = list_paths_posix(auxf.recwalk(indir, sorting=False))
         # Absolute test: sorted walking should always return the same result on all platforms
@@ -99,7 +99,7 @@ class TestAuxFuncs(unittest.TestCase):
             assert res2 != res1
             assert res2 == ['files/alice.pdf', 'files/testaa.txt', 'files/tux.jpg', 'files/tuxsmall.jpg', 'files/sub/Snark.zip', 'files/sub/testsub.txt', 'files/Sub2/testsub2.txt']
         elif os.name == 'posix':
-            assert res2 == res1
+            assert res2 != res1 # BEWARE, do NOT use sets here! On linux, order of generated files can change, although a set is unordered, they will be equal if elements in the sets are the same, contrary to lists, but that's what we are testing here, with ordered walk it should NOT be the same!
 
     def test_fullpath(self):
         """ aux: test fullpath() """
