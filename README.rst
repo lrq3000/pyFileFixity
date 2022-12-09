@@ -44,7 +44,7 @@ Of course, you can also protect the whole file, not only the header, using pyFil
 Quickstart
 ----------
 
-Runs on Python 3 up to Python 3.12-alpha3. Both PyPy 3 and PyPy 2 are supported. Older versions such as Python 2.7.10 are still being automatically unit tested with continuous integration but support can be dropped at any moment.
+Runs on Python 3 up to Python 3.11. Both PyPy 3 and PyPy 2 are supported. Older versions such as Python 2.7.10 are still being automatically unit tested with continuous integration but support can be dropped at any moment.
 
 - To generate a monitoring database (to later check if files were changed, but no possibility of repairing):
 
