@@ -49,8 +49,19 @@ jobs:
       run: |
         coverage run --branch -m pytest . -v
         coverage report -m
-    - name: Send coverage to Coveralls
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      if: ${{ matrix.python-version >= 3 }}
-      run: coveralls --service=github
+    #- name: Send coverage to Coveralls
+    #  env:
+    #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #  if: ${{ matrix.python-version >= 3 }}
+    #  run: coveralls --service=github
+
+    steps:
+    - uses: actions/checkout@master
+    - uses: codecov/codecov-action@v3
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+        #files: ./coverage1.xml,./coverage2.xml # optional
+        #flags: unittests # optional
+        name: Send coverage to codecov.io # optional
+        fail_ci_if_error: true # optional (default = false)
+        verbose: true # optional (default = false)
