@@ -5,4 +5,3 @@ unireedsolomon
 reedsolo
 tqdm
 distance
-gooey

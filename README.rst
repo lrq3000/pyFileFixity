@@ -96,7 +96,7 @@ Note: this also works for a single file, just replace "your_folder" by "your_fil
 
 - To get more options for any tool, use ``--help``.
 
-- To use the GUI with any tool, use ``--gui`` and do not supply any other argument, eg: ``python rfigc.py --gui``.
+- DEPRECATED (because Gooey is not maintained anymore it seems): To use the GUI with any tool, use ``--gui`` and do not supply any other argument, eg: ``python rfigc.py --gui``.
 
 - You can also use `PyPy <http://pypy.org/>`_ to hugely speedup the processing time of any tool here.
 
