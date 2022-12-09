@@ -1,0 +1,56 @@
+# This workflow will install Python dependencies and run tests with a variety of Python versions
+# It uses the Python Package GitHub Actions workflow.
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+# and https://www.youtube.com/watch?v=l6fV09z5XHk
+
+name: ci-build
+
+on:
+  push:
+    branches:
+      - master # $default-branch only works in Workflows templates, not in Workflows, see https://stackoverflow.com/questions/64781462/github-actions-default-branch-variable
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["2.7", "3.7", "3.8", "3.9", "3.10", "3.11", "3.12.0-alpha.3", pypy-2.7, pypy-3.8]
+        #os: [ ubuntu-latest, windows-latest, macos-latest ] # jobs that run on Windows and macOS runners that GitHub hosts consume minutes at 2 and 10 times the rate that jobs on Linux runners consume respectively.
+        os: [ ubuntu-latest ]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache: 'pip'
+    # You can test your matrix by printing the current Python version
+    - name: Display Python version
+      run: |
+        python -c "import sys; print(sys.version)"
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install pytest pytest-cov
+        if [ ${{ matrix.python-version }} <= 3.7 ]; then python -m pip install 'coverage<4'; else python -m pip install coverage; fi
+        python -m pip install coveralls
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Compile the Cython extension (only on Python 3.10)
+      if: ${{ matrix.python-version == 3.10 }}
+      run: |
+        pip install --install-option='--no-cython-compile' cython
+        python setup.py build_ext --inplace
+    - name: Test with pytest
+      run: |
+        coverage run --branch -m pytest . -v
+        coverage report -m
+    - name: Send coverage to Coveralls
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      if: ${{ matrix.python-version >= 3 }}
+      run: coveralls --service=github
