@@ -29,7 +29,7 @@ testnose:
 
 testsetup:
 	python setup.py check --restructuredtext --strict
-	python setup.py make none
+	#python setup.py make none
 
 testcoverage:
 	python -c "import shutil; shutil.rmtree('.coverage', True)"
@@ -61,7 +61,7 @@ pypi:
 	twine upload dist/*
 
 buildupload:
-	#@+make testsetup
+	@+make testsetup
 	@+make build
-	#@+make pypimeta
+	@+make pypimeta
 	@+make pypi

@@ -1030,12 +1030,13 @@ There are a few studies about the most resilient file formats, such as:
   * `"A guide to formats", by The UK national archives <http://www.nationalarchives.gov.uk/documents/information-management/guide-to-formats.pdf>`_ (you want to look at the Recoverability entry in each table).
 
 - What is Reed-Solomon?
-If you have any question about Reed-Solomon codes, the best place to ask is probably here (with the incredible Dilip Sarwate):
-   http://www.dsprelated.com/groups/comp.dsp/1.php?searchfor=reed%20solomon
+
+If you have any question about Reed-Solomon codes, the best place to ask is probably here (with the incredible Dilip Sarwate): http://www.dsprelated.com/groups/comp.dsp/1.php?searchfor=reed%20solomon
 
 Also, you may want to read the following resources:
-* "`Reed-Solomon codes for coders <https://en.wikiversity.org/wiki/Reed%E2%80%93Solomon_codes_for_coders>`_", free practical beginner's tutorial with Python code examples on WikiVersity. Partially written by one of the authors of the present software.
-* "Algebraic codes for data transmission", Blahut, Richard E., 2003, Cambridge university press. `Readable online on Google Books <https://books.google.fr/books?id=eQs2i-R9-oYC&lpg=PR11&ots=atCPQJm3OJ&dq=%22Algebraic%20codes%20for%20data%20transmission%22%2C%20Blahut%2C%20Richard%20E.%2C%202003%2C%20Cambridge%20university%20press.&lr&hl=fr&pg=PA193#v=onepage&q=%22Algebraic%20codes%20for%20data%20transmission%22,%20Blahut,%20Richard%20E.,%202003,%20Cambridge%20university%20press.&f=false>`_.
+
+  * "`Reed-Solomon codes for coders <https://en.wikiversity.org/wiki/Reed%E2%80%93Solomon_codes_for_coders>`_", free practical beginner's tutorial with Python code examples on WikiVersity. Partially written by one of the authors of the present software.
+  * "Algebraic codes for data transmission", Blahut, Richard E., 2003, Cambridge university press. `Readable online on Google Books <https://books.google.fr/books?id=eQs2i-R9-oYC&lpg=PR11&ots=atCPQJm3OJ&dq=%22Algebraic%20codes%20for%20data%20transmission%22%2C%20Blahut%2C%20Richard%20E.%2C%202003%2C%20Cambridge%20university%20press.&lr&hl=fr&pg=PA193#v=onepage&q=%22Algebraic%20codes%20for%20data%20transmission%22,%20Blahut,%20Richard%20E.,%202003,%20Cambridge%20university%20press.&f=false>`_.
 
 
 .. |Example| image:: https://raw.githubusercontent.com/lrq3000/pyFileFixity/master/tux-example.jpg
