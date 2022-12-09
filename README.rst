@@ -755,6 +755,8 @@ example:
    https://github.com/LuminosoInsight/python-ftfy
 -  to repair tabular (2D) data such as .csv, try
    `Carpenter <https://pypi.python.org/pypi/Carpenter/>`_.
+-  tool to identify corrupted files in ddrescue images: 
+   `ddrescue-ffile <https://github.com/Salamek/ddrescue-ffile>`_
 
 Protecting directory tree meta-data
 -----------------------------------
