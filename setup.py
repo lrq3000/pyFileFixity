@@ -43,7 +43,7 @@ def parse_makefile_aliases(filepath):
     ini_fp = StringIO.StringIO(ini_str)
     # Parse using ConfigParser
     config = ConfigParser.RawConfigParser()
-    config.readfp(ini_fp)
+    config.read_file(ini_fp)
     # Fetch the list of aliases
     aliases = config.options('root')
 

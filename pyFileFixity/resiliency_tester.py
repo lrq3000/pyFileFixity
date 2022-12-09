@@ -88,7 +88,7 @@ def parse_configfile(filepath, comments_prefix='#'):
     ini_fp = _StringIO(ini_str)
     # Parse using ConfigParser
     config = ConfigParser.RawConfigParser()
-    config.readfp(ini_fp)
+    config.read_file(ini_fp)
     # Fetch the list of aliases
     aliases = config.options('root')
 
