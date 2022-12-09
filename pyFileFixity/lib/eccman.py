@@ -25,9 +25,9 @@
 # THE SOFTWARE.
 
 # Compatibility with Python 3
-from _compat import _str, _range, b, _bytes
+from ._compat import _str, _range, b, _bytes
 
-from .distance.distance import hamming
+from distance import hamming
 
 # ECC libraries
 try: # Try to automatically load Cython implementations if compiled
