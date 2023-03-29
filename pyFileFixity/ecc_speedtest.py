@@ -95,13 +95,13 @@ def main(argv=None):
     k = ecc_params["message_size"]
     # Generate a random string and encode it
     for msg in gen_random_string(msg_nb, k):
-        start = time.clock()
+        start = time.process_time()  # time.clock() was dropped in Py3.8, use time.perf_counter() instead to time performance including sleep, or time.process_time() without sleep periods.
         if subchunking:
             for i in xrange(0, len(msg), subchunk_size):
                 ecc_manager_subchunk.encode(msg[i:i+subchunk_size])
         else:
             ecc_manager.encode(msg)
-        total_time += time.clock() - start
+        total_time += time.process_time() - start
         bardisp.update(max_block_size)
     bardisp.close()
     print("Encoding: total time elapsed: %f sec for %s of data. Real Speed (only encoding, no other computation): %s." % (total_time, format_sizeof(total_size, 'B'), format_sizeof(total_size/total_time, 'B/sec') ))
@@ -132,7 +132,7 @@ def main(argv=None):
             ecc = str(ecc)
 
             # Decode the tampered message with ecc
-            start = time.clock()
+            start = time.process_time()
             try:
                 msg_repaired, ecc_repaired = ecc_manager.decode(msg_tampered, ecc)
                 # Check if the decoding was successful, else there's a problem, the decoding may be buggy
@@ -140,7 +140,7 @@ def main(argv=None):
             except ReedSolomonError:
                 print("Warning, there was an error while decoding. Please check your parameters (tamper_rate not too high) or the decoding procedure.")
                 pass
-            total_time += time.clock() - start
+            total_time += time.process_time() - start
             bardisp.update(max_block_size)
         bardisp.close()
         print("Decoding: total time elapsed: %f sec for %s of data. Real Speed (only decoding, no other computation): %s." % (total_time, format_sizeof(total_size, 'B'), format_sizeof(total_size/total_time, 'B/sec') ))
