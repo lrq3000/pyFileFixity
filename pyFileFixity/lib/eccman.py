@@ -163,8 +163,7 @@ class ECCMan(object):
             message, _ = self.pad(b(message), k=k)
             mesecc = self.ecc_manager.encode_fast(message, k=k)
         elif self.algo == 3 or self.algo == 4:
-            #message, _ = self.pad(bytearray(message, "utf-8"), k=k)  # TODO: need to use bytearray to be fully compatible with cythonized extension (the fastest!)
-            message, _ = self.pad(b(message), k=k)
+            message, _ = self.pad(bytearray(b(message)), k=k)  # TODO: need to use bytearray to be fully compatible with cythonized extension (the fastest!)
             mesecc = rs_encode_msg(message, self.n-k, fcr=self.fcr, gen=self.g[self.n-k])
             #mesecc = rs_encode_msg_precomp(message, self.n-k, fcr=self.fcr, gen=self.g[self.n-k])
 
