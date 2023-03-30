@@ -2,6 +2,6 @@ pathlib2
 argparse
 sortedcontainers
 unireedsolomon
-reedsolo
+reedsolo>=2.0.0
 tqdm
 distance
