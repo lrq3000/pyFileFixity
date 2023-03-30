@@ -190,7 +190,7 @@ class ECCMan(object):
             # Convert char to a int (because we use a bytearray)
             if isinstance(erasures_char, _str): erasures_char = ord(erasures_char)
             # Find the positions of the erased characters
-            erasures_pos = [i for i in _range(len(mesecc)) if mesecc[i] == erasures_char]
+            erasures_pos = bytearray([i for i in _range(len(mesecc)) if mesecc[i] == erasures_char])
             # Failing case: no erasures could be found and we want to only correct erasures, then we return the message as-is
             if only_erasures and not erasures_pos: return message, ecc
 
@@ -201,7 +201,7 @@ class ECCMan(object):
         # If the message was left padded, then we need to update the positions of the erasures
         if erasures_pos and pad:
             len_pad = len(pad)
-            erasures_pos = [x+len_pad for x in erasures_pos]
+            erasures_pos = bytearray([x+len_pad for x in erasures_pos])
 
         # Decoding
         if self.algo == 1:
