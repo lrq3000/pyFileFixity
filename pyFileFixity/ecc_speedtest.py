@@ -31,7 +31,7 @@ thispathname = os.path.dirname(__file__)
 sys.path.append(os.path.join(thispathname))
 
 # ECC and hashing facade libraries
-from lib._compat import _range
+from lib._compat import _range, _bytes
 from lib.aux_funcs import sizeof_fmt
 from lib.eccman import ECCMan, compute_ecc_params
 from lib.hasher import Hasher
@@ -70,7 +70,7 @@ def main(argv=None):
     msg_nb = 1000000
     tamper_rate = 0.4 # tamper rate is relative to the number of ecc bytes, not the whole message (not like the resilience_rate)
     tamper_mode = 'noise' # noise or erasure
-    no_decoding = True
+    no_decoding = False  # True for only encoding, False for both encoding then decoding, 3 for only decoding (which includes an encoding step)
     subchunking = False
     subchunk_size = 50
 
@@ -86,33 +86,37 @@ def main(argv=None):
     print("ECC Speed Test, started on %s" % datetime.datetime.now().isoformat())
     print("====================================")
     print("ECC algorithm: %i." % ecc_algo)
+    print("%s." % ("Only encoding test" if no_decoding is True else ("Encoding and decoding test" if no_decoding is False else "Decoding test only (including an encoding step)")))
 
     # -- Encoding test
     # IMPORTANT: we do NOT check the correctness of encoding, only the speed! It's up to you to verify that you are computing the ecc correctly.
-    total_time = 0
-    total_size = msg_nb*max_block_size
-    bardisp = tqdm.tqdm(total=total_size, leave=True, desc='ENC', unit='B', unit_scale=True, ncols=79, mininterval=0.5) # display progress bar based on the number of bytes encoded
-    k = ecc_params["message_size"]
-    # Generate a random string and encode it
-    for msg in gen_random_string(msg_nb, k):
-        start = time.process_time()  # time.clock() was dropped in Py3.8, use time.perf_counter() instead to time performance including sleep, or time.process_time() without sleep periods.
-        if subchunking:
-            for i in xrange(0, len(msg), subchunk_size):
-                ecc_manager_subchunk.encode(msg[i:i+subchunk_size])
-        else:
-            ecc_manager.encode(msg)
-        total_time += time.process_time() - start
-        bardisp.update(max_block_size)
-    bardisp.close()
-    print("Encoding: total time elapsed: %f sec for %s of data. Real Speed (only encoding, no other computation): %s." % (total_time, format_sizeof(total_size, 'B'), format_sizeof(total_size/total_time, 'B/sec') ))
-    
-    # -- Decoding test
-    if not no_decoding:
+    if not no_decoding == 3:
         total_time = 0
         total_size = msg_nb*max_block_size
-        bardisp = tqdm.tqdm(total=total_size, leave=True, desc='ENC', unit='B', unit_scale=True) # display progress bar based on the number of bytes encoded
+        bardisp = tqdm.tqdm(total=total_size, leave=True, desc='ENC', unit='B', unit_scale=True, ncols=79, mininterval=0.5) # display progress bar based on the number of bytes encoded
+        k = ecc_params["message_size"]
+        # Generate a random string and encode it
+        for msg in gen_random_string(msg_nb, k):
+            start = time.process_time()  # time.clock() was dropped in Py3.8, use time.perf_counter() instead to time performance including sleep, or time.process_time() without sleep periods.
+            if subchunking:
+                for i in xrange(0, len(msg), subchunk_size):
+                    ecc_manager_subchunk.encode(msg[i:i+subchunk_size])
+            else:
+                ecc_manager.encode(msg)
+            total_time += time.process_time() - start
+            bardisp.update(max_block_size)
+        bardisp.close()
+        print("Encoding: total time elapsed: %f sec for %s of data. Real Speed (only encoding, no other computation): %s." % (total_time, format_sizeof(total_size, 'B'), format_sizeof(total_size/total_time, 'B/sec') ))
+    
+    # -- Decoding test
+    if not no_decoding or no_decoding == 3:
+        total_time = 0
+        total_size = msg_nb*max_block_size
+        bardisp = tqdm.tqdm(total=total_size*2, leave=True, desc='DEC', unit='B', unit_scale=True) # display progress bar based on the number of bytes encoded
         # Generate a random string and encode it
         for msg in gen_random_string(msg_nb, ecc_params["message_size"]):
+            # Make it into a bytearray first
+            msg = bytearray(msg, 'utf-8')
             # Computing the ecc first
             ecc = ecc_manager.encode(msg)
 
@@ -128,8 +132,8 @@ def main(argv=None):
                 elif tamper_mode == 'e' or tamper_mode == 'erasure': # Erase the character (set a null byte)
                     msg_tampered[pos] = 0
             # Convert back to a string
-            msg_tampered = str(msg_tampered)
-            ecc = str(ecc)
+            msg_tampered = _bytes(msg_tampered)
+            ecc = _bytes(ecc)
 
             # Decode the tampered message with ecc
             start = time.process_time()
@@ -141,7 +145,7 @@ def main(argv=None):
                 print("Warning, there was an error while decoding. Please check your parameters (tamper_rate not too high) or the decoding procedure.")
                 pass
             total_time += time.process_time() - start
-            bardisp.update(max_block_size)
+            bardisp.update(max_block_size*2)  # update x2 because we encode AND decode
         bardisp.close()
         print("Decoding: total time elapsed: %f sec for %s of data. Real Speed (only decoding, no other computation): %s." % (total_time, format_sizeof(total_size, 'B'), format_sizeof(total_size/total_time, 'B/sec') ))
 
