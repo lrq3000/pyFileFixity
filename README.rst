@@ -5,9 +5,13 @@ pyFileFixity
 
 |Build-Status| |Coverage|
 
-This project aims to provide a set of open source, cross-platform, easy
+pyFileFixity provides a suite of open source, cross-platform, easy
 to use and easy to maintain (readable code) to protect and manage data
-for long term storage. The project is done in pure-Python to meet those criteria.
+for long term storage/archival, and also test the performance of any data protection algorithms.
+
+The project is done in pure-Python to meet those criteria,
+although cythonized extensions are available for core routines to speed up encoding/decoding,
+but always with a pure python specification available so as to allow long term replication.
 
 Here is an example of what pyFileFixity can do:
 
@@ -104,20 +108,20 @@ Note: this also works for a single file, just replace "your_folder" by "your_fil
 
 - DEPRECATED (because Gooey is not maintained anymore it seems): To use the GUI with any tool, use ``--gui`` and do not supply any other argument, eg: ``python rfigc.py --gui``.
 
-- You can also use `PyPy <http://pypy.org/>`_ to hugely speedup the processing time of any tool here.
+- You can also use `PyPy <http://pypy.org/>`_ or Cython to hugely speedup the processing time of any tool here.
 
 The problem of long term storage
 --------------------------------
 
-Why are data corrupted with time? Entropy, my friend, entropy.
+Why are data corrupted with time? One sole reason: entropy.
 Entropy refers to the universal tendency for systems to become
-less ordered over time. Corruption is exactly that: a disorder
+less ordered over time. Data corruption is exactly that: a disorder
 in bits order. In other words: *the Universe hates your data*.
 
 Long term storage is thus a very difficult topic: it's like fighting with
 death (in this case, the death of data). Indeed, because of entropy,
 data will eventually fade away because of various silent errors such as
-bit rot. pyFileFixity aims to provide tools to detect any data
+bit rot or cosmic rays. pyFileFixity aims to provide tools to detect any data
 corruption, but also fight data corruption by providing repairing tools.
 
 The only solution is to use a principle of engineering that is long
@@ -177,6 +181,15 @@ Also, the ecc file specification is made to be simple and resilient to
 corruption, so that you can process it by your own means if you want to,
 without having to study for hours how the code works (contrary to PAR2
 format).
+
+In practice, both approaches are not exclusive, and the best is to
+combine them: protect the most precious data with error correction codes,
+then duplicate them across multiple storage mediums. Hence, this suite of
+data protection tools, just like any other such suite, is not sufficient to
+guarantee your data is protected, you must have an active data curation strategy
+which includes regularly checking your data and replacing copies that are damaged.
+
+For a primer on storage mediums and data protection strategies, see `this post I wrote <https://web.archive.org/web/20220529125543/https://superuser.com/questions/374609/what-medium-should-be-used-for-long-term-high-volume-data-storage-archival/873260>`_.
 
 Why not just use RAID ?
 -----------------------
@@ -645,10 +658,20 @@ Cython implementation
 ---------------------
 
 This section describes how to use the Cython implementation. However,
-you should first try PyPy, as it did give 10x to 100x speedup over
-Cython in our case.
+you should first try PyPy, as it may give great performances too.
 
-THIS SECTION IS OLD AND DEPRECATED, because the Cython compilation is now
+Simply follow the instruction to install the `reedsolo <https://github.com/tomerfiliba/reedsolomon/releases/tag/v2.0.5>`_ module with
+the cythonized module:
+
+.. code:: sh
+    
+    pip install --upgrade reedsolo --install-option="--cythonize" --verbose
+
+Then make sure to use ``ecc_algo=3`` in all your ``eccman`` calls, and you
+are then good to go, the cythonized module ``creedsolo`` will always be used
+for both encoding and decoding transparently.
+
+THE REST OF THIS SECTION IS OLD AND DEPRECATED, because the Cython compilation is now
 done directly in the Reed-Solomon submodules, instead of here, so you
 should not need to worry about it, just pip install with the requirements.txt
 and you should be set. The information below is left for historical purposes:
