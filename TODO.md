@@ -6,7 +6,7 @@ TODO
 
 000000. Implement a fast algorithm for large data encoding (and decoding), see [https://github.com/catid/leopard leopard-RS] for a FFT approach or [https://github.com/Bulat-Ziganshin/FastECC FastECC] for a NTT approach.
 
-00000. Finish the py3 port.
+00000. Add entry points for cli usage, rename tools for easier access, ensure pipx can easily install it (with cythonized extension!)
 
 0000. Implement robust mode, to skip folders/files that are inaccessible for the current user, eg, System Volume Information on Windows OSes.
 
