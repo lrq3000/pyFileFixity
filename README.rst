@@ -7,7 +7,7 @@ pyFileFixity
 
 pyFileFixity provides a suite of open source, cross-platform, easy
 to use and easy to maintain (readable code) to protect and manage data
-for long term storage/archival, and also test the performance of any data protection algorithms.
+for long term storage/archival, and also test the performance of any data protection algorithm.
 
 The project is done in pure-Python to meet those criteria,
 although cythonized extensions are available for core routines to speed up encoding/decoding,
