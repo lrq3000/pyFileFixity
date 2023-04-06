@@ -1,0 +1,219 @@
+# SPDX-License-Identifier: Unlicense OR MIT-0
+# Inspired by: https://hynek.me/articles/python-recursive-optional-dependencies/
+# We here use a single-module distribution style https://setuptools.pypa.io/en/latest/userguide/package_discovery.html#single-module-distribution
+
+[build-system]
+# never uppercap requirements unless we have evidence it won't work https://iscinumpy.dev/post/bound-version-constraints/ 
+# cython cannot be placed in optional-dependencies, Cython won't be able to do its magic to make it importable in setup.py
+requires = ["setuptools>59"]
+build-backend = "setuptools.build_meta"
+
+[project]  # beware if using setuptools: setup.py still gets executed, and even if pyproject.toml fields take precedence, if there is any code error in setup.py, building will fail!
+name = "pyFileFixity"
+version = "dynamic"  # see PEP 440 https://peps.python.org/pep-0440/#pre-releases
+description = "Helping file fixity (long term storage of data) via redundant error correcting codes and hash auditing."
+authors = [
+    {name = "Stephen Karl Larroque", email = "lrq3000@gmail.com"},
+    ]
+maintainers = [
+    {name = "Stephen Karl Larroque", email = "lrq3000@gmail.com"},
+    ]
+requires-python = ">=3.7"
+license = "MIT License" # { file = "LICENSE" }
+keywords = ["file", "repair", "monitor", "change", "reed-solomon", "error", "correction", "error-correction", "parity", "parity-files", "parity-bytes", "data-protection", "data-recovery"]
+classifiers = [
+    'Development Status :: 4 - Beta',
+    'License :: OSI Approved :: MIT License',
+    'Environment :: Console',
+    'Operating System :: Microsoft :: Windows',
+    'Operating System :: MacOS :: MacOS X',
+    'Operating System :: POSIX :: Linux',
+    'Programming Language :: Python',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.7',
+    'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
+    'Programming Language :: Python :: 3.12',
+    'Programming Language :: Python :: Implementation :: PyPy',
+    'Topic :: Software Development :: Libraries',
+    'Topic :: Software Development :: Libraries :: Python Modules',
+    'Topic :: System :: Archiving',
+    'Topic :: System :: Archiving :: Backup',
+    'Topic :: System :: Monitoring',
+    'Topic :: System :: Recovery Tools',
+    'Topic :: Utilities',
+    'Intended Audience :: Developers',
+    'Intended Audience :: End Users/Desktop',
+    'Intended Audience :: Information Technology',
+    'Intended Audience :: System Administrators',
+]
+dependencies = [
+    #"typing-extensions; python_version<'3.8'",
+    #"importlib_metadata;python_version<'3.8'",
+    "pathlib2",
+    "argparse",
+    "sortedcontainers",
+    "tqdm",
+    "distance",
+]
+
+[project.urls]
+Homepage = "https://github.com/lrq3000/pyFileFixity"
+Documentation = "https://github.com/lrq3000/pyFileFixity/blob/master/README.rst"
+"Source" = "https://github.com/tomerfiliba/reedsolomon"
+Tracker = "https://github.com/tomerfiliba/reedsolomon/issues"
+Download = "https://github.com/tomerfiliba/reedsolomon/releases"
+"Conda-Forge" = "https://anaconda.org/conda-forge/reedsolo"
+#Changelog = "https://url/changelog"
+
+[project.optional-dependencies]
+# tests_require was deprecated in setup.py by setuptools, because anyway downstream the user wants to test in their own environment, not an isolated env, so the only practical replacement is to have test requirements defined as an extras/optional-dependency [test] so that they can be installed in the user's environment if they want to: https://discuss.python.org/t/providing-a-way-to-specify-how-to-run-tests-and-docs/15016
+py2 = [
+    "reedsolo==1.7.0",
+    "unireedsolomon"
+]
+py3 = [
+    "reedsolo>=2.1.0b1",
+    "unireedsolomon"
+]
+test = [  # minimum dependencies to run tests
+    "pytest",
+    "pytest-cov",
+    "coveralls"
+]
+testmeta = [  # dependencies to test meta-data. Note that some of these dependencies make cibuildwheel choke on cryptography
+    "build",
+    "twine",
+    "validate-pyproject",
+    "rstcheck",
+]
+
+[project.readme]
+# Do NOT use .. code:: python for interactive code session, otherwise syntax error due to prompt handle >>>, see https://svn.python.org/projects/external/Sphinx-1.2/doc/markup/code.rst and https://thomas-cokelaer.info/tutorials/sphinx/rest_syntax.html#python-docstrings
+# also use rstcheck
+file = "README.rst"
+content-type = "text/x-rst"
+
+#[tool.setuptools]
+#package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+# IMPORTANT: systematically delete `src/<project.name>.egg-info` folder before rebuilding, otherwise the list of included files will not get updated (it's in `SOURCES.txt` file in this folder)
+where = [""]
+include = ["pyFileFixity"]
+#exclude = ["test*"]
+#namespaces = false
+
+[tool.setuptools.package-data]
+"*" = [
+    "*.rst",
+    "LICENSE*",
+    "README*",
+    "*.pyx",  # include the cython implementation sourcecode in the wheel, so that the user can cythonize later, this is necessary, it's not included by default even with extensions in setup.py
+    "*.c",  # include the cythonized intermediary .c file for source distributions such as Gentoo, so that they do not need to install Cython v3 - no need since we use src-layout, it's automatically included
+    #"tests",  # to help linux distros package builders, they may want to run the unit test to check their package is working OK - no need, tests folder is packaged by default in sdist nowadays
+    "*ecc_specification.txt",
+    "*resiliency_tester_config.txt",
+]
+
+#[tool.setuptools.exclude-package-data]
+#"*" = [
+#    "docs/_build",
+#    "tests/__pycache__",
+#    "tests/.mypy_cache",
+#]
+
+[tool.pytest.ini_options]
+addopts = [
+    "--import-mode=importlib",
+    "-ra",
+    "--strict-markers",
+]
+xfail_strict = true
+testpaths = "pyFileFixity/tests"  # default path to look for tests if nothing is specified in commandline
+filterwarnings = [
+    "once::Warning",
+]
+required_plugins = "pytest-cov"
+
+[tool.coverage.run]
+branch = true
+relative_files = true
+include = [
+    "*.py",
+    ]
+
+[tool.coverage.paths]
+source = ["pyFileFixity"]
+
+[tool.coverage.report]  # Beware: you need to delete .coveragerc if you have one, otherwise .coveragerc will take precedence!
+show_missing = true
+include = [
+    "*.py",
+]
+omit = [
+    "*/python?.?/*",
+    "*/site-packages/nose/*",
+    "*/opt/python/pypy*",
+    "*/tests/*",
+]
+exclude_lines = [
+    # a more strict default pragma
+    "\\# pragma: no cover\\b",
+
+    # allow defensive code
+    "^\\s*raise AssertionError\\b",
+    "^\\s*raise NotImplementedError\\b",
+    "^\\s*return NotImplemented\\b",
+    "^\\s*raise$",
+
+    # typing-related code
+    "^if (False|TYPE_CHECKING):",
+    ": \\.\\.\\.(\\s*#.*)?$",
+    "^ +\\.\\.\\.$",
+    "-> ['\"]?NoReturn['\"]?:",
+]
+
+[tool.cibuildwheel]
+#build = "*"
+#skip = ""
+#test-skip = ""
+
+archs = ["auto"]
+#build-frontend = "pip"
+#dependency-versions = "pinned"
+#environment = {""}
+#environment-pass = []
+build-verbosity = "1"
+
+#before-all = ""
+#before-build = ""
+#repair-wheel-command = ""
+
+test-command = "pytest {package}/tests"
+#before-test = ""
+#test-requires = []
+test-extras = ["test"]  # reuse the [test] extras optional dependencies to install test dependencies, instead of redefining in test-requires
+
+#[tool.cibuildwheel.config-settings]
+#--build-option = "--cythonize"
+
+# NOTE: you have to use single-quoted strings in TOML for regular expressions.
+# It's the equivalent of r-strings in Python.  Multiline strings are treated as
+# verbose regular expressions by Black.  Use [ ] to denote a significant space
+# character.
+
+# While black is awesome, it does not support cython, so we avoid for the moment
+# to keep a similar formatting between the pure python and the cython implementations.
+# see: https://github.com/psf/black/issues/359
+
+#[tool.black]
+#line-length = 88
+#target-version = ['py39', 'py310', 'py311']
+#include = '\.pyi?$'
+# We use preview style for formatting Black itself. If you
+# want stable formatting across releases, you should keep
+# this off.
+#preview = false
