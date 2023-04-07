@@ -63,6 +63,10 @@ installdev:
 	# Should work for both Py2 and Py3, --editable option and isolation builds work with both pyproject.toml and setup.cfg
 	@+python -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple --upgrade --editable .[test,testmeta] --verbose --use-pep517
 
+installdevpy2:
+	@+make prebuildclean
+	@+python -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple --upgrade --editable .[test] --verbose --use-pep517
+
 install:
 	@+make prebuildclean
 	@+python -m pip install --upgrade . --verbose --use-pep517
