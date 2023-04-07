@@ -30,10 +30,17 @@ from ._compat import _str, _range, b, _bytes
 from distance import hamming
 
 # ECC libraries
-try: # Try to automatically load Cython implementations if compiled
+try: # Try to automatically load speed-optimized Cython implementations if compiled
+    # If Python 3, we can't just import __pypy__ to check if there is an ImportError, because it raises a ModuleNotFoundError on Travis CI that is never caught, dunno why
+    # So we test manually without raising any exception
+    import platform, os
+    inpypy = platform.python_implementation().lower().startswith("pypy")
+    if inpypy:  # we are under PyPy, don't use the Cython extensions, it won't play well
+        raise ImportError()
+
     from unireedsolomon import rs as brownanrs
+    #from .brownanrs import crs as brownanrs  # cythonized extension performances are worse than pure python under pypy, so it's removed. But with Cython v3, which supports cythonized methods, it may now be a more worthy endeavor!
     import creedsolo as reedsolo
-    #from .brownanrs import crs as brownanrs
 except ImportError:
     from unireedsolomon import rs as brownanrs # Pure python implementation of Reed-Solomon with configurable max_block_size and automatic error detection (you don't have to specify where they are). This is a base 3 implementation that is formally correct and with unit tests.
     import reedsolo # Faster pure python implementation of Reed-Solomon, with a base 3 compatible encoder (but not yet decoder! But you can use brownanrs to decode).
