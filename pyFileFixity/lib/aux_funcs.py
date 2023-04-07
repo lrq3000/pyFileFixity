@@ -4,6 +4,7 @@
 # Copyright (C) 2015 Larroque Stephen
 #
 
+import codecs
 import os
 import posixpath # to generate unix paths
 import shutil
@@ -186,6 +187,34 @@ def copy_any(src, dst, only_missing=False):  # pragma: no cover
             shutil.copystat(src, dst)
             return True
     return False
+
+def simple_read(rel_path, root_path=None):
+    # Helper function to ease reading a single-sourced __version__ attribute from a mypackage.__init__ file
+    # It accesses the specified relative path, relative to the calling script (so that it workes relative to the current package if installed in site-scripts)
+    # From: https://packaging.python.org/en/latest/guides/single-sourcing-package-version/#single-sourcing-the-package-version
+    # See also: https://stackoverflow.com/a/75962009/1121352
+    if root_path is not None:
+        here = root_path
+    else:
+        try:
+            here = os.path.abspath(os.path.dirname(__file__))
+        except UnboundLocalError as exc:
+            __file__ = os.path.join(os.getcwd(), 'dummyfile.ext')  # get current working directory if using this function under an interactive prompt
+            here = os.path.abspath(os.path.dirname(__file__))
+    with codecs.open(os.path.join(here, rel_path), 'r') as fp:
+        return fp.read()
+
+def get_version(rel_path, root_path=None):
+    # Helper function to ease reading a single-sourced __version__ attribute from a mypackage.__init__ file
+    # Read instead of importing, so that there is no risk of infinite imports loop
+    # From: https://packaging.python.org/en/latest/guides/single-sourcing-package-version/#single-sourcing-the-package-version
+    # See also: https://stackoverflow.com/a/75962009/1121352
+    for line in simple_read(rel_path, root_path).splitlines():
+        if line.startswith('__version__'):
+            delim = '"' if '"' in line else "'"
+            return line.split(delim)[1]
+    else:
+        raise RuntimeError("Unable to find version string.")
 
 #### MULTIFILES AUX FUNCTIONS ####
 # Here are the aux functions to cluster files of similar sizes in order to generate multifiles ecc tracks in header_ecc.py and structural_variable_ecc.py

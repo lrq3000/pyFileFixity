@@ -409,7 +409,7 @@ Also note that the test folder will not be removed at the end, so that you can s
         widget_multidir = {"widget": "MultiDirChooser"}
     else: # Else in command-line usage, use the standard argparse
         # Delete the special argument to avoid unrecognized argument error in argparse
-        if '--ignore-gooey' in argv[0]: argv.remove('--ignore-gooey') # this argument is automatically fed by Gooey when the user clicks on Start
+        if '--ignore-gooey' in argv: argv.remove('--ignore-gooey') # this argument is automatically fed by Gooey when the user clicks on Start
         # Initialize the normal argparse parser
         main_parser = argparse.ArgumentParser(add_help=True, description=desc, epilog=ep, formatter_class=argparse.RawTextHelpFormatter)
         # Define dummy dict to keep compatibile with command-line usage

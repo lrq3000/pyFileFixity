@@ -54,22 +54,14 @@
 # - Also backup folders meta-data? (to reconstruct the tree in case a folder is truncated by bit rot)
 #
 
-from __future__ import with_statement
-
-# Get PyFileFixity package version, necessary to input in the ECC the version of pyFileFixity we used, it will be stored in the ecc files, this can be helpful to disambiguate in the future which version of the software to use for optimal recovery
-import os, json
-with open(os.path.join(os.path.dirname(__file__), '_infos.json'), 'r') as f:
-    _infos = json.load(f)
-__version__ = _infos['version']
-
 # Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
-import sys
+import os, sys
 thispathname = os.path.dirname(__file__)
 sys.path.append(os.path.join(thispathname))
 
 # Import necessary libraries
 from lib._compat import _str, _range, b, _izip
-from lib.aux_funcs import get_next_entry, is_dir, is_dir_or_file, fullpath, recwalk, sizeof_fmt, path2unix
+from lib.aux_funcs import get_next_entry, is_dir, is_dir_or_file, fullpath, recwalk, sizeof_fmt, path2unix, get_version
 import argparse
 import datetime, time
 import tqdm
@@ -87,6 +79,9 @@ from lib.eccman import ECCMan, compute_ecc_params
 from lib.hasher import Hasher
 from reedsolo import ReedSolomonError
 from unireedsolomon import RSCodecError
+
+# Get package version, necessary to input in the ECC the version of pyFileFixity we used, it will be stored in the ecc files,, this can be helpful to disambiguate in the future which version of the software to use for optimal recovery
+__version__ = get_version("__init__.py", thispathname)  # aux function will return root_path as path to lib/ subfolder, so we need to provide our own path here
 
 
 
@@ -295,7 +290,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
         widget_text = {"widget": "TextField"}
     else: # Else in command-line usage, use the standard argparse
         # Delete the special argument to avoid unrecognized argument error in argparse
-        if '--ignore-gooey' in argv[0]: argv.remove('--ignore-gooey') # this argument is automatically fed by Gooey when the user clicks on Start
+        if '--ignore-gooey' in argv: argv.remove('--ignore-gooey') # this argument is automatically fed by Gooey when the user clicks on Start
         # Initialize the normal argparse parser
         main_parser = argparse.ArgumentParser(add_help=True, description=desc, epilog=ep, formatter_class=argparse.RawTextHelpFormatter)
         # Define dummy dict to keep compatibile with command-line usage
