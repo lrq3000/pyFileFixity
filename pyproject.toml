@@ -22,7 +22,7 @@ requires-python = ">=3.7"
 license = {text = "MIT License"} # { file = "LICENSE" }
 keywords = ["file", "repair", "monitor", "change", "reed-solomon", "error", "correction", "error correction", "parity", "parity files", "parity bytes", "data protection", "data recovery", "file protection", "qr codes", "qr code"]
 classifiers = [
-    'Development Status :: 5 - Stable',
+    'Development Status :: 5 - Production/Stable',
     'License :: OSI Approved :: MIT License',
     'Environment :: Console',
     'Operating System :: Microsoft :: Windows',

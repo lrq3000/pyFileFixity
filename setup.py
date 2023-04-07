@@ -1,0 +1,6 @@
+# For Py2: Necessary for setup.py to exist even if empty, so that setuptools finds setup.cfg
+# per setuptools documentation: "If compatibility with legacy builds (i.e. those not using the PEP 517 build API) is desired, a setup.py file containing a setup() function call is still required even if your configuration resides in setup.cfg." https://setuptools.pypa.io/en/latest/userguide/declarative_config.html
+
+from setuptools import setup
+
+setup()
