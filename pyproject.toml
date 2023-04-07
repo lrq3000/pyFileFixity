@@ -29,6 +29,7 @@ classifiers = [
     'Operating System :: MacOS :: MacOS X',
     'Operating System :: POSIX :: Linux',
     'Programming Language :: Python',
+    'Programming Language :: Python :: 2.7',
     'Programming Language :: Python :: 3',
     'Programming Language :: Python :: 3.7',
     'Programming Language :: Python :: 3.8',
@@ -101,10 +102,11 @@ content-type = "text/x-rst"
 where = [""]
 include = ["pyFileFixity"]
 #exclude = ["test*"]
-#namespaces = false
+#namespaces = true
 
 [tool.setuptools.package-data]
 # Check the <mypkg>.egg-info/SOURCES.txt file generated after a `build` or `pip install` to check if the following files are correctly included in the sdist.
+# Check also the list of files included by default: https://packaging.python.org/en/latest/guides/using-manifest-in/
 "*" = [
     "*.rst",
     "LICENSE*",
@@ -112,16 +114,17 @@ include = ["pyFileFixity"]
     "*.pyx",  # include the cython implementation sourcecode in the wheel, so that the user can cythonize later, this is necessary, it's not included by default even with extensions in setup.py
     "*.c",  # include the cythonized intermediary .c file for source distributions such as Gentoo, so that they do not need to install Cython v3 - no need since we use src-layout, it's automatically included
     #"tests",  # to help linux distros package builders, they may want to run the unit test to check their package is working OK - no need, tests folder is packaged by default in sdist nowadays
-    #"*tests/files/*"  # this does NOT work, more than one level of folder is not supported this way, need to put in a separate line to define a package path, eg, "mypkg.tests" = ["files/*"].
+    #"*tests/files/*",  # this does NOT work, more than one level of folder is not supported this way, need to put in a separate line to define a package path, eg, "mypkg.tests" = ["files/*"].
+    #"*lib/*",
 ]
 "pyFileFixity" = [
     "ecc_specification.txt",
     "resiliency_tester_config.txt",
 ]
-"pyFileFixity.tests" = [
-    "files/*",  # attach necessary files to run tests
-    "results/*",  # attach necessary py-make config and resulting database files to run and compare tests results
-]
+#"pyFileFixity.tests" = [  # does NOt work, need MANIFEST.in, see: https://github.com/pypa/setuptools/issues/3341
+#    "files/*",  # attach necessary files to run tests
+#    "results/*",  # attach necessary py-make config and resulting database files to run and compare tests results
+#]
 
 #[tool.setuptools.exclude-package-data]
 #"*" = [
