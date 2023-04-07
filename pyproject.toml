@@ -5,12 +5,12 @@
 [build-system]
 # never uppercap requirements unless we have evidence it won't work https://iscinumpy.dev/post/bound-version-constraints/ 
 # cython cannot be placed in optional-dependencies, Cython won't be able to do its magic to make it importable in setup.py
-requires = ["setuptools>59"]
+requires = ["setuptools>=61"]  # setuptools>=61 is necessary to support dynamic version: https://packaging.python.org/en/latest/guides/single-sourcing-package-version/
 build-backend = "setuptools.build_meta"
 
 [project]  # beware if using setuptools: setup.py still gets executed, and even if pyproject.toml fields take precedence, if there is any code error in setup.py, building will fail!
 name = "pyFileFixity"
-version = "dynamic"  # see PEP 440 https://peps.python.org/pep-0440/#pre-releases
+dynamic = ["version"]  # see PEP 440 https://peps.python.org/pep-0440/#pre-releases and https://packaging.python.org/en/latest/guides/single-sourcing-package-version/
 description = "Helping file fixity (long term storage of data) via redundant error correcting codes and hash auditing."
 authors = [
     {name = "Stephen Karl Larroque", email = "lrq3000@gmail.com"},
@@ -20,9 +20,9 @@ maintainers = [
     ]
 requires-python = ">=3.7"
 license = "MIT License" # { file = "LICENSE" }
-keywords = ["file", "repair", "monitor", "change", "reed-solomon", "error", "correction", "error-correction", "parity", "parity-files", "parity-bytes", "data-protection", "data-recovery"]
+keywords = ["file", "repair", "monitor", "change", "reed-solomon", "error", "correction", "error correction", "parity", "parity files", "parity bytes", "data protection", "data recovery", "file protection", "qr codes", "qr code"]
 classifiers = [
-    'Development Status :: 4 - Beta',
+    'Development Status :: 5 - Stable',
     'License :: OSI Approved :: MIT License',
     'Environment :: Console',
     'Operating System :: Microsoft :: Windows',
@@ -57,31 +57,28 @@ dependencies = [
     "sortedcontainers",
     "tqdm",
     "distance",
+    "reedsolo>=2.1.0b1",  # for Py3 (Py2 will use setup.cfg)
+    "unireedsolomon",  # for Py3 (Py2 will use setup.cfg)
 ]
+
+[tool.setuptools.dynamic]
+version = {attr = "pyFileFixity.__version__"}  # see: https://packaging.python.org/en/latest/guides/single-sourcing-package-version/
 
 [project.urls]
 Homepage = "https://github.com/lrq3000/pyFileFixity"
 Documentation = "https://github.com/lrq3000/pyFileFixity/blob/master/README.rst"
-"Source" = "https://github.com/tomerfiliba/reedsolomon"
-Tracker = "https://github.com/tomerfiliba/reedsolomon/issues"
-Download = "https://github.com/tomerfiliba/reedsolomon/releases"
-"Conda-Forge" = "https://anaconda.org/conda-forge/reedsolo"
+"Source" = "https://github.com/lrq3000/pyFileFixity"
+Tracker = "https://github.com/lrq3000/pyFileFixity/issues"
+Download = "https://github.com/lrq3000/pyFileFixity/releases"
 #Changelog = "https://url/changelog"
 
 [project.optional-dependencies]
 # tests_require was deprecated in setup.py by setuptools, because anyway downstream the user wants to test in their own environment, not an isolated env, so the only practical replacement is to have test requirements defined as an extras/optional-dependency [test] so that they can be installed in the user's environment if they want to: https://discuss.python.org/t/providing-a-way-to-specify-how-to-run-tests-and-docs/15016
-py2 = [
-    "reedsolo==1.7.0",
-    "unireedsolomon"
-]
-py3 = [
-    "reedsolo>=2.1.0b1",
-    "unireedsolomon"
-]
 test = [  # minimum dependencies to run tests
     "pytest",
     "pytest-cov",
-    "coveralls"
+    "coveralls",
+    "py-make",  # necessary to run the config files in tests/results/*.cfg
 ]
 testmeta = [  # dependencies to test meta-data. Note that some of these dependencies make cibuildwheel choke on cryptography
     "build",
@@ -116,6 +113,8 @@ include = ["pyFileFixity"]
     #"tests",  # to help linux distros package builders, they may want to run the unit test to check their package is working OK - no need, tests folder is packaged by default in sdist nowadays
     "*ecc_specification.txt",
     "*resiliency_tester_config.txt",
+    "*tests/files/*"  # attach necessary files to run tests
+    "*tests/results/*"  # attach necessary py-make config and resulting database files to run and compare tests results
 ]
 
 #[tool.setuptools.exclude-package-data]
