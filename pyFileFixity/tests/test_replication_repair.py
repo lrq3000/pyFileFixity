@@ -283,7 +283,8 @@ def test_synchronize_files():
     assert errcode == 1
     with open(report_file, 'rb') as rfile:
         rout = rfile.read()
-    ptee.seek(0)
-    errmsg = ptee.read()
-    assert len(errmsg) > 0
+    #ptee.seek(0)  # TODO: check if this is not dead code, because I can't see why we are redoing the test after rep.main() which is not provided with ptee anyway so ptee content did not change
+    #errmsg = ptee.read()
+    #assert len(errmsg) > 0
     assert res3 in rout
+    ptee.close()  # close to avoid tracemalloc complaining

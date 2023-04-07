@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 # Replication repair
-# Copyright (C) 2015 Larroque Stephen
+# Copyright (C) 2015-2023 Larroque Stephen
 #
 # Licensed under the MIT License (MIT)
 #
@@ -121,6 +121,10 @@ def majority_vote_byte_scan(relfilepath, fileslist, outpath, blocksize=65535, de
     # But it is a very well known concept in redundancy engineering, usually called triple-modular redundancy (which is here extended to n-modular since we can supply any number of files we want, not just three).
     # Preference in case of ambiguity is always given to the file of the first folder.
 
+    # Store the return code and return message in a variable, so that we can continue executing code to clean up and close open file handles, otherwise we will have a leak!
+    rtncodemesg = None
+
+    # Open all files and store file handles in a list
     fileshandles = []
     for filepath in fileslist:
         if filepath:
@@ -152,80 +156,84 @@ def majority_vote_byte_scan(relfilepath, fileslist, outpath, blocksize=65535, de
                 buf = fileshandles[0].read()
                 outfile.write(buf)
                 outfile.flush()
-        return (1, "Error with file %s: only %i copies available, cannot vote (need at least 3)! Copied the first file from the first folder, verbatim." % (relfilepath, len(fileshandles)))
+        rtncodemesg = (1, "Error with file %s: only %i copies available, cannot vote (need at least 3)! Copied the first file from the first folder, verbatim." % (relfilepath, len(fileshandles)))
 
-    errors = []
-    entries = [1]*len(fileshandles)  # init with 0 to start the while loop
-    while (entries.count(b('')) < len(fileshandles)):
-        final_entry = []
-        # Read a block from all input files into memory
-        for i in _range(len(fileshandles)):
-            entries[i] = fileshandles[i].read(blocksize)
+    if rtncodemesg is None:  # skip if error
+        # Main majority vote routine
+        errors = []
+        entries = [1]*len(fileshandles)  # init with 0 to start the while loop
+        while (entries.count(b('')) < len(fileshandles)):
+            final_entry = []
+            # Read a block from all input files into memory
+            for i in _range(len(fileshandles)):
+                entries[i] = fileshandles[i].read(blocksize)
 
-        # End of file for all files, we exit
-        if entries.count(b('')) == len(fileshandles):
-            break
-        # Else if there's only one file, just copy the file's content over
-        elif entries.count(b('')) == (len(fileshandles) - 1):
-            final_entry = entries[0]
+            # End of file for all files, we exit
+            if entries.count(b('')) == len(fileshandles):
+                break
+            # Else if there's only one file, just copy the file's content over
+            elif entries.count(b('')) == (len(fileshandles) - 1):
+                final_entry = entries[0]
 
-        # Else, do the majority vote
-        else:
-            # Walk along each column (imagine the strings being rows in a matrix, then we pick one column at each iteration = all characters at position i of each string), so that we can compare these characters easily
-            for i in _range(max(len(entry) for entry in entries)):
-                hist = {} # kind of histogram, we just memorize how many times a character is presented at the position i in each string TODO: use collections.Counter instead of dict()?
-                # Extract the character at position i of each string and compute the histogram at the same time (number of time this character appear among all strings at this position i)
-                for entry in entries:
-                    # Check if we are not beyond the current entry's length
-                    if i < len(entry): # TODO: check this line, this should allow the vote to continue even if some files are shorter than others
-                        # Extract the character and use it to contribute to the histogram
-                        # TODO: add warning message when one file is not of the same size as the others
-                        key = str(_ord(entry[i])) # convert to the ascii value to avoid any funky problem with encoding in dict keys
-                        hist[key] = hist.get(key, 0) + 1 # increment histogram for this value. If it does not exists, use 0. (essentially equivalent to hist[key] += 1 but with exception management if key did not already exists)
-                # If there's only one character (it's the same accross all strings at position i), then it's an exact match, we just save the character and we can skip to the next iteration
-                if len(hist) == 1:
-                    final_entry.append(int(list(hist.keys())[0]))
-                    continue
-                # Else, the character is different among different entries, we will pick the major one (mode)
-                elif len(hist) > 1:
-                    # Sort the dict by value (and reverse because we want the most frequent first)
-                    skeys = sorted(hist, key=hist.get, reverse=True)
-                    # Ambiguity! If each entries present a different character (thus the major has only an occurrence of 1), then it's too ambiguous and we just set a null byte to signal that
-                    if hist[skeys[0]] == 1:
-                        if default_char_null:
-                            if default_char_null is True:
-                                final_entry.append(0)
+            # Else, do the majority vote
+            else:
+                # Walk along each column (imagine the strings being rows in a matrix, then we pick one column at each iteration = all characters at position i of each string), so that we can compare these characters easily
+                for i in _range(max(len(entry) for entry in entries)):
+                    hist = {} # kind of histogram, we just memorize how many times a character is presented at the position i in each string TODO: use collections.Counter instead of dict()?
+                    # Extract the character at position i of each string and compute the histogram at the same time (number of time this character appear among all strings at this position i)
+                    for entry in entries:
+                        # Check if we are not beyond the current entry's length
+                        if i < len(entry): # TODO: check this line, this should allow the vote to continue even if some files are shorter than others
+                            # Extract the character and use it to contribute to the histogram
+                            # TODO: add warning message when one file is not of the same size as the others
+                            key = str(_ord(entry[i])) # convert to the ascii value to avoid any funky problem with encoding in dict keys
+                            hist[key] = hist.get(key, 0) + 1 # increment histogram for this value. If it does not exists, use 0. (essentially equivalent to hist[key] += 1 but with exception management if key did not already exists)
+                    # If there's only one character (it's the same accross all strings at position i), then it's an exact match, we just save the character and we can skip to the next iteration
+                    if len(hist) == 1:
+                        final_entry.append(int(list(hist.keys())[0]))
+                        continue
+                    # Else, the character is different among different entries, we will pick the major one (mode)
+                    elif len(hist) > 1:
+                        # Sort the dict by value (and reverse because we want the most frequent first)
+                        skeys = sorted(hist, key=hist.get, reverse=True)
+                        # Ambiguity! If each entries present a different character (thus the major has only an occurrence of 1), then it's too ambiguous and we just set a null byte to signal that
+                        if hist[skeys[0]] == 1:
+                            if default_char_null:
+                                if default_char_null is True:
+                                    final_entry.append(0)
+                                else:
+                                    final_entry.append(_ord(default_char_null))
                             else:
-                                final_entry.append(_ord(default_char_null))
+                                # Use the entry of the first file that is still open
+                                first_char = ''
+                                for entry in entries:
+                                    # Found the first file that has a character at this position: store it and break loop
+                                    if i < len(entry):
+                                        first_char = entry[i]
+                                        break
+                                # Use this character in spite of ambiguity
+                                final_entry.append(_ord(first_char))
+                            errors.append(outfile.tell() + i) # Print an error indicating the characters that failed
+                        # Else if there is a tie (at least two characters appear with the same frequency), then we just pick one of them
+                        elif hist[skeys[0]] == hist[skeys[1]]:
+                            final_entry.append(int(skeys[0])) # TODO: find a way to account for both characters. Maybe return two different strings that will both have to be tested? (eg: maybe one has a tampered hash, both will be tested and if one correction pass the hash then it's ok we found the correct one)
+                        # Else we have a clear major character that appear in more entries than any other character, then we keep this one
                         else:
-                            # Use the entry of the first file that is still open
-                            first_char = ''
-                            for entry in entries:
-                                # Found the first file that has a character at this position: store it and break loop
-                                if i < len(entry):
-                                    first_char = entry[i]
-                                    break
-                            # Use this character in spite of ambiguity
-                            final_entry.append(_ord(first_char))
-                        errors.append(outfile.tell() + i) # Print an error indicating the characters that failed
-                    # Else if there is a tie (at least two characters appear with the same frequency), then we just pick one of them
-                    elif hist[skeys[0]] == hist[skeys[1]]:
-                        final_entry.append(int(skeys[0])) # TODO: find a way to account for both characters. Maybe return two different strings that will both have to be tested? (eg: maybe one has a tampered hash, both will be tested and if one correction pass the hash then it's ok we found the correct one)
-                    # Else we have a clear major character that appear in more entries than any other character, then we keep this one
-                    else:
-                        final_entry.append(int(skeys[0])) # alternative one-liner: max(hist.iteritems(), key=operator.itemgetter(1))[0]
-                    continue
-            # Concatenate to a string (this is faster than using a string from the start and concatenating at each iteration because Python strings are immutable so Python has to copy over the whole string, it's in O(n^2)
-            final_entry = ''.join([chr(x) for x in final_entry])
+                            final_entry.append(int(skeys[0])) # alternative one-liner: max(hist.iteritems(), key=operator.itemgetter(1))[0]
+                        continue
+                # Concatenate to a string (this is faster than using a string from the start and concatenating at each iteration because Python strings are immutable so Python has to copy over the whole string, it's in O(n^2)
+                final_entry = ''.join([chr(x) for x in final_entry])
 
-        # Commit to output file
-        outfile.write(b(final_entry))
-        outfile.flush()
+            # Commit to output file
+            outfile.write(b(final_entry))
+            outfile.flush()
 
-    # Errors signaling
-    if errors:
-        error_msg = "Unrecoverable corruptions (because of ambiguity) in file %s on characters: %s." % (relfilepath, [hex(int(x)) for x in errors]) # Signal to user that this file has unrecoverable corruptions (he may try to fix the bits manually or with his own script)
-        return (1, error_msg) # return an error
+        # Errors signaling
+        if errors:
+            error_msg = "Unrecoverable corruptions (because of ambiguity) in file %s on characters: %s." % (relfilepath, [hex(int(x)) for x in errors]) # Signal to user that this file has unrecoverable corruptions (he may try to fix the bits manually or with his own script)
+            rtncodemesg = (1, error_msg) # return an error
+
+    # CLEAN UP! Avoid tracemalloc warnings!
     # Close all input files
     for fh in fileshandles:
         fh.close()
@@ -233,7 +241,15 @@ def majority_vote_byte_scan(relfilepath, fileslist, outpath, blocksize=65535, de
     if outfile != outpath:  # close only if we were not given a file handle in the first place
         outfile.flush()
         outfile.close()
-    return (0, None)
+
+    # Return!
+    # We choose to return a tuple, so that the calling function can know not only that there was an error, but what kind of error more precisely.
+    if rtncodemesg is None:
+        # No error? We return a no error tuple then!
+        return (0, None)
+    else:
+        # Else we return the error code and error message tuple we have
+        return rtncodemesg
 
 def synchronize_files(inputpaths, outpath, database=None, tqdm_bar=None, report_file=None, ptee=None, verbose=False):
     ''' Main function to synchronize files contents by majority vote
@@ -265,7 +281,7 @@ def synchronize_files(inputpaths, outpath, database=None, tqdm_bar=None, report_
     nbpaths = len(inputpaths)
     retcode = 0
 
-    if not ptee: ptee = sys.stdout
+    if not ptee: ptee = sys.stdout  # allow to specify an output to log, such as a StringIO as used in unit tests
 
     # Open report file and write header
     if report_file is not None:

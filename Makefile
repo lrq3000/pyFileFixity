@@ -58,6 +58,9 @@ testcoverage:
 	coverage run --branch -m pytest pyFileFixity -v
 	coverage report -m
 
+testmalloc:
+	@+python -X dev -X tracemalloc=5 -m pytest
+
 installdev:
 	@+make prebuildclean
 	# Should work for both Py2 and Py3, --editable option and isolation builds work with both pyproject.toml and setup.cfg

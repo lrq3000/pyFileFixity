@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 # Recursive/Relative Files Integrity Generator and Checker
-# Copyright (C) 2015 Larroque Stephen
+# Copyright (C) 2015-2023 Stephen Karl Larroque
 #
 # Licensed under the MIT License (MIT)
 #
@@ -588,6 +588,8 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
         retval = (errorscount > 0)
 
     ptee.close()
+    if errors_file is not None:
+        efile.close()
     return retval # return error code if any
 
 # Calling main function if the script is directly called (not imported as a library in another program)
