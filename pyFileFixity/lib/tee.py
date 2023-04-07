@@ -28,6 +28,9 @@ class Tee(object):
             self.stdout = None
         if self.file: self.file.close()
 
+    def __del__(self):
+        self.close()
+
     def write(self, data, end="\n", flush=True):
         """ Output data to stdout and/or file """
         if not self.silent:
