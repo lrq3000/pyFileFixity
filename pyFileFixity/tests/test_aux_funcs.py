@@ -119,3 +119,9 @@ class TestAuxFuncs(unittest.TestCase):
         with open(infile, 'rb') as fh:
             res2 = relpath(auxf.fullpath(fh), pardir)
         assert res1 == res2
+
+    def test_get_version(self):
+        """ aux: test get_version() """
+        thispathname = os.path.dirname(__file__)
+        assert '.' in auxf.get_version('__init__.py', os.path.join(thispathname, '..'))
+        self.assertRaises(RuntimeError, auxf.get_version, 'test_aux_funcs.py', thispathname)

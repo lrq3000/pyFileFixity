@@ -193,14 +193,15 @@ def simple_read(rel_path, root_path=None):
     # It accesses the specified relative path, relative to the calling script (so that it workes relative to the current package if installed in site-scripts)
     # From: https://packaging.python.org/en/latest/guides/single-sourcing-package-version/#single-sourcing-the-package-version
     # See also: https://stackoverflow.com/a/75962009/1121352
-    if root_path is not None:
-        here = root_path
-    else:
-        try:
-            here = os.path.abspath(os.path.dirname(__file__))
-        except UnboundLocalError as exc:
-            __file__ = os.path.join(os.getcwd(), 'dummyfile.ext')  # get current working directory if using this function under an interactive prompt
-            here = os.path.abspath(os.path.dirname(__file__))
+
+    #if root_path is not None:
+    here = root_path
+    #else:  # this branch was commented out to remove dead code that can cause the function to return strange unexpected results in edge cases, we prefer to fail explicitly in these cases
+    #    try:
+    #        here = os.path.abspath(os.path.dirname(__file__))
+    #    except UnboundLocalError as exc:
+    #        __file__ = os.path.join(os.getcwd(), 'dummyfile.ext')  # get current working directory if using this function under an interactive prompt
+    #        here = os.path.abspath(os.path.dirname(__file__))
     with codecs.open(os.path.join(here, rel_path), 'r') as fp:
         return fp.read()
 
