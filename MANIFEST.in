@@ -1,5 +1,6 @@
 # Cannot yet fully replace MANIFEST.in by pyproject.toml if we use setuptools, see: https://github.com/pypa/setuptools/issues/3341
 # Misc
+include .coveragerc  # for compatibility with Py2, otherwise the coverage is configured in pyproject.toml
 #include LICENSE
 #include Makefile
 #include README.md

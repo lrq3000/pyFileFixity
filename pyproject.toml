@@ -150,8 +150,27 @@ required_plugins = "pytest-cov"
 branch = true
 relative_files = true
 include = [
-    "*.py",
+    "pyFileFixity/lib/aux_funcs.py",
+    "pyFileFixity/lib/eccman.py",
+    "pyFileFixity/lib/hasher.py",
+    "pyFileFixity/lib/tee.py",
+    "pyFileFixity/_infos.py",
+    "pyFileFixity/header_ecc.py",
+    "pyFileFixity/repair_ecc.py",
+    "pyFileFixity/replication_repair.py",
+    "pyFileFixity/resiliency_tester.py",
+    "pyFileFixity/rfigc.py",
+    "pyFileFixity/structural_adaptive_ecc.py",
     ]
+exclude = [
+    "pyFileFixity/tests/*",
+    "pyFileFixity/__init__.py",
+    "pyFileFixity/easy_profiler.py",
+    "pyFileFixity/ecc_speedtest.py",
+    "pyFileFixity/filetamper.py",
+    "pycleaner.py",
+    "setup.py",
+]
 
 [tool.coverage.paths]
 source = ["pyFileFixity"]
