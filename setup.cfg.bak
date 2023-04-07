@@ -1,5 +1,6 @@
 # Config file for Python 2.7, replaces setup.py
 # Note that for some reason pip under Python 2.7 still access pyproject.toml to at least get build-system requires, and then switches to processing setup.cfg for the rest of the directives.
+# DEPRECATED: Python 2.7 support was dropped because even if it is technically possible to install on Python 2.7 and with PEP517 compliance, most tools are not available anymore, so the dependency resolver needs to do a very time consuming exhaustive search, hence a very unclean install, so it was deemed better to just drop support so that Python 2.7 users can just install the older release that targeted Python 2.7 and was installable much more cleanly, even if not compliant with PEP 517.
 [metadata]
 name = pyFileFixity
 version = attr: pyFileFixity.__version__

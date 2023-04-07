@@ -125,14 +125,21 @@ bit rot or cosmic rays. pyFileFixity aims to provide tools to detect any data
 corruption, but also fight data corruption by providing repairing tools.
 
 The only solution is to use a principle of engineering that is long
-known and which makes bridges safe: add some **redundancy**.
+known and which makes bridges and planes safe: add some **redundancy**.
 
 There are only 2 ways to add redundancy:
 
--  the simple way to add redundancy is to **duplicate** the object (also
-   called replication), but for data storage, this eats up a lot of storage
-   and is not optimal.
--  the second way, and the best, optimal tools ever invented to recover
+-  the simple way is to **duplicate** the object (also called replication),
+   but for data storage, this eats up a lot of storage and is not optimal.
+   However, if storage is cheap, then this is a good solution, as it is
+   much faster than encoding with error correction codes. For replication to work,
+   at least 3 duplicates are necessary at all times, so that if one fails, it must
+   replaced asap. As sailors say: "Either bring 1 compass or 3 compasses, but never
+   two, because then you won't know which one is correct if one fails."
+   Indeed, with 3 duplicates, if you frequently monitor their integrity
+   (eg, with hashes), then if one fails, simply do a majority vote:
+   the bit value given by 2 of the duplicates is probably correct.
+-  the second way, the optimal tools ever invented to recover
    from data corruption, are the **error correction codes** (forward
    error correction), which are a way to smartly produce redundant codes
    from your data so that you can later repair your data using these
@@ -184,10 +191,10 @@ format).
 
 In practice, both approaches are not exclusive, and the best is to
 combine them: protect the most precious data with error correction codes,
-then duplicate them across multiple storage mediums. Hence, this suite of
-data protection tools, just like any other such suite, is not sufficient to
-guarantee your data is protected, you must have an active data curation strategy
-which includes regularly checking your data and replacing copies that are damaged.
+then duplicate them as well as less sensitive data across multiple storage mediums.
+Hence, this suite of data protection tools, just like any other such suite, is not
+sufficient to guarantee your data is protected, you must have an active data curation
+strategy which includes regularly checking your data and replacing copies that are damaged.
 
 For a primer on storage mediums and data protection strategies, see `this post I wrote <https://web.archive.org/web/20220529125543/https://superuser.com/questions/374609/what-medium-should-be-used-for-long-term-high-volume-data-storage-archival/873260>`_.
 

@@ -2,7 +2,7 @@
 #
 # ECC manager facade api
 # Allows to easily use different kinds of ECC algorithms and libraries under one single class.
-# Copyright (C) 2015 Larroque Stephen
+# Copyright (C) 2015-2023 Stephen Karl Larroque
 #
 # Licensed under the MIT License (MIT)
 #
