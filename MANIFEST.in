@@ -8,8 +8,8 @@ include .coveragerc  # for compatibility with Py2, otherwise the coverage is con
 #include TODO.md
 
 # Non-python files
-#include pyFileFixity/ecc_specification.txt  # done in pyproject.toml
-#include pyFileFixity/resiliency_tester_config.txt
+include pyFileFixity/ecc_specification.txt  # done in pyproject.toml, but for Py2 we need to put it here
+include pyFileFixity/resiliency_tester_config.txt  # idem
 
 # Libraries
 recursive-include pyFileFixity/lib *.py
