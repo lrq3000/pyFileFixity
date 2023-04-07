@@ -43,7 +43,7 @@ jobs:
       run: |
         python -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple --upgrade --editable .[test,testmeta] --verbose --use-pep517
     - name: Install this module (Py2)
-    if: ${{ matrix.python-version < 3 }}
+      if: ${{ matrix.python-version < 3 }}
       run: |
         python -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple --upgrade --editable .[test] --verbose --use-pep517
     - name: Test with pytest
