@@ -54,7 +54,7 @@
 # - Also backup folders meta-data? (to reconstruct the tree in case a folder is truncated by bit rot)
 #
 
-# Get PyFileFixity package version, necessary to input in the ECC the version of pyFileFixity we used, this can be helpful to disambiguate in the future which version of the software to use for optimal recovery
+# Get PyFileFixity package version, necessary to input in the ECC the version of pyFileFixity we used, it will be stored in the ecc files,, this can be helpful to disambiguate in the future which version of the software to use for optimal recovery
 import os, json
 with open(os.path.join(os.path.dirname(__file__), '_infos.json'), 'r') as f:
     _infos = json.load(f)

@@ -59,10 +59,10 @@ testcoverage:
 	coverage report -m
 
 installdev:
-	@+python -m pip install --upgrade --editable .[test, testmeta] --verbose --use-pep517
+	@+python -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple --upgrade --editable .[test,testmeta] --verbose --use-pep517
 
 installdevpy2:
-	@+python -m pip install --upgrade --editable .[test, testmeta] --verbose --use-pep517
+	@+python -m pip install --upgrade --editable .[test,testmeta] --verbose --use-pep517
 
 install:
 	@+python -m pip install --upgrade . --verbose --use-pep517
