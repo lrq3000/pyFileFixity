@@ -5,7 +5,8 @@
 [build-system]
 # never uppercap requirements unless we have evidence it won't work https://iscinumpy.dev/post/bound-version-constraints/ 
 # cython cannot be placed in optional-dependencies, Cython won't be able to do its magic to make it importable in setup.py
-requires = ["setuptools>=44"]  # setuptools>=61 is necessary to support dynamic version: https://packaging.python.org/en/latest/guides/single-sourcing-package-version/ -- but for some reason it also works with setuptools==44 which is compatible with Py2!
+# setuptools>=61 is necessary to support dynamic version in pyproject.toml: https://packaging.python.org/en/latest/guides/single-sourcing-package-version/ -- but only setuptools up to 44.1.1 is available on Py2, so we define setuptools>44 as the highest version for Py2, and this works because on Py2, pyproject.toml is only used for build-system (because this table only exists in pyproject.toml, see PEP 518), and then pip/setuptools switch to setup.cfg on Py2 for the rest of the build process. For more infos on dependency specification, see: https://peps.python.org/pep-0508/
+requires = ["setuptools>=44;python_version<'3'", "setuptools>=61;python_version>='3'"]
 build-backend = "setuptools.build_meta"
 
 [project]  # beware if using setuptools: setup.py still gets executed, and even if pyproject.toml fields take precedence, if there is any code error in setup.py, building will fail!
