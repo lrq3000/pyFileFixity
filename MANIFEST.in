@@ -7,16 +7,16 @@
 #include TODO.md
 
 # Non-python files
-#include pyFileFixity/ecc_specification.txt # done in pyproject.toml
+#include pyFileFixity/ecc_specification.txt  # done in pyproject.toml
 #include pyFileFixity/resiliency_tester_config.txt
 
 # Libraries
 recursive-include pyFileFixity/lib *.py
-recursive-include pyFileFixity/lib *.pyx # Cython files, all were moved to their own modules in distinct repositories, but we may optimize some routines in the future
-recursive-exclude pyFileFixity/lib/profilers *.py  # no need for profilers
+recursive-include pyFileFixity/lib *.pyx  # Cython files, all were moved to their own modules in distinct repositories, but we may optimize some routines in the future
+recursive-exclude pyFileFixity/lib/profilers *  # no need for profilers
 
 # Test suite
-recursive-include pyFileFixity/tests *.py
-recursive-include pyFileFixity/tests/files *.*
-recursive-include pyFileFixity/tests/results *.*
+recursive-include pyFileFixity/tests *.py  # unit test scripts
+recursive-include pyFileFixity/tests/files *  # attach necessary files to run tests
+recursive-include pyFileFixity/tests/results *  # attach necessary py-make config and resulting database files to run and compare tests results
 include tox.ini
