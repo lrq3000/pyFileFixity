@@ -35,24 +35,16 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install pytest pytest-cov
-        if [ ${{ matrix.python-version }} <= 3.7 ]; then python -m pip install 'coverage<4'; else python -m pip install coverage; fi
-        python -m pip install coveralls
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Compile the Cython extension (only on Python 3.10)
-      if: ${{ matrix.python-version == 3.10 }}
+        #python -m pip install pytest pytest-cov  # done in setup.cfg for Py2 or pyproject.toml for Py3
+        #if [ ${{ matrix.python-version }} <= 3.7 ]; then python -m pip install 'coverage<4'; else python -m pip install coverage; fi
+        #if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Install this module
       run: |
-        pip install --install-option='--no-cython-compile' cython==3.0.0b2
-        pip install --upgrade git+https://github.com/tomerfiliba/reedsolomon --install-option="--cythonize" --verbose
+        python -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple --upgrade --editable .[test,testmeta] --verbose --use-pep517
     - name: Test with pytest
       run: |
         coverage run --branch -m pytest . -v
         coverage report -m
-    #- name: Send coverage to Coveralls
-    #  env:
-    #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #  if: ${{ matrix.python-version >= 3 }}
-    #  run: coveralls --service=github
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
       with:

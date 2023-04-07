@@ -30,7 +30,7 @@ all:
 prebuildclean:
 	@+python -c "import shutil; shutil.rmtree('build', True)"
 	@+python -c "import shutil; shutil.rmtree('dist', True)"
-	@+python -c "import shutil; shutil.rmtree('pyFileFixity.egg-info', True)"
+	@+python -c "import shutil; shutil.rmtree('pyFileFixity.egg-info', True)"  # very important to delete egg-info before any new build or pip install, otherwise may cause an error that multiple egg-info folders are present, or it may build using old definitions
 
 coverclean:
 	@+python -c "import os; os.remove('.coverage') if os.path.exists('.coverage') else None"
@@ -59,19 +59,25 @@ testcoverage:
 	coverage report -m
 
 installdev:
+	@+make prebuildclean
+	# Should work for both Py2 and Py3, --editable option and isolation builds work with both pyproject.toml and setup.cfg
 	@+python -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple --upgrade --editable .[test,testmeta] --verbose --use-pep517
 
-installdevpy2:
-	@+python -m pip install --upgrade --editable .[test,testmeta] --verbose --use-pep517
-
 install:
+	@+make prebuildclean
 	@+python -m pip install --upgrade . --verbose --use-pep517
 
 build:
-    # requires `pip install build`
+	# requires `pip install build`
 	@+make prebuildclean
-	#@+make testsetup
 	@+make testpyproject
+	@+python -sBm build  # do NOT use the -w flag, otherwise only the wheel will be built, but we need sdist for source distros such as Debian and Gentoo!
+	@+make testsetuppost
+
+buildpy2:
+	# Py2 only
+	# requires `pip install build`
+	@+make prebuildclean
 	@+python -sBm build  # do NOT use the -w flag, otherwise only the wheel will be built, but we need sdist for source distros such as Debian and Gentoo!
 	@+make testsetuppost
 

@@ -77,7 +77,7 @@ Download = "https://github.com/lrq3000/pyFileFixity/releases"
 test = [  # minimum dependencies to run tests
     "pytest",
     "pytest-cov",
-    "coveralls",
+    #"coveralls",
     "py-make",  # necessary to run the config files in tests/results/*.cfg
 ]
 testmeta = [  # dependencies to test meta-data. Note that some of these dependencies make cibuildwheel choke on cryptography
