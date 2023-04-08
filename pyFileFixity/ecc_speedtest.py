@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 # ECC Speed Tester
-# Copyright (C) 2015 Larroque Stephen
+# Copyright (C) 2015-2023 Larroque Stephen
 #
 # Licensed under the MIT License (MIT)
 #
@@ -31,15 +31,18 @@ thispathname = os.path.dirname(__file__)
 sys.path.append(os.path.join(thispathname))
 
 # ECC and hashing facade libraries
-from lib._compat import _range, _bytes
+from lib._compat import _range, _bytes, _str
 from lib.aux_funcs import sizeof_fmt
 from lib.eccman import ECCMan, compute_ecc_params
 from lib.hasher import Hasher
 from reedsolo import ReedSolomonError
 
 # Import necessary libraries
-import random, math
-import time, datetime
+import argparse
+import math, random
+import datetime, time
+
+# Import progress bar
 import tqdm
 
 
@@ -62,17 +65,67 @@ def format_sizeof(num, suffix='bytes'):
 #                       MAIN
 #***********************************
 
-def main(argv=None):
+def main(argv=None, command=None):
+    if argv is None: # if argv is empty, fetch from the commandline
+        argv = sys.argv[1:]
+    elif isinstance(argv, _str): # else if argv is supplied but it's a simple string, we need to parse it to a list of arguments before handing to argparse or any other argument parser
+        argv = shlex.split(argv) # Parse string just like argv using shlex
+
+    #==== COMMANDLINE PARSER ====
+
+    #== Commandline description
+    desc = '''ECC Speedtest
+Description: Tests encoding and/or decoding speed of error correction codes using the specified configuration and ecc algorithms.
+    '''
+    ep = ''' '''
+
+    #-- Constructing the parser
+    # Only command-line usage, use the standard argparse
+    # Delete the special argument to avoid unrecognized argument error in argparse
+    # Initialize the normal argparse parser
+    # Note that prog allows to change the shown calling script, it is necessary to manually set it when it is called as a subcommand (of pff.py). If None, prog will default to sys.argv[0] but with the absolute path removed.
+    main_parser = argparse.ArgumentParser(add_help=True, description=desc, epilog=ep, formatter_class=argparse.RawTextHelpFormatter, prog=command)
+    # Define dummy dict to keep compatibile with command-line usage
+    widget_dir = {}
+    widget_filesave = {}
+    widget_file = {}
+    widget_text = {}
+
+    # Required arguments
+
+    # Optional arguments
+    main_parser.add_argument('--ecc_algo', type=int, default=3, required=False,
+                        help='What algorithm use to generate and verify the ECC? Values possible: 1-4. 1 is the formal, fully verified Reed-Solomon in base 3 ; 2 is a faster implementation but still based on the formal base 3 ; 3 is an even faster implementation but based on another library which may not be correct ; 4 is the fastest implementation supporting US FAA ADSB UAT RS FEC standard but is totally incompatible with the other three (a text encoded with any of 1-3 modes will be decodable with any one of them).', **widget_text)
+    main_parser.add_argument('--max_block_size', type=int, default=255, required=False,
+                        help='Max block size, cannot exceed 255.', **widget_text)
+    main_parser.add_argument('--resilience_rate', type=float, default=0.2, required=False,
+                        help='Number of ecc symbols to compute per block, as a percent of the whole message size.', **widget_text)
+    main_parser.add_argument('--tamper_rate', type=float, default=0.4, required=False,
+                        help='How much we tamper each message before decoding. Note that tamper rate is relative to the number of ecc bytes, not the whole message (unlike --resilience_rate).', **widget_text)
+    main_parser.add_argument('--tamper_mode', type=str, default='noise', required=False,
+                        help='How do we tamper each message before decoding, can be "noise" or "erasure" (tamper_rate can be 2x as much with erasure than with noise). Noise means that characters that get tampered are considered errors, their positions will not be given to the decoder. Hence, with erasure mode, only erasures are done as the positions of tampered characters are provided to the decoder, so that the Reed-Solomon algorithm works slightly differently and may be much faster since it does not have to search for where errors are located.', **widget_text)
+    main_parser.add_argument('--msg_nb', type=int, default=1000000, required=False,
+                        help='Total number of messages/blocks to test.', **widget_text)
+    main_parser.add_argument('--decoding_mode', type=int, required=False, default=1,
+                        help='0 for only encoding, 1 for both encoding then decoding, 2 for only decoding (which includes an encoding step).')
+    main_parser.add_argument('--subchunking', action='store_true', required=False, default=False,
+                        help='Subchunk directly in the speedtest, instead of letting the Reed-Solomon library do it.')
+    main_parser.add_argument('--subchunking_size', type=int, required=False, default=50,
+                        help='Size of subchunks, if enabled.')
+
+    #== Parsing the arguments
+    args = main_parser.parse_args(argv) # Storing all arguments to args
+
     # Setup configuration variables. Change here if you want to.
-    max_block_size = 255
-    resilience_rate = 0.2
-    ecc_algo = 3
-    msg_nb = 1000000
-    tamper_rate = 0.4 # tamper rate is relative to the number of ecc bytes, not the whole message (not like the resilience_rate)
-    tamper_mode = 'noise' # noise or erasure
-    no_decoding = False  # True for only encoding, False for both encoding then decoding, 3 for only decoding (which includes an encoding step)
-    subchunking = False
-    subchunk_size = 50
+    max_block_size = args.max_block_size
+    resilience_rate = args.resilience_rate
+    ecc_algo = args.ecc_algo
+    msg_nb = args.msg_nb
+    tamper_rate = args.tamper_rate
+    tamper_mode = args.tamper_mode
+    decoding_mode = args.decoding_mode
+    subchunking = args.subchunking
+    subchunk_size = args.subchunking_size
 
     # Precompute some parameters and load up ecc manager objects (big optimization as g_exp and g_log tables calculation is done only once)
     hasher_none = Hasher('none') # for index ecc we don't use any hash
@@ -86,11 +139,11 @@ def main(argv=None):
     print("ECC Speed Test, started on %s" % datetime.datetime.now().isoformat())
     print("====================================")
     print("ECC algorithm: %i." % ecc_algo)
-    print("%s." % ("Only encoding test" if no_decoding is True else ("Encoding and decoding test" if no_decoding is False else "Decoding test only (including an encoding step)")))
+    print("%s." % ("Only encoding test" if decoding_mode == 0 else ("Encoding and decoding test" if decoding_mode == 1 else "Decoding test only (including an encoding step)")))
 
     # -- Encoding test
     # IMPORTANT: we do NOT check the correctness of encoding, only the speed! It's up to you to verify that you are computing the ecc correctly.
-    if not no_decoding == 3:
+    if not decoding_mode == 2:
         total_time = 0
         total_size = msg_nb*max_block_size
         bardisp = tqdm.tqdm(total=total_size, leave=True, desc='ENC', unit='B', unit_scale=True, ncols=79, mininterval=0.5) # display progress bar based on the number of bytes encoded
@@ -109,7 +162,7 @@ def main(argv=None):
         print("Encoding: total time elapsed: %f sec for %s of data. Real Speed (only encoding, no other computation): %s." % (total_time, format_sizeof(total_size, 'B'), format_sizeof(total_size/total_time, 'B/sec') ))
     
     # -- Decoding test
-    if not no_decoding or no_decoding == 3:
+    if decoding_mode in [1, 2]:
         total_time = 0
         total_size = msg_nb*max_block_size
         bardisp = tqdm.tqdm(total=total_size*2, leave=True, desc='DEC', unit='B', unit_scale=True) # display progress bar based on the number of bytes encoded

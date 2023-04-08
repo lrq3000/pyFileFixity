@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 # Resiliency tester
-# Copyright (C) 2015 Larroque Stephen
+# Copyright (C) 2015-2023 Larroque Stephen
 #
 # Licensed under the MIT License (MIT)
 #
@@ -31,7 +31,7 @@
 #=================================
 #
 
-from __future__ import division
+#from __future__ import division  # if I try to optimize this script, Py3 division is required (eg, in Cython)
 
 # Include the lib folder in the python import path (so that packaged modules can be easily called, such as gooey which always call its submodules via gooey parent module)
 import sys, os
@@ -370,7 +370,7 @@ def AutoGooey(fn):  # pragma: no cover
 
 #@conditional_decorator(check_gui_arg(), gooey.Gooey) # alternative to AutoGooey which also correctly works
 @AutoGooey
-def main(argv=None):
+def main(argv=None, command=None):
     if argv is None: # if argv is empty, fetch from the commandline
         argv = sys.argv[1:]
     elif isinstance(argv, _str): # else if argv is supplied but it's a simple string, we need to parse it to a list of arguments before handing to argparse or any other argument parser
@@ -400,7 +400,7 @@ Also note that the test folder will not be removed at the end, so that you can s
     # Use GooeyParser if we want the GUI because it will provide better widgets
     if len(argv) > 0 and (argv[0] == '--gui' and not '--ignore-gooey' in argv):  # pragma: no cover
         # Initialize the Gooey parser
-        main_parser = gooey.GooeyParser(add_help=True, description=desc, epilog=ep, formatter_class=argparse.RawTextHelpFormatter)
+        main_parser = gooey.GooeyParser(add_help=True, description=desc, epilog=ep, formatter_class=argparse.RawTextHelpFormatter, prog=command)
         # Define Gooey widget types explicitly (because type auto-detection doesn't work quite well)
         widget_dir = {"widget": "DirChooser"}
         widget_filesave = {"widget": "FileSaver"}
@@ -411,7 +411,8 @@ Also note that the test folder will not be removed at the end, so that you can s
         # Delete the special argument to avoid unrecognized argument error in argparse
         if '--ignore-gooey' in argv: argv.remove('--ignore-gooey') # this argument is automatically fed by Gooey when the user clicks on Start
         # Initialize the normal argparse parser
-        main_parser = argparse.ArgumentParser(add_help=True, description=desc, epilog=ep, formatter_class=argparse.RawTextHelpFormatter)
+        # Note that prog allows to change the shown calling script, it is necessary to manually set it when it is called as a subcommand (of pff.py). If None, prog will default to sys.argv[0] but with the absolute path removed.
+        main_parser = argparse.ArgumentParser(add_help=True, description=desc, epilog=ep, formatter_class=argparse.RawTextHelpFormatter, prog=command)
         # Define dummy dict to keep compatibile with command-line usage
         widget_dir = {}
         widget_filesave = {}

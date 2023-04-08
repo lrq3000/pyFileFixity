@@ -282,7 +282,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
     # Use GooeyParser if we want the GUI because it will provide better widgets
     if len(argv) > 0 and (argv[0] == '--gui' and not '--ignore-gooey' in argv):  # pragma: no cover
         # Initialize the Gooey parser
-        main_parser = gooey.GooeyParser(add_help=True, description=desc, epilog=ep, formatter_class=argparse.RawTextHelpFormatter)
+        main_parser = gooey.GooeyParser(add_help=True, description=desc, epilog=ep, formatter_class=argparse.RawTextHelpFormatter, prog=command)
         # Define Gooey widget types explicitly (because type auto-detection doesn't work quite well)
         widget_dir = {"widget": "DirChooser"}
         widget_filesave = {"widget": "FileSaver"}

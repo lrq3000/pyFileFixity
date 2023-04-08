@@ -48,12 +48,12 @@ import sys
 # Import all pyFileFixity subcommands tools
 from .rfigc import main as rfigc_main
 from .header_ecc import main as hecc_main
-#from .structural_adaptive_ecc import main as saecc_main
-#from .repair_ecc import main as recc_main
-#from .filetamper import main as filetamper_main
-#from .replication_repair import main as replication_repair_main
-#from .resiliency_tester import main as resiliency_tester_main
-#from .ecc_speedtest import main as ecc_speedtest_main
+from .structural_adaptive_ecc import main as saecc_main
+from .repair_ecc import main as recc_main
+from .replication_repair import main as replication_repair_main
+from .resiliency_tester import main as restest_main
+from .filetamper import main as filetamper_main
+from .ecc_speedtest import main as ecc_speedtest_main
 
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
@@ -63,8 +63,26 @@ def main(argv: Sequence[str] | None = None) -> int:
     rfigc_parser = subparsers.add_parser("hash", aliases=["rfigc"], help="Check files integrity fast by hash, size, modification date or by data structure integrity.", add_help=False)  # disable help, so that we can redefine it and propagate as an argument downstream to the called module
     rfigc_parser.add_argument('-h', '--help', action='store_true')  # redefine help argument so that we can pass it downstream to submodules' argparse parsers
 
-    header_ecc_parser = subparsers.add_parser("header", aliases=["header_ecc", "hecc"], help="Protect files headers with error correction codes", add_help=False)
-    header_ecc_parser.add_argument('-h', '--help', action='store_true')
+    hecc_parser = subparsers.add_parser("header", aliases=["header_ecc", "hecc"], help="Protect/repair files headers with error correction codes", add_help=False)
+    hecc_parser.add_argument('-h', '--help', action='store_true')
+
+    saecc_parser = subparsers.add_parser("whole", aliases=["structural_adaptive_ecc", "saecc", "protect", "repair"], help="Protect/repair whole files with error correction codes", add_help=False)
+    saecc_parser.add_argument('-h', '--help', action='store_true')
+
+    recc_parser = subparsers.add_parser("recover", aliases=["repair_ecc", "recc"], help="Utility to try to recover damaged ecc files using a failsafe mechanism", add_help=False)
+    recc_parser.add_argument('-h', '--help', action='store_true')
+
+    replication_repair_parser = subparsers.add_parser("dup", aliases=["replication_repair"], help="Repair files from multiple copies of various storage mediums using a majority vote", add_help=False)
+    replication_repair_parser.add_argument('-h', '--help', action='store_true')
+
+    restest_parser = subparsers.add_parser("restest", aliases=["resilience_tester"], help="Run tests to quantify robustness of a file protection scheme (can be used on any, not just pyFileFixity)", add_help=False)
+    restest_parser.add_argument('-h', '--help', action='store_true')
+
+    filetamper_parser = subparsers.add_parser("filetamper", help="Tamper files using various schemes", add_help=False)
+    filetamper_parser.add_argument('-h', '--help', action='store_true')
+
+    ecc_speedtest_parser = subparsers.add_parser("speedtest", aliases=["ecc_speedtest"], help="Run error correction encoding and decoding speedtests", add_help=False)
+    ecc_speedtest_parser.add_argument('-h', '--help', action='store_true')
 
     # Parse known arguments, but we have almost none, this is done on purpose so that we can pass all arguments (except helps) downstream for submodules to handle with their own Argparse
     args, args_remainder = parser.parse_known_args(argv)
@@ -82,10 +100,22 @@ def main(argv: Sequence[str] | None = None) -> int:
 
         fullcommand = "pff.py " + args.subcommand
 
-        if args.subcommand == "hash" or args.subcommand == "rfigc":
+        if args.subcommand in ["hash", "rfigc"]:
             return rfigc_main(argv=subargs, command=fullcommand)
-        elif args.subcommand == "header" or args.subcommand == "header_ecc" or args.subcommand == "hecc":
+        elif args.subcommand in ["header", "header_ecc", "hecc"]:
             return hecc_main(argv=subargs, command=fullcommand)
+        elif args.subcommand in ["whole", "structural_adaptive_ecc", "saecc", "protect", "repair"]:
+            return saecc_main(argv=subargs, command=fullcommand)
+        elif args.subcommand in ["recover", "repair_ecc", "recc"]:
+            return recc_main(argv=subargs, command=fullcommand)
+        elif args.subcommand in ["dup", "replication_repair"]:
+            return replication_repair_main(argv=subargs, command=fullcommand)
+        elif args.subcommand in ["restest", "resilience_tester"]:
+            return restest_main(argv=subargs, command=fullcommand)
+        elif args.subcommand in ["filetamper"]:
+            return filetamper(argv=subargs, command=fullcommand)
+        elif args.subcommand in ["speedtest", "ecc_speedtest"]:
+            return ecc_speedtest_main(argv=subargs, command=fullcommand)
         else:
             # Unreachable
             raise NotImplementedError(
