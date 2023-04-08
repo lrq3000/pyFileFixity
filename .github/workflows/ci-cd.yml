@@ -56,8 +56,8 @@ jobs:
       - uses: actions/checkout@v3
 
       - run: |
-        python -m pip install build
-        python -sBm build
+          python -m pip install build
+          python -sBm build
 
       - uses: actions/upload-artifact@v3
         with:
