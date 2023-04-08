@@ -176,15 +176,15 @@ This script is originally meant to be used for data archival, by allowing an eas
     '''
     ep = '''Example usage:
 - To generate the database (only needed once):
-python rfigc.py -i "folderimages" -d "dbhash.csv" -g
+pff hash -i "folderimages" -d "dbhash.csv" -g
 - To check:
-python rfigc.py -i "folderimages" -d "dbhash.csv" -l log.txt -s
+pff hash -i "folderimages" -d "dbhash.csv" -l log.txt -s
 - To update your database by appending new files:
-python rfigc.py -i "folderimages" -d "dbhash.csv" -u -a 
+pff hash -i "folderimages" -d "dbhash.csv" -u -a 
 - To update your database by appending new files AND removing inexistent files:
-python rfigc.py -i "folderimages" -d "dbhash.csv" -u -a -r
-- To use with a gui:
-python rfigc.py --gui
+pff hash -i "folderimages" -d "dbhash.csv" -u -a -r
+- (Deprecated) To use with a Gooey gui:
+pff hash --gui
 
 Note that by default, the script is by default in check mode, to avoid wrong manipulations. It will also alert you if you generate over an already existing database file.
 Note2: you can use PyPy to speed the generation, but you should avoid using PyPy when in checking mode (from our tests, it will slow things down a lot).

@@ -50,61 +50,79 @@ Quickstart
 
 Runs on Python 3 up to Python 3.11. Both PyPy 3 and PyPy 2 are supported. Older versions such as Python 2.7.10 are still being automatically unit tested with continuous integration but support can be dropped at any moment.
 
-- To install or update:
+- To install or update on Python 3:
 
 ``pip install --upgrade pyfilefixity``
 
+- For Python 2.7, the latest working version was v3.0.8:
+
+``pip install --upgrade pyfilefixity==3.0.8``
+
+- Once installed, the suite of tools can be accessed from a centralized interface script called ``pff`` which provides several subcommands, to list them:
+
+``pff --help``
+
+- Every subcommands provide their own more detailed help instructions, eg for the ``hash`` submodule:
+
+``pff hash --help``
+
 - To generate a monitoring database (to later check if files were changed, but no possibility of repairing):
 
-``python rfigc.py -i "your_folder" -d "dbhash.csv" -g -f -l "log.txt"``
+``pff hash -i "your_folder" -d "dbhash.csv" -g -f -l "log.txt"``
 
 Note: this also works for a single file, just replace "your_folder" by "your_file.ext".
 
 - To check if files were corrupted:
 
-``python rfigc.py -i "your_folder" -d "dbhash.csv" -l log.txt -s -e errors.csv``
+``pff hash -i "your_folder" -d "dbhash.csv" -l log.txt -s -e errors.csv``
 
 - To use this monitoring database to recover files names and directory layout after filescraping:
 
-``python rfigc.py -i "your_folder" -d "dbhash.csv" -l "log.txt" -o "output_folder" --filescraping_recovery``
+``pff hash -i "your_folder" -d "dbhash.csv" -l "log.txt" -o "output_folder" --filescraping_recovery``
 
 - To protect files headers with a file called ``hecc.txt``:
 
-``python header_ecc.py -i "your_folder" -d "hecc.txt" -l "log.txt" -g -f --ecc_algo 3``
+``pff header -i "your_folder" -d "hecc.txt" -l "log.txt" -g -f --ecc_algo 3``
 
 - To repair files headers and store the repaired files in ``output_folder``:
 
-``python header_ecc.py -i "your_folder" -d "hecc.txt" -o "output_folder" -l "log.txt" -c -v --ecc_algo 3``
+``pff header -i "your_folder" -d "hecc.txt" -o "output_folder" -l "log.txt" -c -v --ecc_algo 3``
 
 - To protect whole files with a file called ``ecc.txt``:
 
-``python structural_adaptive_ecc.py -i "your_folder" -d "ecc.txt" -l "log.txt" -g -f -v --ecc_algo 3``
+``pff whole -i "your_folder" -d "ecc.txt" -l "log.txt" -g -f -v --ecc_algo 3``
 
 - To repair whole files:
 
-``python structural_adaptive_ecc.py -i "your_folder" -d "ecc.txt" -o "output_folder" -l "log.txt" -c -v --ecc_algo 3``
+``pff whole -i "your_folder" -d "ecc.txt" -o "output_folder" -l "log.txt" -c -v --ecc_algo 3``
 
-- To repair an ecc file ``ecc.txt`` using an index file ``ecc.txt.idx`` (index file is generated automatically with ecc.txt):
+- To try to recover a damaged ecc file ``ecc.txt`` using an index file ``ecc.txt.idx`` (index file is generated automatically with ecc.txt):
 
-``python repair_ecc.py -i "ecc.txt" --index "ecc.txt.idx" -o "ecc_repaired.txt" -l "log.txt" -v -f``
+``pff recovery -i "ecc.txt" --index "ecc.txt.idx" -o "ecc_repaired.txt" -l "log.txt" -v -f``
 
-- To repair an ecc file ``ecc.txt`` without an index file (you can tweak the ``-t`` parameter from 0.0 to 1.0, 1.0 producing many false positives):
+- To try to recover a damaged ecc file ``ecc.txt`` without an index file (you can tweak the ``-t`` parameter from 0.0 to 1.0, 1.0 producing many false positives):
 
-``python repair_ecc.py -i "ecc.txt" -o "ecc_repaired.txt" -l "log.txt" -v -f -t 0.4``
+``pff recovery -i "ecc.txt" -o "ecc_repaired.txt" -l "log.txt" -v -f -t 0.4``
 
-- To repair your files using multiple copies that you have stored on different mediums:
+- To repair your files using multiple duplicated copies that you have stored on different mediums:
 
-``replication_repair.py -i "path/to/dir1" "path/to/dir2" "path/to/dir3" -o "path/to/output" --report "rlog.csv" -f -v``
+``pff dup -i "path/to/dir1" "path/to/dir2" "path/to/dir3" -o "path/to/output" --report "rlog.csv" -f -v``
 
 - If you have previously generated a rfigc database, you can use it to enhance the replication repair:
 
-``replication_repair.py -i "path/to/dir1" "path/to/dir2" "path/to/dir3" -o "path/to/output" -d "dbhash.csv" --report "rlog.csv" -f -v``
+``pff dup -i "path/to/dir1" "path/to/dir2" "path/to/dir3" -o "path/to/output" -d "dbhash.csv" --report "rlog.csv" -f -v``
 
-- To run tests on your recovery tools, you can make a Makefile-like configuration file and use:
+- To run tests on your recovery tools, you can make a Makefile-like configuration file and use the Resiliency Tester submodule:
 
-``resiliency_tester.py -i "your_folder" -o "test_folder" -c "resiliency_tester_config.txt" -m 3 -l "testlog.txt" -f``
+``pff restest -i "your_folder" -o "test_folder" -c "resiliency_tester_config.txt" -m 3 -l "testlog.txt" -f``
 
-- To get more options for any tool, use ``--help``.
+- Internally, ``pff restest`` uses ``pff filetamper`` to tamper files with various schemes, but you can also use ``pff filetamper`` directly.
+
+- To run speedtests of encoding/decoding error correction codes on your machine:
+
+``pff speedtest``
+
+- In case the ``pff`` command does not work, it can be replaced with ``python -m pyFileFixity.pff` .
 
 - DEPRECATED (because Gooey is not maintained anymore it seems): To use the GUI with any tool, use ``--gui`` and do not supply any other argument, eg: ``python rfigc.py --gui``.
 
@@ -283,11 +301,11 @@ Applications included
 
 The project currently include the following pure-python applications:
 
--  rfigc.py, a hash auditing tool, similar to md5deep/hashdeep, to
+-  rfigc.py (subcommand: ``hash``), a hash auditing tool, similar to md5deep/hashdeep, to
    compute a database of your files along with their metadata, so that
    later you can check if they were changed/corrupted.
 
--  header\_ecc.py, an error correction code using Reed-Solomon
+-  header\_ecc.py (subcommand: ``header``), an error correction code using Reed-Solomon
    generator/corrector for files headers. The idea is to supplement
    other more common redundancy tools such as PAR2 (which is quite
    reliable), by adding more resiliency only on the critical parts of
@@ -295,7 +313,7 @@ The project currently include the following pure-python applications:
    higher the chance of recovering headers, which will allow you to at
    least open the files.
 
--  structural\_adaptive\_ecc.py, a variable error correction rate
+-  structural\_adaptive\_ecc.py (subcommand: ``whole``), a variable error correction rate
    encoder (kind of a generalization of header\_ecc.py). This script
    allows to generate an ecc file for the whole content of your files,
    not just the header part, using a variable resilience rate: the
@@ -307,7 +325,7 @@ The project currently include the following pure-python applications:
    assumption is very true for all compressed kinds of formats, such as
    JPG, ZIP, Word, ODT, etc...
 
--  repair\_ecc.py, a script to repair the structure (ie, the entry and
+-  repair\_ecc.py (subcommand: ``recovery``), a script to repair the structure (ie, the entry and
    fields markers/separators) of an ecc file generated by header\_ecc.py
    or structural\_adaptive\_ecc.py. The goal is to enhance the
    resilience of ecc files against corruption by ensuring that their
@@ -315,7 +333,7 @@ The project currently include the following pure-python applications:
    if you use an index backup file, which is a companion file that is
    generated along an ecc file).
 
--  filetamper.py is a quickly made file corrupter, it will erase or
+-  filetamper.py (subcommand: ``filetamper``) is a quickly made file corrupter, it will erase or
    change characters in the specified file. This is useful for testing
    your various protecting strategies and file formats (eg: is PAR2
    really resilient against corruption? Are zip archives still partially
@@ -324,14 +342,7 @@ The project currently include the following pure-python applications:
    check the resiliency of your file formats and of your file protection
    strategies before relying on them.
 
--  easy\_profiler.py is just a quick and simple profiling tool to get
-   you started quickly on what should be optimized to get more speed, if
-   you want to contribute to the project feel free to propose a pull
-   request! (Cython and other optimizations are welcome as long as they
-   are cross-platform and that an alternative pure-python implementation
-   is also available).
-
--  replication\_repair.py takes advantage of your multiple copies
+-  replication\_repair.py (subcommand: ``dup``) takes advantage of your multiple copies
    (replications) of your data over several storage mediums to recover
    your data in case it gets corrupted. The goal is to take advantage of
    the storage of your archived files into multiple locations: you will
@@ -349,7 +360,7 @@ The project currently include the following pure-python applications:
    at least 3 copies of your data for the majority vote to work (but the more the
    better).
 
--  resiliency\_tester.py allows you to test the robustness of the
+-  resiliency\_tester.py (subcommand: ``restest``) allows you to test the robustness of the
    corruption correction of the scripts provided here (or any other
    command-line app). You just have to copy the files you want to test inside a
    folder, and then the script will copy the files into a test tree, then it
@@ -359,6 +370,19 @@ The project currently include the following pure-python applications:
    generated. This allows you to easily and objectively compare different set
    of parameters, or even different file repair solutions, on the very data
    that matters to you, so that you can pick the best option for you.
+
+-  ecc\_speedtest.py (subcommand: ``speedtest``) is a simple error correction codes
+   encoder/decoder speedtest. It allows to easily change parameters for the test.
+   This allows to assess how fast your machine can encode/decode with the selected
+   parameters, which can be especially useful to plan ahead for how many files you
+   can reasonably plan to protect with error correction codes (which are time consuming).
+
+-  DEPRECATED: easy\_profiler.py is just a quick and simple profiling tool to get
+   you started quickly on what should be optimized to get more speed, if
+   you want to contribute to the project feel free to propose a pull
+   request! (Cython and other optimizations are welcome as long as they
+   are cross-platform and that an alternative pure-python implementation
+   is also available).
 
 Note that all tools are primarily made for command-line usage (type
 script.py --help to get extended info about the accepted arguments), but
@@ -484,20 +508,20 @@ Example usage
 
 -  To generate the database (only needed once):
 
-``python rfigc.py -i "your_folder" -d "dbhash.csv" -g``
+``pff hash -i "your_folder" -d "dbhash.csv" -g``
 
 -  To check:
 
-``python rfigc.py -i "your_folder" -d "dbhash.csv" -l log.txt -s``
+``pff hash -i "your_folder" -d "dbhash.csv" -l log.txt -s``
 
 -  To update your database by appending new files:
 
-``python rfigc.py -i "your_folder" -d "dbhash.csv" -u -a``
+``pff hash -i "your_folder" -d "dbhash.csv" -u -a``
 
 -  To update your database by appending new files AND removing
    inexistent files:
 
-``python rfigc.py -i "your_folder" -d "dbhash.csv" -u -a -r``
+``pff hash -i "your_folder" -d "dbhash.csv" -u -a -r``
 
 Note that by default, the script is by default in check mode, to avoid
 wrong manipulations. It will also alert you if you generate over an
@@ -667,12 +691,8 @@ Cython implementation
 This section describes how to use the Cython implementation. However,
 you should first try PyPy, as it may give great performances too.
 
-Simply follow the instruction to install the `reedsolo <https://github.com/tomerfiliba/reedsolomon/releases/tag/v2.0.5>`_ module with
-the cythonized module:
-
-.. code:: sh
-    
-    pip install --upgrade reedsolo --install-option="--cythonize" --verbose
+Simply follow the instruction to install the `reedsolo <https://github.com/tomerfiliba-org/reedsolomon>`_ module with
+the cythonized module.
 
 Then make sure to use ``ecc_algo=3`` in all your ``eccman`` calls, and you
 are then good to go, the cythonized module ``creedsolo`` will always be used
