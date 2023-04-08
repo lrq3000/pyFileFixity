@@ -307,7 +307,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
                         
 
     # Optional general arguments
-    main_parser.add_argument('--ecc_algo', type=int, default=1, required=False,
+    main_parser.add_argument('--ecc_algo', type=int, default=3, required=False,
                         help='What algorithm use to generate and verify the ECC? Values possible: 1-4. 1 is the formal, fully verified Reed-Solomon in base 3 ; 2 is a faster implementation but still based on the formal base 3 ; 3 is an even faster implementation but based on another library which may not be correct ; 4 is the fastest implementation supporting US FAA ADSB UAT RS FEC standard but is totally incompatible with the other three (a text encoded with any of 1-3 modes will be decodable with any one of them).', **widget_text)
     main_parser.add_argument('--max_block_size', type=int, default=255, required=False,
                         help='Reed-Solomon max block size (maximum = 255). It is advised to keep it at the maximum for more resilience (see comments at the top of the script for more info).', **widget_text)

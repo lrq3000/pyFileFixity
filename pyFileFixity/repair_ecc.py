@@ -151,7 +151,7 @@ Note: An ecc structure repair does NOT allow to recover from more errors on your
     # Optional general arguments
     main_parser.add_argument('--index', metavar='eccfile.txt.idx', type=str, required=False,
                         help='Path to the index backup file corresponding to the ecc file (optional but helps a lot).', **widget_file)
-    main_parser.add_argument('--ecc_algo', type=int, default=1, required=False,
+    main_parser.add_argument('--ecc_algo', type=int, default=3, required=False,
                         help='What algorithm use to generate and verify the ECC? Values possible: 1-4. 1 is the formal, fully verified Reed-Solomon in base 3 ; 2 is a faster implementation but still based on the formal base 3 ; 3 is an even faster implementation but based on another library which may not be correct ; 4 is the fastest implementation supporting US FAA ADSB UAT RS FEC standard but is totally incompatible with the other three (a text encoded with any of 1-3 modes will be decodable with any one of them).', **widget_text)
     main_parser.add_argument('-l', '--log', metavar='/some/folder/filename.log', type=str, required=False,
                         help='Path to the log file. (Output will be piped to both the stdout and the log file)', **widget_filesave)
