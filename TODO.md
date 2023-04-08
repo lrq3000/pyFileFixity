@@ -10,15 +10,13 @@ TODO
 
 000000. Implement a fast algorithm for large data encoding (and decoding), see [https://github.com/catid/leopard leopard-RS] for a FFT approach or [https://github.com/Bulat-Ziganshin/FastECC FastECC] for a NTT approach.
 
-00000. Add entry points for cli usage, rename tools for easier access, ensure pipx can easily install it (with cythonized extension!)
+00000. Replace Gooey with pySimpleGUI for GUI handling.
 
 0000. Implement robust mode, to skip folders/files that are inaccessible for the current user, eg, System Volume Information on Windows OSes.
 
 000. Implement SIMD parallelization (process multiple messages at once) and Numpy. And fix ecc redundancy rate so we can use same coefficient for multiple messages. See the TODO below.
 
 00. Implement fast matrix encoding in Reed-Solomon, see https://github.com/lrq3000/unireedsolomon/issues/2 and BackBlaze tutorial.
-
-0. Put each script as alias like 'pyfilefixity repair' and add commandline bins for all major platforms. In other words, define a _main.py script.
 
 1. Parallelization of encoding: build a list of all files to encode in a multiprocessing.Queue() (or list or dict) to be multiprocessing safe, and then process different files in Pool, each time a job is launched, pop from the shared queue. Each worker will write in its own file, and in the end all files will be concatenated into one. This should speed-up processing, x8 with 8 cores thus we could reach about 10MB/s and thus get reasonable encoding time speed. Try to use [jug](https://github.com/luispedro/jug)! Sharing of data through filesystem, pure python and easy to use, seems like a perfect fit. Or [dask](http://dask.pydata.org/en/latest/) (pydata project, pandas authors).
 

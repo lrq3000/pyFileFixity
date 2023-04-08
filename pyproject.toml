@@ -94,6 +94,9 @@ testmeta = [  # dependencies to test meta-data. Note that some of these dependen
 file = "README.rst"
 content-type = "text/x-rst"
 
+[project.scripts]
+pff = "pyFileFixity.pff:main"
+
 #[tool.setuptools]
 #package-dir = {"" = "src"}
 

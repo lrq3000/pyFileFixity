@@ -69,7 +69,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     saecc_parser = subparsers.add_parser("whole", aliases=["structural_adaptive_ecc", "saecc", "protect", "repair"], help="Protect/repair whole files with error correction codes", add_help=False)
     saecc_parser.add_argument('-h', '--help', action='store_true')
 
-    recc_parser = subparsers.add_parser("recover", aliases=["repair_ecc", "recc"], help="Utility to try to recover damaged ecc files using a failsafe mechanism", add_help=False)
+    recc_parser = subparsers.add_parser("recover", aliases=["repair_ecc", "recc"], help="Utility to try to recover damaged ecc files using a failsafe mechanism, a sort of recovery mode (note: this does NOT recover your files, only the ecc files, which may then be used to recover your files!)", add_help=False)
     recc_parser.add_argument('-h', '--help', action='store_true')
 
     replication_repair_parser = subparsers.add_parser("dup", aliases=["replication_repair"], help="Repair files from multiple copies of various storage mediums using a majority vote", add_help=False)
@@ -113,7 +113,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         elif args.subcommand in ["restest", "resilience_tester"]:
             return restest_main(argv=subargs, command=fullcommand)
         elif args.subcommand in ["filetamper"]:
-            return filetamper(argv=subargs, command=fullcommand)
+            return filetamper_main(argv=subargs, command=fullcommand)
         elif args.subcommand in ["speedtest", "ecc_speedtest"]:
             return ecc_speedtest_main(argv=subargs, command=fullcommand)
         else:
