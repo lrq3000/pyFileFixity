@@ -55,8 +55,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - run: python -m pip install --upgrade build
-      - run: python -sBm build
+      - run: |
+        python -m pip install build
+        python -sBm build
 
       - uses: actions/upload-artifact@v3
         with:
