@@ -15,7 +15,7 @@ on:
     - published  # use published, not released and prereleased, because prereleased is not triggered if created from a draft: https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#release
 
 jobs:
-  test:
+  testbuild:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -58,7 +58,7 @@ jobs:
 
   upload_test_pypi:  # Upload to TestPyPi first to ensure that the release is OK (we will try to download it and install it afterwards), as recommended in https://py-pkgs.org/08-ci-cd#uploading-to-testpypi-and-pypi
     name: Upload to TestPyPi
-    needs: [test, build]
+    needs: [testbuild]
     runs-on: ubuntu-latest
     steps:
       - name: Unpack default artifact into dist/
@@ -87,7 +87,7 @@ jobs:
 
   upload_pypi:  # Upload to the real PyPi if everything else worked before, as suggested in: https://py-pkgs.org/08-ci-cd#uploading-to-testpypi-and-pypi
     name: Upload to the real PyPi
-    needs: [test, build, upload_test_pypi]
+    needs: [testbuild, upload_test_pypi]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v3
