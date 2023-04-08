@@ -62,6 +62,37 @@ Runs on Python 3 up to Python 3.11. Both PyPy 3 and PyPy 2 are supported. Older 
 
 ``pff --help``
 
+You should see:
+
+::
+
+    usage: pff [-h]
+               {hash,rfigc,header,header_ecc,hecc,whole,structural_adaptive_ecc,saecc,protect,repair,recover,repair_ecc,recc,dup,replication_repair,restest,resilience_tester,filetamper,speedtest,ecc_speedtest}
+               ...
+
+    positional arguments:
+      {hash,rfigc,header,header_ecc,hecc,whole,structural_adaptive_ecc,saecc,protect,repair,recover,repair_ecc,recc,dup,replication_repair,restest,resilience_tester,filetamper,speedtest,ecc_speedtest}
+        hash (rfigc)        Check files integrity fast by hash, size, modification date or by data structure integrity.
+        header (header_ecc, hecc)
+                            Protect/repair files headers with error correction codes
+        whole (structural_adaptive_ecc, saecc, protect, repair)
+                            Protect/repair whole files with error correction codes
+        recover (repair_ecc, recc)
+                            Utility to try to recover damaged ecc files using a failsafe mechanism, a sort of recovery
+                            mode (note: this does NOT recover your files, only the ecc files, which may then be used to
+                            recover your files!)
+        dup (replication_repair)
+                            Repair files from multiple copies of various storage mediums using a majority vote
+        restest (resilience_tester)
+                            Run tests to quantify robustness of a file protection scheme (can be used on any, not just
+                            pyFileFixity)
+        filetamper          Tamper files using various schemes
+        speedtest (ecc_speedtest)
+                            Run error correction encoding and decoding speedtests
+
+    options:
+      -h, --help            show this help message and exit
+
 - Every subcommands provide their own more detailed help instructions, eg for the ``hash`` submodule:
 
 ``pff hash --help``
@@ -122,7 +153,7 @@ Note: this also works for a single file, just replace "your_folder" by "your_fil
 
 ``pff speedtest``
 
-- In case the ``pff`` command does not work, it can be replaced with ``python -m pyFileFixity.pff` .
+- In case the ``pff`` command does not work, it can be replaced with ``python -m pyFileFixity.pff`` .
 
 - DEPRECATED (because Gooey is not maintained anymore it seems): To use the GUI with any tool, use ``--gui`` and do not supply any other argument, eg: ``python rfigc.py --gui``.
 
