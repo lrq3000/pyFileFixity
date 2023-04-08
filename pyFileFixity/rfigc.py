@@ -160,7 +160,7 @@ def AutoGooey(fn):  # pragma: no cover
 #***********************************
 
 @AutoGooey
-def main(argv=None):
+def main(argv=None, command=None):
     if argv is None: # if argv is empty, fetch from the commandline
         argv = sys.argv[1:]
     elif isinstance(argv, _str): # else if argv is supplied but it's a simple string, we need to parse it to a list of arguments before handing to argparse or any other argument parser
@@ -170,7 +170,7 @@ def main(argv=None):
 
     #== Commandline description
     desc = '''Recursive/Relative Files Integrity Generator and Checker
-Description: Recursively generate or check the integrity of files by MD5 and SHA1 hashes, size, modification date or by data structure integrity (only for images).
+Description: Recursively generate or check the integrity of files by MD5 and SHA1 hashes, size, modification date (any file) or by data structure integrity (only for images).
 
 This script is originally meant to be used for data archival, by allowing an easy way to check for silent file corruption. Thus, this script uses relative paths so that you can easily compute and check the same redundant data copied on different mediums (hard drives, optical discs, etc.). This script is not meant for system files corruption notification, but is more meant to be used from times-to-times to check up on your data archives integrity.
     '''
@@ -205,7 +205,8 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
         # Delete the special argument to avoid unrecognized argument error in argparse
         if '--ignore-gooey' in argv: argv.remove('--ignore-gooey') # this argument is automatically fed by Gooey when the user clicks on Start
         # Initialize the normal argparse parser
-        main_parser = argparse.ArgumentParser(add_help=True, description=desc, epilog=ep, formatter_class=argparse.RawTextHelpFormatter)
+        # Note that prog allows to change the shown calling script, it is necessary to manually set it when it is called as a subcommand (of pff.py). If None, prog will default to sys.argv[0] but with the absolute path removed.
+        main_parser = argparse.ArgumentParser(add_help=True, description=desc, epilog=ep, formatter_class=argparse.RawTextHelpFormatter, prog=command)
         # Define dummy dict to keep compatibile with command-line usage
         widget_dir = {}
         widget_filesave = {}

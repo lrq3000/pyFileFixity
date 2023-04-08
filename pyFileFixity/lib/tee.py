@@ -22,7 +22,10 @@ class Tee(object):
 
     def close(self):
         """ Restore stdout and close file when Tee is closed """
-        self.flush() # commit all latest changes before exiting
+        try:
+            self.flush() # commit all latest changes before exiting
+        except:
+            pass  # sometimes it's already closed, just skip
         if not self.nostdout and hasattr(self, 'stdout'):
             sys.stdout = self.stdout
             self.stdout = None
