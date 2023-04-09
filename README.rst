@@ -54,9 +54,9 @@ Runs on Python 3 up to Python 3.11. Both PyPy 3 and PyPy 2 are supported. Older 
 
 ``pip install --upgrade pyfilefixity``
 
-- For Python 2.7, the latest working version was v3.0.8:
+- For Python 2.7, the latest working version was v3.0.2:
 
-``pip install --upgrade pyfilefixity==3.0.8``
+``pip install --upgrade pyfilefixity==3.0.2``
 
 - Once installed, the suite of tools can be accessed from a centralized interface script called ``pff`` which provides several subcommands, to list them:
 
