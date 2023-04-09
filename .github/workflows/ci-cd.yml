@@ -16,6 +16,7 @@ on:
 
 jobs:
   testbuild:
+    name: Unit test and building
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
