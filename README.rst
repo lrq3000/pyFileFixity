@@ -97,17 +97,17 @@ You should see:
 
 ``pff hash --help``
 
-- To generate a monitoring database (to later check if files were changed, but no possibility of repairing):
+- To generate a monitoring database (to later check very fast which files are corrupted, but cannot repair anything but filesystem metadata):
 
 ``pff hash -i "your_folder" -d "dbhash.csv" -g -f -l "log.txt"``
 
 Note: this also works for a single file, just replace "your_folder" by "your_file.ext".
 
-- To check if files were corrupted:
+- Later, to check which files were corrupted:
 
 ``pff hash -i "your_folder" -d "dbhash.csv" -l log.txt -s -e errors.csv``
 
-- To use this monitoring database to recover files names and directory layout after filescraping:
+- To use this monitoring database to recover filesystem metadata such as files names and directory layout by filescraping from files contents:
 
 ``pff hash -i "your_folder" -d "dbhash.csv" -l "log.txt" -o "output_folder" --filescraping_recovery``
 
@@ -126,6 +126,8 @@ Note: this also works for a single file, just replace "your_folder" by "your_fil
 - To repair whole files:
 
 ``pff whole -i "your_folder" -d "ecc.txt" -o "output_folder" -l "log.txt" -c -v --ecc_algo 3``
+
+Note that ``header`` and ``whole`` can also detect corrupted files and even which blocks inside a file, but they are much slower than ``hash``.
 
 - To try to recover a damaged ecc file ``ecc.txt`` using an index file ``ecc.txt.idx`` (index file is generated automatically with ecc.txt):
 
