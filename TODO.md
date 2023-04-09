@@ -4,6 +4,8 @@ PyFileFixity Todo
 TODO
 --------
 
+000000000. Urgent bugfixes: code coverage is varying because unit test is non-deterministic somehow! Need to fix this issue! Maybe a difference between platforms (eg, of data encoding?) + Need to fix encoding error, see issue #7 on GitHub (and may be related to the previous point)
+
 00000000. Rework routines with asyncio https://github.com/SuperFastPython/PythonAsyncioJumpStart
 
 0000000. Type hinting and use mypyc to optimize without using Cython, or Codon (when it will work on Windows and switch to opensource in 2025-11-01)
