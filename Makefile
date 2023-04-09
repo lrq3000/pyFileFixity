@@ -50,6 +50,8 @@ testpyproject:
 
 testsetuppost:
 	twine check "dist/*"
+
+testrst:
 	rstcheck README.rst
 
 testcoverage:
@@ -84,6 +86,7 @@ build:
 buildpy2:
 	# Py2 only
 	# requires `pip install build`
+	@+make testrst
 	@+make prebuildclean
 	@+python -sBm build  # do NOT use the -w flag, otherwise only the wheel will be built, but we need sdist for source distros such as Debian and Gentoo!
 	@+make testsetuppost
