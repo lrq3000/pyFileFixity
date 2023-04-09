@@ -4,7 +4,7 @@ PyFileFixity Todo
 TODO
 --------
 
-000000000. Urgent bugfixes: code coverage is varying because unit test is non-deterministic somehow! Need to fix this issue! Maybe a difference between platforms (eg, of data encoding?) + Need to fix encoding error, see issue #7 on GitHub (and may be related to the previous point)
+000000000. Urgent bugfixes: code coverage is varying because unit test is non-deterministic somehow! Need to fix this issue! Maybe a difference between platforms (eg, of data encoding?) + Need to fix encoding error, see issue #7 on GitHub (and may be related to the previous point). See https://community.codecov.com/t/reported-change-in-coverage-when-no-code-changes-made/1346/9 and https://docs.codecov.com/docs/unexpected-coverage-changes
 
 00000000. Rework routines with asyncio https://github.com/SuperFastPython/PythonAsyncioJumpStart
 

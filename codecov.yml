@@ -1,0 +1,7 @@
+coverage:
+  status:
+    project:
+      default:
+        # basic
+        target: auto
+        removed_code_behavior: fully_covered_patch  # see: https://about.codecov.io/blog/new-codecov-setting-removed-code-behavior/
