@@ -484,6 +484,11 @@ Pros:
    the only freely available parity software that supports erasures.
 -  Display the predicted total ecc file size given your parameters,
    and the total time it will take to encode/decode.
+-  Your original files are still accessible as they are, protection files
+   such as ecc files live alongside your original data. Contrary to
+   other data protection schemes such as PAR2 which encode the whole
+   data in par archive files that replace your original files and
+   are not readable without decoding.
 -  Opensourced under the very permissive MIT licence, do whatever you
    want!
 
@@ -511,9 +516,9 @@ Cons:
    using the ecc file).
 -  Cannot recreate a missing file from other available files (except you
    have set a resilience\_rate at least 0.5), contrary to Parchives
-   (PAR1/PAR2). Thus, you can only repair a file if you still have it on
-   your filesystem. If it's missing, pyFileFixity cannot do anything
-   (yet, this will be implemented in the future).
+   (PAR1/PAR2). Thus, you can only repair a file if you still have it
+   (and its ecc file!) on your filesystem. If it's missing, pyFileFixity
+   cannot do anything (yet, this will be implemented in the future).
 
 Note that the tools were meant for data archival (protect files that you
 won't modify anymore), not for system's files watching nor to protect
