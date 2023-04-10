@@ -17,8 +17,8 @@ def partial_eq(file, file_partial):
     """ Do a partial comparison, line by line, we compare only using "line2 in line1", where line2 is from file_partial """
     flag = True
     with _open_csv(file, 'r') as outf, _open_csv(file_partial, 'r') as expectedf:
-        out = outf.read().strip('\n')
-        expected = expectedf.read().strip('\n').split('\n')
+        out = outf.read().strip("\r").strip("\n")
+        expected = expectedf.read().strip("\r").split("\n")
         for exp in expected:
             if not exp in out:
                 flag = False
@@ -44,8 +44,8 @@ def test_one_file():
     with _open_csv(filedb, 'r') as outf, _open_csv(fileres, 'r') as expectedf:
         # Because of differing timestamps between local and git repo, we must only do a partial comparison (we compare the beginning of the file up to the timestamp)
         # TODO: to do full comparisons including timestamps, use https://github.com/adamchainz/time-machine or freezegun
-        expected = expectedf.read()#.strip(b("\n"))
-        out = outf.read()#.strip(b("\n"))
+        expected = expectedf.read().strip("\r").strip("\n")  # workaround to remove windows carriage return character, it does not always get added but under some strange conditions (in GitHub Actions env, and not all the time, but only on Windows-2019) it can get added by csv writer, ignoring our settings. TODO: remove strip("\r") and try to find a REAL fix.
+        out = outf.read().strip("\r").strip("\n")
         assert expected in out
 
 def test_dir():
