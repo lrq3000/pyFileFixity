@@ -40,10 +40,10 @@ else:
 if sys.version_info < (3,):
     import io
     def _open_csv(x, mode='r'):
-        return io.open(x, mode, encoding='utf-8')  # see: https://stackoverflow.com/questions/5250744/difference-between-open-and-codecs-open-in-python
+        return io.open(x, mode+'b')  # on Py3, io.open() is the same as open(), see: https://stackoverflow.com/questions/5250744/difference-between-open-and-codecs-open-in-python
 else:
     def _open_csv(x, mode='r'):
-        return open(x, mode+'t', newline='', encoding='utf-8')
+        return open(x, mode+'t', newline='\n', encoding='utf-8')  # for csv module, open() mode needed to be binary for Python 2, but on Py3 it needs to be text mode, no binary! https://stackoverflow.com/a/34283957/1121352
 
 if sys.version_info < (3,):
     def _ord(x):

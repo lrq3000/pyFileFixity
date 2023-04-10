@@ -308,6 +308,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
 
     # == PROCESSING BRANCHING == #
     retval = 0 # Returned value: 0 OK, 1 KO (files in error), -1 Error
+    csv_headers = ['path', 'md5', 'sha1', 'last_modification_timestamp', 'last_modification_date', 'size', 'ext']  # preconfigure csv_headers
 
     # -- Update the database file by removing missing files
     if update and remove:
@@ -329,7 +330,6 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
                 csv_writer = csv.writer(dbfilerem, lineterminator='\n', delimiter='|', quotechar='"')
 
                 # Printing CSV headers
-                csv_headers = ['path', 'md5', 'sha1', 'last_modification_timestamp', 'last_modification_date', 'size', 'ext']
                 csv_writer.writerow(csv_headers)
 
                 dbf.seek(0)
@@ -380,7 +380,6 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
 
             if generate:
                 # Printing CSV headers
-                csv_headers = ['path', 'md5', 'sha1', 'last_modification_timestamp', 'last_modification_date', 'size', 'ext']
                 csv_writer.writerow(csv_headers)
 
             if (update and append):
