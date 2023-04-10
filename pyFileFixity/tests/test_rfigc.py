@@ -16,9 +16,9 @@ from .aux_tests import check_eq_files, check_eq_dir, path_sample_files, tamper_f
 def partial_eq(file, file_partial):
     """ Do a partial comparison, line by line, we compare only using "line2 in line1", where line2 is from file_partial """
     flag = True
-    with open(file, 'rb') as outf, open(file_partial, 'rb') as expectedf:
-        out = outf.read().strip(b('\n'))
-        expected = expectedf.read().strip(b('\n')).split(b('\n'))
+    with _open_csv(file, 'r') as outf, _open_csv(file_partial, 'r') as expectedf:
+        out = outf.read().strip('\n')
+        expected = expectedf.read().strip('\n').split('\n')
         for exp in expected:
             if not exp in out:
                 flag = False
