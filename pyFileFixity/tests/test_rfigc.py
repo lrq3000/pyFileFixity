@@ -18,9 +18,9 @@ def partial_eq(file, file_partial):
     flag = True
     with _open_csv(file, 'r') as outf, _open_csv(file_partial, 'r') as expectedf:
         out = outf.read().strip("\r").strip("\n")
-        expected = expectedf.read().strip("\r").split("\n")
+        expected = expectedf.readlines()
         for exp in expected:
-            if not exp in out:
+            if not exp.strip("\r").strip("\n") in out:
                 flag = False
                 break
     return flag
