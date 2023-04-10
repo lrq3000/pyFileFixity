@@ -18,9 +18,9 @@ def partial_eq(file, file_partial):
     flag = True
     with _open_csv(file, 'r') as outf, _open_csv(file_partial, 'r') as expectedf:
         out = outf.read().strip("\r").strip("\n")
-        expected = expectedf.readlines()
+        expected = expectedf.read().split("\n")
         for exp in expected:
-            if not exp.strip("\r").strip("\n") in out:
+            if not exp.strip("\r").strip("\n") in out:  # workaround to remove windows carriage return character, it does not always get added but under some strange conditions (in GitHub Actions env, and not all the time, but only on Windows-2019) it can get added by csv writer, ignoring our settings. TODO: remove strip("\r") and try to find a REAL fix.
                 flag = False
                 break
     return flag
