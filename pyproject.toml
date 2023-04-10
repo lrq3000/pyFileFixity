@@ -103,8 +103,8 @@ pff = "pyFileFixity.pff:main"
 [tool.setuptools.packages.find]
 # IMPORTANT: systematically delete `src/<project.name>.egg-info` folder before rebuilding, otherwise the list of included files will not get updated (it's in `SOURCES.txt` file in this folder)
 where = [""]
-include = ["pyFileFixity"]
-#exclude = ["test*"]
+include = ["pyFileFixity*"]
+#exclude = ["pyFileFixity.lib.profilers"]
 #namespaces = true
 
 [tool.setuptools.package-data]
