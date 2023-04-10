@@ -321,7 +321,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
 
         # Precompute the total number of lines to process (this should be fairly quick)
         filestodocount = 0
-        with _open_csv(database, 'r') as dbf:
+        with _open_csv2(database, 'r') as dbf:
             for row in csv.DictReader(dbf, lineterminator='\n', delimiter='|', quotechar='"'):
                 filestodocount = filestodocount + 1
 
