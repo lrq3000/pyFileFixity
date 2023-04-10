@@ -38,11 +38,12 @@ else:
             return x
 
 if sys.version_info < (3,):
+    import io
     def _open_csv(x, mode='r'):
-        return open(x, mode+'b')
+        return io.open(x, mode, encoding='utf-8')  # see: https://stackoverflow.com/questions/5250744/difference-between-open-and-codecs-open-in-python
 else:
     def _open_csv(x, mode='r'):
-        return open(x, mode+'t', newline='')
+        return open(x, mode+'t', newline='', encoding='utf-8')
 
 if sys.version_info < (3,):
     def _ord(x):
