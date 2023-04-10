@@ -45,9 +45,6 @@ else:
     def _open_csv(x, mode='r'):
         return open(x, mode+'t', newline='\n', encoding='utf-8')  # for csv module, open() mode needed to be binary for Python 2, but on Py3 it needs to be text mode, no binary! https://stackoverflow.com/a/34283957/1121352
 
-def _open_csv2(x, mode='r'):
-    return open(x, mode+'t', newline='\n', encoding='utf-8')  # for csv module, open() mode needed to be binary for Python 2, but on Py3 it needs to be text mode, no binary! https://stackoverflow.com/a/34283957/1121352
-
 if sys.version_info < (3,):
     def _ord(x):
         return ord(x)

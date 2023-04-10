@@ -7,7 +7,7 @@ import hashlib
 
 import shutil
 
-from ..lib._compat import b
+from ..lib._compat import b, _open_csv
 
 from .. import rfigc
 from ..lib.aux_funcs import recwalk
@@ -41,7 +41,7 @@ def test_one_file():
     # Check files are ok
     assert rfigc.main('-i "%s" -d "%s" --silent' % (filein, filedb)) == 0
     # Check database file is the same as the pregenerated result
-    with open(filedb, 'rb') as outf, open(fileres, 'rb') as expectedf:
+    with _open_csv(filedb, 'r') as outf, _open_csv(fileres, 'r') as expectedf:
         # Because of differing timestamps between local and git repo, we must only do a partial comparison (we compare the beginning of the file up to the timestamp)
         # TODO: to do full comparisons including timestamps, use https://github.com/adamchainz/time-machine or freezegun
         expected = expectedf.read()#.strip(b("\n"))

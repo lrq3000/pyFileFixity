@@ -47,7 +47,7 @@ thispathname = os.path.dirname(__file__)
 sys.path.append(os.path.join(thispathname))
 
 # Import necessary libraries
-from lib._compat import _str, b, _open_csv2
+from lib._compat import _str, b, _open_csv
 from lib.aux_funcs import is_dir, is_dir_or_file, fullpath, recwalk, path2unix
 import argparse
 import os, datetime, time, sys
@@ -321,12 +321,12 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
 
         # Precompute the total number of lines to process (this should be fairly quick)
         filestodocount = 0
-        with _open_csv2(database, 'r') as dbf:
+        with _open_csv(database, 'r') as dbf:
             for row in csv.DictReader(dbf, lineterminator='\n', delimiter='|', quotechar='"'):
                 filestodocount = filestodocount + 1
 
             # Preparing CSV writer for the temporary file that will have the lines removed
-            with _open_csv2(database+'.rem', 'w') as dbfilerem:
+            with _open_csv(database+'.rem', 'w') as dbfilerem:
                 csv_writer = csv.writer(dbfilerem, lineterminator='\n', delimiter='|', quotechar='"')
 
                 # Printing CSV headers
@@ -367,7 +367,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
             dbmode = 'w'
         elif (update and append):
             dbmode = 'a'
-        with _open_csv2(database, dbmode) as dbfile: # Must open in write + binary, because on Windows it will do weird things otherwise (at least with Python 2.7)
+        with _open_csv(database, dbmode) as dbfile: # Must open in write + binary, because on Windows it will do weird things otherwise (at least with Python 2.7)
             ptee.write("====================================")
             if generate:
                 ptee.write("RIFGC Database Generation started on %s" % datetime.datetime.now().isoformat())
@@ -385,7 +385,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
             if (update and append):
                 # Extract all paths already stored in database to avoid readding them
                 db_paths = {}
-                with _open_csv2(database, 'r') as dbf:
+                with _open_csv(database, 'r') as dbf:
                     for row in csv.DictReader(dbf, lineterminator='\n', delimiter='|', quotechar='"'):
                         db_paths[row['path']] = True
 
@@ -452,7 +452,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
         sha1list = {}
         dbrows = {} # TODO: instead of memorizing everything in memory, store just the reading cursor position at the beginning of the line with the size and then just read when necessary from the db file directly
         id = 0
-        with _open_csv2(database, 'r') as db:
+        with _open_csv(database, 'r') as db:
             for row in csv.DictReader(db, lineterminator='\n', delimiter='|', quotechar='"'):
                 id += 1
                 if (len(row['md5']) > 0 and len(row['sha1']) > 0):
@@ -514,12 +514,12 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
 
         # Open errors file if supplied (where we will store every errors in a formatted csv so that it can later be easily processed by other softwares, such as repair softwares)
         if errors_file is not None:
-            efile = _open_csv2(errors_file, 'w')
+            efile = _open_csv(errors_file, 'w')
             e_writer = csv.writer(efile, delimiter='|', lineterminator='\n', quotechar='"')
 
         # Precompute the total number of lines to process (this should be fairly quick)
         filestodocount = 0
-        with _open_csv2(database, 'r') as dbf:
+        with _open_csv(database, 'r') as dbf:
             for row in csv.DictReader(dbf, lineterminator='\n', delimiter='|', quotechar='"'):
                 filestodocount = filestodocount + 1
 
