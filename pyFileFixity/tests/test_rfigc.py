@@ -20,7 +20,7 @@ def partial_eq(file, file_partial):
         out = outf.read().strip("\r").strip("\n")
         expected = expectedf.read().split("\n")
         for exp in expected:
-            if not exp.strip("\r").strip("\n") in out:  # workaround to remove windows carriage return character, it does not always get added but under some strange conditions (in GitHub Actions env, and not all the time, but only on Windows-2019) it can get added by csv writer, ignoring our settings. TODO: remove strip("\r") and try to find a REAL fix.
+            if not exp.strip("\r").strip("\n") in out:  # workaround to remove windows carriage return character: we split by line and then we remove the carriage return character on each line. This character does not always get added but under some strange conditions (in GitHub Actions env, and not all the time, but only on Windows-2019) it can get added by csv writer, ignoring our settings. TODO: remove strip("\r") and try to find a REAL fix.
                 flag = False
                 break
     return flag
@@ -42,11 +42,12 @@ def test_one_file():
     assert rfigc.main('-i "%s" -d "%s" --silent' % (filein, filedb)) == 0
     # Check database file is the same as the pregenerated result
     with _open_csv(filedb, 'r') as outf, _open_csv(fileres, 'r') as expectedf:
+        out = outf.read().strip("\r").strip("\n")
         # Because of differing timestamps between local and git repo, we must only do a partial comparison (we compare the beginning of the file up to the timestamp)
         # TODO: to do full comparisons including timestamps, use https://github.com/adamchainz/time-machine or freezegun
-        expected = expectedf.read().strip("\r").strip("\n")  # workaround to remove windows carriage return character, it does not always get added but under some strange conditions (in GitHub Actions env, and not all the time, but only on Windows-2019) it can get added by csv writer, ignoring our settings. TODO: remove strip("\r") and try to find a REAL fix.
-        out = outf.read().strip("\r").strip("\n")
-        assert expected in out
+        expected = expectedf.read().split("\n")  # workaround to remove windows carriage return character, it does not always get added but under some strange conditions (in GitHub Actions env, and not all the time, but only on Windows-2019) it can get added by csv writer, ignoring our settings. TODO: remove strip("\r") and try to find a REAL fix.
+        for exp in expected:
+            assert exp.strip("\r").strip("\n") in out
 
 def test_dir():
     """ rfigc: test creation and verification of database for a full directory """
