@@ -43,8 +43,9 @@ def test_one_file():
     # Check database file is the same as the pregenerated result
     with open(filedb, 'rb') as outf, open(fileres, 'rb') as expectedf:
         # Because of differing timestamps between local and git repo, we must only do a partial comparison (we compare the beginning of the file up to the timestamp)
-        expected = expectedf.read().strip(b("\n"))
-        out = outf.read().strip(b("\n"))
+        # TODO: to do full comparisons including timestamps, use https://github.com/adamchainz/time-machine or freezegun
+        expected = expectedf.read()#.strip(b("\n"))
+        out = outf.read()#.strip(b("\n"))
         assert expected in out
 
 def test_dir():
