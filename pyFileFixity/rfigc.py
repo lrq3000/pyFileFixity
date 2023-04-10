@@ -422,7 +422,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
                     else:
                         md5hash = sha1hash = 0
                     # Compute other metadata
-                    with open(filepath) as thisfile:
+                    with open(filepath) as _:
                         # Check file structure if option is enabled
                         if structure_check:
                             struct_result = check_structure(filepath)
@@ -555,7 +555,7 @@ Note2: you can use PyPy to speed the generation, but you should avoid using PyPy
                             if struct_result:
                                 errors.append("structure error (%s)" % struct_result)
                         # Compute other metadata
-                        with open(filepath) as thisfile:
+                        with open(filepath) as _:
                             ext = os.path.splitext(filepath)[1]
                             statinfos = os.stat(filepath)
                             size = statinfos.st_size
