@@ -61,4 +61,3 @@ jobs:
       run: |
         echo ${{ steps.vars.outputs.file1 }}
         echo ${{ steps.vars.outputs.file2 }}
-      shell: pwsh
