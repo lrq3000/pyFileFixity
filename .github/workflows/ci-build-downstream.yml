@@ -1,0 +1,49 @@
+# This workflow will test a downstream dependency to functionally test current (Python) package
+# It uses the Python Package GitHub Actions workflow.
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+# and https://www.youtube.com/watch?v=l6fV09z5XHk
+
+name: ci-build-dowstream
+
+on:
+  push:
+    branches:
+      - master # $default-branch only works in Workflows templates, not in Workflows, see https://stackoverflow.com/questions/64781462/github-actions-default-branch-variable
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  testdownstream:
+    name: Unit test downstream package depending on our package
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["*", "pypy-3.9"]  # check the list of versions: https://github.com/actions/python-versions/releases and https://github.com/actions/setup-python/blob/main/docs/advanced-usage.md -- note that "*" represents the latest stable version of Python
+        os: [ ubuntu-latest, windows-latest]#, macos-latest ] # jobs that run on Windows and macOS runners that GitHub hosts consume minutes at 2 and 10 times the rate that jobs on Linux runners consume respectively. But it's free for public OSS repositories.
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache: 'pip'
+    # You can test your matrix by printing the current Python version
+    - name: Display Python version
+      run: |
+        python -c "import sys; print(sys.version)"
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        # The rest is managed by the pyproject.toml
+    - name: Echo current Python version
+      run: echo "${{ matrix.python-version }}"
+    - name: Compile the Cython extension
+      if: ${{ matrix.python-version != 'pypy-3.9' }}  # ${{}} GitHub expression syntax, need to place the target python-version in single quotes (not double quotes!) so that it does not stop parsing the literal at dots, otherwise dots will truncate the string https://docs.github.com/en/actions/learn-github-actions/expressions
+      run: |
+        pip install --upgrade --config-setting="--install-option=--no-cython-compile" cython>=3.0.0b2
+    - name: Test downstream package depending on reedsolo (pyFileFixity) as complementary functional unit test
+      run: |
+        pip install --upgrade --editable git+https://github.com/lrq3000/pyFileFixity.git#egg=pyFileFixity --verbose
+        pytest src/pyfilefixity
