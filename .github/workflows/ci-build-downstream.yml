@@ -47,3 +47,16 @@ jobs:
       run: |
         pip install --upgrade --editable git+https://github.com/lrq3000/pyFileFixity.git#egg=pyFileFixity[test] --verbose
         pytest src/pyfilefixity
+    - name: Get files contents
+      # See: https://stackoverflow.com/questions/60679609/github-action-to-simply-cat-a-file-to-an-output
+      # https://www.howtohaven.com/system/view-binary-file-on-windows.shtml
+      id: vars
+      run: |
+        echo "file1=$(format-hex src/pyfilefixity/pyFileFixity/tests/out/d_dir.csv)" >> $GITHUB_OUTPUT
+        echo "file2=$(format-hex src/pyfilefixity/pyFileFixity/tests/results/test_rfigc_test_dir.csv)" >> $GITHUB_OUTPUT
+      shell: pwsh
+    - name: Show files contents
+      run: |
+        echo ${{ steps.vars.outputs.file1 }}
+        echo ${{ steps.vars.outputs.file2 }}
+      shell: pwsh
