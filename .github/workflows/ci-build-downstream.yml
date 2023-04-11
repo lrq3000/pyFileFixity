@@ -51,11 +51,13 @@ jobs:
       # See: https://stackoverflow.com/questions/60679609/github-action-to-simply-cat-a-file-to-an-output
       # https://www.howtohaven.com/system/view-binary-file-on-windows.shtml
       id: vars
+      if: success() || failure()
       run: |
         echo "file1=$(format-hex src/pyfilefixity/pyFileFixity/tests/out/d_dir.csv)" >> $GITHUB_OUTPUT
         echo "file2=$(format-hex src/pyfilefixity/pyFileFixity/tests/results/test_rfigc_test_dir.csv)" >> $GITHUB_OUTPUT
       shell: pwsh
     - name: Show files contents
+      if: success() || failure()
       run: |
         echo ${{ steps.vars.outputs.file1 }}
         echo ${{ steps.vars.outputs.file2 }}
