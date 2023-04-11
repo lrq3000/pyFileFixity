@@ -55,7 +55,7 @@ jobs:
       run: |
         echo "file1=$(format-hex src/pyfilefixity/pyFileFixity/tests/out/d_dir.csv)" >> $GITHUB_OUTPUT
         echo "file2=$(format-hex src/pyfilefixity/pyFileFixity/tests/results/test_rfigc_test_dir.csv)" >> $GITHUB_OUTPUT
-        format-hex src/pyfilefixity/pyFileFixity/tests/out/d_dir.csv)
+        format-hex src/pyfilefixity/pyFileFixity/tests/out/d_dir.csv
         format-hex src/pyfilefixity/pyFileFixity/tests/results/test_rfigc_test_dir.csv
       shell: pwsh
     - name: Show files contents
