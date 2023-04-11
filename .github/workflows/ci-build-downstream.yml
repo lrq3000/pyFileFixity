@@ -21,7 +21,7 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ["*", "pypy-3.9"]  # check the list of versions: https://github.com/actions/python-versions/releases and https://github.com/actions/setup-python/blob/main/docs/advanced-usage.md -- note that "*" represents the latest stable version of Python
-        os: [ ubuntu-latest, windows-latest]#, macos-latest ] # jobs that run on Windows and macOS runners that GitHub hosts consume minutes at 2 and 10 times the rate that jobs on Linux runners consume respectively. But it's free for public OSS repositories.
+        os: [ windows-latest]#, ubuntu-latest, macos-latest ] # jobs that run on Windows and macOS runners that GitHub hosts consume minutes at 2 and 10 times the rate that jobs on Linux runners consume respectively. But it's free for public OSS repositories.
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
@@ -53,13 +53,6 @@ jobs:
       id: vars
       if: success() || failure()
       run: |
-        echo "file1=$(format-hex src/pyfilefixity/pyFileFixity/tests/out/d_dir.csv)" >> $GITHUB_OUTPUT
-        echo "file2=$(format-hex src/pyfilefixity/pyFileFixity/tests/results/test_rfigc_test_dir.csv)" >> $GITHUB_OUTPUT
         format-hex src/pyfilefixity/pyFileFixity/tests/out/d_dir.csv
         format-hex src/pyfilefixity/pyFileFixity/tests/results/test_rfigc_test_dir.csv
       shell: pwsh
-    - name: Show files contents
-      if: success() || failure()
-      run: |
-        echo ${{ steps.vars.outputs.file1 }}
-        echo ${{ steps.vars.outputs.file2 }}
