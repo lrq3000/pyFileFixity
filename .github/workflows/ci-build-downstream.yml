@@ -43,7 +43,7 @@ jobs:
 #      if: ${{ matrix.python-version != 'pypy-3.9' }}  # ${{}} GitHub expression syntax, need to place the target python-version in single quotes (not double quotes!) so that it does not stop parsing the literal at dots, otherwise dots will truncate the string https://docs.github.com/en/actions/learn-github-actions/expressions
 #      run: |
 #        pip install --upgrade --config-setting="--install-option=--no-cython-compile" cython>=3.0.0b2
-    - name: Test downstream package depending on reedsolo (pyFileFixity) as complementary functional unit test
+    - name: Test installing and unit testing pyFileFixity from git
       # Make sure to have a .gitattributes file with `* -text` without quotes inside, to prevent automatic crlf line endings conversions/normalization by git.
       # FIXME: Need to use the @ form once issue https://github.com/pypa/pip/issues/11951 is fixed, as supplying extras to an egg fragment is deprecated and will be removed in pip v25.
       run: |
