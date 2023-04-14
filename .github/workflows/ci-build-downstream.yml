@@ -21,7 +21,7 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ["*", "pypy-3.9"]  # check the list of versions: https://github.com/actions/python-versions/releases and https://github.com/actions/setup-python/blob/main/docs/advanced-usage.md -- note that "*" represents the latest stable version of Python
-        os: [ ubuntu-latest, macos-latest ] # windows-latest # FIXME: windows runners cause pip to unexpectedly change line returns even in binary files! So the test files are tampered and the jobs on windows will fail. See https://github.com/pypa/pip/issues/11952 - TODO: restore when this gets fixed
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
@@ -44,11 +44,12 @@ jobs:
 #      run: |
 #        pip install --upgrade --config-setting="--install-option=--no-cython-compile" cython>=3.0.0b2
     - name: Test downstream package depending on reedsolo (pyFileFixity) as complementary functional unit test
+      # Make sure to have a .gitattributes file with `* -text` without quotes inside, to prevent automatic crlf line endings conversions/normalization by git.
       # FIXME: Need to use the @ form once issue https://github.com/pypa/pip/issues/11951 is fixed, as supplying extras to an egg fragment is deprecated and will be removed in pip v25.
       run: |
         pip install --upgrade --editable git+https://github.com/lrq3000/pyFileFixity.git#egg=pyFileFixity[test] --verbose
         pytest src/pyfilefixity
-    - name: Get files contents
+    - name: Get files contents (if failure)
       # See: https://stackoverflow.com/questions/60679609/github-action-to-simply-cat-a-file-to-an-output
       # https://www.howtohaven.com/system/view-binary-file-on-windows.shtml
       id: vars
