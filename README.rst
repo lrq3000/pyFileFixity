@@ -908,7 +908,7 @@ Sounds perfect, right? Well, nothing is, LTO also has several disadvantages:
 Given all the above characteristics, LTO>=5 appears to be the best practical solution
 for long term archival, if coupled with an active curation process.
 
-There is however one exception: if you need to store the medium in a non temperate
+There is however one exception: if you need to cold store the medium in a non temperate
 environment (outside of 10-40°C), then using optical discs may be more resilient,
 although LTO cartridges should also be able to sustain a wider range of temperature
 but you need to wait while they "warm up" in the environment where the reader is
