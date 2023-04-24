@@ -923,28 +923,31 @@ either be stored on the same cartridge alongside the files or on a separate cart
 on your threat model.
 - Two kinds of archival plans are possible:
 
-   1. either only use LTO cartridges, then try to use cartridges of different brands
-   (to avoid them failing at the same time - cartridges produced by the same industrial
-   line will tend to include the same defects and similar lifespan)
-   and store your data on at least 3 different copies/cartridges, per the redundancy principle
-   (ie, "either bring one compass or three, but never two, because you will never know which one is correct").
-   2. either use LTO cartridges as ONE archival medium, and use other kinds of storage
-   for the additional 2 copies you need: one can be an external hard drive, and the last one
-   a cloud backup solution such as SpiderOak. The advantage of this solution is that
-   it is more convenient: use your external hard drive to frequently backup,
-   then also use your cloud backup to auto backup your most critical data online (off-site),
-   and finally from time to time update your last copy on a LTO cartridge by mirroring your
-   external hard drive.
+  1. either only use LTO cartridges, then try to use cartridges of different brands
+  (to avoid them failing at the same time - cartridges produced by the same industrial
+  line will tend to include the same defects and similar lifespan)
+  and store your data on at least 3 different copies/cartridges, per the redundancy principle
+  (ie, "either bring one compass or three, but never two, because you will never know which one is correct").
+
+  2. either use LTO cartridges as ONE archival medium, and use other kinds of storage
+  for the additional 2 copies you need: one can be an external hard drive, and the last one
+  a cloud backup solution such as SpiderOak. The advantage of this solution is that
+  it is more convenient: use your external hard drive to frequently backup,
+  then also use your cloud backup to auto backup your most critical data online (off-site),
+  and finally from time to time update your last copy on a LTO cartridge by mirroring your
+  external hard drive.
 
 - Curation strategy is then the same for all plans:
 
-   1. Every 5 years, check your 3 copies, either by scanning sectors or by your own
-   precomputed hashes (pyFileFixity's ``hash`` command).
-   2. If there is an error, assume the whole medium is dead and needs to be replaced
-   and your data needs to be recovered: first using your error correction codes if you have,
-   and then using pyFileFixity ``dup`` command to use a majority vote to reconstruct one valid copy out of the 3 copies.
-   3. Every 10 years, even if the mediums did not fail, replace them by newer ones: mirror the old hard drive to
-   a new one, the old LTO cartridge to a new one (it can be on a newer LTO version, so that you keep pace with the technology), etc.
+  1. Every 5 years, check your 3 copies, either by scanning sectors or by your own
+  precomputed hashes (pyFileFixity's ``hash`` command).
+
+  2. If there is an error, assume the whole medium is dead and needs to be replaced
+  and your data needs to be recovered: first using your error correction codes if you have,
+  and then using pyFileFixity ``dup`` command to use a majority vote to reconstruct one valid copy out of the 3 copies.
+
+  3. Every 10 years, even if the mediums did not fail, replace them by newer ones: mirror the old hard drive to
+  a new one, the old LTO cartridge to a new one (it can be on a newer LTO version, so that you keep pace with the technology), etc.
 
 Tools like pyFileFixity (or which can be used as complements)
 -------------------------------------------------------------
