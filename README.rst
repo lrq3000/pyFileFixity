@@ -846,7 +846,9 @@ lifespan of 20-50 years depending on if they are "gold archival grade", whereas
 DVD should live up from 10-30 years. CDs are only required to live a minimum of 1 year
 up to 10 years max, hence are not fit for archival. Archival optimized optical discs
 such as M-Discs boast about being able to live up to 100 years, but there is no
-independent scientific backing of these claims currently.
+independent scientific backing of these claims currently. For more details, you can read
+a longer explanation I wrote with references on
+`StackOverflow <https://web.archive.org/web/20230424112000/https://superuser.com/questions/374609/what-medium-should-be-used-for-long-term-high-volume-data-storage-archival/873260>`__.
 
 However, limitations of optical discs include their limited storage space, low
 transfer speed, and limited rewriteability.
