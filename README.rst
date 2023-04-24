@@ -315,20 +315,14 @@ aren't a good storage medium for the long term, for two reasons:
   you try to do that manually you'll probably fail).
 
 In the end, it's a lot better to just separate the storage medium of
-data, with the reading instrument. The medium I advise is optical disks
-(whether it's BluRay, DVD, CD or whatever), because the reading
-instrument is separate, and the technology (laser reflecting on bumps
-and/or pits) is kind of universal, so that even if the technology is
-lost one day (deprecated by newer technologies, so that you can't find
-the reading instrument anymore because it's not sold anymore), you can
-probably emulate a laser using some software to read your optical disk,
-just like what the CAMiLEON project did to recover data from the
-LaserDiscs of the BBC Domesday Project (see Wikipedia).
+data, with the reading instrument.
+
+We will talk later about what storage mediums can be used instead.
 
 Applications included
 ---------------------
 
-The project currently include the following pure-python applications:
+The pyFileFixity suite currently include the following pure-python applications:
 
 -  rfigc.py (subcommand: ``hash``), a hash auditing tool, similar to md5deep/hashdeep, to
    compute a database of your files along with their metadata, so that
@@ -414,11 +408,7 @@ The project currently include the following pure-python applications:
    is also available).
 
 Note that all tools are primarily made for command-line usage (type
-script.py --help to get extended info about the accepted arguments), but
-you can also use rfigc.py and header\_ecc.py with a GUI by using the
---gui argument (must be the first and only one argument supplied). The
-GUI is provided as-is and minimal work will be done to maintain it (the
-focus will stay on functionality rather than ergonomy).
+pff <subcommand> --help to get extended info about the accepted arguments)
 
 IMPORTANT: it is CRITICAL that you use the same parameters for
 correcting mode as when you generated the database/ecc files (this is
@@ -439,7 +429,7 @@ heart. If you forget them, don't panic, the parameters are always stored
 as comments in the header of the generated ecc files, but you should try
 to store them outside of the ecc files anyway.
 
-For users: what's the advantage of pyFileFixity?
+For users: what are the advantages of pyFileFixity?
 ------------------------------------------------
 
 Pros:
@@ -838,6 +828,116 @@ pyFileFixity to generate an ecc file on your DAR or ZIP archive, which
 will then protect both your files just like before and the directories
 meta-data too now.
 
+Which storage medium to use
+---------------------------
+Since hard drives have a relatively short timespan (5-10 years, often less)
+and require regular plugging to an electrical outlet to keep the magnetic
+plates from decaying, other solutions are more advisable.
+
+The medium I used to advise was optical disks (whether it's BluRay, DVD - not CDs!),
+because the reading instrument is distinct from the storage medium, and
+the technology (laser reflecting on bumps and/or pits) is kind of universal,
+so that even if the technology is lost one day (deprecated by newer technologies,
+so that you can't find the reading instrument anymore because it's not sold anymore),
+you can probably emulate a laser using some software to read your optical disk,
+just like what the CAMiLEON project did to recover data from the
+LaserDiscs of the BBC Domesday Project (see Wikipedia). BluRays have an estimated
+lifespan of 20-50 years depending on if they are "gold archival grade", whereas
+DVD should live up from 10-30 years. CDs are only required to live a minimum of 1 year
+up to 10 years max, hence are not fit for archival. Archival optimized optical discs
+such as M-Discs boast about being able to live up to 100 years, but there is no
+independent scientific backing of these claims currently.
+
+However, limitations of optical discs include their limited storage space, low
+transfer speed, and limited rewriteability.
+
+A more convenient solution is to use magnetic tape, especially with an open standard
+such as `Linear Tape Open (LTO) <https://en.wikipedia.org/wiki/Linear_Tape-Open>`__,
+which ensures interoperability between manufacturers
+and hence also reduces cost because of competition. LTO works as a two components
+system: the tape drive, and the cartridges (with the magnetic bands). There
+are lots of versions of LTO, each generation improving on the previous one.
+LTO cartridges have a shorter lifespan than optical discs, being 15-30 years on average,
+but they are much more convenient to use:
+* they provide extremely big storage space (one cartridge being several TB as of LTO-4,
+and the storage capacity approximately doubles every few years with every new version!),
+* are fast to write (about 5h to write the full cartridge, speed increases with new versions
+so the total time to fill a cartridge stays about the same),
+* the storage medium (cartridges) is also distinct from the reading/writing instrument (LTO tape drive), 
+* are easily rewriteable, although it is necessary to reformat to free up space, but the idea is
+that "full mirror backups" can be made regularly by overwriting an old tape.
+* being an open standard, drives to read older versions 25 years old (LTO-1 is from 2000)
+are still available.
+* 15-30 years of lifespan is still great for archival! But requires active curation (ie, make a
+new copy on a new cartridge every decade).
+* Cartridges are cheap: LTO7 cartridges allowing storage of up to 15 TB cost only 60 bucks brand new, often
+much less in refurbished (already used, but can be overwritten and reused). This is MUCH less expensive
+than hard drives.
+* Fit for cold storage: unlike hard drives (using magnetic platters) and like optical discs,
+the cartridges do not need to be plugged to an electrical outlet regularly, the magnetic band does not
+decay without electrical current, so the cartridges can be cold stored in air-tight, temperature-proofed
+and humidity-proof containers, which can be stored off-site (fire-proof data recovery plan).
+* Recovery of failed LTO cartridges is
+`inexpensive and readily available <https://www.quora.com/I-have-an-old-LTO-tape-Can-I-recover-its-data-and-save-it-into-a-hard-drive>`__,
+whereas recovering the magnetic signal from failed hard drives costs
+`thousands of euros/dollars <https://www.quora.com/Is-there-any-way-of-recovering-data-from-dead-hard-disk>`__.
+LTO tapes are also fully compatible with DAR archives, improving chances of recovery with error correction codes
+and non-solid archives that can be partially recovered.
+
+Sounds perfect, right? Well, nothing is, LTO also has several disadvantages:
+* Initial cost of starting is very expensive: a brand new LTO drive of latest generations
+cost several thousand euros/dollars. Refurbished drives of older generations are much less expensive,
+but they are very difficult to setup.
+* Limited retrocompatibility: the LTO standard specifies that each generation of drives
+only need to support the current gen and one past gen.
+* LTO is a sequential technology: it is very fast to write and read sequentially, but if you want to
+download a specific file, the tape has to be fully read up to where the file is stored, contrary to
+hard drives with random access that can access in linear or sublinear time.
+* Before LTO-5, which introduced the LTFS standardized filesystem that allows mounting on
+any operating file system such as Windows, Linux and MacOS, the various LTO drives
+manufacturers used their own closed-source filesystems that were often incompatible with each others.
+Hence, make sure to get an LTO-5 drive or above to ensure future access to your long term archives.
+
+Given all the above characteristics, LTO>=5 appears to be the best practical solution
+for long term archival, if coupled with an active curation process.
+
+A modern data curation strategy for individuals
+-----------------------------------------------
+
+Here is an example curation strategy, which is accessible to individuals and not just
+big data centers:
+* Get a LTO>=5 drive. Essentially, the idea with LTO is that you can just dump a copy
+of your whole hard drives, since the cartridges are big and inexpensive. And you can
+regularly reformat and overwrite the previous copy with a newer one. Store some LTO cartridges
+out of side to be robust against fires.
+* If you want additional protection, especially by adding error-correction codes,
+DAR can be used to compress the data with PAR2 and is
+`compatible <https://superuser.com/questions/963246/how-to-read-an-dar-archive-via-lto-6-tape>`__
+with LTO. Alternatively, pyFileFixity can also be used to generate ECC codes, that can
+either be stored on the same cartridge alongside the files or on a separate cartridge depending
+on your threat model.
+* Two kinds of archival plans are possible:
+   1. either only use LTO cartridges, then try to use cartridges of different brands
+   (to avoid them failing at the same time - cartridges produced by the same industrial
+   line will tend to include the same defects and similar lifespan)
+   and store your data on at least 3 different copies/cartridges, per the redundancy principle
+   (ie, "either bring one compass or three, but never two, because you will never know which one is correct").
+   2. either use LTO cartridges as ONE archival medium, and use other kinds of storage
+   for the additional 2 copies you need: one can be an external hard drive, and the last one
+   a cloud backup solution such as SpiderOak. The advantage of this solution is that
+   it is more convenient: use your external hard drive to frequently backup,
+   then also use your cloud backup to auto backup your most critical data online (off-site),
+   and finally from time to time update your last copy on a LTO cartridge by mirroring your
+   external hard drive.
+* Curation strategy is then the same for all plans:
+   1. Every 5 years, check your 3 copies, either by scanning sectors or by your own
+   precomputed hashes (pyFileFixity's ``hash`` command).
+   2. If there is an error, assume the whole medium is dead and needs to be replaced
+   and your data needs to be recovered: first using your error correction codes if you have,
+   and then using pyFileFixity ``dup`` command to use a majority vote to reconstruct one valid copy out of the 3 copies.
+   3. Every 10 years, even if the mediums did not fail, replace them by newer ones: mirror the old hard drive to
+   a new one, the old LTO cartridge to a new one (it can be on a newer LTO version, so that you keep pace with the technology), etc.
+
 Tools like pyFileFixity (or which can be used as complements)
 -------------------------------------------------------------
 
@@ -851,7 +951,10 @@ generate an ecc file):
    plus it saves the directory tree meta-data -- see catalog isolation
    -- plus it can handle error correction natively using PAR2 and
    encryption. Also supports incremental backup, thus it's a very nice
-   versatile tool. Crossplatform and opensource.
+   versatile tool. Crossplatform and opensource. Compatible with
+   `Linear Tape Open (LTO) <https://en.wikipedia.org/wiki/Linear_Tape-Open>`__
+   magnetic bands storage (see instructions
+   `here <https://superuser.com/questions/963246/how-to-read-an-dar-archive-via-lto-6-tape>`__)
 -  `DVDisaster <http://dvdisaster.net/>`__: error correction at the bit
    level for optical mediums (CD, DVD and BD / BluRay Discs). Very good,
    it also protects directory tree meta-data and is resilient to
