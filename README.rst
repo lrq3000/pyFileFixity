@@ -908,6 +908,26 @@ Sounds perfect, right? Well, nothing is, LTO also has several disadvantages:
 Given all the above characteristics, LTO>=5 appears to be the best practical solution
 for long term archival, if coupled with an active curation process.
 
+There is however one exception: if you need to store the medium in a non temperate
+environment (outside of 10-40°C), then using optical discs may be more resilient,
+although LTO cartridges should also be able to sustain a wider range of temperature
+but you need to wait while they "warm up" in the environment where the reader is
+before reading, so that the magnetic elements have time to stabilize at normal temperature.
+
+To get started with LTO tape drives and which one to choose and how to make your own
+rig, please read `this excellent tutorial by Matthew Millman <https://www.mattmillman.com/attaching-lto-tape-drives-via-usb-or-thunderbolt/>`__.
+
+If you find a refurbished LTO drive, consult its user manual beforehand to see
+what SAS or fibre cable (FC) you need (if SAS, any version should work, but older
+versions will just limit the read/write speed performance). For example,
+here is the manual for the `HP LTO6 drive <https://docs.oracle.com/cd/E38452_01/en/LTO6_Vol1_E1_D7/LTO6_Vol1_E1_D7.pdf>`__.
+Essentially, you just need to have a computer with a PCIe slot, and get a SAS or FC adapter (depending
+on whether your LTO drive is SAS or FC) so that you can plug your LTO drive. There is
+currently no SAS to USB adapter, and only one manufacturer makes LTO drives with USB ports but
+they are super expensive, so just stick with internal SAS or FC drives (usually you want SAS,
+FC are better for long range connections, whereas SAS is compatible with SATA and SCSI drives,
+so you can also plug all your other hard drives plus the LTO tape drive on the same SAS adapter with this protocol).
+
 A modern data curation strategy for individuals
 -----------------------------------------------
 
@@ -955,6 +975,11 @@ big data centers:
 With the above strategy, you should be able to preserve your data for as long as you can actively curate it. In case you want
 more robustness against accidents or the risk that 2 copies get corrupted under 5 years, then you can make more copies, preferably
 as LTO cartridges, but it can be other hard drives.
+
+For more information on how to cold store LTO drives, read pp32-33 "Caring for Cartridges" instruction of this
+`user manual <https://docs.oracle.com/cd/E38452_01/en/LTO6_Vol1_E1_D7/LTO6_Vol1_E1_D7.pdf>`__. For HP LTO6 drives,
+Matthew Millman made an open-source commandline tool to do advanced LTO manipulations on Windows:
+`ltfscmd <https://github.com/inaxeon/ltfscmd>`__.
 
 In case you cannot afford a LTO drive, you can replace these by external hard drives, as they are less expensive to start with,
 but then your curation strategy should be done more frequently (ie, every 2-3 years a small checkup, and every 5 years, a big checkup).
