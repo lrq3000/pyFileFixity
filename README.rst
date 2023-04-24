@@ -275,6 +275,10 @@ timescale:
    RAID5, it is enough to have 2 silent errors on two disks on the same
    bit for the bit to be unrecoverable). That's why a limit of only 1 or
    2 disks failures is just not enough.
+-  Finally, it's worth noting that `hard drives do implement ECC codes <https://superuser.com/a/1554342/157556>`__
+   to be resilient against bad sectors (otherwise we would lose data
+   all the time!), but they only have limited corrective capacity,
+   mainly because the ECC code is short and not configurable.
 
 On the opposite, ECC can correct n-k disks (or files). You can configure
 n and k however you want, so that for example you can set k = n/2, which
