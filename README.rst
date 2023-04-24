@@ -861,25 +861,26 @@ system: the tape drive, and the cartridges (with the magnetic bands). There
 are lots of versions of LTO, each generation improving on the previous one.
 LTO cartridges have a shorter lifespan than optical discs, being 15-30 years on average,
 but they are much more convenient to use:
-* they provide extremely big storage space (one cartridge being several TB as of LTO-4,
+
+- they provide extremely big storage space (one cartridge being several TB as of LTO-4,
 and the storage capacity approximately doubles every few years with every new version!),
-* are fast to write (about 5h to write the full cartridge, speed increases with new versions
+- are fast to write (about 5h to write the full cartridge, speed increases with new versions
 so the total time to fill a cartridge stays about the same),
-* the storage medium (cartridges) is also distinct from the reading/writing instrument (LTO tape drive), 
-* are easily rewriteable, although it is necessary to reformat to free up space, but the idea is
+- the storage medium (cartridges) is also distinct from the reading/writing instrument (LTO tape drive), 
+- are easily rewriteable, although it is necessary to reformat to free up space, but the idea is
 that "full mirror backups" can be made regularly by overwriting an old tape.
-* being an open standard, drives to read older versions 25 years old (LTO-1 is from 2000)
+- being an open standard, drives to read older versions 25 years old (LTO-1 is from 2000)
 are still available.
-* 15-30 years of lifespan is still great for archival! But requires active curation (ie, make a
+- 15-30 years of lifespan is still great for archival! But requires active curation (ie, make a
 new copy on a new cartridge every decade).
-* Cartridges are cheap: LTO7 cartridges allowing storage of up to 15 TB cost only 60 bucks brand new, often
+- Cartridges are cheap: LTO7 cartridges allowing storage of up to 15 TB cost only 60 bucks brand new, often
 much less in refurbished (already used, but can be overwritten and reused). This is MUCH less expensive
 than hard drives.
-* Fit for cold storage: unlike hard drives (using magnetic platters) and like optical discs,
+- Fit for cold storage: unlike hard drives (using magnetic platters) and like optical discs,
 the cartridges do not need to be plugged to an electrical outlet regularly, the magnetic band does not
 decay without electrical current, so the cartridges can be cold stored in air-tight, temperature-proofed
 and humidity-proof containers, which can be stored off-site (fire-proof data recovery plan).
-* Recovery of failed LTO cartridges is
+- Recovery of failed LTO cartridges is
 `inexpensive and readily available <https://www.quora.com/I-have-an-old-LTO-tape-Can-I-recover-its-data-and-save-it-into-a-hard-drive>`__,
 whereas recovering the magnetic signal from failed hard drives costs
 `thousands of euros/dollars <https://www.quora.com/Is-there-any-way-of-recovering-data-from-dead-hard-disk>`__.
@@ -887,15 +888,16 @@ LTO tapes are also fully compatible with DAR archives, improving chances of reco
 and non-solid archives that can be partially recovered.
 
 Sounds perfect, right? Well, nothing is, LTO also has several disadvantages:
-* Initial cost of starting is very expensive: a brand new LTO drive of latest generations
+
+- Initial cost of starting is very expensive: a brand new LTO drive of latest generations
 cost several thousand euros/dollars. Refurbished drives of older generations are much less expensive,
 but they are very difficult to setup.
-* Limited retrocompatibility: the LTO standard specifies that each generation of drives
+- Limited retrocompatibility: the LTO standard specifies that each generation of drives
 only need to support the current gen and one past gen.
-* LTO is a sequential technology: it is very fast to write and read sequentially, but if you want to
+- LTO is a sequential technology: it is very fast to write and read sequentially, but if you want to
 download a specific file, the tape has to be fully read up to where the file is stored, contrary to
 hard drives with random access that can access in linear or sublinear time.
-* Before LTO-5, which introduced the LTFS standardized filesystem that allows mounting on
+- Before LTO-5, which introduced the LTFS standardized filesystem that allows mounting on
 any operating file system such as Windows, Linux and MacOS, the various LTO drives
 manufacturers used their own closed-source filesystems that were often incompatible with each others.
 Hence, make sure to get an LTO-5 drive or above to ensure future access to your long term archives.
@@ -908,17 +910,19 @@ A modern data curation strategy for individuals
 
 Here is an example curation strategy, which is accessible to individuals and not just
 big data centers:
-* Get a LTO>=5 drive. Essentially, the idea with LTO is that you can just dump a copy
+
+- Get a LTO>=5 drive. Essentially, the idea with LTO is that you can just dump a copy
 of your whole hard drives, since the cartridges are big and inexpensive. And you can
 regularly reformat and overwrite the previous copy with a newer one. Store some LTO cartridges
 out of side to be robust against fires.
-* If you want additional protection, especially by adding error-correction codes,
+- If you want additional protection, especially by adding error-correction codes,
 DAR can be used to compress the data with PAR2 and is
 `compatible <https://superuser.com/questions/963246/how-to-read-an-dar-archive-via-lto-6-tape>`__
 with LTO. Alternatively, pyFileFixity can also be used to generate ECC codes, that can
 either be stored on the same cartridge alongside the files or on a separate cartridge depending
 on your threat model.
-* Two kinds of archival plans are possible:
+- Two kinds of archival plans are possible:
+
    1. either only use LTO cartridges, then try to use cartridges of different brands
    (to avoid them failing at the same time - cartridges produced by the same industrial
    line will tend to include the same defects and similar lifespan)
@@ -931,7 +935,9 @@ on your threat model.
    then also use your cloud backup to auto backup your most critical data online (off-site),
    and finally from time to time update your last copy on a LTO cartridge by mirroring your
    external hard drive.
-* Curation strategy is then the same for all plans:
+
+- Curation strategy is then the same for all plans:
+
    1. Every 5 years, check your 3 copies, either by scanning sectors or by your own
    precomputed hashes (pyFileFixity's ``hash`` command).
    2. If there is an error, assume the whole medium is dead and needs to be replaced
