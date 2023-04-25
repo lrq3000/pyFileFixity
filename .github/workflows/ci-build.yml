@@ -51,7 +51,7 @@ jobs:
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
       with:
-        #token: ${{ secrets.CODECOV_TOKEN }}  # not required for public repos
+        token: ${{ secrets.CODECOV_TOKEN }}  # not required for public repos, but still advised to avoid rate-limiting API by GitHub which makes the upload fails randomly: https://community.codecov.com/t/upload-issues-unable-to-locate-build-via-github-actions-api/3954/9 and https://github.com/codecov/codecov-action/issues/598
         #directory: ./coverage/reports/
         env_vars: OS,PYTHON
         fail_ci_if_error: true
