@@ -26,19 +26,21 @@ Only a few corrupted bytes are enough to make the image looks like totally
 unrecoverable, and yet we are lucky, because the image could be unreadable at all
 if any of the "magic bytes" were to be corrupted!
 
-At the right, the corrupted image was repaired using `header_ecc.py` of pyFileFixity.
+At the right, the corrupted image was repaired using ``pff header`` command of pyFileFixity.
 This repaired only the image header (ie, the first part of the file), so only the first
 3 corrupted bytes were repaired, not the 2 bytes in the rest of the file, but we can see
-the image looks like it's totally repaired! And the best thing is that it only costed the generation
-of a "ecc repair file", which size is only 3.3KB (17% of the original file)!
+the image looks indistinguishable from the untampered original! And the best thing is that
+it only costed the generation of a "ecc repair file" for the header, which size is only a
+constant 3.3KB per file, regardless of the file's size!
 
 This works because most files will store the most important information to read them at
 their beginning, also called "file's header", so repairing this part will almost always ensure
 the possibility to read the file (even if the rest of the file is still corrupted, if the header is safe,
-you can read it).
+you can read it). This works especially well for images, compressed files, formatted documents such as
+DOCX and ODT, etc.
 
 Of course, you can also protect the whole file, not only the header, using pyFileFixity's
-`structural_adaptive_ecc.py`. You can also detect any corruption using `rfigc.py`.
+``pff whole`` command. You can also detect any corruption using ``pff hash``.
 
 ------------------------------------------
 
