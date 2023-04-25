@@ -31,7 +31,7 @@ This repaired only the image header (ie, the first part of the file), so only th
 3 corrupted bytes were repaired, not the 2 bytes in the rest of the file, but we can see
 the image looks indistinguishable from the untampered original! And the best thing is that
 it only costed the generation of a "ecc repair file" for the header, which size is only a
-constant 3.3KB per file, regardless of the file's size!
+constant 3.3KB per file, regardless of the protected file's size!
 
 This works because most files will store the most important information to read them at
 their beginning, also called "file's header", so repairing this part will almost always ensure
