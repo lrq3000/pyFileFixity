@@ -1,7 +1,9 @@
+# Note about syntax: avoid using tabs!
+# If yaml is malformatted, it can be checked locally against codecov specific yaml reader: https://docs.codecov.com/docs/codecov-yaml#validate-your-repository-yaml
 coverage:
-  precision: 2			# 0 decimals of precision
+  precision: 2          # 0 decimals of precision
   round: down           # Round to floor
-  range:        		# red -> yellow -> green
+  range:                # red -> yellow -> green
   - 60.0
   - 80.0
 
@@ -11,4 +13,8 @@ coverage:
         # basic
         target: auto
         removed_code_behavior: fully_covered_patch  # see: https://about.codecov.io/blog/new-codecov-setting-removed-code-behavior/
-        threshold: 1%		# allow 1% coverage variance, because depending on the run, different OSes results are uploaded for each run and some code is OS-specific, so this is it's within expected OS-dependent variability
+        threshold: 1%       # allow 1% coverage variance, because depending on the run, different OSes results are uploaded for each run and some code is OS-specific, so this is it's within expected OS-dependent variability
+
+    patch:
+      default:
+        threshold: 1%       # allow 1% coverage variance
