@@ -38,12 +38,17 @@ jobs:
         #python -m pip install pytest pytest-cov  # done in setup.cfg for Py2 or pyproject.toml for Py3
         #if [ ${{ matrix.python-version }} <= 3.7 ]; then python -m pip install 'coverage<4'; else python -m pip install coverage; fi
         #if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Install this module
+    - name: Install this module without testmeta
+      if: ${{ matrix.python-version != '*' }}
       #if: ${{ matrix.python-version >= 3 }}  # does not work on dynamic versions, see: https://github.com/actions/setup-python/issues/644
       # Do not import testmeta, they make the build fails somehow, because some dependencies are unavailable on Py2
       # We use test.pypi.org to test against cutting-edge builds of reedsolo
       run: |
         python -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple --upgrade --editable .[test] --verbose --use-pep517
+    - name: Install this module with testmeta packages
+      if: ${{ matrix.python-version == '*' }}
+      run: |
+        python -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple --upgrade --editable .[test,testmeta] --verbose --use-pep517
     - name: Test with pytest
       run: |
         coverage run --branch -m pytest . -v
