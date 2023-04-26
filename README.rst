@@ -906,7 +906,15 @@ Sounds perfect, right? Well, nothing is, LTO also has several disadvantages:
    cost several thousand euros/dollars. Refurbished drives of older generations are much less expensive,
    but they are very difficult to setup.
 -  Limited retrocompatibility: the LTO standard specifies that each generation of drives
-   only need to support the current gen and one past gen.
+   only need to support the current gen and one past gen. However, this is counterbalanced by the fact that
+   the LTO standard is open, so anybody can make LTO drives, including in the future, and it is possible someday
+   a manufacturer will make a LTO drive that supports multiple past generations (just like there are old tapes
+   digitizers that can be connected in USB, for archival purposes). Until then, in practice,
+   it means that ideally when upgrading your LTO system, you need to upgrade by one generation at a time,
+   or if you get a drive of 2+ later gens, you need to keep or buy a drive of the older gen you had to
+   read your tapes to then transfer to the latest gen you have. As of 2023, there are still LTO1 tape drives
+   available for cheap in second-hand, a technology that was published in 2000 and already deprecated
+   in 2001 by LTO2, so this shows that LTO tape drives of older generations should still be plentily available.
 -  LTO is a sequential technology: it is very fast to write and read sequentially, but if you want to
    download a specific file, the tape has to be fully read up to where the file is stored, contrary to
    hard drives with random access that can access in linear or sublinear time.
