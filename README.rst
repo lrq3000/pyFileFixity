@@ -884,8 +884,8 @@ but they are much more convenient to use:
    that "full mirror backups" can be made regularly by overwriting an old tape.
 -  being an open standard, drives to read older versions 25 years old (LTO-1 is from 2000)
    are still available.
--  15-30 years of lifespan is still great for archival! But requires active curation (ie, make a
-   new copy on a new cartridge every decade).
+-  15-30 years of lifespan is still great for archival! But requires active curation (ie, checking
+   cartridges every 5 years and making a full new copy on a new cartridge each decade should be largely sufficient).
 -  Cartridges are cheap: LTO7 cartridges allowing storage of up to 15 TB cost only 60 bucks brand new, often
    much less in refurbished (already used, but can be overwritten and reused). This is MUCH less expensive
    than hard drives.
@@ -926,7 +926,7 @@ Sounds perfect, right? Well, nothing is, LTO also has several disadvantages:
    Hence, make sure to get an LTO-5 drive or above to ensure future access to your long term archives.
 
 Given all the above characteristics, LTO>=5 appears to be the best practical solution
-for long term archival, if coupled with an active curation process.
+for long term archival, if coupled with an active (but infrequent) curation process.
 
 There is however one exception: if you need to cold store the medium in a non temperate
 environment (outside of 10-40°C), then using optical discs may be more resilient,
