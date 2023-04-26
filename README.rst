@@ -440,7 +440,7 @@ as comments in the header of the generated ecc files, but you should try
 to store them outside of the ecc files anyway.
 
 For users: what are the advantages of pyFileFixity?
-------------------------------------------------
+---------------------------------------------------
 
 Pros:
 
