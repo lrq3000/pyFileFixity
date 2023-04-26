@@ -59,3 +59,11 @@ jobs:
         flags: unittests
         name: codecov-umbrella
         verbose: true
+    - name: Twine check
+      if: ${{ matrix.python-version == '*' }}
+      run: |
+        twine check "dist/*"
+        rstcheck README.rst
+    - name: pyproject.toml validity
+      if: ${{ matrix.python-version == '*' }}
+      run: validate-pyproject pyproject.toml -v
