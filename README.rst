@@ -246,8 +246,8 @@ In practice, both approaches are not exclusive, and the best is to
 combine them: protect the most precious data with error correction codes,
 then duplicate them as well as less sensitive data across multiple storage mediums.
 Hence, this suite of data protection tools, just like any other such suite, is not
-sufficient to guarantee your data is protected, you must have an active data curation
-strategy which includes regularly checking your data and replacing copies that are damaged.
+sufficient to guarantee your data is protected, you must have an active (but infrequent and hence not time consuming)
+data curation strategy that includes regularly checking your data and replacing copies that are damaged every few years.
 
 For a primer on storage mediums and data protection strategies, see `this post I wrote <https://web.archive.org/web/20220529125543/https://superuser.com/questions/374609/what-medium-should-be-used-for-long-term-high-volume-data-storage-archival/873260>`_.
 
