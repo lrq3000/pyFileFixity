@@ -105,6 +105,10 @@ You should see:
 
 Note: this also works for a single file, just replace "your_folder" by "your_file.ext".
 
+- To update this monitoring database (check for new files, but does not remove files that do not exist anymore - replace ``--append`` with ``--remove`` for the latter):
+
+``pff hash -i "your_folder -d "dbhash.csv" --update --append
+
 - Later, to check which files were corrupted:
 
 ``pff hash -i "your_folder" -d "dbhash.csv" -l log.txt -s -e errors.csv``
