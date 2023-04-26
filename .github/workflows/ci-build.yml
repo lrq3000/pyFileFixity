@@ -64,6 +64,9 @@ jobs:
         flags: unittests
         name: codecov-umbrella
         verbose: true
+    - name: Build sdist (necessary for the other tests below)
+      if: ${{ matrix.python-version == '*' }}
+      run: python -sBm build --verbose
     - name: Twine check
       if: ${{ matrix.python-version == '*' }}
       run: |
