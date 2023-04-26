@@ -924,19 +924,43 @@ although LTO cartridges should also be able to sustain a wider range of temperat
 but you need to wait while they "warm up" in the environment where the reader is
 before reading, so that the magnetic elements have time to stabilize at normal temperature.
 
-To get started with LTO tape drives and which one to choose and how to make your own
-rig, please read `this excellent tutorial by Matthew Millman <https://www.mattmillman.com/attaching-lto-tape-drives-via-usb-or-thunderbolt/>`__.
+How to get a LTO tape drive and system running
+----------------------------------------------
 
-If you find a refurbished LTO drive, consult its user manual beforehand to see
-what SAS or fibre cable (FC) you need (if SAS, any version should work, but older
-versions will just limit the read/write speed performance). For example,
-here is the manual for the `HP LTO6 drive <https://docs.oracle.com/cd/E38452_01/en/LTO6_Vol1_E1_D7/LTO6_Vol1_E1_D7.pdf>`__.
-Essentially, you just need to have a computer with a PCIe slot, and get a SAS or FC adapter (depending
+To get started with LTO tape drives and which one to choose and how to make your own
+rig, `Matthew Millman made an excellent tutorial <https://www.mattmillman.com/attaching-lto-tape-drives-via-usb-or-thunderbolt/>`__
+on which we build upon below, so you should read this tutorial and then read the instructions below.
+
+The process is as follows: first find a second-hand/refurbished LTO drive with the highest revision you can for your budget,
+then find a server of a similar generation, or make an eGPU + SAS card of the highest speed the tape drive can support.
+Generally, you can aim for a LTO drive 3-4 generations older than the latest one (eg, if current is LTO9, you can expect
+cheap - 150-300 dollars per drive) for a LTO5 or LTO6). Aim only for LTO5+, because only LTFS did not exist before LTO5,
+but keep in mind some LTO5 drives need a firmware update to support LTFS, whereas all LTO6 drives support out of the box.
+
+Once you find a second-hand LTO drive, consult its user manual beforehand to see
+what SAS or fibre cable (FC) you need (if SAS, any version should work, even greater versions, but older
+versions will just limit the read/write speed performance). For example, here is the manual for the
+`HP LTO6 drive <https://docs.oracle.com/cd/E38452_01/en/LTO6_Vol1_E1_D7/LTO6_Vol1_E1_D7.pdf>`__.
+All LTO drives are compatible with all computers provided you have the adequate connectivity (a SAS or FC adapter).
+
+Once you have a LTO drive, then you can look for a computer to plug your LTO to. Essentially, you just need a computer that supports SAS. If not, then at least a free PCIe or mini-PCIe slot to be able to connect a SAS adapter.
+
+The general outline is that you just need to have a computer with a PCIe slot, and get a SAS or FC adapter (depending
 on whether your LTO drive is SAS or FC) so that you can plug your LTO drive. There is
 currently no SAS to USB adapter, and only one manufacturer makes LTO drives with USB ports but
 they are super expensive, so just stick with internal SAS or FC drives (usually you want SAS,
 FC are better for long range connections, whereas SAS is compatible with SATA and SCSI drives,
 so you can also plug all your other hard drives plus the LTO tape drive on the same SAS adapter with this protocol).
+
+In practice, there are 2 different available cost-effective approaches:
+
+*  If you have an external tape drive, then the best is to get a (second-hand) eGPU casing, and a PCIe SAS adapter, that you will plug in the eGPU casing instead of a GPU card. The eGPU casing should support Thunderbolt so this is how you will connect to the SAS and hence to your tape drive: you connect your laptop to the eGPU casing, and the eGPU casing to the external tape drive via the SAS adapter in the eGPU casing. This usually costs about 150-200 euros/dollars as of 2023.
+  *  An alternative is to buy a low footprint PCIe dock such as `EXP GDC <https://wiki.geekworm.com/GDC>`__ produces, which essentially replaces the eGPU casing. The disadvantage is that your PCIe SAS adapter will be exposed, but this can be more cost effective (especially in second hand, you can get them at 20-40 euros/dollars instead of 120-150 euros/dollars brand new). But remember you also need to buy a power supply unit!
+*  If you got an internal tape drive, which are usually cheaper than external ones, then the approach is different: instead of configuring a sort of SAS-to-Thunderbolt bridge, here you get a standalone computer with either a motherboard that natively supports SAS (which is usually the case of computers meant to be servers), or at least a motherboard with a PCIe slot to buy separately a PCIe SAS adapter, and you plug your internal drive inside. So you will not be able to connect your laptop directly to the tape drive, you will have to pilot the server (which is just a standard desktop computer). Given these requirements, you can either make such a server yourself, but then keep in mind you have to build the whole computer, with a motherboard, a power supply, RAM, CPU, network, etc. Or, the easiest and usually cheapest route, is to just buy an old server with SAS hard drives second-hand (and every other components already in it), of a similar or later generation than your tape drive. Indeed, if the server has SAS hard drives, then it means you can connect your SAS tape drive too, no need for an adapter! Usually you can get them for cheap, for example if you get a 3-4 previous gen tape drive (eg, LTO-6 when current is LTO-9), then you can easily get a server computer of a similar generation for 100-250 euros/dollars, and everything is ready for you. Just make sure not to get a rack/blade computer, get one in tower form, easier to manipulate. Search on second hand websites: "server sas", then check that the SAS speed is on par with what your tape drive can accept, but if lower or higher, no biggie, it will just be slower, but it should work nevertheless. May also have to buy the right connectors but not an issue, just check the manual of your tape drive. Note: avoid HP Enterprise (HPE) servers, as there is a suspicion of programmed obsolescence in the `Smart Array's Smart Storage Battery <https://www.youtube.com/watch?v=6jxdGXA0RYk>`__.
+
+The consumables, the tapes, can also be easily found second-hand and usually are very cheap, eg, LTO6 tapes are sold at 10-20 euros/dollars one, for a storage space of 3TB to 6.25TB per tape.
+
+With both approaches, expect at the cheapest a total cost of about 500 euros/dollars for the tape drive and attachment system (eGPU casing or dedicated server) as of 2023, which is very good and amortizable very fast with just a few tapes, even compared to the cheapest hard drives!
 
 A modern data curation strategy for individuals
 -----------------------------------------------
