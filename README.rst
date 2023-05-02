@@ -1159,6 +1159,8 @@ generate an ecc file):
    and `interstitial <https://github.com/avpreserve/interstitial>`_ to detect
    interstitial errors in audio digitization workflows (great to ensure you
    correctly digitized a whole audio file into WAV without any error).
+-  `DataLad <https://www.datalad.org/>`_ or `git-annex <https://git-annex.branchable.com/>`_
+   to index datasets of big files, or to collaboratively make such datasets.
 
 FAQ
 ---
