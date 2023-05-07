@@ -1,0 +1,1 @@
+# An empty setup.py is required for retrocompatibility with older versions of pip that do not support pyproject.toml-only projects, especially to install in editable mode, see: https://github.com/pypa/setuptools/issues/2816
