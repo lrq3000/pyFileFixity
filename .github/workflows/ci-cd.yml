@@ -105,3 +105,9 @@ jobs:
         with:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN }}
+
+      - name: Test install from PyPI
+        run: |
+          python -m pip install --upgrade pip
+          pip uninstall pyFileFixity -y
+          pip install --upgrade pyFileFixity
