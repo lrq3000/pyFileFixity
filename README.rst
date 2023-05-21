@@ -974,7 +974,9 @@ The consumables, the tapes, can also be easily found second-hand and usually are
 
 With both approaches, expect at the cheapest a total cost of about 500 euros/dollars for the tape drive and attachment system (eGPU casing or dedicated server) as of 2023, which is very good and amortizable very fast with just a few tapes, even compared to the cheapest hard drives!
 
-If you are just starting with professional servers setups, the YouTube channel Art of Server" is highly recommended, providing very helpful tutorials such as the top 13 reasons SAS drives are not detected. 
+If you are just starting with professional servers setups, the YouTube channel `Art of Server <https://www.youtube.com/channel/UCKHE9DEep52XlmwLbZUKvyw>`__ is highly recommended, providing very helpful tutorials such as the `13 Reasons Why your drives are not showing up in your LSI HBA` <https://www.youtube.com/watch?v=1dCd6IepB5s>`__. To identify SAS cables and connectors, see `this guide <https://www.tape-drive-repair.com/sas-connector-guide/>`__
+
+
 
 A modern data curation strategy for individuals
 -----------------------------------------------
