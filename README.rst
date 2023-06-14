@@ -281,6 +281,7 @@ timescale:
    RAID5, it is enough to have 2 silent errors on two disks on the same
    bit for the bit to be unrecoverable). That's why a limit of only 1 or
    2 disks failures is just not enough.
+-  If using hardware RAID, then if the RAID controller card goes out of service, you lose access to your data usually because the RAID controller is necessary to decode it! Hence, it is strongly advised to flash the HBA controller to IT (pass-through, no RAID mode) and use a software solution for data protection (whether ECC, redundancy or software RAID). See `this guide <https://github.com/lrq3000/lsi_sas_hba_crossflash_guide>`__ for more infos about crossflashing SAS HBA firmwares.
 -  Finally, it's worth noting that `hard drives do implement ECC codes <https://superuser.com/a/1554342/157556>`__
    to be resilient against bad sectors (otherwise we would lose data
    all the time!), but they only have limited corrective capacity,
@@ -976,7 +977,7 @@ With both approaches, expect at the cheapest a total cost of about 500 euros/dol
 
 If you are just starting with professional servers setups, the YouTube channel `Art of Server <https://www.youtube.com/channel/UCKHE9DEep52XlmwLbZUKvyw>`__ is highly recommended, providing very helpful tutorials such as the `13 Reasons Why your drives are not showing up in your LSI HBA <https://www.youtube.com/watch?v=1dCd6IepB5s>`__. To identify SAS cables and connectors, see `this guide <https://www.tape-drive-repair.com/sas-connector-guide/>`__
 
-
+Note there is a ltfs software package available on FreeBSD, and it may be better to flash the SAS HBA controller firmware to the latest version and to IT mode to allow the OS to more easily manage the drive, see `this guide <https://github.com/lrq3000/lsi_sas_hba_crossflash_guide>`__ for more info on how to crossflash HBA firmwares. Flashing a recent firmware may also be necessary if drives bigger than 2TB are not detected. Indeed, SAS drives are usually inexpensive on the 2nd hand market, and they are easily swappable using servers racks, so they can also be a nice additional online backup method (and you can even make a simple home cloud that autobackups your phone's data using Syncthing for example, and sync multiple backup copies using Freefilesync). 
 
 A modern data curation strategy for individuals
 -----------------------------------------------
