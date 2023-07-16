@@ -25,10 +25,6 @@
 #
 #------------------------------
 #
-# This script is similar to what has been done in a paper, albeit in a dumbed down version (since they could automatically check for corruption measures based on file format): Heydegger, Volker. "Analysing the impact of file formats on data integrity." Archiving Conference. Vol. 2008. No. 1. Society for Imaging Science and Technology, 2008.
-# And another interesting paper by the same author: Heydegger, Volker. "Just one bit in a million: On the effects of data corruption in files." Research and Advanced Technology for Digital Libraries. Springer Berlin Heidelberg, 2009. 315-326.
-# Errors are not evenly spread but rather block level (thus concentrated). Addis, Matthew, et al. "Reliable Audiovisual Archiving Using Unreliable Storage Technology and Services." (2009).
-#
 
 # Import necessary libraries
 from lib.aux_funcs import fullpath
