@@ -85,7 +85,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     ecc_speedtest_parser.add_argument('-h', '--help', action='store_true')
 
     # Parse known arguments, but we have almost none, this is done on purpose so that we can pass all arguments (except helps) downstream for submodules to handle with their own Argparse
-    args, args_remainder = parser.parse_known_args(argv)
+    args, args_remainder = parser.parse_known_args(argv)  # if argv is None, then parse_known_args() will fallback to sys.argv
     #print(type(args_remainder))  # DEBUGLINE
     #print(args)  # DEBUGLINE
 
