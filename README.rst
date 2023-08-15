@@ -5,6 +5,8 @@ pyFileFixity
 
 |Build-Status| |Coverage|
 
+|LICENCE|
+
 pyFileFixity provides a suite of open source, cross-platform, easy
 to use and easy to maintain (readable code) to protect and manage data
 for long term storage/archival, and also test the performance of any data protection algorithm.
@@ -1277,3 +1279,5 @@ Also, you may want to read the following resources:
    :target: https://github.com/lrq3000/pyFileFixity/actions/workflows/ci-build.yml
 .. |Coverage| image:: https://codecov.io/github/lrq3000/pyFileFixity/coverage.svg?branch=master
    :target: https://codecov.io/github/lrq3000/pyFileFixity?branch=master
+.. |LICENCE| image:: https://img.shields.io/pypi/l/pyfilefixity.svg
+   :target: https://raw.githubusercontent.com/lrq3000/pyfilefixity/master/LICENCE
