@@ -100,7 +100,5 @@ upload:
 	twine upload dist/*
 
 buildupload:
-	@+make testsetup
 	@+make build
-	@+make pypimeta
-	@+make pypi
+	@+make upload
