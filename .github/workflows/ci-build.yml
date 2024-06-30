@@ -19,12 +19,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.8", "3.10", "*", "3.12-dev", pypy-3.9]  # check the list of versions: https://github.com/actions/python-versions/releases and https://github.com/actions/setup-python/blob/main/docs/advanced-usage.md -- note that "*" represents the latest stable version of Python
+        python-version: ["3.8", "3.10", "3.11", "*", pypy-3.9]  # check the list of versions: https://github.com/actions/python-versions/releases and https://github.com/actions/setup-python/blob/main/docs/advanced-usage.md -- note that "*" represents the latest stable version of Python
         os: [ ubuntu-latest, windows-latest, macos-latest ] # jobs that run on Windows and macOS runners that GitHub hosts consume minutes at 2 and 10 times the rate that jobs on Linux runners consume respectively. But it's free for public OSS repositories.
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
         cache: 'pip'
@@ -56,7 +56,7 @@ jobs:
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v4
       with:
-        token: ${{ secrets.CODECOV_TOKEN }}  # not required for public repos, but still advised to avoid rate-limiting API by GitHub which makes the upload fails randomly: https://community.codecov.com/t/upload-issues-unable-to-locate-build-via-github-actions-api/3954/9 and https://github.com/codecov/codecov-action/issues/598
+        token: ${{ secrets.CODECOV_TOKEN }}  # now required even for public repos, and also advised to avoid rate-limiting API by GitHub which makes the upload fails randomly: https://community.codecov.com/t/upload-issues-unable-to-locate-build-via-github-actions-api/3954/9 and https://github.com/codecov/codecov-action/issues/598
         #directory: ./coverage/reports/
         env_vars: OS,PYTHON
         fail_ci_if_error: true
