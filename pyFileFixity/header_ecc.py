@@ -468,7 +468,7 @@ Note2: that Reed-Solomon can correct up to 2*resilience_rate erasures (eg, null 
     ptee.write("Precomputing done.")
     if generate: # show statistics only if generating an ecc file
         # TODO: add the size of the ecc format header? (arguments string + PYHEADERECC identifier)
-        total_pred_percentage = sizeheaders * 100 / sizetotal
+        total_pred_percentage = sizeheaders * 100 / max(1, sizetotal)
         ptee.write("Total ECC size estimation: %s = %g%% of total files size %s." % (sizeof_fmt(sizeheaders), total_pred_percentage, sizeof_fmt(sizetotal)))
         ptee.write("Details: resiliency of %i%%: For the header (first %i characters) of each file: each block of %i chars will get an ecc of %i chars (%i errors or %i erasures)." % (resilience_rate*100, header_size, ecc_params["message_size"], ecc_params["ecc_size"], int(ecc_params["ecc_size"] / 2), ecc_params["ecc_size"]))
 

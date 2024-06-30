@@ -574,7 +574,7 @@ Note3: last modification date is not (yet) accounted for.
     # == Precomputation of ecc file size
     # Precomputing is important so that the user can know what size to expect before starting (and how much time it will take...).
     filescount = 0
-    sizetotal = 0
+    #sizetotal = 0 # TODO: unused
     sizeheaders = 0
     visitedfiles = {}
     ptee.write("Precomputing list of files and predicted statistics...")
@@ -591,10 +591,10 @@ Note3: last modification date is not (yet) accounted for.
                 filescount = filescount + 1
                 # Add the file to the list of already visited files
                 visitedfiles[relfilepath] = True
-                # Get the current file's size
-                size = os.stat(filepath).st_size
-                # Compute total size of all files
-                sizetotal = sizetotal + size
+                # Get the current file's size # TODO: unused
+                #size = os.stat(filepath).st_size
+                # Compute total size of all files # TODO: unused
+                #sizetotal = sizetotal + size
             prebar.update()
     prebar.close()
     ptee.write("Precomputing done.")
