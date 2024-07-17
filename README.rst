@@ -1054,10 +1054,13 @@ generate an ecc file):
    `Linear Tape Open (LTO) <https://en.wikipedia.org/wiki/Linear_Tape-Open>`__
    magnetic bands storage (see instructions
    `here <https://superuser.com/questions/963246/how-to-read-an-dar-archive-via-lto-6-tape>`__)
--  `DVDisaster <http://dvdisaster.net/>`__: error correction at the bit
+-  `DVDisaster <https://github.com/speed47/dvdisaster>`__: error correction at the bit
    level for optical mediums (CD, DVD and BD / BluRay Discs). Very good,
    it also protects directory tree meta-data and is resilient to
    corruption (v2 still has some critical spots but v3 won't have any).
+   The big advantage is that not only does it do burst errors protection,
+   it also interleaves the error correction codes, so that it increases
+   resilience against scratches (ie, numerically equivalent to lots of consecutive errors).
 -  rsbep tool that is part of dvbackup package in Debian: allows to
    generate an ecc of a stream of bytes. Great to pipe to dar and/or gz
    for your backups, if you're on unix or using cygwin.
