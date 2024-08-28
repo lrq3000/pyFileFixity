@@ -33,7 +33,7 @@ else:
     import codecs
     def b(x):
         if isinstance(x, _str):
-            return codecs.latin_1_encode(x)[0]
+            return codecs.utf_8_encode(x)[0]
         else:
             return x
 
